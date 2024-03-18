@@ -1,4 +1,10 @@
+import { useState } from "react";
+
 export default function CreateProvider() {
+
+  const [files, setFiles] =useState([])
+
+
   return (
     <div className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">For Provider</h1>
