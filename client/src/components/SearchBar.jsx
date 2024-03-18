@@ -1,0 +1,52 @@
+export const SearchBar = () => {
+  const handleSearch = (event) => {
+    event.preventDefault();
+    // Add your search logic here, e.g., using the form data
+    console.log('Search submitted:', event.target.elements.where.value);
+  };
+
+  return (
+    <div className='flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg'>
+      <form className="tailwind-search-bar flex flex-col md:flex-row space-x-3  items-center" onSubmit={handleSearch}>
+        <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
+          <label htmlFor="what" className="font-sans py-1 px-2 block text-base text-gray-700 font-bold mt-8">
+            What
+          </label>
+          <input
+            type="text"
+            id="what"
+            placeholder="Service or provider name"
+            className="bg-transparent text-sm border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none"
+          />
+        </div>
+        <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
+          <label htmlFor="where" className="block py-1 px-2 text-base font-bold text-gray-700 mt-8">
+            Where
+          </label>
+          <input
+            type="text"
+            id="where"
+            placeholder="City, State, Zip Code"
+            className="appearance-none bg-transparent text-sm border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none"
+          />
+        </div>
+        <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
+          <label htmlFor="insurance" className="block py-1 px-2 text-base font-bold text-gray-700 mt-8">
+            Insurance
+          </label>
+          <input
+            type="text"
+            id="insurance"
+            placeholder="Not Sure? Skip"
+            className=" bg-transparent text-sm border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none "
+          />
+        </div>
+        <button type="submit" className=" py-3 px-4 font-medium  text-indigo-950 bg-sky-300 hover:bg-sky-200 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4">
+          Search
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default SearchBar;
