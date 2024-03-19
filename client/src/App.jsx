@@ -1,6 +1,7 @@
 import Hero from "./components/Hero";
 import Features from "./components/Features";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Question from "./components/Question";
 import {ResetPasswordForm} from './pages/ResetPasswordForm'
@@ -23,6 +24,7 @@ function App() {
 
       <BrowserRouter>
         <Header />
+        
         <Routes>
 
           <Route path="/" element={<Hero />} />
@@ -39,7 +41,7 @@ function App() {
 
         </Routes>
 
-
+        <Footer />
       </BrowserRouter>
     </>
   );

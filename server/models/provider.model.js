@@ -15,6 +15,10 @@ const providerSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        license:{
+            type: String,
+            required: true,
+        },
         regularPrice: {
             type: Number,
             required: true,
