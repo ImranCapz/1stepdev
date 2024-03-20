@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getDownloadURL,
   getStorage,
@@ -8,12 +8,13 @@ import {
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router";
+import { useNavigate,useParams } from "react-router-dom";
 
-export default function CreateProvider() {
+export default function UpdateProvider() {
   const { currentUser } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const navigate = useNavigate();
+  const params = useParams();
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -23,11 +24,28 @@ export default function CreateProvider() {
     regularPrice: "50",
     discountPrice: "0",
   });
-  console.log(formData);
   const [imageUploadError, setImageUploadError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+
+
+  useEffect(()=>{
+    const fetchProvider =async ()=>{
+        const providerId = params.providerId; 
+        const res = await fetch(`/server/provider/get/${providerId}`);
+        const data = await res.json();
+        if(data.success === false){
+          console.log(data.message);
+          return;
+        }
+        setFormData(data);
+
+
+    }
+    fetchProvider();
+  },[])
+
 
   const handleRemoveImage = (index) => {
     setFormData({
@@ -112,7 +130,7 @@ export default function CreateProvider() {
         return toast.error("Discound price must be lower than regular price");
       setLoading(true);
       setError(false);
-      const res = await fetch("/server/provider/create", {
+      const res = await fetch(`/server/provider/update/${params.providerId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +153,7 @@ export default function CreateProvider() {
   };
   return (
     <div className="p-3 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-semibold text-center my-7">Creating a Provider</h1>
+      <h1 className="text-3xl font-semibold text-center my-7">Update a Provider</h1>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
           <input
@@ -266,7 +284,7 @@ export default function CreateProvider() {
               </div>
             ))}
           <button disabled={loading || uploading } className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80">
-            {loading ? "Creating Provider" : "Create Provider"}
+            {loading ? "Creating Provider" : "Update Provider"}
           </button>
           {error && <p className="text-red-700 text-xs">{error}</p>}
         </div>

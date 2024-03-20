@@ -11,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./components/Profile";
 import VerifyOtp from "./pages/VerifyOtp";
 import CreateProvider from "./pages/CreateProvider";
+import UpdateProvider from "./pages/UpdateProvider";
 
 
 
@@ -37,6 +38,8 @@ function App() {
           <Route element={<PrivateRoute/>}>
              <Route path="/profile" element={<Profile/>} />
              <Route path="/create-provider"element={<CreateProvider />} />
+             <Route path="/update-provider/:providerId"element={<UpdateProvider />} />
+
           </Route>
 
         </Routes>

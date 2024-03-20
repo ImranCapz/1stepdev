@@ -1,3 +1,4 @@
+import Provider from "../models/provider.model.js";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
@@ -46,3 +47,18 @@ export const updateUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getUserProvider = async (req, res, next) => {
+  if(req.user.id === req.params.id) {
+    try {
+      const providers = await Provider.find({ userRef: req.params.id });
+      res.status(200).json(providers);
+    } catch (error) {
+      next(error);
+      
+    }
+
+  }else{
+    return next(errorHandler(401, 'You can only view your own provider'));
+  }
+}

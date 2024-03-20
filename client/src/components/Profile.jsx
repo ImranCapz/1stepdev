@@ -14,8 +14,9 @@ import {
   updateUserStart,
   signOut,
 } from "../redux/user/userSlice";
-import TopLoadingBar from 'react-top-loading-bar';
+import TopLoadingBar from "react-top-loading-bar";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -25,6 +26,8 @@ export default function Profile() {
   const [formData, setFormData] = useState({});
   const TopLoadingBarRef = useRef(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showProviderError, setShowProviderError] = useState(false);
+  const [userProvider, setUserProvider] = useState([]);
   const { currentUser, loading, error } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
@@ -86,7 +89,7 @@ export default function Profile() {
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error));
-    }finally{
+    } finally {
       TopLoadingBarRef.current.complete();
     }
   };
@@ -104,9 +107,40 @@ export default function Profile() {
     }
   };
 
+  const handleShowProvider = async () => {
+    try {
+      setShowProviderError(false);
+      const res = await fetch(`/server/user/providers/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setShowProviderError(true);
+        return;
+      }
+      setUserProvider(data);
+    } catch (error) {
+      setShowProviderError(true);
+    }
+  };
+
+  const handleProviderDelete = async (providerid) => {
+    try {
+      const res = await fetch(`/server/provider/delete/${providerid}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data);
+        return toast.success('Provider Deleted Successfully');
+      }
+      setUserProvider((prev)=> prev.filter((provider)=>provider._id !== providerid));
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+    
   return (
     <div className="w-full max-w-80 p-3 mx-auto">
-      <TopLoadingBar ref={TopLoadingBarRef} color='#ff9900' height={3} />
+      <TopLoadingBar ref={TopLoadingBarRef} color="#ff9900" height={3} />
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
       <form className="flex flex-col gap-7" onSubmit={handleSubmit}>
         <input
@@ -178,7 +212,12 @@ export default function Profile() {
         <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
           {loading ? "saving" : "update"}
         </button>
-        <Link className='bg-green-500 text-white p-3 rounded-lg text-center uppercase hover:opacity-95'to ={"/create-listing"}>FOR PROVIDERS</Link>
+        <Link
+          className="bg-green-500 text-white p-3 rounded-lg text-center uppercase hover:opacity-95"
+          to={"/create-listing"}
+        >
+          FOR PROVIDERS
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span onClick={handleSignout} className="text-red-700 cursor-pointer">
@@ -189,6 +228,35 @@ export default function Profile() {
       <p className="text-green-700 mt-7">
         {updateSuccess && "Updated Successfully"}
       </p>
+      <button onClick={handleShowProvider} className="text-green-700 w-full">
+        Show Created Provider
+      </button>
+      <p className="text-red-700 mt-7">
+        {showProviderError ? "Error showing Provider" : ""}
+      </p>
+      {userProvider &&
+        userProvider.length > 0 &&
+        <div className='flex flex-col gap-4'>
+          <h1 className="text-center mt-7 text-2xl font-semibold">Your Providers</h1>
+        {userProvider.map((provider) => (
+          <div key={provider._id} className=" rounded-lg p-3 flex gap-4 justify-between items-center">
+            <Link to={`/provider/${provider._id}`}>
+              <img
+                src={provider.imageUrls[0]}
+                alt="provider cover"
+                className="h-16 w-16 object-contain"
+              />
+            </Link>
+            <Link className="flex-1 font-semibold hover:underline truncate" to={`/provider/${provider._id}`}><p>{provider.name}</p></Link>
+            <div className="flex flex-col items-center">
+              <button onClick={(e)=>handleProviderDelete(provider._id)}className="text-red-700 uppercase">Delete</button>
+              <Link to ={`/update-provider/${provider._id}`}>
+              <button className="text-green-700 uppercase">EDIT</button>
+              </Link>
+            </div>
+          </div>
+        ))}
+        </div>}
     </div>
   );
 }

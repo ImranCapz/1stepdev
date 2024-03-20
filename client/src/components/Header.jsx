@@ -3,11 +3,9 @@ import logo from "../assets/logo.svg";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import {
-  signOut,
-} from "../redux/user/userSlice";
+import { signOut } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import TopLoadingBar from 'react-top-loading-bar';
+import TopLoadingBar from "react-top-loading-bar";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -17,18 +15,17 @@ const Header = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const topLoadingBarRef = useRef(null);
+  const [selectedItem, setSelectedItem] = useState(0);
 
   const handleSignout = async () => {
     try {
       topLoadingBarRef.current.continuousStart(50);
       await fetch("/server/auth/signout");
       dispatch(signOut());
-      navigate('/');
-    }
-    
-    catch (error) {
+      navigate("/");
+    } catch (error) {
       console.log(error);
-    } finally { 
+    } finally {
       topLoadingBarRef.current.complete();
     }
   };
@@ -52,13 +49,11 @@ const Header = () => {
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
-    
   };
 
-  const handleSigninClick =() =>{
+  const handleSigninClick = () => {
     setState(false);
-    
-  }
+  };
 
   const handleSignupClick = () => {
     setState(false);
@@ -75,6 +70,7 @@ const Header = () => {
     { title: "Diagnostic Evaluations", path: "/freescreeners" },
     { title: "Occupational Therapy", path: "" },
     { title: "Speech Therapy", path: "" },
+    { title: "School-Based Service", path: "" },
 
     { title: "|" },
     { title: "Learn:" },
@@ -162,20 +158,19 @@ const Header = () => {
             </form>
             {navigation.map((item, idx) => {
               return (
-                <li key={idx}>
-                  <a
-                    href={item.path}
-                    className="block text-gray-700 hover:text-gray-900"
-                  >
-                    {item.title}
-                  </a>
-                </li>
+                <Link
+                  key={idx}
+                  to={item.path}
+                  className="block text-gray-700 hover:text-gray-900"
+                >
+                  {item.title}
+                </Link>
               );
             })}
 
             <div className="space-y-3 items-center gap-x-6 md:flex md:space-y-0">
               {currentUser ? (
-                <div> 
+                <div>
                   <img
                     id="avatarButton"
                     type="button"
@@ -193,12 +188,12 @@ const Header = () => {
                     className={`z-10 ${
                       isDropdownVisible ? "" : "hidden"
                     } bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600`}
-                    style={{ position: 'absolute', top: '80px',right:'10px'}}
+                    style={{ position: "absolute", top: "80px", right: "10px" }}
                   >
                     <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                      <div>Hi,  {currentUser.username}</div>
+                      <div>Hi, {currentUser.username}</div>
                       <div className="font-medium truncate">
-                      {currentUser.email}
+                        {currentUser.email}
                       </div>
                     </div>
                     <ul
@@ -206,16 +201,16 @@ const Header = () => {
                       aria-labelledby="avatarButton"
                     >
                       <li>
-                        <Link to='/create-provider'
-                          
+                        <Link
+                          to="/create-provider"
                           className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                         >
                           Providers
                         </Link>
                       </li>
                       <li>
-                        <Link to='/profile'
-                          
+                        <Link
+                          to="/profile"
                           className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                         >
                           Settings
@@ -231,7 +226,8 @@ const Header = () => {
                       </li>
                     </ul>
                     <div className="py-1">
-                      <a href="#"
+                      <a
+                        href="#"
                         onClick={handleSignout}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                       >
@@ -270,16 +266,26 @@ const Header = () => {
       <nav className="border-b">
         <ul className="flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8">
           {submenuNav.map((item, idx) => {
+            if (item.title === "Learn:" || item.title === "|") {
+              return (
+                <li key={idx} className="py-1">
+                  <span className="block py-2 px-3 rounded-lg text-gray-700">
+                    {item.title}
+                  </span>
+                </li>
+              );
+            }
+
             return (
-              // Replace [idx == 0] with [window.location.pathname == item.path]
               <li
                 key={idx}
-                className={`py-1 ${
-                  idx == 0 ? "border-b-2 border-indigo-600" : ""
+                className={`py-1 transition-colors duration-200 ease-in-out ${
+                  idx === selectedItem ? "border-b-2 border-amber-500" : ""
                 }`}
               >
                 <Link
                   to={item.path}
+                  onClick={() => setSelectedItem(idx)}
                   className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150"
                 >
                   {item.title}
