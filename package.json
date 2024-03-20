@@ -315,6 +315,7 @@
     "sucrase": "^3.35.0",
     "supports-color": "^5.5.0",
     "supports-preserve-symlinks-flag": "^1.0.0",
+    "swiper": "^11.0.7",
     "tailwindcss": "^3.4.1",
     "text-table": "^0.2.0",
     "thenify": "^3.3.1",

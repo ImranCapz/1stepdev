@@ -12,6 +12,7 @@ import Profile from "./components/Profile";
 import VerifyOtp from "./pages/VerifyOtp";
 import CreateProvider from "./pages/CreateProvider";
 import UpdateProvider from "./pages/UpdateProvider";
+import Provider from "./pages/Provider";
 
 
 
@@ -35,6 +36,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgetpassword" element={<ResetPasswordForm />} /> 
           <Route path="/verifyotp" element={<VerifyOtp />} />
+          <Route path="/provider/:providerId" element={<Provider />} />
           <Route element={<PrivateRoute/>}>
              <Route path="/profile" element={<Profile/>} />
              <Route path="/create-provider"element={<CreateProvider />} />
