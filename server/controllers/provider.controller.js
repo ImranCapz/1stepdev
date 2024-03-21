@@ -73,6 +73,7 @@ export const getProviders = async (req, res, next) => {
     }
 
     const searchTerm = req.query.searchTerm || '';
+    const address = req.query.address || '';
 
     const sort = req.query.sort|| 'createdAt';
 
@@ -80,6 +81,7 @@ export const getProviders = async (req, res, next) => {
 
     const providers = await Provider.find({
       name: { $regex: searchTerm, $options: 'i'},
+      address: { $regex: address, $options: 'i'},
     }).sort(
       {[sort]:order}
     ).limit(limit).skip(startIndex);

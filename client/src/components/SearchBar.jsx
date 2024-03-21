@@ -5,12 +5,14 @@ export const SearchBar = () => {
 
   const navigate = useNavigate();
   const [searchTerm,setsearchTerm] = useState('');
+  const [address, setAddress] = useState('');
 
 
   const handlesubmit = (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('searchTerm',searchTerm);
+    urlParams.set('address',address);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
@@ -18,13 +20,16 @@ export const SearchBar = () => {
   useEffect(()=>{
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
+    const addressFromUrl = urlParams.get('address');
     if(searchTermFromUrl){
       setsearchTerm(searchTermFromUrl);
     }
-
+    if(addressFromUrl){
+      setAddress(addressFromUrl);
+    }
   },[location.search])
 
-  
+
   return (
     <div className='flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg'>
       <form className="tailwind-search-bar flex flex-col md:flex-row space-x-3  items-center" onSubmit={handlesubmit}>
@@ -39,6 +44,7 @@ export const SearchBar = () => {
             className="bg-transparent text-sm border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none"
             value={searchTerm}
             onChange={(e) => setsearchTerm(e.target.value)}
+            required
           />
         </div>
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
@@ -46,9 +52,11 @@ export const SearchBar = () => {
             Where
           </label>
           <input
-            type="text"
-            id="where"
+            type="address"
+            id="address"
             placeholder="City, State, Zip Code"
+            value={address}
+            onChange={(e)=> setAddress(e.target.value)}
             className="appearance-none bg-transparent text-sm border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none"
           />
         </div>
