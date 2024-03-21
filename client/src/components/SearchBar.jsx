@@ -1,13 +1,33 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+
 export const SearchBar = () => {
-  const handleSearch = (event) => {
-    event.preventDefault();
-    // Add your search logic here, e.g., using the form data
-    console.log('Search submitted:', event.target.elements.where.value);
+
+  const navigate = useNavigate();
+  const [searchTerm,setsearchTerm] = useState('');
+
+
+  const handlesubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('searchTerm',searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
   };
 
+  useEffect(()=>{
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    if(searchTermFromUrl){
+      setsearchTerm(searchTermFromUrl);
+    }
+
+  },[location.search])
+
+  
   return (
     <div className='flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg'>
-      <form className="tailwind-search-bar flex flex-col md:flex-row space-x-3  items-center" onSubmit={handleSearch}>
+      <form className="tailwind-search-bar flex flex-col md:flex-row space-x-3  items-center" onSubmit={handlesubmit}>
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
           <label htmlFor="what" className="font-sans py-1 px-2 block text-base text-gray-700 font-bold mt-8">
             What
@@ -17,6 +37,8 @@ export const SearchBar = () => {
             id="what"
             placeholder="Service or provider name"
             className="bg-transparent text-sm border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none"
+            value={searchTerm}
+            onChange={(e) => setsearchTerm(e.target.value)}
           />
         </div>
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
