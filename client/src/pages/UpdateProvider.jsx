@@ -284,7 +284,7 @@ export default function UpdateProvider() {
               </div>
             ))}
           <button disabled={loading || uploading } className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80">
-            {loading ? "Creating Provider" : "Update Provider"}
+            {loading ? "updating..." : "Update Provider"}
           </button>
           {error && <p className="text-red-700 text-xs">{error}</p>}
         </div>

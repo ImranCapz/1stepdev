@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa';
 import { useSelector } from "react-redux";
 import BookingContact from "../components/BookingContact";
+import { useNavigate } from 'react-router-dom'; 
 
 export default function Provider() {
   SwiperCore.use([Navigation]);
@@ -19,6 +20,7 @@ export default function Provider() {
   const [copied, setCopied] = useState(false);
   const [contact, setContact] = useState(false);
   const params = useParams();
+  const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -78,8 +80,8 @@ export default function Provider() {
           )}
           <div className='flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4'>
             <p className='text-2xl font-semibold'>
-              {provider.name} - ${' '}
-              {provider.regularPrice.toLocaleString('en-US')} / booking
+              {provider.name} - ₹{' '}
+              {provider.regularPrice.toLocaleString('en-US')} / Appointment
             </p>
             <p className='flex items-center mt-6 gap-2 text-slate-600  text-sm'>
               <FaMapMarkerAlt className='text-sky-500' />
@@ -90,28 +92,16 @@ export default function Provider() {
               <span className='font-semibold text-black'>Description - </span>
               {provider.description}
             </p>
-            {/* <ul className='text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6'>
-              <li className='flex items-center gap-1 whitespace-nowrap '>
-                <FaBed className='text-lg' />
-                {provider.bedrooms > 1
-                  ? `${provider.bedrooms} beds `
-                  : `${provider.bedrooms} bed `}
-              </li>
-              <li className='flex items-center gap-1 whitespace-nowrap '>
-                <FaBath className='text-lg' />
-                {provider.bathrooms > 1
-                  ? `${provider.bathrooms} baths `
-                  : `${provider.bathrooms} bath `}
-              </li>
-              <li className='flex items-center gap-1 whitespace-nowrap '>
-                <FaParking className='text-lg' />
-                {provider.parking ? 'Parking spot' : 'No Parking'}
-              </li>
-              <li className='flex items-center gap-1 whitespace-nowrap '>
-                <FaChair className='text-lg' />
-                {provider.furnished ? 'Furnished' : 'Unfurnished'}
-              </li>
-            </ul> */}
+            {
+              !currentUser && (
+                <button
+                  onClick={() => navigate('/signup')}
+                  className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'
+                >
+                  Book A Appointment
+                </button>
+              )
+            }
             {currentUser && provider.userRef !== currentUser._id && !contact && (
               <button
                 onClick={() => setContact(true)}

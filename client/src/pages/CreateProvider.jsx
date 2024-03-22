@@ -194,7 +194,7 @@ export default function CreateProvider() {
               />
               <div className="flex flex-col items-center">
                 <p>Regular Fees</p>
-                <span className="text-xs">($ per booking)</span>
+                <span className="text-xs">( ₹ per Appointment )</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -210,7 +210,7 @@ export default function CreateProvider() {
               />
               <div className="flex flex-col items-center">
                 <p>Discount Fees</p>
-                <span className="text-xs">($ per booking)</span>
+                <span className="text-xs">( ₹ per Appointment )</span>
               </div>
             </div>
           </div>

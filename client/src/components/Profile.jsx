@@ -214,7 +214,7 @@ export default function Profile() {
         </button>
         <Link
           className="bg-green-500 text-white p-3 rounded-lg text-center uppercase hover:opacity-95"
-          to={"/create-listing"}
+          to={"/create-provider"}
         >
           FOR PROVIDERS
         </Link>

@@ -1,13 +1,14 @@
 import Select from "react-select";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import ProviderItem from "../components/provider/ProviderItem";
 
 export default function Search() {
   const navigate = useNavigate();
   const [searchTerm, setsearchTerm] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState("false");
-  const [providers ,setProviders] = useState([]);
+  const [providers, setProviders] = useState([]);
   console.log(providers);
   const options = [
     {
@@ -57,20 +58,17 @@ export default function Search() {
       setAddress(addressFromUrl);
     }
 
-    const fetchProvider = async()=>{
-        setLoading(true);
-        const searchQuery = urlParams.toString();
-        const res = await fetch(`/server/provider/get?${searchQuery}`);
-        const data = await res.json();
-        setProviders(data);
-        setLoading(false);
-    }
+    const fetchProvider = async () => {
+      setLoading(true);
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/server/provider/get?${searchQuery}`);
+      const data = await res.json();
+      setProviders(data);
+      setLoading(false);
+    };
 
     fetchProvider();
   }, [location.search]);
-
-
-
 
   return (
     <div className="p-4">
@@ -148,6 +146,23 @@ export default function Search() {
               defaultValue={"created_at_dec"}
             />
           </div>
+        </div>
+        <div className="p-7 flex flex-col gap-4">
+          {!loading && providers.length === 0 && (
+            <p className="text-center text-xl text-slate-700">
+              We couldn&apos;t find any doctors for you
+            </p>
+          )}
+          {loading && (
+            <p className="text-center text-xl text-slate-700 w-full">
+              Loading...
+            </p>
+          )}
+          {!loading &&
+            providers &&
+            providers.map((provider) => {
+              return <ProviderItem key={provider._id} provider={provider} />
+          })}
         </div>
       </div>
     </div>
