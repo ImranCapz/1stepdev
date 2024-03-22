@@ -55,7 +55,7 @@ export default function Provider() {
             {provider.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
-                  className="h-[550px]"
+                  className="h-[500px] mt-5"
                   style={{ background: `url(${url}) center no-repeat`,backgroundSize:'cover' }}
                 ></div>
               </SwiperSlide>

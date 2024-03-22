@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { signOut } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import TopLoadingBar from "react-top-loading-bar";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -61,7 +62,7 @@ const Header = () => {
   const navigation = [
     { title: "Home", path: "/" },
     { title: "For Parents", path: "" },
-    { title: "For Providers", path: "" },
+    { title: "For Providers", path: currentUser ? "/create-provider" : '/signin'},
     { title: "About Us", path: "" },
   ];
 
@@ -276,12 +277,30 @@ const Header = () => {
               );
             }
 
+            if (item.title === "For Providers") {
+              return (
+                <li key={idx} className={`py-1 transition-colors duration-200 ease-in-out ${idx === selectedItem ? "border-b-2 border-amber-500" : ""}`}>
+                  <Link
+                    to={currentUser ? "/create-provider" : "/signin"}
+                    onClick={(e) => {
+                      setSelectedItem(idx);
+                      if (!currentUser) {
+                        e.preventDefault();
+                        toast.error('You must be logged in to create a provider.');
+                      }
+                    }}
+                    className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150"
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              );
+            }
+
             return (
               <li
                 key={idx}
-                className={`py-1 transition-colors duration-200 ease-in-out ${
-                  idx === selectedItem ? "border-b-2 border-amber-500" : ""
-                }`}
+                className={`py-1 transition-colors duration-200 ease-in-out ${idx === selectedItem ? "border-b-2 border-amber-500" : ""}`}
               >
                 <Link
                   to={item.path}

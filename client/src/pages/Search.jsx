@@ -9,7 +9,7 @@ export default function Search() {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState("false");
   const [providers, setProviders] = useState([]);
-  console.log(providers);
+
   const options = [
     {
       value: "createdAt_desc",
@@ -50,16 +50,14 @@ export default function Search() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
-    const addressFromUrl = urlParams.get("address");
+    let addressFromUrl = urlParams.get("address");
     if (searchTermFromUrl) {
       setsearchTerm(searchTermFromUrl);
     }
-    if (addressFromUrl) {
-      setAddress(addressFromUrl);
-    }
 
-    const fetchProvider = async () => {
+    const fetchProvider = async (address) => {
       setLoading(true);
+      urlParams.set("address", address);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
@@ -67,7 +65,22 @@ export default function Search() {
       setLoading(false);
     };
 
-    fetchProvider();
+    if (addressFromUrl) {
+      setAddress(addressFromUrl);
+      fetchProvider(addressFromUrl);
+    } else {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const res = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=3ff527dd52944833bd64a0290dd8f25b`);
+          const data = await res.json();
+          const city = data.results[0].components.city;
+          setAddress(city);
+          fetchProvider(city);
+        });
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    }
   }, [location.search]);
 
   return (

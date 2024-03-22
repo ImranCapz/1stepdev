@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import  { MdLocationOn }  from "react-icons/md";
+import PropTypes from 'prop-types';
 
 export default function ProviderItem({provider}) {
   return (
@@ -18,3 +19,13 @@ export default function ProviderItem({provider}) {
     </div>
   )
 }
+
+ProviderItem.propTypes = {
+  provider: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    imageUrls: PropTypes.arrayOf(PropTypes.string).isRequired,
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+  }).isRequired,
+};
