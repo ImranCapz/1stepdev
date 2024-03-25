@@ -41,7 +41,7 @@ export const SearchBar = () => {
             type="text"
             id="what"
             placeholder="Service or provider name"
-            className="bg-transparent text-sm border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none"
+            className="bg-transparent text-sm capitalize border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none"
             value={searchTerm}
             onChange={(e) => setsearchTerm(e.target.value)}
             required
@@ -57,7 +57,7 @@ export const SearchBar = () => {
             placeholder="City, State, Zip Code"
             value={address}
             onChange={(e)=> setAddress(e.target.value)}
-            className="appearance-none bg-transparent text-sm border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none"
+            className="appearance-none bg-transparent capitalize text-sm border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none"
           />
         </div>
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
@@ -68,7 +68,7 @@ export const SearchBar = () => {
             type="text"
             id="insurance"
             placeholder="Not Sure? Skip"
-            className=" bg-transparent text-sm border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none "
+            className=" bg-transparent text-sm border-none capitalize w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none "
           />
         </div>
         <button type="submit" className=" py-3 px-4 font-medium  text-indigo-950 bg-sky-300 hover:bg-sky-200 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4">

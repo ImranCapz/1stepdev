@@ -2,6 +2,10 @@ import Select from "react-select";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import ProviderItem from "../components/provider/ProviderItem";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
 
 export default function Search() {
   const navigate = useNavigate();
@@ -20,6 +24,19 @@ export default function Search() {
       label: "Oldest",
     },
   ];
+
+  const handleSelect = async (value) => {
+    try {
+      setLoading(true);
+      const results = await geocodeByAddress(value);
+      const latLng = await getLatLng(results[0]);
+      setAddress(value);
+    } catch (error) {
+      console.error("Error occurred in handleSelect:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const customStyles = {
     control: (provided) => ({
@@ -101,10 +118,11 @@ export default function Search() {
               type="text"
               id="what"
               placeholder="Service or provider name"
-              className="bg-transparent text-sm border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none"
+              className="bg-transparent capitalize text-base border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none"
               value={searchTerm}
               onChange={(e) => setsearchTerm(e.target.value)}
               required
+              
             />
           </div>
           <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
@@ -114,14 +132,45 @@ export default function Search() {
             >
               Where
             </label>
-            <input
-              type="address"
-              id="address"
-              placeholder="City, State, Zip Code"
+            <PlacesAutocomplete
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="appearance-none bg-transparent text-sm border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none"
-            />
+              onChange={setAddress}
+              onSelect={handleSelect}
+            >
+              {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                <div style={{ position: 'relative' }}>
+                  <input
+                    {...getInputProps({
+                      placeholder: 'City, State or Zip Code',
+                      className: 'appearance-none bg-transparent capitalize text-base border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none location-search-input overflow-hidden',
+                    })}
+                  />
+                  <div className="text-base autocomplete-dropdown-container overflow-hidden" style={{ position: 'absolute', zIndex: 1000 }}>
+                    {loading && <div>Loading...</div>}
+                    {suggestions.map(suggestion => {
+                      const className = suggestion.active
+                        ? 'suggestion-item--active'
+                        : 'suggestion-item';
+                      // inline style for demonstration purpose
+                      const style = suggestion.active
+                        ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                        : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                      return (
+                        <div
+                          {...getSuggestionItemProps(suggestion, {
+                            className,
+                            style,
+                          })}
+                          key={suggestion.placeId}
+                        >
+                          <span>{suggestion.description}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </PlacesAutocomplete>
           </div>
           <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
             <label
@@ -134,7 +183,7 @@ export default function Search() {
               type="text"
               id="insurance"
               placeholder="Not Sure? Skip"
-              className=" bg-transparent text-sm border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none "
+              className=" bg-transparent text-base border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none "
             />
           </div>
           <button
