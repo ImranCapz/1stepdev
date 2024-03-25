@@ -13,6 +13,7 @@ export default function Search() {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState("false");
   const [providers, setProviders] = useState([]);
+  const [showMore, setShowMore] = useState(false);
 
   const options = [
     {
@@ -74,10 +75,16 @@ export default function Search() {
 
     const fetchProvider = async (address) => {
       setLoading(true);
+      setShowMore(false);
       urlParams.set("address", address);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
+      if(data.length > 8){
+        setShowMore(true);
+      }else{
+        setShowMore(false);
+      }
       setProviders(data);
       setLoading(false);
     };
@@ -99,6 +106,20 @@ export default function Search() {
       }
     }
   }, [location.search]);
+
+  const onShowMoreClick = async() =>{
+    const numberofproviders = providers.length();
+    const startIndex = numberofproviders;
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/server/provider/get?${searchQuery}`);
+    const data = await res.json();
+    if(data.length < 8){
+      setShowMore(false);
+    }
+    setProviders([...providers,...data])
+  }
 
   return (
     <div className="p-4">
@@ -225,6 +246,12 @@ export default function Search() {
             providers.map((provider) => {
               return <ProviderItem key={provider._id} provider={provider} />
           })}
+
+          { showMore &&(
+            <button onClick={onShowMoreClick} className="text-green-700 hover:underline p-7">
+              Show More
+            </button>
+          )}
         </div>
       </div>
     </div>
