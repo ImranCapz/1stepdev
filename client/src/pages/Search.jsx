@@ -15,6 +15,17 @@ export default function Search() {
   const [providers, setProviders] = useState([]);
   const [showMore, setShowMore] = useState(false);
 
+  const suggestions = [
+    "Diagnostic Evaluation",
+    "Speech Therapy",
+    "ABA Therapy",
+    "Occupational Therapy",
+  ];
+  const whatoptions = suggestions.map((suggestion, index) => ({
+    value: suggestion,
+    label: suggestion,
+  }));
+
   const options = [
     {
       value: "createdAt_desc",
@@ -80,9 +91,9 @@ export default function Search() {
       const searchQuery = urlParams.toString();
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
-      if(data.length > 8){
+      if (data.length > 8) {
         setShowMore(true);
-      }else{
+      } else {
         setShowMore(false);
       }
       setProviders(data);
@@ -95,7 +106,9 @@ export default function Search() {
     } else {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
-          const res = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=3ff527dd52944833bd64a0290dd8f25b`);
+          const res = await fetch(
+            `https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=3ff527dd52944833bd64a0290dd8f25b`
+          );
           const data = await res.json();
           const city = data.results[0].components.city;
           setAddress(city);
@@ -107,7 +120,7 @@ export default function Search() {
     }
   }, [location.search]);
 
-  const onShowMoreClick = async() =>{
+  const onShowMoreClick = async () => {
     const numberofproviders = providers.length();
     const startIndex = numberofproviders;
     const urlParams = new URLSearchParams(window.location.search);
@@ -115,35 +128,60 @@ export default function Search() {
     const searchQuery = urlParams.toString();
     const res = await fetch(`/server/provider/get?${searchQuery}`);
     const data = await res.json();
-    if(data.length < 8){
+    if (data.length < 8) {
       setShowMore(false);
     }
-    setProviders([...providers,...data])
-  }
+    setProviders([...providers, ...data]);
+  };
 
   return (
-    <div className="p-4">
+    <div className="p-4 overflow-visible">
       <form
         className="flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg md:w-1/2"
         onSubmit={handlesubmit}
       >
-        <div className="flex flex-col md:flex-row space-x-3  items-center">
-          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
+        <div className="flex flex-col md:flex-row space-x-3  items-center overflow-visible">
+          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
             <label
               htmlFor="what"
               className="font-sans py-1 px-2 block text-base text-gray-700 font-bold mt-8"
             >
               What
             </label>
-            <input
-              type="text"
+            <Select
               id="what"
-              placeholder="Service or provider name"
-              className="bg-transparent capitalize text-base border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none"
-              value={searchTerm}
-              onChange={(e) => setsearchTerm(e.target.value)}
-              required
-              
+              value={whatoptions.find((option) => option.value === searchTerm)}
+              onChange={(option) => setsearchTerm(option.value)}
+              options={whatoptions}
+              placeholder="Select a service or provider"
+              isSearchable
+              className="capitalize trauncate text-base border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none overflow-visible"
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  backgroundColor: "transparent !important",
+                  minWidth: 210,
+                  width: "auto",
+                  border: "none",
+                  outline: "none",
+                  boxShadow: 'none'
+                }),
+                singleValue: (provided) => ({
+                  ...provided,
+                  maxWidth: 160, // This sets the maximum width of the selected option text
+                  position: "absolute",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }),
+                option: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: state.isSelected
+                    ? "#F9CB5E"
+                    : provided.backgroundColor,
+                  color: state.isSelected ? "#4D4A45" : provided.color,
+                }),
+              }}
             />
           </div>
           <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
@@ -158,24 +196,33 @@ export default function Search() {
               onChange={setAddress}
               onSelect={handleSelect}
             >
-              {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-                <div style={{ position: 'relative' }}>
+              {({
+                getInputProps,
+                suggestions,
+                getSuggestionItemProps,
+                loading,
+              }) => (
+                <div style={{ position: "relative" }}>
                   <input
                     {...getInputProps({
-                      placeholder: 'City, State or Zip Code',
-                      className: 'appearance-none bg-transparent capitalize text-base border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none location-search-input overflow-hidden',
+                      placeholder: "City, State or Zip Code",
+                      className:
+                        "appearance-none bg-transparent capitalize text-base border-none w-full text-gray-700 py-3 px-4 leading-tight focus:outline-none location-search-input",
                     })}
                   />
-                  <div className="text-base autocomplete-dropdown-container overflow-hidden" style={{ position: 'absolute', zIndex: 1000 }}>
+                  <div
+                    className="text-base autocomplete-dropdown-container overflow-hidden"
+                    style={{ position: "absolute", zIndex: 1000 }}
+                  >
                     {loading && <div>Loading...</div>}
-                    {suggestions.map(suggestion => {
+                    {suggestions.map((suggestion) => {
                       const className = suggestion.active
-                        ? 'suggestion-item--active'
-                        : 'suggestion-item';
+                        ? "suggestion-item--active"
+                        : "suggestion-item";
                       // inline style for demonstration purpose
                       const style = suggestion.active
-                        ? { backgroundColor: '#fafafa', cursor: 'pointer' }
-                        : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                        ? { backgroundColor: "#fafafa", cursor: "pointer" }
+                        : { backgroundColor: "#ffffff", cursor: "pointer" };
                       return (
                         <div
                           {...getSuggestionItemProps(suggestion, {
@@ -204,7 +251,7 @@ export default function Search() {
               type="text"
               id="insurance"
               placeholder="Not Sure? Skip"
-              className=" bg-transparent text-base border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none "
+              className=" bg-transparent text-base border-none w-full text-gray-700  py-3 px-4 leading-tight focus:outline-none "
             />
           </div>
           <button
@@ -219,7 +266,7 @@ export default function Search() {
       <div className="">
         <div className="sm:flex-col lg:flex-row lg:w-1/2"> </div>
         <div>
-          <div className="py-2 flex items-center">
+          {/* <div className="py-2 flex items-center">
             <label className=" font-semibold mr-2">Sort:</label>
             <Select
               id="sort_order"
@@ -228,7 +275,7 @@ export default function Search() {
               onChange={handleChanges}
               defaultValue={"created_at_dec"}
             />
-          </div>
+          </div> */}
         </div>
         <div className="p-7 flex flex-col gap-4">
           {!loading && providers.length === 0 && (
@@ -244,11 +291,14 @@ export default function Search() {
           {!loading &&
             providers &&
             providers.map((provider) => {
-              return <ProviderItem key={provider._id} provider={provider} />
-          })}
+              return <ProviderItem key={provider._id} provider={provider} />;
+            })}
 
-          { showMore &&(
-            <button onClick={onShowMoreClick} className="text-green-700 hover:underline p-7">
+          {showMore && (
+            <button
+              onClick={onShowMoreClick}
+              className="text-green-700 hover:underline p-7"
+            >
               Show More
             </button>
           )}
