@@ -201,6 +201,18 @@ const Header = () => {
                       className="py-2 text-sm text-gray-700 dark:text-gray-200"
                       aria-labelledby="avatarButton"
                     >
+                      {
+                        currentUser.isAdmin && (
+                          <li>
+                          <Link
+                            to="/admin-dashboard"
+                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          >
+                            Admin Dashboard
+                          </Link>
+                        </li>
+                        )
+                      }
                       <li>
                         <Link
                           to="/create-provider"
@@ -217,14 +229,14 @@ const Header = () => {
                           Settings
                         </Link>
                       </li>
-                      <li>
+                      {/* <li>
                         <a
                           href="#"
                           className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                         >
                           Earnings
                         </a>
-                      </li>
+                      </li> */}
                     </ul>
                     <div className="py-1">
                       <a

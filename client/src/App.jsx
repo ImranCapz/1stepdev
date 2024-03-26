@@ -14,6 +14,8 @@ import CreateProvider from "./pages/CreateProvider";
 import UpdateProvider from "./pages/UpdateProvider";
 import Provider from "./pages/Provider";
 import Search from "./pages/Search";
+import AdminPrivateRoute from "./components/admin/AdminPrivateRoute";
+import AdminDashboard from "./components/admin/AdminDashboard";
 
 
 
@@ -43,9 +45,10 @@ function App() {
              <Route path="/profile" element={<Profile/>} />
              <Route path="/create-provider"element={<CreateProvider />} />
              <Route path="/update-provider/:providerId"element={<UpdateProvider />} />
-
           </Route>
-
+          <Route element={<AdminPrivateRoute/>}>
+            <Route path="/admin-dashboard" element={<AdminDashboard/>} />
+            </Route>
         </Routes>
 
         <Footer />

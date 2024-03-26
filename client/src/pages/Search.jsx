@@ -16,14 +16,19 @@ export default function Search() {
   const [showMore, setShowMore] = useState(false);
 
   const suggestions = [
-    "Diagnostic Evaluation",
-    "Speech Therapy",
-    "ABA Therapy",
-    "Occupational Therapy",
+    { value: "Popular Search", label: "Popular Services", isDisabled: true },
+    { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
+    { value: "Speech Therapy", label: "Speech Therapy" },
+    { value: "ABA Therapy", label: "ABA Therapy" },
+    { value: "Occupational Therapy", label: "Occupational Therapy" },
+    { value: "A-Z Services", label: "Popular Services", isDisabled: true },
+
   ];
-  const whatoptions = suggestions.map((suggestion, index) => ({
-    value: suggestion,
-    label: suggestion,
+  
+  const whatoptions = suggestions.map((suggestion) => ({
+    value: suggestion.value,
+    label: suggestion.value,
+    isDisabled: suggestion.isDisabled,
   }));
 
   const options = [
@@ -164,7 +169,8 @@ export default function Search() {
                   width: "auto",
                   border: "none",
                   outline: "none",
-                  boxShadow: 'none'
+                  boxShadow: "none",
+                  transition: "all 0.3s ease",
                 }),
                 singleValue: (provided) => ({
                   ...provided,
@@ -266,7 +272,7 @@ export default function Search() {
       <div className="">
         <div className="sm:flex-col lg:flex-row lg:w-1/2"> </div>
         <div>
-          {/* <div className="py-2 flex items-center">
+          <div className="py-2 flex items-center">
             <label className=" font-semibold mr-2">Sort:</label>
             <Select
               id="sort_order"
@@ -275,7 +281,7 @@ export default function Search() {
               onChange={handleChanges}
               defaultValue={"created_at_dec"}
             />
-          </div> */}
+          </div>
         </div>
         <div className="p-7 flex flex-col gap-4">
           {!loading && providers.length === 0 && (

@@ -11,6 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
+    "@material-tailwind/html": "^2.2.2",
     "@reduxjs/toolkit": "^2.2.1",
     "axios": "^1.6.7",
     "cors": "^2.8.5",
