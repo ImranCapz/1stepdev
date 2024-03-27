@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
-import Profile from "../Profile";
 import DashUsers from "./DashUsers";
+import CreateProvider from "../../pages/CreateProvider";
+import Overview from "./Overview";
+
 
 export default function AdminDashboard() {
   const location = useLocation();
@@ -21,8 +23,9 @@ export default function AdminDashboard() {
         <AdminSidebar />
       </div>
 
-      <div className="flex flex-col">{tab === "Dashboard" && <Profile />}</div>
-      <div className="flex flex-col">{tab === "User" && <DashUsers />}</div>
+      <div>{tab === "dashboard" && <Overview />}</div>
+      <div>{tab === "users" && <DashUsers />}</div>
+      <div>{tab === "createprovider" && <CreateProvider />}</div>
     </div>
   );
 }

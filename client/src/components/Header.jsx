@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import logo from "../assets/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { signOut } from "../redux/user/userSlice";
@@ -17,6 +17,7 @@ const Header = () => {
   const navigate = useNavigate();
   const topLoadingBarRef = useRef(null);
   const [selectedItem, setSelectedItem] = useState(0);
+  const location = useLocation();
 
   const handleSignout = async () => {
     try {
@@ -62,7 +63,10 @@ const Header = () => {
   const navigation = [
     { title: "Home", path: "/" },
     { title: "For Parents", path: "" },
-    { title: "For Providers", path: currentUser ? "/create-provider" : '/signin'},
+    {
+      title: "For Providers",
+      path: currentUser ? "/create-provider" : "/signin",
+    },
     { title: "About Us", path: "" },
   ];
 
@@ -188,10 +192,10 @@ const Header = () => {
                     id="userDropdown"
                     className={`z-10 ${
                       isDropdownVisible ? "" : "hidden"
-                    } bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600`}
+                    } bg-gray-800 divide-y divide-gray-500 rounded-lg shadow w-44 dark:bg-gray-100 dark:divide-gray-600`}
                     style={{ position: "absolute", top: "80px", right: "10px" }}
                   >
-                    <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                    <div className="px-4 py-3 text-sm text-gray-100 dark:text-white">
                       <div>Hi, {currentUser.username}</div>
                       <div className="font-medium truncate">
                         {currentUser.email}
@@ -201,22 +205,20 @@ const Header = () => {
                       className="py-2 text-sm text-gray-700 dark:text-gray-200"
                       aria-labelledby="avatarButton"
                     >
-                      {
-                        currentUser.isAdmin && (
-                          <li>
+                      {currentUser.isAdmin && (
+                        <li>
                           <Link
-                            to="/admin-dashboard"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            to="/admin-dashboard?tab=dashboard"
+                            className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
                           >
                             Admin Dashboard
                           </Link>
                         </li>
-                        )
-                      }
+                      )}
                       <li>
                         <Link
                           to="/create-provider"
-                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
                         >
                           Providers
                         </Link>
@@ -224,7 +226,7 @@ const Header = () => {
                       <li>
                         <Link
                           to="/profile"
-                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          className="block px-4 py-2 text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
                         >
                           Settings
                         </Link>
@@ -242,7 +244,7 @@ const Header = () => {
                       <a
                         href="#"
                         onClick={handleSignout}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                        className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                       >
                         Sign out
                       </a>
@@ -291,14 +293,19 @@ const Header = () => {
 
             if (item.title === "For Providers") {
               return (
-                <li key={idx} className={`py-1 transition-colors duration-200 ease-in-out ${idx === selectedItem ? "border-b-2 border-amber-500" : ""}`}>
+                <li
+                  key={idx}
+                  className={`py-1 transition-colors duration-200 ease-in-out ${item.path === location.pathname ? "border-b-2 border-amber-500" : ""}`}
+                >
                   <Link
                     to={currentUser ? "/create-provider" : "/signin"}
                     onClick={(e) => {
                       setSelectedItem(idx);
                       if (!currentUser) {
                         e.preventDefault();
-                        toast.error('You must be logged in to create a provider.');
+                        toast.error(
+                          "You must be logged in to create a provider."
+                        );
                       }
                     }}
                     className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150"
@@ -312,7 +319,7 @@ const Header = () => {
             return (
               <li
                 key={idx}
-                className={`py-1 transition-colors duration-200 ease-in-out ${idx === selectedItem ? "border-b-2 border-amber-500" : ""}`}
+                className={`py-1 transition-colors duration-200 ease-in-out ${item.path === location.pathname ? "border-b-2 border-amber-500" : ""}`}
               >
                 <Link
                   to={item.path}

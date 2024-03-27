@@ -141,7 +141,7 @@ export default function CreateProvider() {
           <input
             type="text"
             placeholder="Name"
-            className="border p-3 rounded-lg"
+            className="border-2 p-3 rounded-lg focus:border-amber-600 focus:ring-0"
             id="name"
             maxLength="62"
             minLength="10"
@@ -153,7 +153,7 @@ export default function CreateProvider() {
           <textarea
             type="text"
             placeholder="Description"
-            className="border p-3 rounded-lg"
+            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
             id="description"
             required
             onChange={handleChange}
@@ -163,7 +163,7 @@ export default function CreateProvider() {
           <input
             type="text"
             placeholder="Address"
-            className="border p-3 rounded-lg"
+            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
             id="address"
             required
             onChange={handleChange}
@@ -173,7 +173,7 @@ export default function CreateProvider() {
           <input
             type="text"
             placeholder="License"
-            className="border p-3 rounded-lg"
+            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
             id="license"
             required
             onChange={handleChange}
@@ -188,7 +188,7 @@ export default function CreateProvider() {
                 min="50"
                 max="100000"
                 required
-                className="border p-3 rounded-lg"
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
                 onChange={handleChange}
                 value={formData.regularPrice}
               />
@@ -204,7 +204,7 @@ export default function CreateProvider() {
                 min="50"
                 max="100000"
                 required
-                className="border p-3 rounded-lg"
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
                 onChange={handleChange}
                 value={formData.discountPrice}
               />

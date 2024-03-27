@@ -49,7 +49,7 @@ export default function OAuth() {
       <button
         type="button"
         onClick={handleGoogleClick}
-        className="flex items-center justify-center w-full bg-white dark:bg-gray-900 border border-gray-300 rounded-lg p-6 shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 hover:text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-300 ease-in-out"
+        className="flex items-center justify-center w-full bg-gray-300 dark:bg-gray-900 border border-gray-300 rounded-lg p-6 shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 hover:text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-300 ease-in-out"
       >
         <svg
           className="h-5 w-5 mr-4"

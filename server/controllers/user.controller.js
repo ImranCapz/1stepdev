@@ -97,8 +97,7 @@ export const getUsers = async (req, res, next) => {
       const userWithoutPassword = users.map((user)=>{
         const {password, ...rest} = user._doc;
         return rest;
-      })
-      res.status(200).json(userWithoutPassword)
+      });
 
       const totalUsers = await User.countDocuments();
       const now = new Date();
@@ -113,6 +112,20 @@ export const getUsers = async (req, res, next) => {
       res.status(200).json({users: userWithoutPassword , totalUsers, lastMonthUsers })
     
   } catch (error) { 
+    next(error);
+  }
+}
+
+
+export const deleteUser = async (req, res, next) => {
+  if(!req.user.isAdmin || req.user.id === req.params.userId) {
+    return next(errorHandler(401, 'You are not authorized to delete this user'));
+  }
+  try {
+    await User.findByIdAndDelete(req.params.userId);
+    res.status(200).json({message: 'User has been deleted'});
+    
+  } catch (error) {
     next(error);
   }
 }

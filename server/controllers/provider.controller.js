@@ -93,3 +93,20 @@ export const getProviders = async (req, res, next) => {
     next(error);
   }
 }
+
+
+export const getAdminProviders = async (req, res, next) => {
+
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const sortDirection = req.query.order === 'asc' ? 1 : -1;
+    const providers = await Provider.find(
+      ...(req.query.userId && { userRef: req.query.userId }),
+      
+    )
+
+  } catch (error) {
+    next(error);
+  }
+}

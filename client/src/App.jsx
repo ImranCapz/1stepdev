@@ -16,6 +16,7 @@ import Provider from "./pages/Provider";
 import Search from "./pages/Search";
 import AdminPrivateRoute from "./components/admin/AdminPrivateRoute";
 import AdminDashboard from "./components/admin/AdminDashboard";
+import DashUsers from "./components/admin/DashUsers";
 
 
 
@@ -48,6 +49,7 @@ function App() {
           </Route>
           <Route element={<AdminPrivateRoute/>}>
             <Route path="/admin-dashboard" element={<AdminDashboard/>} />
+            <Route path="/users" element={<DashUsers/>} />
             </Route>
         </Routes>
 

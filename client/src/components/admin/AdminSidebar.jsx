@@ -20,24 +20,36 @@ export default function AdminSidebar() {
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
-        <Sidebar.ItemGroup>
+        <Sidebar.ItemGroup className="flex flex-col gap-2">
           <Link to="/admin-dashboard?tab=dashboard">
             <Sidebar.Item
               active={tab === "dashboard"}
               icon={RiDashboardFill}
               label={"Admin"}
               labelColor="light"
+              as="div"
             >
               Dashboard
             </Sidebar.Item>
           </Link>
-          <Link to="/admin-dashboard?tab=user">
+          <Link to="/admin-dashboard?tab=users">
             <Sidebar.Item
-              active={tab === "user"}
+              active={tab === "users"}
               icon={HiUser}
               labelColor="light"
+              as='div'
             >
               Users
+            </Sidebar.Item>
+          </Link>
+          <Link to="/admin-dashboard?tab=createprovider">
+            <Sidebar.Item
+              active={tab === "createprovider"}
+              icon={HiUser}
+              labelColor="light"
+              as='div'
+            >
+              Create Provider
             </Sidebar.Item>
           </Link>
           <Sidebar.Item icon={HiArrowSmRight} className="cursor-pointer">
