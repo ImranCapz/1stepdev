@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { HiArrowNarrowUp, HiOutlineUserGroup } from "react-icons/hi";
 import { useSelector } from "react-redux";
+import CountUp from 'react-countup';
 
 export default function Overview() {
   const { currentUser } = useSelector((state) => state.user);
@@ -32,7 +33,7 @@ export default function Overview() {
         <div className="flex justify-between">
           <div className="">
             <h3 className="text-gray-500 font-semibold text-md uppercase">Total Users</h3>
-            <p className="text-2xl">{totalusers}</p> 
+            <p className="text-2xl"> <CountUp end={totalusers} duration={1}/></p> 
           </div>
           <HiOutlineUserGroup className="bg-amber-500 text-white rounded-full text-5xl p-3" />
           </div>
@@ -43,7 +44,6 @@ export default function Overview() {
             </span>
             <div className="text-gray-500 ">Last Month</div>
           </div>
-        
       </div>
     </div>
   );

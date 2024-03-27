@@ -4,10 +4,13 @@ import { HiArrowSmRight, HiUser } from "react-icons/hi";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { RiDashboardFill } from "react-icons/ri";
+import { useDispatch } from "react-redux";
+import { signOut } from "../../redux/user/userSlice";
 
 export default function AdminSidebar() {
   const location = useLocation();
   const [tab, setTab] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -16,6 +19,23 @@ export default function AdminSidebar() {
       setTab(tabFromUrl);
     }
   }, [location.search]);
+
+  const handleSignout = async () => {
+    try {
+      const res = await fetch("/server/auth/signout",{
+        method:"GET",
+        
+      });
+      const data = await res.json();
+      if(!res.ok){
+        console.log(data.message);
+      }else{
+        dispatch(signOut());
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <Sidebar className="w-full md:w-56">
@@ -37,7 +57,7 @@ export default function AdminSidebar() {
               active={tab === "users"}
               icon={HiUser}
               labelColor="light"
-              as='div'
+              as="div"
             >
               Users
             </Sidebar.Item>
@@ -47,12 +67,16 @@ export default function AdminSidebar() {
               active={tab === "createprovider"}
               icon={HiUser}
               labelColor="light"
-              as='div'
+              as="div"
             >
               Create Provider
             </Sidebar.Item>
           </Link>
-          <Sidebar.Item icon={HiArrowSmRight} className="cursor-pointer">
+          <Sidebar.Item
+            icon={HiArrowSmRight}
+            className="cursor-pointer"
+            onClick={handleSignout}
+          >
             Sign Out
           </Sidebar.Item>
         </Sidebar.ItemGroup>

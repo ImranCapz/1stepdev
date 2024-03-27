@@ -5,7 +5,6 @@ import DashUsers from "./DashUsers";
 import CreateProvider from "../../pages/CreateProvider";
 import Overview from "./Overview";
 
-
 export default function AdminDashboard() {
   const location = useLocation();
   const [tab, setTab] = useState("");
@@ -22,10 +21,10 @@ export default function AdminDashboard() {
       <div className="md:w-56">
         <AdminSidebar />
       </div>
-
-      <div>{tab === "dashboard" && <Overview />}</div>
-      <div>{tab === "users" && <DashUsers />}</div>
-      <div>{tab === "createprovider" && <CreateProvider />}</div>
+      <div>{tab === "dashboard" && <Overview />}</div> 
+        
+        {tab === "users" && <DashUsers />}
+        {tab === "createprovider" && <CreateProvider />}
     </div>
   );
 }
