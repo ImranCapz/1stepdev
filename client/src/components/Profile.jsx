@@ -162,7 +162,7 @@ export default function Profile() {
             <img
               src={formData.profilePicture || currentUser.profilePicture}
               alt="profile"
-              className="w-24 h-24 rounded-full object-cover"
+              className="w-24 h-24 rounded-full object-cover border-4 border-[lightgray]"
             />
             <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
               <img

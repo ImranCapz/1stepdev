@@ -145,11 +145,11 @@ export default function Search() {
         className="flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg md:w-1/2"
         onSubmit={handlesubmit}
       >
-        <div className="flex flex-col md:flex-row space-x-3  items-center overflow-visible">
-          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
+        <div className="flex flex-col md:flex-row space-x-3  items-center overflow-visible focus:outline-none focus:border-transparent focus:ring-0">
+          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10 focus:outline-none focus:border-transparent focus:ring-0">
             <label
               htmlFor="what"
-              className="font-sans py-1 px-2 block text-base text-gray-700 font-bold mt-8"
+              className="font-sans py-1 px-2 block text-base text-gray-700 font-bold mt-8 focus:outline-none focus:border-transparent focus:ring-0"
             >
               What
             </label>
@@ -158,23 +158,25 @@ export default function Search() {
               value={whatoptions.find((option) => option.value === searchTerm)}
               onChange={(option) => setsearchTerm(option.value)}
               options={whatoptions}
-              placeholder="Select a service or provider"
+              placeholder="Service or provider"
               isSearchable
-              className="capitalize trauncate text-base border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none overflow-visible"
+              className="capitalize trauncate text-base border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight focus:outline-none focus:border-transparent focus:ring-0"
               styles={{
-                control: (provided) => ({
+                control: (provided, state) => ({
                   ...provided,
-                  backgroundColor: "transparent !important",
+                  backgroundColor: "transparent",
                   minWidth: 210,
                   width: "auto",
-                  border: "none",
-                  outline: "none",
-                  boxShadow: "none",
-                  transition: "all 0.3s ease",
+                  margin: 0,
+                  border: "0px solid black",
+                  boxShadow: state.isFocused ? 0 : 0,
+                  "&:hover": {
+                    border: "0px solid black",
+                  },
                 }),
                 singleValue: (provided) => ({
                   ...provided,
-                  maxWidth: 160, // This sets the maximum width of the selected option text
+                  maxWidth: 160,
                   position: "absolute",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -187,10 +189,11 @@ export default function Search() {
                     : provided.backgroundColor,
                   color: state.isSelected ? "#4D4A45" : provided.color,
                 }),
+                indicatorSeparator: () => ({}),
               }}
             />
           </div>
-          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
+          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 ">
             <label
               htmlFor="where"
               className="block py-1 px-2 text-base font-bold text-gray-700 mt-8"
@@ -213,7 +216,7 @@ export default function Search() {
                     {...getInputProps({
                       placeholder: "City, State or Zip Code",
                       className:
-                        "appearance-none bg-transparent capitalize text-base border-none w-full text-gray-700 py-3 px-4 leading-tight focus:outline-none location-search-input",
+                        "appearance-none bg-transparent capitalize text-base border-none w-full text-gray-700 py-3 px-4 leading-tight focus:outline-none location-search-input focus:outline-none focus:border-transparent focus:ring-0",
                     })}
                   />
                   <div
@@ -257,12 +260,12 @@ export default function Search() {
               type="text"
               id="insurance"
               placeholder="Not Sure? Skip"
-              className=" bg-transparent text-base border-none w-full text-gray-700  py-3 px-4 leading-tight focus:outline-none "
+              className=" bg-transparent text-base border-none w-full text-gray-700  py-3 px-4 leading-tight focus:outline-none focus:border-transparent focus:ring-0"
             />
           </div>
           <button
             type="submit"
-            className=" py-3 px-4 font-medium  text-indigo-950 bg-sky-300 hover:bg-sky-200 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4"
+            className=" py-3 px-4 font-medium  text-indigo-950 bg-sky-300 hover:bg-sky-200 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0"
           >
             Search
           </button>

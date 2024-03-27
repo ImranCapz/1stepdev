@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import Select from "react-select";
 import { FaSearch } from "react-icons/fa";
 
+
 export const SearchBar = () => {
   const navigate = useNavigate();
   const [searchTerm, setsearchTerm] = useState("");
@@ -152,12 +153,13 @@ export const SearchBar = () => {
             type="text"
             id="insurance"
             placeholder="Not Sure? Skip"
-            className=" bg-transparent text-sm border-none capitalize w-full text-gray-700 py-2 px-3 leading-tight focus:outline-none "
+            className="appearance-none bg-transparent capitalize text-sm border-none w-full text-gray-700 py-2 px-3 leading-tight focus:outline-none focus:border-transparent focus:ring-0 "
           />
         </div>
         <button
           type="submit"
-          className="py-4 px-5 font-medium text-indigo-950 bg-sky-300 hover:bg-sky-200 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 mr-4"
+          data-ripple-light="true"
+          className="py-4 px-5 font-medium text-indigo-950 bg-sky-400 hover:bg-sky-300 transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs  rounded-lg shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none mt-4 mb-4 mr-4"
         >
           <FaSearch />
         </button>

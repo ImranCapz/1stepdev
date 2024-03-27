@@ -153,7 +153,7 @@ const Header = () => {
                 <input
                   type="text"
                   placeholder="Find a therapist"
-                  className="w-full px-2 py-2 text-black bg-transparent rounded-md outline-none"
+                  className="w-full px-2 py-2 text-black bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
                 />
               </div>
             </form>
