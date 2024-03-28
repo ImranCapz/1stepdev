@@ -17,6 +17,7 @@ export const SearchBar = () => {
     { value: "ABA Therapy", label: "ABA Therapy" },
     { value: "Occupational Therapy", label: "Occupational Therapy" },
     { value: "A-Z Services", label: "Popular Services", isDisabled: true },
+    { value: "School-Based Service", label: "School-Based Service" },
 
   ];
   

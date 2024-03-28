@@ -62,6 +62,7 @@ const Header = () => {
   };
 
   const handleSubmenuClick = (itemTitle) => {
+    topLoadingBarRef.current.continuousStart(50);
     if (itemTitle === "Overview") {
       navigate("/");
     } else if (itemTitle === "Early Concerns: Start Here") {
@@ -71,6 +72,7 @@ const Header = () => {
     } else {
       navigate(`/search?searchTerm=${itemTitle}`);
     }
+    topLoadingBarRef.current.complete(50);
   };
   const navigation = [
     { title: "Home", path: "/" },
@@ -93,7 +95,7 @@ const Header = () => {
       path: "/search?searchTerm=Occupational+Therapy",
     },
     { title: "Speech Therapy", path: "/search?searchTerm=Speech%20Therapy" },
-    { title: "School-Based Service", path: "/School-Based Service" },
+    { title: "School-Based Service", path: "/search?searchTerm=School-Based+Service" },
 
     { title: "|" },
     { title: "Learn:" },
@@ -102,7 +104,7 @@ const Header = () => {
   ];
   return (
     <header className="text-base lg:text-sm sticky top-0 z-50 bg-white border-b">
-      <TopLoadingBar ref={topLoadingBarRef} color="#ff9900" height={3} />
+      <TopLoadingBar ref={topLoadingBarRef} color="#ff9900" height={3} speed={1000}/>
       <div
         className={`bg-sky-200 items-center gap-x-14 px-4 max-w-screen-4xl mx-auto lg:flex lg:px-8 lg:static ${
           state ? "h-full fixed inset-x-0" : ""

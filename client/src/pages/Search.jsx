@@ -1,11 +1,12 @@
 import Select from "react-select";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import ProviderItem from "../components/provider/ProviderItem";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
+import TopLoadingBar from "react-top-loading-bar";
 
 export default function Search() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function Search() {
   const [loading, setLoading] = useState("false");
   const [providers, setProviders] = useState([]);
   const [showMore, setShowMore] = useState(false);
+  const topLoadingBarRef = useRef(null);
 
   const suggestions = [
     { value: "Popular Search", label: "Popular Services", isDisabled: true },
@@ -22,9 +24,9 @@ export default function Search() {
     { value: "ABA Therapy", label: "ABA Therapy" },
     { value: "Occupational Therapy", label: "Occupational Therapy" },
     { value: "A-Z Services", label: "Popular Services", isDisabled: true },
-
+    { value: "School-Based Service", label: "School-Based Service" },
   ];
-  
+
   const whatoptions = suggestions.map((suggestion) => ({
     value: suggestion.value,
     label: suggestion.value,
@@ -123,6 +125,7 @@ export default function Search() {
         console.log("Geolocation is not supported by this browser.");
       }
     }
+    topLoadingBarRef.current.complete();
   }, [location.search]);
 
   const onShowMoreClick = async () => {
@@ -141,6 +144,12 @@ export default function Search() {
 
   return (
     <div className="p-4 overflow-visible">
+      <TopLoadingBar
+        ref={topLoadingBarRef}
+        color="#ff9900"
+        height={3}
+        speed={1000}
+      />{" "}
       <form
         className="flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg md:w-1/2"
         onSubmit={handlesubmit}
@@ -271,7 +280,6 @@ export default function Search() {
           </button>
         </div>
       </form>
-
       <div className="">
         <div className="sm:flex-col lg:flex-row lg:w-1/2"> </div>
         <div>
