@@ -60,6 +60,18 @@ const Header = () => {
   const handleSignupClick = () => {
     setState(false);
   };
+
+  const handleSubmenuClick = (itemTitle) => {
+    if (itemTitle === "Overview") {
+      navigate("/");
+    } else if (itemTitle === "Early Concerns: Start Here") {
+      navigate("/early-concerns");
+    } else if (itemTitle === "Read Expert Guides") {
+      navigate("/expert-guides");
+    } else {
+      navigate(`/search?searchTerm=${itemTitle}`);
+    }
+  };
   const navigation = [
     { title: "Home", path: "/" },
     { title: "For Parents", path: "" },
@@ -72,15 +84,21 @@ const Header = () => {
 
   const submenuNav = [
     { title: "Overview", path: "/" },
-    { title: "Diagnostic Evaluations", path: "/freescreeners" },
-    { title: "Occupational Therapy", path: "" },
-    { title: "Speech Therapy", path: "" },
-    { title: "School-Based Service", path: "" },
+    {
+      title: "Diagnostic Evaluation",
+      path: "/search?searchTerm=Diagnostic%20Evaluation",
+    },
+    {
+      title: "Occupational Therapy",
+      path: "/search?searchTerm=Occupational+Therapy",
+    },
+    { title: "Speech Therapy", path: "/search?searchTerm=Speech%20Therapy" },
+    { title: "School-Based Service", path: "/School-Based Service" },
 
     { title: "|" },
     { title: "Learn:" },
-    { title: "Early Concerns: Start Here", path: "" },
-    { title: "Read Expert Guides", path: "" },
+    { title: "Early Concerns: Start Here", path: "/early-concerns" },
+    { title: "Read Expert Guides", path: "/expert-guides" },
   ];
   return (
     <header className="text-base lg:text-sm sticky top-0 z-50 bg-white border-b">
@@ -295,7 +313,11 @@ const Header = () => {
               return (
                 <li
                   key={idx}
-                  className={`py-1 transition-colors duration-200 ease-in-out ${item.path === location.pathname ? "border-b-2 border-amber-500" : ""}`}
+                  className={`py-1 transition-colors duration-200 ease-in-out ${
+                    item.path === location.pathname
+                      ? "border-b-2 border-amber-500"
+                      : ""
+                  }`}
                 >
                   <Link
                     to={currentUser ? "/create-provider" : "/signin"}
@@ -319,12 +341,16 @@ const Header = () => {
             return (
               <li
                 key={idx}
-                className={`py-1 transition-colors duration-200 ease-in-out ${item.path === location.pathname ? "border-b-2 border-amber-500" : ""}`}
+                className={`py-1 transition-colors duration-200 ease-in-out ${
+                  location.pathname + location.search === item.path
+                    ? "border-b-2 border-amber-500"
+                    : ""
+                }`}
               >
                 <Link
                   to={item.path}
-                  onClick={() => setSelectedItem(idx)}
-                  className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150"
+                  onClick={() => handleSubmenuClick(item.title)}
+                  className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150 cursor-pointer"
                 >
                   {item.title}
                 </Link>

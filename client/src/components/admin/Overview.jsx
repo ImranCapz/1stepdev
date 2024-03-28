@@ -29,7 +29,7 @@ export default function Overview() {
   }, [currentUser]);
   return (
     <div className="p-3 md:mx-auto">
-      <div className="flex flex-col p-3 gap-4 md:w-72 w-full rounded-md shadow-md">
+      <div className="flex flex-col p-3 bg-sky-200 gap-4 md:w-72 w-full rounded-md shadow-md">
         <div className="flex justify-between">
           <div className="">
             <h3 className="text-gray-500 font-semibold text-md uppercase">Total Users</h3>
