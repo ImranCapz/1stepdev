@@ -7,15 +7,39 @@ const providerSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        description:{
+        email:{
             type: String,
+            required: true,
+        },
+        qualification:{
+            type: String,
+            required: true,
+        },
+        license:{
+            type: String,
+            required: true,
+        },       
+        expertise:{
+            type: String,
+            required: true,
+        },
+        experience:{
+            type: String,
+            required: true,
+        },
+        phone:{
+            type: Number,
             required: true,
         },
         address:{
             type: String,
             required: true,
         },
-        license:{
+        therapytype:{
+            type: String,
+            required: true,
+        },
+        availability:{
             type: String,
             required: true,
         },
@@ -23,8 +47,13 @@ const providerSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        discountPrice: {
-            type: Number,
+        description:{
+            type: String,
+            required: true,
+        },   
+        profilePicture:{
+            type: String,
+            default:'./src/assets/defaultprofile.jpg',
             required: true,
         },
         imageUrls:{

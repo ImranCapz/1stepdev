@@ -20,7 +20,7 @@ import toast from "react-hot-toast";
 
 export default function Profile() {
   const fileRef = useRef(null);
-  const [image, setImage] = useState(undefined);
+  const [image, setImage] = useState();
   const [imagePrecent, setImagePrecent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({});
@@ -29,7 +29,6 @@ export default function Profile() {
   const [showProviderError, setShowProviderError] = useState(false);
   const [userProvider, setUserProvider] = useState([]);
   const { currentUser, loading, error } = useSelector((state) => state.user);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -130,14 +129,16 @@ export default function Profile() {
       const data = await res.json();
       if (data.success === false) {
         console.log(data);
-        return toast.success('Provider Deleted Successfully');
+        return toast.success("Provider Deleted Successfully");
       }
-      setUserProvider((prev)=> prev.filter((provider)=>provider._id !== providerid));
+      setUserProvider((prev) =>
+        prev.filter((provider) => provider._id !== providerid)
+      );
     } catch (error) {
       console.log(error.message);
     }
-  }
-    
+  };
+
   return (
     <div className="w-full max-w-80 p-3 mx-auto">
       <TopLoadingBar ref={TopLoadingBarRef} color="#ff9900" height={3} />
@@ -234,29 +235,44 @@ export default function Profile() {
       <p className="text-red-700 mt-7">
         {showProviderError ? "Error showing Provider" : ""}
       </p>
-      {userProvider &&
-        userProvider.length > 0 &&
-        <div className='flex flex-col gap-4'>
-          <h1 className="text-center mt-7 text-2xl font-semibold">Your Providers</h1>
-        {userProvider.map((provider) => (
-          <div key={provider._id} className=" rounded-lg p-3 flex gap-4 justify-between items-center">
-            <Link to={`/provider/${provider._id}`}>
-              <img
-                src={provider.imageUrls[0]}
-                alt="provider cover"
-                className="h-16 w-16 object-contain"
-              />
-            </Link>
-            <Link className="flex-1 font-semibold hover:underline truncate" to={`/provider/${provider._id}`}><p>{provider.name}</p></Link>
-            <div className="flex flex-col items-center">
-              <button onClick={(e)=>handleProviderDelete(provider._id)}className="text-red-700 uppercase">Delete</button>
-              <Link to ={`/update-provider/${provider._id}`}>
-              <button className="text-green-700 uppercase">EDIT</button>
+      {userProvider && userProvider.length > 0 && (
+        <div className="flex flex-col gap-4">
+          <h1 className="text-center mt-7 text-2xl font-semibold">
+            Your Providers
+          </h1>
+          {userProvider.map((provider) => (
+            <div
+              key={provider._id}
+              className=" rounded-lg p-3 flex gap-4 justify-between items-center"
+            >
+              <Link to={`/provider/${provider._id}`}>
+                <img
+                  src={provider.imageUrls[0]}
+                  alt="provider cover"
+                  className="h-16 w-16 object-contain"
+                />
               </Link>
+              <Link
+                className="flex-1 font-semibold hover:underline truncate"
+                to={`/provider/${provider._id}`}
+              >
+                <p>{provider.name}</p>
+              </Link>
+              <div className="flex flex-col items-center">
+                <button
+                  onClick={() => handleProviderDelete(provider._id)}
+                  className="text-red-700 uppercase"
+                >
+                  Delete
+                </button>
+                <Link to={`/update-provider/${provider._id}`}>
+                  <button className="text-green-700 uppercase">EDIT</button>
+                </Link>
+              </div>
             </div>
-          </div>
-        ))}
-        </div>}
+          ))}
+        </div>
+      )}
     </div>
   );
 }

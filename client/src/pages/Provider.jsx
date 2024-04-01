@@ -83,6 +83,9 @@ export default function Provider() {
               {provider.name} - ₹{' '}
               {provider.regularPrice.toLocaleString('en-US')} / Appointment
             </p>
+            <p>
+              <img src={provider.profilePicture} alt='profile' className='h-20 w-20 rounded-full object-cover' />
+            </p>
             <p className='flex items-center mt-6 gap-2 text-slate-600  text-sm'>
               <FaMapMarkerAlt className='text-sky-500' />
               {provider.address}

@@ -17,6 +17,7 @@ import Search from "./pages/Search";
 import AdminPrivateRoute from "./components/admin/AdminPrivateRoute";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import DashUsers from "./components/admin/DashUsers";
+import CreateProfile from "./pages/providerscreen/CreateProfile";
 
 
 
@@ -42,6 +43,8 @@ function App() {
           <Route path="/verifyotp" element={<VerifyOtp />} />
           <Route path='/search' element={<Search />} />
           <Route path="/provider/:providerId" element={<Provider />} />
+          <Route path="/createprofile" element={<CreateProfile />} />
+
           <Route element={<PrivateRoute/>}>
              <Route path="/profile" element={<Profile/>} />
              <Route path="/create-provider"element={<CreateProvider />} />
