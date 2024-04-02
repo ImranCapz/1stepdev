@@ -43,7 +43,7 @@ function App() {
           <Route path="/verifyotp" element={<VerifyOtp />} />
           <Route path='/search' element={<Search />} />
           <Route path="/provider/:providerId" element={<Provider />} />
-          <Route path="/createprofile" element={<CreateProfile />} />
+          <Route path="/for-providers" element={<CreateProfile />} />
 
           <Route element={<PrivateRoute/>}>
              <Route path="/profile" element={<Profile/>} />

@@ -7,11 +7,11 @@ import ProviderLogin from "./ProviderLogin";
 function NewComponent() {
   const [providerLogin, setproviderLogin] = useState(false);
   return (
-    <div className="min-h-screen w-full">
+    <div className="flex flex-col items-center justify-center w-full">
       {!providerLogin && (
         <div>
-          <div className="flex flex-col items-center flex-wrap ">
-            <h1 className="text-sky-700 font-bold mb-6 mt-2 text-xl">
+          <div className="flex flex-col items-center w-full">
+            <h1 className="text-sky-700 font-bold mb-6 mt-4 text-xl">
               Create a 1Step Health Profile
             </h1>
             <p className="text-zinc-800 font-semibold mb-6 text-3xl">
@@ -23,7 +23,7 @@ function NewComponent() {
             </p>
           </div>
 
-          <div className="flex flex-col items-start md:pl-64">
+          <div className="flex flex-col items-start mt-4 md:pl-96">
             <h1 className="text-zinc-500 font-bold">For medical providers</h1>
             <p className="text-zinc-500 font-normal md:w-2/4">
               If your provider ABA Therapy, Speech Therapy, Pediatrics,
@@ -57,7 +57,7 @@ function NewComponent() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-start mt-4 md:pl-64">
+          <div className="flex flex-col items-start mt-4 md:pl-96">
             <h1 className="text-zinc-500 font-bold">
               For all other organizations
             </h1>
@@ -80,7 +80,7 @@ function NewComponent() {
               </label>
             </div>
           </div>
-          <div className="flex flex-col items-start mt-4 md:pl-64">
+          <div className="flex flex-col items-start mt-4 md:pl-96">
             <h1 className="text-zinc-500 text-sm font-bold">
               What&apos;s Proof of Ownership?
             </h1>
@@ -111,9 +111,9 @@ export default function CreateProfile() {
   const [showComponent, setShowComponent] = useState(false);
 
   return (
-    <div className="flex flex-col items-center min-h-screen w-full p-3">
+    <div className="flex flex-col items-center min-h-screen w-full">
       {!showComponent && (
-        <div className="flex flex-col justify-center mt-16 outline outline-offset-2 outline-1 outline-gray-300 bg-sky-100 rounded-lg ">
+        <div className="flex flex-col justify-center mt-60 outline outline-offset-2 outline-1 outline-gray-300 bg-sky-100 rounded-lg ">
           <div className="">
             <div className="flex flex-col sm:flex-row items-center p-4">
               <img

@@ -37,8 +37,6 @@ export default function CreateProvider() {
     description: "",
     profilePicture: "",
   });
-  console.log(formData);
-
   const handleRemoveImage = (index) => {
     setFormData({
       ...formData,

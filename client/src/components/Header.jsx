@@ -79,7 +79,7 @@ const Header = () => {
     { title: "For Parents", path: "" },
     {
       title: "For Providers",
-      path: currentUser ? "/create-provider" : "/createprofile",
+      path: currentUser ? "/create-provider" : "/for-providers",
     },
     { title: "About Us", path: "" },
   ];

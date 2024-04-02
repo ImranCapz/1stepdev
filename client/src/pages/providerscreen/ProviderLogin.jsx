@@ -4,7 +4,7 @@ import OAuth from '../../components/OAuth';
 import TopLoadingBar from 'react-top-loading-bar';
 import toast from 'react-hot-toast';
 import logo from "../../assets/logo.svg";
-
+import { useSelector } from 'react-redux';
 export const ProviderLogin = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
@@ -14,7 +14,7 @@ export const ProviderLogin = () => {
   const navigate = useNavigate();
   const topLoadingBarRef = useRef(null);
   const topLoadingBarColor = error || passerror ? '#ff0000' : '#ff9900';
-  
+  const {currentUser } =useSelector((state)=>state.user);
 
   const handleChanges = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -55,7 +55,9 @@ export const ProviderLogin = () => {
         setError(true);      
         return;
       }  
+
       toast.success('Account Created Successfully');
+      console.log('Navigating to /create-provider');
       navigate('/create-provider');   
     } catch (error) {
       setLoading(false);
@@ -67,7 +69,7 @@ export const ProviderLogin = () => {
 
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-4">
        <TopLoadingBar ref={topLoadingBarRef} color={topLoadingBarColor} height={4} />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
