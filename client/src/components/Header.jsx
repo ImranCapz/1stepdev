@@ -76,7 +76,7 @@ const Header = () => {
   };
   const navigation = [
     { title: "Home", path: "/" },
-    { title: "For Parents", path: "" },
+    { title: "For Parents", path: "/create-parentprofile" },
     {
       title: "For Providers",
       path: currentUser ? "/create-provider" : "/for-providers",
@@ -235,22 +235,33 @@ const Header = () => {
                           </Link>
                         </li>
                       )}
-                      <li>
-                        <Link
-                          to="/create-provider"
-                          className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
-                        >
-                          Providers
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/profile"
-                          className="block px-4 py-2 text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                          Settings
-                        </Link>
-                      </li>
+                      {currentUser &&(
+                        <div>
+                         <li>
+                         <Link
+                             to="/dashboard?tab=dashboard"
+                             className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
+                           >
+                             Dashboard
+                           </Link>
+                           <Link
+                             to="/dashboard?tab=createprovider"
+                             className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
+                           >
+                             Providers
+                           </Link>
+                         </li>
+                         <li>
+                           <Link
+                             to="/profile"
+                             className="block px-4 py-2 text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
+                           >
+                             Settings
+                           </Link>
+                         </li>
+                         </div>
+                      )}
+                     
                       {/* <li>
                         <a
                           href="#"

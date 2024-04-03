@@ -18,6 +18,9 @@ import AdminPrivateRoute from "./components/admin/AdminPrivateRoute";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import DashUsers from "./components/admin/DashUsers";
 import CreateProfile from "./pages/providerscreen/CreateProfile";
+import DashPrivateRoute from "./components/dashboard/DashPrivateRoute";
+import Dashboard from "./components/dashboard/Dashboard";
+import ParentForm from "./components/parents/ParentForm";
 
 
 
@@ -44,9 +47,9 @@ function App() {
           <Route path='/search' element={<Search />} />
           <Route path="/provider/:providerId" element={<Provider />} />
           <Route path="/for-providers" element={<CreateProfile />} />
-
           <Route element={<PrivateRoute/>}>
              <Route path="/profile" element={<Profile/>} />
+             <Route path="/create-parentprofile" element={<ParentForm/>} />
              <Route path="/create-provider"element={<CreateProvider />} />
              <Route path="/update-provider/:providerId"element={<UpdateProvider />} />
           </Route>
@@ -54,6 +57,10 @@ function App() {
             <Route path="/admin-dashboard" element={<AdminDashboard/>} />
             <Route path="/users" element={<DashUsers/>} />
             </Route>
+          <Route element={<DashPrivateRoute/>}>
+            <Route path="/dashboard" element={<Dashboard/>} />
+          </Route>
+
         </Routes>
 
         <Footer />

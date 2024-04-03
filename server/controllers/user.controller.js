@@ -48,6 +48,55 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
+export const updateParent = async (req, res, next)=> {
+  if(req.user.id !== req.params.id){
+    return next(errorHandler(401, 'You can only update your own account'));
+  }
+  try {
+    const existingUser = await User.findOne({
+      $or:[{ username: req.body.username}, {email: req.body.email}],
+      _id: {$ne: req.params.id},
+    })
+    if(existingUser) {
+      return res.status(400).json({error: 'Username or email already exists'});
+    }
+    const updateUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          ...(req.body.password && { password: bcryptjs.hashSync(req.body.password, 10) }),
+          profilePicture: req.body.profilePicture,
+          // Add the parent details fields here
+          isParent: req.body.isParent,
+          dob: req.body.dob,
+          gender: req.body.gender,
+          address: req.body.address,
+          allergies: req.body.allergies,
+          bloodGroup: req.body.bloodGroup,
+          emergencyContact: req.body.emergencyContact,
+          fullName: req.body.fullName,
+          height: req.body.height,
+          insurance: req.body.insurance,
+          medicalHistory: req.body.medicalHistory,
+          phoneNumber: req.body.phoneNumber,
+          weight: req.body.weight,
+        },
+      },
+      {new: true}
+    );
+
+    if (!updateUser) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    const { password, ...rest } = updateUser._doc;
+    res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
 export const getUserProvider = async (req, res, next) => {
   if(req.user.id === req.params.id) {
     try {

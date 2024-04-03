@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router";
 
-export default function AdminPrivateRoute() {
+export default function DashPrivateRoute() {
 
     const { currentUser } = useSelector((state) => state.user);
 
 
-  return currentUser.isAdmin ?  <Outlet/> : <Navigate to ='/'/>
+  return currentUser ?  <Outlet/> : <Navigate to ='/'/>
 }
