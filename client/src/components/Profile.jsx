@@ -31,6 +31,7 @@ export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+
   useEffect(() => {
     if (image) {
       handleFileUpload(image);
@@ -140,9 +141,13 @@ export default function Profile() {
   };
 
   return (
-    <div className="w-full max-w-80 p-3 mx-auto">
+    
+    <div className="w-full max-w-96 p-3 mx-auto">
+      
+
       <TopLoadingBar ref={TopLoadingBarRef} color="#ff9900" height={3} />
-      <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
+      
+      
       <form className="flex flex-col gap-7" onSubmit={handleSubmit}>
         <input
           type="file"
@@ -274,5 +279,6 @@ export default function Profile() {
         </div>
       )}
     </div>
+    
   );
 }

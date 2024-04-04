@@ -253,7 +253,7 @@ const Header = () => {
                          </li>
                          <li>
                            <Link
-                             to="/profile"
+                             to="/dashboard?tab=profile"
                              className="block px-4 py-2 text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
                            >
                              Settings

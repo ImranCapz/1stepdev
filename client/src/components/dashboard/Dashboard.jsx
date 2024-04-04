@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import DashSidebar from "./DashSiderbar";
-import PatientOverview from "./PatientOverview";
 import CreateProvider from "../../pages/CreateProvider";
+import Overview from "./Overview";
+import SubmenuProfile from "./SubmenuProfile";
+
+
 
 export default function Dashboard() {
   const location = useLocation();
   const [tab, setTab] = useState("");
+ 
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -20,8 +24,11 @@ export default function Dashboard() {
       <div className="md:w-56">
         <DashSidebar />
       </div>
-        {tab === "dashboard" && <PatientOverview />}
+        {tab === "dashboard" && <Overview /> }
         {tab === "createprovider" && <CreateProvider />}
+        
+        {tab === "profile" && < SubmenuProfile/>}
+       
     </div>
   );
 }

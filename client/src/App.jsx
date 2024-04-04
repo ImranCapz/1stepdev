@@ -36,7 +36,6 @@ function App() {
         <Header />
         
         <Routes>
-
           <Route path="/" element={<Hero />} />
           <Route path="/freescreeners" element={<Features />} />
           <Route path="/question" element={<Question />} />

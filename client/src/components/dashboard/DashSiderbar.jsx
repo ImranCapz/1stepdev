@@ -52,14 +52,14 @@ export default function DashSidebar() {
               Dashboard
             </Sidebar.Item>
           </Link>
-          <Link to="">
+          <Link to="/dashboard?tab=profile">
             <Sidebar.Item
-              active={tab === "users"}
+              active={tab === "profile"}
               icon={HiUser}
               labelColor="light"
               as="div"
             >
-              Users
+              Profile
             </Sidebar.Item>
           </Link>
           <Link to="/dashboard?tab=createprovider">

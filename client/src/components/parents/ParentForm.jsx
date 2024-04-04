@@ -27,7 +27,6 @@ export default function ParentForm() {
     phoneNumber: "",
   });
 
-  console.log(formData);
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -65,9 +64,7 @@ export default function ParentForm() {
 
   return (
     <div className="p-3 max-w-4xl mx-auto flex-col items-center">
-      <h1 className="text-base text-gray-700 font-semibold text-left my-7 mt-5">
-        Fill the form for Parent Profile
-      </h1>
+      
       <form
         onSubmit={handleSubmit}
         className="flex flex-col sm:flex-row gap-4 mt-6"
