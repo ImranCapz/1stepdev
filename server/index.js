@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import providerRouter from "./routes/provider.route.js";
+import parentRouter from'./routes/parent.route.js';
 import cookieParser from "cookie-parser";
 import path from 'path' ;
 
@@ -42,6 +43,7 @@ app.listen(3000, () => {
 app.use("/server/user", userRouter);
 app.use("/server/auth", authRouter);
 app.use("/server/provider", providerRouter);
+app.use("/server/parent",parentRouter);
 
 
 

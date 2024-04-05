@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateUserStart,
@@ -26,7 +26,6 @@ export default function ParentForm() {
     address: "",
     phoneNumber: "",
   });
-
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -62,9 +61,40 @@ export default function ParentForm() {
     }
   };
 
+useEffect(() => {
+  const fetchParentDetails = async () => {
+    try {
+      const res = await fetch(`server/parent/getparent/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        return;
+      }
+      // Ensure all properties are defined
+      const definedData = {
+        isParent: data.isParent || false,
+        fullName: data.fullName || "",
+        dob: data.dob || "",
+        gender: data.gender || "",
+        height: data.height || "",
+        weight: data.weight || "",
+        bloodGroup: data.bloodGroup || "",
+        medicalHistory: data.medicalHistory || "",
+        allergies: data.allergies || "",
+        emergencyContact: data.emergencyContact || "",
+        insurance: data.insurance || "",
+        address: data.address || "",
+        phoneNumber: data.phoneNumber || "",
+      };
+      setFormData(definedData);
+      console.log(definedData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  fetchParentDetails();
+}, [currentUser._id]);
   return (
     <div className="p-3 max-w-4xl mx-auto flex-col items-center">
-      
       <form
         onSubmit={handleSubmit}
         className="flex flex-col sm:flex-row gap-4 mt-6"
@@ -203,7 +233,7 @@ export default function ParentForm() {
             value={formData.insurance}
           />
           <label htmlFor="gender" className="text-sm text-gray-700">
-          Address : (city, state, country, pincode)
+            Address : (city, state, country, pincode)
           </label>
           <textarea
             type="text"
@@ -215,7 +245,7 @@ export default function ParentForm() {
             value={formData.address}
           />
           <label htmlFor="gender" className="text-sm text-gray-700">
-          Phone Number :
+            Phone Number :
           </label>
           <input
             type="text"
