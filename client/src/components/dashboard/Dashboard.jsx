@@ -9,16 +9,16 @@ import SubmenuProfile from "./SubmenuProfile";
 
 export default function Dashboard() {
   const location = useLocation();
-  const [tab, setTab] = useState("");
+  const [tab, setTab] = useState("dashboard");
  
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
-    if (tabFromUrl) {
+    if (["dashboard", "createprovider","profile"].includes(tabFromUrl)) {
       setTab(tabFromUrl);
     }
-  }, [location.search]);
+  }, [location.search]); 
   return (
     <div className="min-h-screen flex flex-col md:flex-row ">
       <div className="md:w-56">
