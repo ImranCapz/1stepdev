@@ -8,6 +8,7 @@ import {
 import { useNavigate } from "react-router";
 import BeatLoader from "react-spinners/BeatLoader";
 
+
 export default function ParentForm() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   console.log(loading)
@@ -63,7 +64,7 @@ export default function ParentForm() {
         return;
       }
       dispatch(updateUserSuccess(data));
-      navigate("/");
+      navigate("/dashboard?tag=Parent%20Details");	
     } catch (error) {
       dispatch(updateUserFailure(error));
     }
@@ -115,7 +116,7 @@ export default function ParentForm() {
         <form
           onSubmit={handleSubmit}
           className="flex flex-col sm:flex-row gap-4 mt-6"
-        >
+        >  
           <div className="flex flex-col gap-4 flex-1">
             <label htmlFor="isParent" className="text-sm text-gray-700">
               Are you a parent?
@@ -132,6 +133,7 @@ export default function ParentForm() {
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
+            
             <label name="fullName" className="text-sm text-gray-700">
               Enter your Full Name :
             </label>

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Profile from "../Profile";
 import ParentForm from "../parents/ParentForm";
 import { useSelector } from "react-redux";
@@ -9,23 +9,26 @@ export default function SubmenuProfile() {
   const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
 
-  const submenuNav = [
+  const submenuNav = useMemo(() => [
     { title: "Profile setting" },
     { title: "Parent Details" },
-  ];
+  ], []);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tagFromUrl = urlParams.get("tag");
     if (tagFromUrl) {
-      setActiveComponent(tagFromUrl);
+      const validTag = submenuNav.find(item => item.title === tagFromUrl);
+      if(validTag){
+        setActiveComponent(tagFromUrl);
+      }
     }
-  }, [location.search]);
+  }, [location.search, submenuNav]);
 
   return (
-    <div className="flex flex-col w-full">
-      <nav className="border-b items-start">
-        <ul className="flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8 mt-4">
+    <div className="flex flex-col w-full transition-all duration-500">
+      <nav className="block border-b items-start">
+        <ul className=" flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8 mt-4">
           {submenuNav.map((item, idx) => (
             <li key={idx} className="py-1">
               <Link
@@ -44,7 +47,7 @@ export default function SubmenuProfile() {
       </nav>
 
       {activeComponent === "Profile setting" && (
-        <div className="w-full">
+        <div className="w-full min-h-screen transition-all duration-500">
           <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
             {" "}
             Profile :
