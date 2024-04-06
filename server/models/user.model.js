@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
+    favorites:[{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Provider",
+    }],
     username: {
       type: String,
       unique: true,

@@ -1,5 +1,7 @@
 import Provider from "../models/provider.model.js";
 import { errorHandler } from "../utils/error.js";
+import User from "../models/user.model.js";
+import e from "express";
 
 export const createProvider = async (req, res, next) => {
   try {
@@ -106,6 +108,50 @@ export const getAdminProviders = async (req, res, next) => {
       
     )
 
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+export const favoriteProvider = async (req, res, next) => {
+  const { providerId } = req.body;
+  const { id: userId } = req.params;
+  if(!req.user){
+    return next(errorHandler(401, "You are not authenticated"))
+  }
+  try {
+    const provider = await Provider.findById(providerId);
+    if (!provider) {
+      return next(errorHandler(404, "Provider not found"));
+    }
+    const user = await User.findById(userId);
+    const index = user.favorites.indexOf(providerId);
+    if(index === -1){
+      user.favorites.push(providerId);
+      await user.save();
+      res.json({ message: "Provider added to favorites",isFavorite:true });
+    }else{
+      user.favorites.splice(index, 1);
+      await user.save();
+      res.json({ message: "Provider removed from favorites", isFavorite:false });
+    }
+    
+  } catch (error) {
+    next (error);
+  }
+}
+
+export const favoriteStatusProvider = async (req, res, next) => {
+  const { providerId } = req.query;
+  const { id: userId} = req.params;
+  if(!req.user){
+    return next(errorHandler(401, "You are not authenticated"))
+  }
+  try {
+    const user = await User.findById(userId);
+    const isFavorite = user.favorites.includes(providerId);
+    res.json({ isFavorite });
   } catch (error) {
     next(error);
   }

@@ -1,24 +1,110 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import  { MdLocationOn }  from "react-icons/md";
-import PropTypes from 'prop-types';
+import { MdLocationOn } from "react-icons/md";
+import { FcLike } from "react-icons/fc";
+import PropTypes from "prop-types";
+import { GoHeartFill } from "react-icons/go";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
-export default function ProviderItem({provider}) {
+export default function ProviderItem({ provider }) {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const { currentUser } = useSelector((state) => state.user);
+
+  const toggleFavorite = async () => {
+    if (!currentUser) {
+      console.log("Please login to favorite providers");
+      return;
+    }
+    try {
+      const response = await fetch(
+        `/server/provider/favorite/${currentUser._id}?providerId=${provider._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            providerId: provider._id,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update favorite status");
+      }
+      setIsFavorite(data.isFavorite);
+      console.log(data.message);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const fetchFavoriteStatus = async () => {
+      try {
+        const response = await fetch(
+          `/server/provider/favoritestatus/${currentUser._id}?providerId=${provider._id}`
+        );
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to fetch favorite status");
+        }
+        setIsFavorite(data.isFavorite);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchFavoriteStatus();
+  });
+
   return (
-    <div className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px]">
+    <div className="relative bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[700px]">
+      <button
+        onClick={toggleFavorite}
+        className="p-2 absolute top-2 right-2 z-10"
+      >
+        {isFavorite ? (
+          <FcLike size={25} />
+        ) : (
+          <span style={{ color: "white" }}>
+            <GoHeartFill size={25} />
+          </span>
+        )}
+      </button>
       <Link to={`/provider/${provider._id}`}>
-        <img src={provider.imageUrls[0]} alt="provider cover" className="h-[200px] md:h-[120px] w-full object-cover hover:scale-105 transition-scale duration-300"/>
+        <img
+          src={provider.imageUrls[0]}
+          alt="provider cover"
+          className="h-[200px] md:h-[120px] w-full object-cover hover:scale-105 transition-scale duration-300"
+        />
         <div className="p-3 flex flex-col gap-2 w-full">
-            <p className="truncate text-lg font-semibold text-slate-700">{provider.name}</p>
-            <img src={provider.profilePicture} alt="provider profile" className="h-20 w-20 rounded-full object-cover"/>
-            <div className="flex items-center gap-1">
-                <MdLocationOn className='h-4 w-4 text-sky-300' />
-                <p className="text-sm text-gray-600 truncate w-full">{provider.address}</p>
+          <p className="truncate text-lg font-semibold text-slate-700">
+            {provider.name}
+          </p>
+          <div className="flex items-center">
+            <img
+              src={provider.profilePicture}
+              alt="provider profile"
+              className="h-20 w-20 rounded-full object-cover"
+            />
+            <div className="ml-4">
+              <div className="flex items-center gap-1">
+                <MdLocationOn className="h-4 w-4 text-sky-300" />
+                <p className="text-sm text-gray-600 truncate w-full">
+                  {provider.address}
+                </p>
+              </div>
+              <p className="text-sm text-gray-600 line-clamp-3">
+                {provider.description}
+              </p>
             </div>
-            <p className="text-sm text-gray-600 line-clamp-3">{provider.description}</p>
+          </div>
         </div>
       </Link>
     </div>
-  )
+  );
 }
 
 ProviderItem.propTypes = {
