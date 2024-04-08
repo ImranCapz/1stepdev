@@ -7,6 +7,7 @@ import { signOut } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import TopLoadingBar from "react-top-loading-bar";
 import toast from "react-hot-toast";
+import { FaRegHeart } from "react-icons/fa";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -81,6 +82,14 @@ const Header = () => {
       title: "For Providers",
       path: currentUser ? "/create-provider" : "/for-providers",
     },
+    {
+      title: [
+        <span style={{ display: "flex", alignItems: "center" }} key="heartIcon">
+          <FaRegHeart style={{ marginRight: "5px" }} /> Lists
+        </span>,
+      ],
+      path: currentUser ? "/favorite-list" : "/signin",
+    },
     { title: "About Us", path: "" },
   ];
 
@@ -95,7 +104,10 @@ const Header = () => {
       path: "/search?searchTerm=Occupational+Therapy",
     },
     { title: "Speech Therapy", path: "/search?searchTerm=Speech%20Therapy" },
-    { title: "School-Based Service", path: "/search?searchTerm=School-Based+Service" },
+    {
+      title: "School-Based Service",
+      path: "/search?searchTerm=School-Based+Service",
+    },
 
     { title: "|" },
     { title: "Learn:" },
@@ -104,7 +116,12 @@ const Header = () => {
   ];
   return (
     <header className="text-base lg:text-sm sticky top-0 z-50 bg-white border-b">
-      <TopLoadingBar ref={topLoadingBarRef} color="#ff9900" height={3} speed={1000}/>
+      <TopLoadingBar
+        ref={topLoadingBarRef}
+        color="#ff9900"
+        height={3}
+        speed={1000}
+      />
       <div
         className={`bg-sky-200 items-center gap-x-14 px-4 max-w-screen-4xl mx-auto lg:flex lg:px-8 lg:static ${
           state ? "h-full fixed inset-x-0" : ""
@@ -235,33 +252,33 @@ const Header = () => {
                           </Link>
                         </li>
                       )}
-                      {currentUser &&(
+                      {currentUser && (
                         <div>
-                         <li>
-                         <Link
-                             to="/dashboard?tab=dashboard"
-                             className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
-                           >
-                             Dashboard
-                           </Link>
-                           <Link
-                             to="/dashboard?tab=createprovider"
-                             className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
-                           >
-                             Providers
-                           </Link>
-                         </li>
-                         <li>
-                           <Link
-                             to="/dashboard?tab=profile"
-                             className="block px-4 py-2 text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
-                           >
-                             Settings
-                           </Link>
-                         </li>
-                         </div>
+                          <li>
+                            <Link
+                              to="/dashboard?tab=dashboard"
+                              className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
+                            >
+                              Dashboard
+                            </Link>
+                            <Link
+                              to="/dashboard?tab=createprovider"
+                              className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
+                            >
+                              Providers
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/dashboard?tab=profile"
+                              className="block px-4 py-2 text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
+                            >
+                              Settings
+                            </Link>
+                          </li>
+                        </div>
                       )}
-                     
+
                       {/* <li>
                         <a
                           href="#"
@@ -365,7 +382,7 @@ const Header = () => {
                   onClick={() => handleSubmenuClick(item.title)}
                   className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150 cursor-pointer"
                 >
-                  {item.title}
+                  {Array.isArray(item.title) ? item.title : item.title}
                 </Link>
               </li>
             );

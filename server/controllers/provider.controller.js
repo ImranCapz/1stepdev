@@ -1,7 +1,6 @@
 import Provider from "../models/provider.model.js";
 import { errorHandler } from "../utils/error.js";
 import User from "../models/user.model.js";
-import e from "express";
 
 export const createProvider = async (req, res, next) => {
   try {
@@ -152,6 +151,23 @@ export const favoriteStatusProvider = async (req, res, next) => {
     const user = await User.findById(userId);
     const isFavorite = user.favorites.includes(providerId);
     res.json({ isFavorite });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+export const favoriteList = async (req, res, next) => {
+  const { id: userId } = req.params;
+  if(!req.user){
+    return next(errorHandler(401, "You are not authenticated"))
+  }
+  try {
+    const user = await User.findById(userId).populate('favorites');
+    if (!user) {
+      return next(errorHandler(404, "User not found"));
+    }
+    res.json( {success:true , favorites : user.favorites});  
   } catch (error) {
     next(error);
   }

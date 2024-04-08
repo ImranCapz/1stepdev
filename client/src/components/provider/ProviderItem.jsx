@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { GoHeartFill } from "react-icons/go";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function ProviderItem({ provider }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -13,7 +14,7 @@ export default function ProviderItem({ provider }) {
 
   const toggleFavorite = async () => {
     if (!currentUser) {
-      console.log("Please login to favorite providers");
+      toast.error("Please login to favorite a provider");
       return;
     }
     try {
@@ -34,7 +35,7 @@ export default function ProviderItem({ provider }) {
         throw new Error(data.message || "Failed to update favorite status");
       }
       setIsFavorite(data.isFavorite);
-      console.log(data.message);
+      toast.success(data.message);
     } catch (error) {
       console.error(error);
     }

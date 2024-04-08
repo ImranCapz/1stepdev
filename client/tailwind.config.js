@@ -7,6 +7,14 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundImage: theme => ({
+        'listbg': "url('../../client/src/components/provider/listbg.jpg')",
+      }),
+
+      height: {
+        '52vh': '20vh',
+        '72vh': '30vh',
+      },
       colors: {
         primary: {
           50: "#eff6ff",

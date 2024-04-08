@@ -21,6 +21,7 @@ import CreateProfile from "./pages/providerscreen/CreateProfile";
 import DashPrivateRoute from "./components/dashboard/DashPrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 import ParentForm from "./components/parents/ParentForm";
+import FavoriteList from "./components/provider/FavoriteList";
 
 
 
@@ -46,11 +47,13 @@ function App() {
           <Route path='/search' element={<Search />} />
           <Route path="/provider/:providerId" element={<Provider />} />
           <Route path="/for-providers" element={<CreateProfile />} />
+          
           <Route element={<PrivateRoute/>}>
              <Route path="/profile" element={<Profile/>} />
              <Route path="/create-parentprofile" element={<ParentForm/>} />
              <Route path="/create-provider"element={<CreateProvider />} />
              <Route path="/update-provider/:providerId"element={<UpdateProvider />} />
+             <Route path="/favorite-list" element ={<FavoriteList/>} />
           </Route>
           <Route element={<AdminPrivateRoute/>}>
             <Route path="/admin-dashboard" element={<AdminDashboard/>} />
