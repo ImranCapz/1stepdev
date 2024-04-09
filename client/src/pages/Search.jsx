@@ -98,11 +98,13 @@ export default function Search() {
       const searchQuery = urlParams.toString();
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
+      console.log(data);
       if (data.length > 8) {
         setShowMore(true);
       } else {
         setShowMore(false);
       }
+      
       setProviders(data);
       setLoading(false);
     };
@@ -308,7 +310,7 @@ export default function Search() {
           {!loading &&
             providers &&
             providers.map((provider) => {
-              return <ProviderItem key={provider._id} provider={provider} />;
+              return <ProviderItem key={provider._id} provider={{ ...provider, totalrating: parseFloat(provider.totalrating) }} />;
             })}
 
           {showMore && (

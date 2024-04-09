@@ -7,6 +7,7 @@ import { GoHeartFill } from "react-icons/go";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { IoIosStar } from "react-icons/io";
 
 export default function ProviderItem({ provider }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -92,6 +93,13 @@ export default function ProviderItem({ provider }) {
             />
             <div className="ml-4">
               <div className="flex items-center gap-1">
+                <IoIosStar className="h-4 w-4 text-amber-400" />
+                <p className="text-sm text-gray-600 font-bold truncate w-full">
+                {provider.totalrating === 0 ? 'No reviews' : parseFloat(provider.totalrating).toFixed(2)} &nbsp;
+               {provider.numberofratings === 0 ? '' : `(${provider.numberofratings})`}
+                </p>
+              </div>
+              <div className="flex items-center gap-1">
                 <MdLocationOn className="h-4 w-4 text-sky-300" />
                 <p className="text-sm text-gray-600 truncate w-full">
                   {provider.address}
@@ -114,6 +122,8 @@ ProviderItem.propTypes = {
     imageUrls: PropTypes.arrayOf(PropTypes.string).isRequired,
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
+    totalrating: PropTypes.number,
+    numberofratings: PropTypes.number,
     description: PropTypes.string.isRequired,
     profilePicture: PropTypes.string.isRequired,
   }).isRequired,
