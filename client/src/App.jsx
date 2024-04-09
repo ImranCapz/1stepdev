@@ -2,10 +2,10 @@ import Hero from "./components/Hero";
 import Features from "./components/Features";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Question from "./components/Question";
-import {ResetPasswordForm} from './pages/ResetPasswordForm'
-import { Signup } from "./pages/Signup"
+import { ResetPasswordForm } from "./pages/ResetPasswordForm";
+import { Signup } from "./pages/Signup";
 import { Signin } from "./pages/Signin";
 import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./components/Profile";
@@ -22,47 +22,43 @@ import DashPrivateRoute from "./components/dashboard/DashPrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 import ParentForm from "./components/parents/ParentForm";
 import FavoriteList from "./components/provider/FavoriteList";
+import ScrolltoTop from "./components/ScrolltoTop";
 
-
-
-
- 
 function App() {
-
-
   return (
     <>
-
       <BrowserRouter>
         <Header />
-        
+        <ScrolltoTop />
         <Routes>
           <Route path="/" element={<Hero />} />
           <Route path="/freescreeners" element={<Features />} />
           <Route path="/question" element={<Question />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/forgetpassword" element={<ResetPasswordForm />} /> 
+          <Route path="/forgetpassword" element={<ResetPasswordForm />} />
           <Route path="/verifyotp" element={<VerifyOtp />} />
-          <Route path='/search' element={<Search />} />
+          <Route path="/search" element={<Search />} />
           <Route path="/provider/:providerId" element={<Provider />} />
           <Route path="/for-providers" element={<CreateProfile />} />
-          
-          <Route element={<PrivateRoute/>}>
-             <Route path="/profile" element={<Profile/>} />
-             <Route path="/create-parentprofile" element={<ParentForm/>} />
-             <Route path="/create-provider"element={<CreateProvider />} />
-             <Route path="/update-provider/:providerId"element={<UpdateProvider />} />
-             <Route path="/favorite-list" element ={<FavoriteList/>} />
-          </Route>
-          <Route element={<AdminPrivateRoute/>}>
-            <Route path="/admin-dashboard" element={<AdminDashboard/>} />
-            <Route path="/users" element={<DashUsers/>} />
-            </Route>
-          <Route element={<DashPrivateRoute/>}>
-            <Route path="/dashboard" element={<Dashboard/>} />
-          </Route>
 
+          <Route element={<PrivateRoute />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/create-parentprofile" element={<ParentForm />} />
+            <Route path="/create-provider" element={<CreateProvider />} />
+            <Route
+              path="/update-provider/:providerId"
+              element={<UpdateProvider />}
+            />
+            <Route path="/favorite-list" element={<FavoriteList />} />
+          </Route>
+          <Route element={<AdminPrivateRoute />}>
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/users" element={<DashUsers />} />
+          </Route>
+          <Route element={<DashPrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
         </Routes>
 
         <Footer />
@@ -71,4 +67,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
