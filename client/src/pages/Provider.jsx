@@ -17,6 +17,8 @@ export default function Provider() {
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
   const [contact, setContact] = useState(false);
+  const [star, setStar] = useState(0);
+  const [review, setReview] = useState(0);
   const params = useParams();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
@@ -27,21 +29,35 @@ export default function Provider() {
         setLoading(true);
         const res = await fetch(`/server/provider/get/${params.providerId}`);
         const data = await res.json();
+        console.log(data);
         if (data.success === false) {
           setError(true);
           setLoading(false);
           return;
         }
-        data.totalnumber = data.ratings.length;
         setprovider(data);
         setLoading(false);
         setError(false);
       } catch (error) {
+        console.error('Error:', error);
         setError(true);
       }
     };
     fetchprovider();
   }, [params.providerId]);
+
+  useEffect(()=>{
+    const fetchRating = async ()=>{
+      try {
+        const res = await fetch(`/server/rating/getreview/${params.providerId}`);
+        const data = await res.json();
+        setReview(data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+    fetchRating();
+  },[params.providerId])
   return (
     <main>
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
@@ -107,12 +123,12 @@ export default function Provider() {
               <span className="w-full flex justify-center font-bold text-slate-700 text-2xl">Reviews</span>
               <div className="w-full flex justify-center">
                 <span className="font-bold text-slate-800 text-5xl">
-                  {parseFloat(provider.totalrating).toFixed(2)}
+                  {parseFloat(review.totalrating).toFixed(2)}
                 </span>
               </div>
               <div className="w-full flex justify-center">
                 <StarRatings
-                  rating={provider.totalrating}
+                  rating={Number(review.totalrating) || 0}
                   starRatedColor="#56c3fc"
                   numberOfStars={5}
                   name="rating"
@@ -121,7 +137,7 @@ export default function Provider() {
                 />
               </div>
               <div className="w-full flex justify-center">
-                <span className="text-slate-800 font-semibold">{provider.totalnumber} Reviews</span>
+                <span className="text-slate-800 font-semibold">{review.totalratings} Reviews</span>
               </div>
               </div>
             </div>

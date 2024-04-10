@@ -166,59 +166,59 @@ export const favoriteList = async (req, res, next) => {
   }
 };
 
-export const ratingProvider = async (req, res, next) => {
-  const { _id } = req.body;
-  const { star, providerId } = req.body;
-  try {
-    const provider = await Provider.findById(providerId);
-    let alreadyRated = provider.ratings.find(
-      (rating) =>
-        rating.postedby && rating.postedby.toString() === _id.toString()
-    );
-    if (alreadyRated) {
-      const updateRating = await Provider.updateOne(
-        {
-          ratings: { $elemMatch: alreadyRated },
-        },
-        {
-          $set: { "ratings.$.star": star },
-        },
-        {
-          new: true,
-        }
-      );
-    } else {
-      const rateProvider = await Provider.findByIdAndUpdate(
-        providerId,
-        {
-          $push: {
-            ratings: {
-              star: star,
-              postedby: _id,
-            },
-          },
-        },
-        { new: true }
-      );
-    }
-    const getallratings = await Provider.findById(providerId);
-    let totalratings = getallratings.ratings.length;
-    let ratingsum = getallratings.ratings
-      .map((item) => item.star)
-      .reduce((pre, curr) => pre + curr, 0);
-    let actualrating = ratingsum / totalratings;
-    let finalrating = await Provider.findByIdAndUpdate(
-      providerId,
-      {
-        totalrating: actualrating,
-      },
-      { new: true }
-    );
-    res.status(200).json({ 
-      totalrating: finalrating.totalrating.toFixed(2),
-     });
+// export const ratingProvider = async (req, res, next) => {
+//   const { _id } = req.body;
+//   const { star, providerId } = req.body;
+//   try {
+//     const provider = await Provider.findById(providerId);
+//     let alreadyRated = provider.ratings.find(
+//       (rating) =>
+//         rating.postedby && rating.postedby.toString() === _id.toString()
+//     );
+//     if (alreadyRated) {
+//       const updateRating = await Provider.updateOne(
+//         {
+//           ratings: { $elemMatch: alreadyRated },
+//         },
+//         {
+//           $set: { "ratings.$.star": star },
+//         },
+//         {
+//           new: true,
+//         }
+//       );
+//     } else {
+//       const rateProvider = await Provider.findByIdAndUpdate(
+//         providerId,
+//         {
+//           $push: {
+//             ratings: {
+//               star: star,
+//               postedby: _id,
+//             },
+//           },
+//         },
+//         { new: true }
+//       );
+//     }
+//     const getallratings = await Provider.findById(providerId);
+//     let totalratings = getallratings.ratings.length;
+//     let ratingsum = getallratings.ratings
+//       .map((item) => item.star)
+//       .reduce((pre, curr) => pre + curr, 0);
+//     let actualrating = ratingsum / totalratings;
+//     let finalrating = await Provider.findByIdAndUpdate(
+//       providerId,
+//       {
+//         totalrating: actualrating,
+//       },
+//       { new: true }
+//     );
+//     res.status(200).json({ 
+//       totalrating: finalrating.totalrating.toFixed(2),
+//      });
 
-  } catch (error) {
-    next(error);
-  }
-};
+//   } catch (error) {
+//     next(error);
+//   }
+// };

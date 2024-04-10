@@ -8,10 +8,13 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { IoIosStar } from "react-icons/io";
+import { useParams } from "react-router-dom";
 
 export default function ProviderItem({ provider }) {
   const [isFavorite, setIsFavorite] = useState(false);
+  const [review, setReview] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
+  const params = useParams();
 
   const toggleFavorite = async () => {
     if (!currentUser) {
@@ -61,6 +64,20 @@ export default function ProviderItem({ provider }) {
     fetchFavoriteStatus();
   });
 
+  useEffect(()=>{
+    const fetchRating = async ()=>{
+      try {
+        const res = await fetch(`/server/rating/getreview/${provider._id}`);
+        const data = await res.json();
+        setReview(data);
+        console.log(data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+    fetchRating();
+  },[provider._id])
+
   return (
     <div className="relative bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[700px]">
       <button
@@ -95,8 +112,7 @@ export default function ProviderItem({ provider }) {
               <div className="flex items-center gap-1">
                 <IoIosStar className="h-4 w-4 text-amber-400" />
                 <p className="text-sm text-gray-600 font-bold truncate w-full">
-                {provider.totalrating === 0 ? 'No reviews' : parseFloat(provider.totalrating).toFixed(2)} &nbsp;
-               {provider.numberofratings === 0 ? '' : `(${provider.numberofratings})`}
+                {review && (review.totalrating === "0.00" || review.totalrating ==="0") ? "No reviews" : `${parseFloat(review?.totalrating).toFixed(2)} (${review?.totalratings || 0})`} 
                 </p>
               </div>
               <div className="flex items-center gap-1">

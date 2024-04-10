@@ -63,20 +63,6 @@ const providerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    ratings: [
-      {
-        postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        star: Number,
-      },
-    ],
-    totalrating: {
-      type: Number,
-      default: 0,
-    },
-    numberofratings: {
-      type: Number,
-      default: 0,
-    },
   },
   { timestamps: true }
 );

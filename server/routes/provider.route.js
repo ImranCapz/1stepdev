@@ -9,7 +9,6 @@ import {
   favoriteProvider,
   favoriteStatusProvider,
   favoriteList,
-  ratingProvider,
 } from "../controllers/provider.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 
@@ -21,7 +20,6 @@ router.post("/update/:id", verifyToken, updateProvider);
 router.post("/favorite/:id", verifyToken, favoriteProvider);
 router.get("/favoritestatus/:id", verifyToken, favoriteStatusProvider);
 router.get("/favoritelist/:id", verifyToken, favoriteList);
-router.put("/rating", verifyToken, ratingProvider);
 router.get("/get/:id", getProvider);
 router.get("/get", getProviders);
 router.get("/getproviders", getAdminProviders);
