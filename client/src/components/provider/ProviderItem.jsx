@@ -8,13 +8,11 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { IoIosStar } from "react-icons/io";
-import { useParams } from "react-router-dom";
 
 export default function ProviderItem({ provider }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [review, setReview] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
-  const params = useParams();
 
   const toggleFavorite = async () => {
     if (!currentUser) {
@@ -23,7 +21,7 @@ export default function ProviderItem({ provider }) {
     }
     try {
       const response = await fetch(
-        `/server/provider/favorite/${currentUser._id}?providerId=${provider._id}`,
+        `/server/favorite/favorites/${currentUser._id}?providerId=${provider._id}`,
         {
           method: "POST",
           headers: {
@@ -50,7 +48,7 @@ export default function ProviderItem({ provider }) {
     const fetchFavoriteStatus = async () => {
       try {
         const response = await fetch(
-          `/server/provider/favoritestatus/${currentUser._id}?providerId=${provider._id}`
+          `/server/favorite/favoritestatus/${currentUser._id}?providerId=${provider._id}`
         );
         const data = await response.json();
         if (!response.ok) {

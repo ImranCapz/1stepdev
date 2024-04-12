@@ -16,7 +16,7 @@ export default function FavoriteList() {
     const fetchFavoriteList = async () => {
       try {
         const res = await fetch(
-          `/server/provider/favoritelist/${currentUser._id}`
+          `/server/favorite/favoritelist/${currentUser._id}`
         );
         const data = await res.json();
         if (res.success === false) {
