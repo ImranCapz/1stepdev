@@ -3,12 +3,11 @@ import { useState } from "react";
 import { useEffect } from "react";
 import ProviderItem from "./ProviderItem";
 import SearchBar from "../SearchBar";
-import ListBgImage from "../../components/provider/listbg.jpg";
+import { set } from "mongoose";
 
 export default function FavoriteList() {
   const { currentUser } = useSelector((state) => state.user);
-  const [favoriteList, setFavoriteList] = useState([]);
-
+  const [favoriteList, setFavoriteList] = useState(null);
   useEffect(() => {
     if (!currentUser) {
       return;
@@ -26,14 +25,12 @@ export default function FavoriteList() {
         if (Array.isArray(data.favorites)) {
           setFavoriteList(data.favorites);
         }
-        console.log(favoriteList);
-        console.log(data);
       } catch (error) {
         console.log("Error in fetching favorite list");
       }
     };
     fetchFavoriteList();
-  }, [currentUser]);
+  },[currentUser]);
 
   return (
     <div className="">
@@ -48,7 +45,7 @@ export default function FavoriteList() {
         </div>
       </div>
       <div className="p-4 flex flex-col gap-4">
-        {favoriteList.length > 0 ? (
+        {favoriteList === null ? null : favoriteList.length > 0 ? (
           favoriteList.map((provider) => (
             <ProviderItem
               key={provider._id}
@@ -62,7 +59,7 @@ export default function FavoriteList() {
             <div className="flex flex-col items-center text-2xl font-semibold mb-6 text-zinc-600">
               No Favorite Providers Not yet saved
             </div>
-            <div className="flex flex-col items-center text-2xl font-semibold mt-6 mb-6">
+            <div className="flex-col md:flex items-center text-2xl font-semibold mt-6 mb-6 ">
               <SearchBar />
             </div>
           </div>

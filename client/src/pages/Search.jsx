@@ -156,7 +156,7 @@ export default function Search() {
         className="flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg md:w-1/2"
         onSubmit={handlesubmit}
       >
-        <div className="flex flex-col md:flex-row space-x-3  items-center overflow-visible">
+        <div className="flex flex-col md:flex-row space-x-3 items-center overflow-visible">
           <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10 ">
             <label
               htmlFor="what"
