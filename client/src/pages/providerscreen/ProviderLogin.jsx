@@ -4,7 +4,7 @@ import OAuth from '../../components/OAuth';
 import TopLoadingBar from 'react-top-loading-bar';
 import toast from 'react-hot-toast';
 import logo from "../../assets/logo.svg";
-import { useSelector } from 'react-redux';
+
 export const ProviderLogin = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
@@ -14,7 +14,7 @@ export const ProviderLogin = () => {
   const navigate = useNavigate();
   const topLoadingBarRef = useRef(null);
   const topLoadingBarColor = error || passerror ? '#ff0000' : '#ff9900';
-  const {currentUser } =useSelector((state)=>state.user);
+
 
   const handleChanges = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });

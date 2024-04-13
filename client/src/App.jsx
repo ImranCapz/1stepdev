@@ -23,6 +23,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import ParentForm from "./components/parents/ParentForm";
 import FavoriteList from "./components/provider/FavoriteList";
 import ScrolltoTop from "./components/ScrolltoTop";
+import ProviderReview from "./components/review/ProviderReview";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/provider/:providerId" element={<Provider />} />
           <Route path="/for-providers" element={<CreateProfile />} />
+          <Route path="/review/:providerId" element={<ProviderReview/>} />
 
           <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
@@ -9,6 +9,9 @@ import { useSelector } from "react-redux";
 import BookingContact from "../components/BookingContact";
 import { useNavigate } from "react-router-dom";
 import StarRatings from "react-star-ratings";
+import ProviderReview from "../components/review/ProviderReview";
+
+import { Button } from "@material-tailwind/react";
 
 export default function Provider() {
   SwiperCore.use([Navigation]);
@@ -19,6 +22,7 @@ export default function Provider() {
   const [contact, setContact] = useState(false);
   const [star, setStar] = useState(0);
   const [review, setReview] = useState(0);
+  const [showReview, setShowReview] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
@@ -29,7 +33,6 @@ export default function Provider() {
         setLoading(true);
         const res = await fetch(`/server/provider/get/${params.providerId}`);
         const data = await res.json();
-        console.log(data);
         if (data.success === false) {
           setError(true);
           setLoading(false);
@@ -39,25 +42,28 @@ export default function Provider() {
         setLoading(false);
         setError(false);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
         setError(true);
       }
     };
     fetchprovider();
   }, [params.providerId]);
 
-  useEffect(()=>{
-    const fetchRating = async ()=>{
+  useEffect(() => {
+    const fetchRating = async () => {
       try {
-        const res = await fetch(`/server/rating/getreview/${params.providerId}`);
+        const res = await fetch(
+          `/server/rating/getreview/${params.providerId}`
+        );
         const data = await res.json();
         setReview(data);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
-    }
+    };
     fetchRating();
-  },[params.providerId])
+  }, [params.providerId]);
+
   return (
     <main>
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
@@ -96,7 +102,7 @@ export default function Provider() {
               Link copied!
             </p>
           )}
-          <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
+          <div className="flex flex-col w-full p-10 mx-auto  my-7 gap-4">
             <p className="text-2xl font-semibold">
               {provider.name} - ₹{" "}
               {provider.regularPrice.toLocaleString("en-US")} / Appointment
@@ -117,28 +123,44 @@ export default function Provider() {
               <span className="font-semibold text-black">Description - </span>
               {provider.description}
             </p>
-
             <div className="flex flex-col items-start">
               <div>
-              <span className="w-full flex justify-center font-bold text-slate-700 text-2xl">Reviews</span>
-              <div className="w-full flex justify-center">
-                <span className="font-bold text-slate-800 text-5xl">
-                  {parseFloat(review.totalrating).toFixed(2)}
+                <span className="w-full flex justify-center font-bold text-slate-700 text-2xl">
+                  Reviews
                 </span>
+                <div className="w-full flex justify-center">
+                  <span className="font-bold text-slate-800 text-5xl">
+                    {parseFloat(review.totalrating).toFixed(2)}
+                  </span>
+                </div>
+                <div className="w-full flex justify-center">
+                  <StarRatings
+                    rating={Number(review.totalrating) || 0}
+                    starRatedColor="#56c3fc"
+                    numberOfStars={5}
+                    name="rating"
+                    starDimension="18px"
+                    starSpacing="2px"
+                  />
+                </div>
+                <div className="w-full flex justify-center">
+                  <span className="text-slate-800 font-semibold">
+                    {review.totalratings} Reviews
+                  </span>
+                </div>
               </div>
-              <div className="w-full flex justify-center">
-                <StarRatings
-                  rating={Number(review.totalrating) || 0}
-                  starRatedColor="#56c3fc"
-                  numberOfStars={5}
-                  name="rating"
-                  starDimension="18px"
-                  starSpacing="2px"
-                />
-              </div>
-              <div className="w-full flex justify-center">
-                <span className="text-slate-800 font-semibold">{review.totalratings} Reviews</span>
-              </div>
+              <div className="flex flex-row gap-4 mt-4">
+                <Button variant="outlined">View Review</Button>
+                <Button className="blue-button">
+                  <Link
+                    to={{
+                      pathname: `/review/${provider._id}`,
+                      state: { provider: provider },
+                    }}
+                  >
+                    Leave Review
+                  </Link>
+                </Button>
               </div>
             </div>
             {!currentUser && (
@@ -161,6 +183,7 @@ export default function Provider() {
               )}
             {contact && <BookingContact provider={provider} />}
           </div>
+          <div></div>
         </div>
       )}
     </main>
