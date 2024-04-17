@@ -4,9 +4,12 @@ import Provider from "../models/provider.model.js";
 export const reviewProvider = async (req, res, next) => {
   const { _id } = req.body;
   const { star } = req.body;
-  const { providerId } = req.params;
+  const { providerId } = req.body;
   try {
     const provider = await Provider.findById(providerId);
+    if (!provider) {
+      return res.status(404).json({ message: "Provider not found" });
+    }
     let rating = await Rating.findOne({ postedby: _id, provider: providerId });
     if (rating) {
       rating.star = star;

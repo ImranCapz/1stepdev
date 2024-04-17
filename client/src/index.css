@@ -1,8 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 input[type='text']:focus { box-shadow: none; }
 
 .blue-button {
     background-color: #56c3fc;
+  }
+
+  .Select_control:focus {
+    border: 1px solid red ;
   }

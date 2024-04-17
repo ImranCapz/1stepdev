@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const providerSchema = new mongoose.Schema(
   {
     name: {
-      type: String,
+      type: Array,
       required: true,
     },
     email: {
@@ -18,7 +18,7 @@ const providerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    expertise: {
+    fullName: {
       type: String,
       required: true,
     },
@@ -38,8 +38,8 @@ const providerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    availability: {
-      type: String,
+    availability:{
+      type:String,
       required: true,
     },
     regularPrice: {

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import Select from "react-select";
 import { FaSearch } from "react-icons/fa";
 
-
 export const SearchBar = () => {
   const navigate = useNavigate();
   const [searchTerm, setsearchTerm] = useState("");
@@ -18,9 +17,8 @@ export const SearchBar = () => {
     { value: "Occupational Therapy", label: "Occupational Therapy" },
     { value: "A-Z Services", label: "Popular Services", isDisabled: true },
     { value: "School-Based Service", label: "School-Based Service" },
-
   ];
-  
+
   const whatoptions = suggestions.map((suggestion) => ({
     value: suggestion.value,
     label: suggestion.value,
@@ -140,7 +138,6 @@ export const SearchBar = () => {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             className="appearance-none bg-transparent capitalize text-sm border-none w-full text-gray-700 py-2 px-3 leading-tight focus:outline-none"
-            
           />
         </div>
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">

@@ -22,7 +22,6 @@ function NewComponent() {
               regarding your practice or organization.
             </p>
           </div>
-
           <div className="flex flex-col items-start mt-4 md:pl-96">
             <h1 className="text-zinc-500 font-bold">For medical providers</h1>
             <p className="text-zinc-500 font-normal md:w-2/4">
@@ -138,7 +137,6 @@ export default function CreateProfile() {
           </div>
         </div>
       )}
-
       {showComponent && <NewComponent />}
     </div>
   );

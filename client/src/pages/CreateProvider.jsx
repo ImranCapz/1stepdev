@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { useRef } from "react";
+import Select from "react-select";
 
 export default function CreateProvider() {
   const [image, setImage] = useState();
@@ -27,7 +28,7 @@ export default function CreateProvider() {
     email: "",
     qualification: "",
     license: "",
-    expertise: "",
+    fullName: "",
     experience: "",
     phone: "",
     address: "",
@@ -37,6 +38,7 @@ export default function CreateProvider() {
     description: "",
     profilePicture: "",
   });
+  console.log(formData);
   const handleRemoveImage = (index) => {
     setFormData({
       ...formData,
@@ -132,6 +134,7 @@ export default function CreateProvider() {
         }),
       });
       const data = await res.json();
+      console.log(data);
       setLoading(false);
       if (data.success) {
         setError(data.message);
@@ -168,8 +171,15 @@ export default function CreateProvider() {
     }
   };
 
+  const service =[
+    {value: "Diagnostic Evaluation", label: "Diagnostic Evaluation"},
+    { value: "Speech Therapy", label: "Speech Therapy" },
+    { value: "ABA Therapy", label: "ABA Therapy" },
+    { value: "Occupational Therapy", label: "Occupational Therapy" },
+    { value: "School-Based Service", label: "School-Based Service" },
+  ]
   return (
-    <div className="p-3 max-w-4xl mx-auto flex-col items-center">
+    <div className="p-10 w-full mx-auto flex-col items-center">
       <h1 className="text-base text-gray-700 font-semibold text-left my-7 mt-5">
         Fill the form to create a provider
       </h1>
@@ -210,9 +220,44 @@ export default function CreateProvider() {
       </div>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 mt-6">
         <div className="flex flex-col gap-4 flex-1">
-          <input
+          <Select
+          id='name'
+          options={service}
+          isMulti
+          required
+          placeholder="What service do you provide?"
+          touchUi={false}
+          className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700  hover:border-amber-500"
+          onChange={selectedOptions =>{
+            setFormData(preState =>({
+              ...preState,
+              name: selectedOptions.map(option => option.value)
+            }))
+          }}
+          styles={{
+            control: (provided) => ({
+              ...provided,
+              backgroundColor: "transparent",
+              minWidth: "160px",
+              border: "none",
+              outline: "none",
+              boxShadow: "none",
+              transition: "all 0.3s ease",
+            }),
+          }}
+          />
+           <input
             type="text"
-            placeholder="Full Name"
+            placeholder="Full Name with Degree*"
+            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+            id="fullName"
+            required
+            onChange={handleChange}
+            value={formData.fullName}
+          />
+          {/* <input
+            type="text"
+            placeholder="What service do you provide?"
             className="border-2 p-3 rounded-lg focus:border-amber-600 focus:ring-0"
             id="name"
             maxLength="62"
@@ -220,7 +265,7 @@ export default function CreateProvider() {
             required
             onChange={handleChange}
             value={formData.name}
-          />
+          /> */}
           <input
             type="email"
             placeholder="Email"
@@ -258,17 +303,9 @@ export default function CreateProvider() {
             onChange={handleChange}
             value={formData.experience}
           />
+         
           <input
-            type="text"
-            placeholder="Specializations or Areas of Expertise"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="expertise"
-            required
-            onChange={handleChange}
-            value={formData.expertise}
-          />
-          <input
-            type="text"
+            type="number"
             placeholder="Phone number"
             className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
             id="phone"
@@ -392,3 +429,4 @@ export default function CreateProvider() {
     </div>
   );
 }
+

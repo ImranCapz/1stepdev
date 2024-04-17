@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import BookingContact from "../components/BookingContact";
 import { useNavigate } from "react-router-dom";
 import StarRatings from "react-star-ratings";
-import ProviderReview from "../components/review/ProviderReview";
 
 import { Button } from "@material-tailwind/react";
 
@@ -20,7 +19,6 @@ export default function Provider() {
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
   const [contact, setContact] = useState(false);
-  const [star, setStar] = useState(0);
   const [review, setReview] = useState(0);
   const [showReview, setShowReview] = useState(false);
   const params = useParams();
@@ -76,7 +74,7 @@ export default function Provider() {
             {provider.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
-                  className="h-[400px]"
+                  className="h-[200px]"
                   style={{
                     background: `url(${url}) center no-repeat`,
                     backgroundSize: "cover",
