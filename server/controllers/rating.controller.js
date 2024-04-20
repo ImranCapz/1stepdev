@@ -19,7 +19,6 @@ export const reviewProvider = async (req, res, next) => {
       await rating.save();
     }
     const ratings = await Rating.find({ provider: providerId });
-    console.log('Ratings:',ratings);
     let totalratings = ratings.length;
     console.log('Total ratings before calculation:', totalratings);
     let ratingsum = ratings

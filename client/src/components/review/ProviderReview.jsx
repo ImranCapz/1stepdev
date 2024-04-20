@@ -8,6 +8,7 @@ import { BsEmojiExpressionless } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { TiStarFullOutline } from "react-icons/ti";
+import { MdLocationOn } from "react-icons/md";
 
 export default function ProviderReview() {
   const { providerId } = useParams();
@@ -130,7 +131,7 @@ export default function ProviderReview() {
             YOUR REVIEW FOR
           </h1>
           <h1 className="flex flex-col items-center text-5xl font-bold mt-6  text-gray-700">
-            {provider.name}
+            {provider.fullName}
           </h1>
         </div>
       </div>
@@ -200,17 +201,37 @@ export default function ProviderReview() {
             </div>
           </div>
           <div className="w-full flex flex-col md:w-2/3 items-center mt-4 mb-4">
-            
             <div className="flex items-center justify-center">
               <img
                 src={provider.profilePicture}
                 alt="profile"
-                className="h-24 w-24 rounded-full object-cover"
+                className="h-24 w-24 rounded-full object-cover shadow-sm "
               />
             </div>
-            <p className="text-xl text-slate-700 mt-2 font-semibold">
-              {provider.name}
+            <p className="text-2xl text-slate-700  mt-2 font-semibold">
+              {provider.fullName}
             </p>
+            <div className="text-xs text-slate-700 mt-2 text-center font-semibold">
+              {Array.isArray(provider.name) ? (
+                <>
+                  <p>{provider.name.slice(0, 2).join(", ")}</p>
+                  {provider.name.length > 2 ? (
+                    <p>{provider.name.slice(2).join(", ")}</p>
+                  ) : null}
+                  {provider.name.length > 3 ? (
+                    <p>{`+${provider.name.length - 2}more`}</p>
+                  ) : null}
+                </>
+              ) : (
+                <p>{provider.name}</p>
+              )}
+            </div>
+            <div className="flex flex-row items-center justify-center mt-2 gap-2">
+              <MdLocationOn className="h-4 w-4 text-sky-300" />
+              <p className="text-sm text-gray-700 truncate w-full">
+                {provider.address}
+              </p>
+            </div>
             <div className="flex flex-row items-center justify-center mt-2 gap-2">
               <div className="text-slate-700">
                 <TiStarFullOutline />
@@ -220,7 +241,6 @@ export default function ProviderReview() {
                 ({review.totalratings} Reviews)
               </h1>
             </div>
-          
           </div>
         </div>
       </div>

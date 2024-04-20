@@ -12,6 +12,13 @@ import StarRatings from "react-star-ratings";
 
 import { Button } from "@material-tailwind/react";
 
+function convert12Hrs(time){
+  const [hours, minutes] = time.split(":");
+  const hrsin12hrs = (hours % 12 || 12).toString().padStart(2, "0");
+  const period = hours >=12 ? "PM" : "AM";
+  return `${hrsin12hrs}:${minutes}${period}`
+}
+
 export default function Provider() {
   SwiperCore.use([Navigation]);
   const [provider, setprovider] = useState(null);
@@ -25,6 +32,7 @@ export default function Provider() {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
 
+
   useEffect(() => {
     const fetchprovider = async () => {
       try {
@@ -36,6 +44,7 @@ export default function Provider() {
           setLoading(false);
           return;
         }
+        console.log(data);
         setprovider(data);
         setLoading(false);
         setError(false);
@@ -101,8 +110,8 @@ export default function Provider() {
             </p>
           )}
           <div className="flex flex-col w-full p-10 mx-auto  my-7 gap-4">
-            <p className="text-2xl font-semibold">
-              {provider.name} - ₹{" "}
+            <p className="text-2xl text-slate-800 font-semibold">
+              {provider.fullName} - ₹{" "}
               {provider.regularPrice.toLocaleString("en-US")} / Appointment
             </p>
             <p>
@@ -159,6 +168,11 @@ export default function Provider() {
                     Leave Review
                   </Link>
                 </Button>
+              </div>
+              <div className="p-2">
+                <p className="text-slate-700 text-base font-semibold">MON - SAT</p>
+                <p>{convert12Hrs(provider.availability.morningStart)} - {convert12Hrs(provider.availability.morningEnd)}</p>
+                <p>{convert12Hrs(provider.availability.eveningStart)} - {convert12Hrs(provider.availability.eveningEnd)}</p>                
               </div>
             </div>
             {!currentUser && (

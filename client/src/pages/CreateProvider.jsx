@@ -22,6 +22,7 @@ export default function CreateProvider() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const fileRef = useRef(null);
+
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -33,12 +34,18 @@ export default function CreateProvider() {
     phone: "",
     address: "",
     therapytype: "",
-    availability: "",
+    availability: {
+      morningStart:"08:00",
+      morningEnd: "12:00",
+      eveningStart: "13:00",
+      eveningEnd: "17:00",
+    },
     regularPrice: "",
     description: "",
     profilePicture: "",
   });
   console.log(formData);
+
   const handleRemoveImage = (index) => {
     setFormData({
       ...formData,
@@ -111,6 +118,14 @@ export default function CreateProvider() {
         ...formData,
         [e.target.id]: e.target.value,
       });
+    } else if (e.target.type === "time") {
+      setFormData((prevState) => ({
+        ...prevState,
+        availability: {
+          ...prevState.availability,
+          [e.target.id]: e.target.value,
+        },
+      }));
     }
   };
 
@@ -119,8 +134,6 @@ export default function CreateProvider() {
     try {
       if (formData.imageUrls.length < 1)
         return toast.error("You must upload at least one image");
-      // if (+formData.regularPrice < +formData.discountPrice)
-      //   return toast.error("Discound price must be lower than regular price");
       setLoading(true);
       setError(false);
       const res = await fetch("/server/provider/create", {
@@ -171,13 +184,13 @@ export default function CreateProvider() {
     }
   };
 
-  const service =[
-    {value: "Diagnostic Evaluation", label: "Diagnostic Evaluation"},
+  const service = [
+    { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
     { value: "Speech Therapy", label: "Speech Therapy" },
     { value: "ABA Therapy", label: "ABA Therapy" },
     { value: "Occupational Therapy", label: "Occupational Therapy" },
     { value: "School-Based Service", label: "School-Based Service" },
-  ]
+  ];
   return (
     <div className="p-10 w-full mx-auto flex-col items-center">
       <h1 className="text-base text-gray-700 font-semibold text-left my-7 mt-5">
@@ -218,35 +231,38 @@ export default function CreateProvider() {
           </div>
         </label>
       </div>
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 mt-6">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col sm:flex-row gap-4 mt-6"
+      >
         <div className="flex flex-col gap-4 flex-1">
           <Select
-          id='name'
-          options={service}
-          isMulti
-          required
-          placeholder="What service do you provide?"
-          touchUi={false}
-          className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700  hover:border-amber-500"
-          onChange={selectedOptions =>{
-            setFormData(preState =>({
-              ...preState,
-              name: selectedOptions.map(option => option.value)
-            }))
-          }}
-          styles={{
-            control: (provided) => ({
-              ...provided,
-              backgroundColor: "transparent",
-              minWidth: "160px",
-              border: "none",
-              outline: "none",
-              boxShadow: "none",
-              transition: "all 0.3s ease",
-            }),
-          }}
+            id="name"
+            options={service}
+            isMulti
+            required
+            placeholder="What service do you provide?"
+            touchUi={false}
+            className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700  hover:border-amber-500"
+            onChange={(selectedOptions) => {
+              setFormData((preState) => ({
+                ...preState,
+                name: selectedOptions.map((option) => option.value),
+              }));
+            }}
+            styles={{
+              control: (provided) => ({
+                ...provided,
+                backgroundColor: "transparent",
+                minWidth: "160px",
+                border: "none",
+                outline: "none",
+                boxShadow: "none",
+                transition: "all 0.3s ease",
+              }),
+            }}
           />
-           <input
+          <input
             type="text"
             placeholder="Full Name with Degree*"
             className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
@@ -255,17 +271,6 @@ export default function CreateProvider() {
             onChange={handleChange}
             value={formData.fullName}
           />
-          {/* <input
-            type="text"
-            placeholder="What service do you provide?"
-            className="border-2 p-3 rounded-lg focus:border-amber-600 focus:ring-0"
-            id="name"
-            maxLength="62"
-            minLength="10"
-            required
-            onChange={handleChange}
-            value={formData.name}
-          /> */}
           <input
             type="email"
             placeholder="Email"
@@ -303,7 +308,7 @@ export default function CreateProvider() {
             onChange={handleChange}
             value={formData.experience}
           />
-         
+
           <input
             type="number"
             placeholder="Phone number"
@@ -351,15 +356,47 @@ export default function CreateProvider() {
             onChange={handleChange}
             value={formData.therapytype}
           />
-          <input
-            type="text"
-            placeholder="Availability (eg:timing)"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="availability"
-            required
-            onChange={handleChange}
-            value={formData.availability}
-          />
+          <div className="flex flex-col gap-4">
+            <p className="font-semibold">Availability:</p>
+            <div className="flex flex-row gap-4">
+              <p>Morning:</p>
+              <input
+                type="time"
+                id="morningStart"
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                required
+                value={formData.availability.morningStart}
+                onChange={handleChange}
+              />
+              <input
+                type="time"
+                id="morningEnd"
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                required
+                value={formData.availability.morningEnd}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="flex flex-row gap-4 pl-1">
+              <p>Evening:</p>
+              <input
+                type="time"
+                id="eveningStart"
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                required
+                value={formData.availability.eveningStart}
+                onChange={handleChange}
+              />
+              <input
+                type="time"
+                id="eveningEnd"
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                required
+                value={formData.availability.eveningEnd}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
           <textarea
             type="text"
             placeholder="Biography"
@@ -429,4 +466,3 @@ export default function CreateProvider() {
     </div>
   );
 }
-
