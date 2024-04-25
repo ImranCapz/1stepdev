@@ -80,6 +80,9 @@ export default {
       },
     },
   },
+  variants: {
+    borderColor: ['responsive', 'hover', 'focus','focus-inner'],
+  },
   plugins: [
     require("flowbite/plugin"),
     require("tailwind-scrollbar"),

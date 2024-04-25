@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { IoIosStar } from "react-icons/io";
 import { useLocation } from "react-router-dom";
-import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { MdWorkspacePremium } from "react-icons/md";
 
 export default function ProviderItem({ provider }) {

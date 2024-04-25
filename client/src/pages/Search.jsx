@@ -116,7 +116,7 @@ export default function Search() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const res = await fetch(
-            `https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=3ff527dd52944833bd64a0290dd8f25b`
+            `https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=fedcc649cb88412196b0d38073698d71`
           );
           const data = await res.json();
           const city = data.results[0].components.city;

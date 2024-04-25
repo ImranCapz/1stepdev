@@ -11,7 +11,7 @@ export default function DashSidebar() {
   const location = useLocation();
   const [tab, setTab] = useState("");
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state)=> state.user)
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -45,7 +45,7 @@ export default function DashSidebar() {
             <Sidebar.Item
               active={tab === "dashboard"}
               icon={RiDashboardFill}
-              label={currentUser.isParent ? "Patient" : 'User'}
+              label={currentUser.isParent ? "Patient" : "User"}
               labelColor="light"
               as="div"
             >
@@ -69,7 +69,7 @@ export default function DashSidebar() {
               labelColor="light"
               as="div"
             >
-              Create Provider
+             Provider
             </Sidebar.Item>
           </Link>
           <Sidebar.Item

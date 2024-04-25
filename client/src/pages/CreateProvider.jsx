@@ -13,7 +13,6 @@ import { useRef } from "react";
 import Select from "react-select";
 
 export default function CreateProvider() {
-  const [image, setImage] = useState();
   const { currentUser } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const [imageUploadError, setImageUploadError] = useState("");
@@ -44,7 +43,6 @@ export default function CreateProvider() {
     description: "",
     profilePicture: "",
   });
-  console.log(formData);
 
   const handleRemoveImage = (index) => {
     setFormData({
@@ -147,7 +145,6 @@ export default function CreateProvider() {
         }),
       });
       const data = await res.json();
-      console.log(data);
       setLoading(false);
       if (data.success) {
         setError(data.message);

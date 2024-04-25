@@ -2,12 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-input[type='text']:focus { box-shadow: none; }
+input[type="text"]:focus {
+  box-shadow: none;
+}
 
 .blue-button {
-    background-color: #56c3fc;
-  }
+  background-color: #56c3fc;
+}
+.bg-amber {
+  background-color: #fbbf24;
+}
 
-  .Select_control:focus {
-    border: 1px solid red ;
-  }
+.Select_control:focus {
+  border: 1px solid red;
+}
+
+.text-gray {
+  color: #23354d;
+}

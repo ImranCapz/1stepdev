@@ -1,5 +1,4 @@
 import Provider from "../models/provider.model.js";
-import User from "../models/user.model.js";
 import Favorite from "../models/favorite.model.js";
 import { errorHandler } from "../utils/error.js";
 

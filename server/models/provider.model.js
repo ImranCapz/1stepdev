@@ -38,7 +38,7 @@ const providerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    availability:{
+    availability: {
       morningStart: {
         type: String,
         required: true,

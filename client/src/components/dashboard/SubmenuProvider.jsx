@@ -1,19 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import Profile from "../Profile";
-import ParentForm from "../parents/ParentForm";
 import { useSelector } from "react-redux";
-import UserBooking from "../booking/UserBooking";
+import CreateProvider from "../../pages/CreateProvider";
+import ProviderBooking from "../booking/ProviderBooking";
 
-export default function SubmenuProfile() {
-  const [activeComponent, setActiveComponent] = useState("Profile setting");
+export default function SubmenuProvider() {
+  const [activeComponent, setActiveComponent] = useState("Create Provider");
   const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
 
   const submenuNav = useMemo(() => [
-    { title: "Profile setting" },
-    { title: "Parent Details" },
-    {title: "Bookings"}
+    { title: "Create Provider" },
+    { title: "Appointment" },
   ], []);
 
   useEffect(() => {
@@ -48,31 +46,25 @@ export default function SubmenuProfile() {
         </ul>
       </nav>
 
-      {activeComponent === "Profile setting" && (
+      {activeComponent === "Create Provider" && (
         <div className="w-full min-h-screen transition-all duration-500">
           <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
             {" "}
-            Profile :
+            Create Provider :
           </h1>
-          <Profile />
+          <CreateProvider />
         </div>
       )}
-      {activeComponent === "Parent Details" &&(
+      {activeComponent === "Appointment" &&(
         <div className="w-full">
           <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
             {" "}
-            {currentUser.isParent ? "Your Parent Details :" : 'Fill the form for Parent Profile :'}
+            {/* {currentUser.isParent ? "Your Parent Details :" : 'Fill the form for Parent Profile :'} */}
           </h1>
-          <ParentForm />
+          <ProviderBooking />
         </div>
       )}
-      {activeComponent === "Bookings" &&(
-        <div className="w-full">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">  
-          </h1>
-          <UserBooking />
-        </div>
-      )}
+      {/* Other components... */}
     </div>
   );
 }

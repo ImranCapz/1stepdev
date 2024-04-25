@@ -7,6 +7,7 @@ import providerRouter from "./routes/provider.route.js";
 import parentRouter from'./routes/parent.route.js';
 import ratingRouter from './routes/rating.route.js';
 import favoriteRouter from'./routes/favorite.route.js'
+import bookingRouter from './routes/booking.route.js';
 import cookieParser from "cookie-parser";
 import path from 'path' ;
 
@@ -48,6 +49,7 @@ app.use("/server/provider", providerRouter);
 app.use("/server/parent",parentRouter);
 app.use("/server/rating",ratingRouter);	
 app.use("/server/favorite",favoriteRouter);
+app.use("/server/booking",bookingRouter);
 
 
 

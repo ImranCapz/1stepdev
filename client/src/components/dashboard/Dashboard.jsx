@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import DashSidebar from "./DashSiderbar";
-import CreateProvider from "../../pages/CreateProvider";
 import Overview from "./Overview";
 import SubmenuProfile from "./SubmenuProfile";
-
+import SubmenuProvider from "./SubmenuProvider";
 
 
 export default function Dashboard() {
@@ -25,8 +24,7 @@ export default function Dashboard() {
         <DashSidebar />
       </div>
         {tab === "dashboard" && <Overview /> }
-        {tab === "createprovider" && <CreateProvider />}
-        
+        {tab === "createprovider" && <SubmenuProvider />}
         {tab === "profile" && < SubmenuProfile/>}
        
     </div>
