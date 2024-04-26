@@ -9,7 +9,6 @@ import { Toaster } from 'react-hot-toast'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    
     <PersistGate persistor={persistor} loading={null} >
       <App />
       <Toaster position='bottom-center'/>

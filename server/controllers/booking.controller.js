@@ -74,3 +74,39 @@ export const getUserBooking = async (req, res, next) => {
     next(error);
   }
 };
+
+export const approveBooking = async (req, res, next) => {
+  const { id: bookingId } = req.params;
+
+  try {
+    const bookingApprove = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status: "approved" },
+      { new: true }
+    );
+    if (!bookingApprove) {
+      return next(errorHandler(404, "Booking not found"));
+    }
+    res.status(200).json(bookingApprove);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const rejectBooking = async (req, res, next) => {
+  const { id: bookingId } = req.params;
+
+  try {
+    const bookingReject = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status: "rejected" },
+      { new: true }
+    );
+    if (!bookingReject) {
+      return next(errorHandler(404, "Booking not found"));
+    }
+    res.status(200).json(bookingReject);
+  } catch (error) {
+    next(error);
+  }
+};

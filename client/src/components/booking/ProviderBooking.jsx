@@ -1,14 +1,30 @@
 import { Button } from "@material-tailwind/react";
 import { Table } from "flowbite-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FcCancel, FcOk } from "react-icons/fc";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import {
+  approveBooking,
+  rejectBooking,
+} from "../../redux/booking/bookingSlice";
+import toast from "react-hot-toast";
 
 export default function ProviderBooking() {
   const [appointment, setAppointment] = useState([]);
   const [provider, setProvider] = useState({});
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
+
+  const fetchBooking = useCallback(async (providerId) => {
+    const res = await fetch(`/server/booking/getbookings/${providerId}`);
+    const bookingData = await res.json();
+    if (bookingData.success === false) {
+      return;
+    }
+    setAppointment(bookingData);
+  }, []);
 
   useEffect(() => {
     const fetchProvider = async () => {
@@ -20,19 +36,26 @@ export default function ProviderBooking() {
       setProvider(data);
       console.log("Provider data:", data);
 
-      const fetchBooking = async () => {
-        const res = await fetch(`/server/booking/getbookings/${data[0]._id}`);
-        const bookingData = await res.json();
-        if (bookingData.success === false) {
-          return;
-        }
-        setAppointment(bookingData);
-        console.log("Booking data:", bookingData);
-      };
-      fetchBooking();
+      if (data[0]) {
+        fetchBooking(data[0]._id);
+      }
     };
     fetchProvider();
-  }, [currentUser._id]);
+  }, [currentUser._id, fetchBooking]);
+
+  const handleApprove = async (bookingId) => {
+    await dispatch(approveBooking(bookingId));
+    toast.success("Booking Approved");
+    if (provider[0]) {
+      fetchBooking(provider[0]._id);
+    }
+  };
+
+  const handleReject = (bookingId) => {
+    dispatch(rejectBooking(bookingId));
+    toast.error("Booking Rejected");
+    fetchBooking(provider[0]._id);
+  };
 
   return (
     <>
@@ -63,10 +86,62 @@ export default function ProviderBooking() {
                     <Table.Cell>{bookingDetails.scheduledTime}</Table.Cell>
                     <Table.Cell>{bookingDetails.sessionType}</Table.Cell>
                     <Table.Cell>{bookingDetails.note}</Table.Cell>
-                    <Table.Cell>{bookingDetails.status}</Table.Cell>
+                    <Table.Cell>
+                      {bookingDetails.status === "pending" ? (
+                        <div className="flex justify-center items-center">
+                          <MdOutlineAccessTime />
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                      {bookingDetails.status === "approved" ? (
+                        <div className="flex justify-center items-center">
+                          <FcOk />
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                      {bookingDetails.status === "rejected" ? (
+                        <div className="flex justify-center items-center">
+                          <FcCancel />
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </Table.Cell>
                     <Table.Cell className="flex flex-row gap-2">
-                      <Button className='bg-emerald-600'>Approve</Button>
-                      <Button className="bg-red-500">Reject</Button>
+                      {bookingDetails.status === "approved" ? (
+                        <>
+                          <Button
+                            className="bg-emerald-600"
+                            disabled={bookingDetails.status === "approved"}
+                          >
+                            Approved
+                          </Button>
+                          <Button
+                            className="bg-red-500"
+                            onClick={() => handleReject(bookingDetails._id)}
+                          >
+                            Reject
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            className="bg-emerald-600"
+                            onClick={() => handleApprove(bookingDetails._id)}
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            className="bg-red-500"
+                            onClick={() => handleReject(bookingDetails._id)}
+                            disabled={bookingDetails.status === "rejected"}
+                          >
+                            Rejected
+                          </Button>
+                        </>
+                      )}
                     </Table.Cell>
                     {/* <Table.Cell>  
                     <Button>EDIT</Button>
