@@ -22,14 +22,13 @@ export default function AdminSidebar() {
 
   const handleSignout = async () => {
     try {
-      const res = await fetch("/server/auth/signout",{
-        method:"GET",
-        
+      const res = await fetch("/server/auth/signout", {
+        method: "GET",
       });
       const data = await res.json();
-      if(!res.ok){
+      if (!res.ok) {
         console.log(data.message);
-      }else{
+      } else {
         dispatch(signOut());
       }
     } catch (error) {
@@ -69,7 +68,7 @@ export default function AdminSidebar() {
               labelColor="light"
               as="div"
             >
-              Create Provider
+              Provider
             </Sidebar.Item>
           </Link>
           <Sidebar.Item

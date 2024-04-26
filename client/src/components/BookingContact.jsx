@@ -4,10 +4,12 @@ import { Button } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
 import Select from "react-select";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function BookingContact({ provider }) {
   const [booking, setBooking] = useState();
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({
     patientName: "",
@@ -56,13 +58,11 @@ export default function BookingContact({ provider }) {
         }),
       });
       const data = await res.json();
-      if (data.success === false) {
-        console.log("Booking failed");
-      }
       if (data.success === true) {
-        setSuccess(true);
-        toast.success("Booking successful");
+        return;
       }
+      toast.success("Successfully Booked");
+      navigate('/dashboard?tag=Bookings');
     } catch (error) {
       console.log(error);
     }

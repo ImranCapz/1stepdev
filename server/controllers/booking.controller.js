@@ -23,21 +23,21 @@ export const getBookingProvider = async (req, res, next) => {
   try {
     const bookingDetails = await Booking.aggregate([
       {
-        $match: { _id: new mongoose.Types.ObjectId(req.params.id) },
+        $match: { provider: new mongoose.Types.ObjectId(req.params.id) },
       },
       {
         $lookup: {
           from: "users",
           localField: "patient",
           foreignField: "_id",
-          as: "patientDetials",
+          as: "patientDetails",
         },
       },
       {
-        $unwind: "$patientDetials",
+        $unwind: "$patientDetails",
       },
     ]);
-    res.status(200).json(bookingDetails[0]);
+    res.status(200).json(bookingDetails);
   } catch (error) {
     console.error(error);
     res
@@ -65,7 +65,6 @@ export const getUserBooking = async (req, res, next) => {
         $unwind: "$providerDetails",
       },
     ]);
-    console.log(userBookings);
     if (!userBookings || userBookings.length === 0) {
       return next(errorHandler(404, "Booking not found"));
     }

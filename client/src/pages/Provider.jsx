@@ -274,6 +274,7 @@ export default function Provider() {
                       </div>
                     )}
                   {contact && <BookingContact provider={provider} />}
+                  {provider && <ProviderBooking provider={provider} />}
                 </div>
               </div>
             </div>
