@@ -10,6 +10,7 @@ const integrations = [
   },
 ];
 
+
 const Features = () => {
   const navigate = useNavigate();
   return (

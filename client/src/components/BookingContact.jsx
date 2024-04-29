@@ -25,26 +25,27 @@ export default function BookingContact({ provider }) {
   useEffect(() => {
     const fetchbooking = async () => {
       try {
-        
         const res = await fetch(`/server/user/${provider.userRef}`);
         const data = await res.json();
         setBooking(data);
+        console.log(data);
         setFormData((preState) => ({
           ...preState,
           email: currentUser.email,
-          patientName: currentUser.fullName,
+          patientName: currentUser.username,
         }));
       } catch (error) {
         console.log(error);
       }
     };
     fetchbooking();
-  }, [provider.userRef, currentUser.email, currentUser.fullName]);
+  }, [provider.userRef, currentUser.email, currentUser.username]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setSuccess(false); 
+      
       const { patientName, email, ...rest } = formData;
       const res = await fetch("/server/booking/bookings", {
         method: "POST",
@@ -58,6 +59,7 @@ export default function BookingContact({ provider }) {
         }),
       });
       const data = await res.json();
+      
       if (data.success === true) {
         return;
       }

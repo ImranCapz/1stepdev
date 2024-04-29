@@ -4,24 +4,59 @@ import Profile from "../Profile";
 import ParentForm from "../parents/ParentForm";
 import { useSelector } from "react-redux";
 import UserBooking from "../booking/UserBooking";
+import { MdNotificationsActive } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import {
+  setHasApprovedBooking,
+  setLastSeenBookingId,
+} from "../../redux/booking/bookingSlice";
 
 export default function SubmenuProfile() {
   const [activeComponent, setActiveComponent] = useState("Profile setting");
   const { currentUser } = useSelector((state) => state.user);
+  const [isBookingsLinkClicked, setIsBookingsLinkClicked] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
+  const { bookings, hasApprovedBooking, lastSeenBookingId } = useSelector(
+    (state) => state.booking
+  );
 
-  const submenuNav = useMemo(() => [
-    { title: "Profile setting" },
-    { title: "Parent Details" },
-    {title: "Bookings"}
-  ], []);
+  const submenuNav = useMemo(
+    () => [
+      { title: "Profile setting" },
+      { title: "Parent Details" },
+      { title: "Bookings" },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    if (activeComponent !== "Bookings") {
+      setIsBookingsLinkClicked(false);
+    }
+  }, [activeComponent]);
+
+  useEffect(() => {
+    if (Array.isArray(bookings)) {
+      const approvedBookings = bookings.filter(
+        (booking) => booking.status === "approved"
+      );
+      if (approvedBookings.length > 0) {
+        const latestBooking = approvedBookings[approvedBookings.length - 1];
+        if (latestBooking._id !== lastSeenBookingId) {
+          dispatch(setHasApprovedBooking(true));
+          dispatch(setLastSeenBookingId(latestBooking._id));
+        }
+      }
+    }
+  }, [bookings, dispatch, lastSeenBookingId]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tagFromUrl = urlParams.get("tag");
     if (tagFromUrl) {
-      const validTag = submenuNav.find(item => item.title === tagFromUrl);
-      if(validTag){
+      const validTag = submenuNav.find((item) => item.title === tagFromUrl);
+      if (validTag) {
         setActiveComponent(tagFromUrl);
       }
     }
@@ -40,8 +75,26 @@ export default function SubmenuProfile() {
                     ? "border-b-2 border-amber-500"
                     : ""
                 }`}
+                onClick={() => {
+                  if (item.title === "Bookings") {
+                    setIsBookingsLinkClicked(false);
+                    const approvedBookings = bookings.filter(
+                      (booking) => booking.status === "approved"
+                    );
+                    if (approvedBookings.length > 0) {
+                      const latestBooking =
+                        approvedBookings[approvedBookings.length - 1];
+                      dispatch(setLastSeenBookingId(latestBooking._id));
+                      dispatch(setHasApprovedBooking(false));
+                    }
+                  }
+                }}
               >
-                <span className="">{item.title}</span>
+                <span className="flex flex-row items-center gap-1">{item.title}
+                {item.title === "Bookings" && hasApprovedBooking && (
+                  <MdNotificationsActive />
+                )}
+                </span>
               </Link>
             </li>
           ))}
@@ -57,19 +110,20 @@ export default function SubmenuProfile() {
           <Profile />
         </div>
       )}
-      {activeComponent === "Parent Details" &&(
+      {activeComponent === "Parent Details" && (
         <div className="w-full">
           <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
             {" "}
-            {currentUser.isParent ? "Your Parent Details :" : 'Fill the form for Parent Profile :'}
+            {currentUser.isParent
+              ? "Your Parent Details :"
+              : "Fill the form for Parent Profile :"}
           </h1>
           <ParentForm />
         </div>
       )}
-      {activeComponent === "Bookings" &&(
+      {activeComponent === "Bookings" && (
         <div className="w-full">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">  
-          </h1>
+          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 "></h1>
           <UserBooking />
         </div>
       )}

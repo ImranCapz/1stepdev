@@ -3,6 +3,7 @@ import { errorHandler } from "../utils/error.js";
 import User from "../models/user.model.js";
 import Provider from "../models/provider.model.js";
 import mongoose from "mongoose";
+import nodemailer from "nodemailer";
 
 export const booking = async (req, res, next) => {
   const { patient, provider } = req.body;
@@ -106,6 +107,46 @@ export const rejectBooking = async (req, res, next) => {
       return next(errorHandler(404, "Booking not found"));
     }
     res.status(200).json(bookingReject);
+  } catch (error) {
+    next(error);
+  }
+};
+
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "1step.co.in@gmail.com",
+    pass: "bdis nazv oxwj oacg",
+  },
+});
+
+export const bookingemail = async (req, res, next) => {
+  const { email, subject, providerName, providerProfile, service, name,time } = req.body;
+
+  try {
+    let info = await transporter.sendMail({
+      to: email,
+      subject: subject,
+      html: `
+      <div style="font-family: Arial, sans-serif; padding:30px; background-color:#d4f9fa">
+      <div>
+      <a href="https://1step.co.in">
+      <img src="https://i.ibb.co/XkLWHsZ/logo.png" alt="1step" />
+      </a>
+      </div>
+      <p style="color: #333; font-size: 18px;">Hi, <span style="">${name}</span></p>
+      <div style="text-align:center;">
+      <img src="${providerProfile}" alt="Provider Profile Picture" width="100" height="100"style="border-radius:50%;"/>
+      <h1 style="color: #333; font-size: 28px;">${providerName}</h1>
+      <h1 style="color: #333; font-size: 18px; text-align:center;">APPOINTMENT APPROVED</h1>
+      <p style="color: #333; font-size: 18px;">Service: ${service}</p>
+      <p style="font-size: 18px;">Please arrive 10 minutes early to your appointment.</p>
+      <p style="font-size: 18px;">Thank you for choosing our services.</p>
+      </div>
+      </div>
+      `,
+    });
+    res.status(200).json({ success: true, message: "Email sent" });
   } catch (error) {
     next(error);
   }

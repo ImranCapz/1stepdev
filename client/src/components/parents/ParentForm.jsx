@@ -11,7 +11,6 @@ import BeatLoader from "react-spinners/BeatLoader";
 
 export default function ParentForm() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
-  console.log(loading)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isModified, setIsModified] = useState(false);
@@ -79,7 +78,6 @@ export default function ParentForm() {
         if (data.success === false) {
           return;
         }
-        // Ensure all properties are defined
         const definedData = {
           isParent: data.isParent || false,
           fullName: data.fullName || "",

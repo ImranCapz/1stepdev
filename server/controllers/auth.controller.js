@@ -84,7 +84,7 @@ export const signout = (req, res) => {
 
 // PASSWORD RESET
 
-let otpStorage = {}; // Temporary storage for generated OTPs
+let otpStorage = {}; 
 let hashedPasswords = {};
 
 const sendEmail = async (to, subject, html) => {
@@ -104,10 +104,10 @@ const sendEmail = async (to, subject, html) => {
       html,
     });
 
-    return true; // Email sent successfully
+    return true; 
   } catch (error) {
     console.error('Error sending email:', error);
-    return false; // Email sending failed
+    return false;
   }
 };
 
@@ -127,7 +127,6 @@ export const resetPassword = async (req, res,next) => {
 
     otpStorage[email] = generateOtp;
 
-    // Send the OTP to the user's email
     const html = `<b>Your 1Step Reset Password Otp is : <i>${generateOtp}</i></b>`;
     const subject = "New OTP Generated";
 

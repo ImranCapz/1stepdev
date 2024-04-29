@@ -13,7 +13,10 @@ import { Button } from "@material-tailwind/react";
 import { MdWorkspacePremium } from "react-icons/md";
 import { IoIosStar } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
-import ProviderBooking from "../components/booking/ProviderBooking";
+import { Modal } from "flowbite-react";
+import  Signup  from "../../src/pages/Signup";
+import SignupModal from "../components/SignupModal";
+
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -31,8 +34,24 @@ export default function Provider() {
   const [contact, setContact] = useState(false);
   const [review, setReview] = useState(0);
   const params = useParams();
-  const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
+  const [openModal, setOpenModal] = useState(false);
+  const [isModelOpen, setIsModelOpen] = useState(false);
+
+
+  useEffect(()=>{
+    if(isModelOpen){
+      document.body.classList.add('blur');
+    }else{
+      document.body.classList.remove('blur');
+    }
+  },[isModelOpen])
+
+
+  function onCloseModal() {
+    setOpenModal(false);
+    setIsModelOpen(false);
+  }
 
   useEffect(() => {
     const fetchprovider = async () => {
@@ -242,7 +261,7 @@ export default function Provider() {
                   {!currentUser && (
                     <div className="flex flex-col mt-2 gap-4">
                       <Button
-                        onClick={() => navigate("/signup")}
+                        onClick={() => setOpenModal(true)}
                         className="bg-amber w-full text-gray-900 rounded-lg uppercase hover:opacity-95"
                       >
                         Book A Appointment
@@ -253,7 +272,15 @@ export default function Provider() {
                       >
                         <FaRegHeart /> Save to List
                       </Button>
+                      <Modal show={openModal} size="md" onClose={onCloseModal} popup onOpen={()=> setIsModelOpen(true)}>
+                        <Modal.Header>
+                          <Modal.Body style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          <SignupModal />
+                          </Modal.Body>
+                        </Modal.Header>
+                      </Modal>
                     </div>
+                    
                   )}
                   {currentUser &&
                     provider.userRef !== currentUser._id &&
@@ -274,7 +301,6 @@ export default function Provider() {
                       </div>
                     )}
                   {contact && <BookingContact provider={provider} />}
-                  {provider && <ProviderBooking provider={provider} />}
                 </div>
               </div>
             </div>

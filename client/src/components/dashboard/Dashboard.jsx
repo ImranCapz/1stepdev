@@ -4,12 +4,42 @@ import DashSidebar from "./DashSiderbar";
 import Overview from "./Overview";
 import SubmenuProfile from "./SubmenuProfile";
 import SubmenuProvider from "./SubmenuProvider";
+import { useSelector } from "react-redux";
+import { getBookingsStart, getBookingSuccess, getBookingFailure } from "../../redux/booking/bookingSlice";
+import { useDispatch } from "react-redux";
 
 
 export default function Dashboard() {
   const location = useLocation();
   const [tab, setTab] = useState("dashboard");
+  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
  
+  useEffect(() => {
+    const fetchBooking = async () => {
+      const url = `/server/booking/getuserbookings/${currentUser._id}`;
+      console.log("Fetching bookings from URL:", url);
+      try {
+        dispatch(getBookingsStart());
+        const response = await fetch(url);
+        console.log("Response status:", response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        dispatch(getBookingSuccess(data));
+        console.log("Booking data:", data);
+      } catch (error) {
+        dispatch(getBookingFailure(error));
+        console.error(
+          "An error occurred while fetching booking details:",
+          error
+        );
+      }
+    };
+
+    fetchBooking();
+  }, [currentUser._id,dispatch]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);

@@ -33,7 +33,8 @@ const bookingSchema = new mongoose.Schema({
     enum: ["pending", "approved", "rejected"],
     default: "pending",
   },
-});
+},
+{ timestamps: true });
 
 const Booking = mongoose.model("Booking", bookingSchema);
 

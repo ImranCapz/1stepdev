@@ -43,7 +43,6 @@ function App() {
           <Route path="/provider/:providerId" element={<Provider />} />
           <Route path="/for-providers" element={<CreateProfile />} />
           <Route path="/review/:providerId" element={<ProviderReview/>} />
-
           <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/create-parentprofile" element={<ParentForm />} />
@@ -62,7 +61,6 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
         </Routes>
-
         <Footer />
       </BrowserRouter>
     </>

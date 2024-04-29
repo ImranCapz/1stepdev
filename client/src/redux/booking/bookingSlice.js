@@ -4,6 +4,8 @@ const initialState = {
   bookings: [],
   loading: false,
   error: null,
+  hasApprovedBooking:false,
+  lastSeenBookingId: null,
 };
 
 export const approveBooking = createAsyncThunk(
@@ -52,13 +54,24 @@ const bookingSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    setHasApprovedBooking:(state,action)=>{
+      state.hasApprovedBooking = action.payload;
+    },
+    setLastSeenBookingId:(state,action)=>{
+      state.lastSeenBookingId = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(approveBooking.fulfilled, (state, action) => {
       state.bookings = state.bookings.map((booking) => {
-        booking._id === action.payload
-          ? { ...booking, status: "approved" }
-          : booking;
+        if (booking._id === action.payload) {
+          if (state.lastSeenBookingId !== action.payload) {
+            state.hasApprovedBooking = true;
+          }
+          state.lastSeenBookingId = action.payload;
+          return { ...booking, status: "approved" };
+        }
+        return booking;
       });
     });
     builder.addCase(rejectBooking.fulfilled, (state, action) => {
@@ -71,7 +84,7 @@ const bookingSlice = createSlice({
   },
 });
 
-export const { getBookingsStart, getBookingSuccess, getBookingFailure } =
+export const { getBookingsStart, getBookingSuccess, getBookingFailure,setHasApprovedBooking,setLastSeenBookingId } =
   bookingSlice.actions;
 
 export default bookingSlice.reducer;
