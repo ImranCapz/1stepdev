@@ -7,16 +7,23 @@ import "swiper/css/bundle";
 import { FaMapMarkerAlt, FaShare } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import BookingContact from "../components/BookingContact";
-import { useNavigate } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import { Button } from "@material-tailwind/react";
 import { MdWorkspacePremium } from "react-icons/md";
 import { IoIosStar } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
 import { Modal } from "flowbite-react";
-import  Signup  from "../../src/pages/Signup";
 import SignupModal from "../components/SignupModal";
-
+import ListModal from "../components/modal/ListModel";
+import { useDispatch } from "react-redux";
+import {
+  getFavoritesStart,
+  getFavoritesFailure,
+  getFavoritesSuccess,
+} from "../redux/favorite/FavoriteSlice";
+import { toggleFavorite } from "../redux/favorite/FavoriteSlice";
+import { fetchFavoriteStatus } from "../redux/favorite/FavoriteSlice";
+import { FcLike } from "react-icons/fc";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -27,30 +34,22 @@ function convert12Hrs(time) {
 
 export default function Provider() {
   SwiperCore.use([Navigation]);
+  const { currentUser } = useSelector((state) => state.user);
   const [provider, setprovider] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
   const [contact, setContact] = useState(false);
   const [review, setReview] = useState(0);
-  const params = useParams();
-  const { currentUser } = useSelector((state) => state.user);
   const [openModal, setOpenModal] = useState(false);
-  const [isModelOpen, setIsModelOpen] = useState(false);
-
-
-  useEffect(()=>{
-    if(isModelOpen){
-      document.body.classList.add('blur');
-    }else{
-      document.body.classList.remove('blur');
-    }
-  },[isModelOpen])
-
+  const [isListOpen, setIsListOpen] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const params = useParams();
+  const dispatch = useDispatch();
 
   function onCloseModal() {
+    setIsListOpen(false);
     setOpenModal(false);
-    setIsModelOpen(false);
   }
 
   useEffect(() => {
@@ -71,7 +70,8 @@ export default function Provider() {
         console.error("Error:", error);
         setError(true);
       }
-    };0
+    };
+    0;
     fetchprovider();
   }, [params.providerId]);
 
@@ -89,6 +89,47 @@ export default function Provider() {
     };
     fetchRating();
   }, [params.providerId]);
+
+  const handleFavorite = async () => {
+    if(!currentUser){
+      return;
+    }
+    try {
+      dispatch(
+        toggleFavorite({
+          userId: currentUser._id,
+          providerId: params.providerId,
+        })
+      );
+      setIsFavorite((prev) => !prev);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchFavoriteHeart = async () => {
+      if (!currentUser) {
+        return;
+      }
+      try {
+       const favoriteStatus = await dispatch(
+          fetchFavoriteStatus({
+            userId: currentUser._id,
+            providerId: params.providerId,
+          })
+        );
+        if(favoriteStatus.payload !== undefined){
+          setIsFavorite(favoriteStatus.payload);
+          console.log(favoriteStatus.payload);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchFavoriteHeart();
+  }, [currentUser, dispatch, params.providerId]);
+
 
   return (
     <div className="lg:flex-row flex-col-reverse mx-auto flex w-full">
@@ -129,7 +170,7 @@ export default function Provider() {
             </p>
           )}
           <div className="lg:flex-row flex-col flex p-3">
-            <div className="flex flex-col w-full p-10 mx-auto gap-4">
+            <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4">
               <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">
                 <p className="flex flex-col items-start justify-start">
                   <img
@@ -222,27 +263,27 @@ export default function Provider() {
                 </div>
                 <div className="flex flex-row gap-4 mt-4">
                   <Button variant="outlined">View Review</Button>
-                  <Button className="blue-button">
-                    <Link
-                      to={{
-                        pathname: `/review/${provider._id}`,
-                        state: { provider: provider },
-                      }}
-                    >
-                      Leave Review
-                    </Link>
-                  </Button>
+                  <Link
+                    to={{
+                      pathname: `/review/${provider._id}`,
+                      state: { provider: provider },
+                    }}
+                  >
+                    <Button className="blue-button">Leave Review</Button>
+                  </Link>
                 </div>
                 <div className="p-2">
                   <p className="text-slate-700 text-base font-semibold">
                     MON - SAT
                   </p>
                   <p>
-                    {convert12Hrs(provider.availability.morningStart)}{" - "}
-                    {convert12Hrs(provider.availability.morningEnd)} 
+                    {convert12Hrs(provider.availability.morningStart)}
+                    {" - "}
+                    {convert12Hrs(provider.availability.morningEnd)}
                   </p>
                   <p>
-                    {convert12Hrs(provider.availability.eveningStart)}{" - "}
+                    {convert12Hrs(provider.availability.eveningStart)}
+                    {" - "}
                     {convert12Hrs(provider.availability.eveningEnd)}
                   </p>
                 </div>
@@ -261,26 +302,45 @@ export default function Provider() {
                   {!currentUser && (
                     <div className="flex flex-col mt-2 gap-4">
                       <Button
-                        onClick={() => setOpenModal(true)}
+                        onClick={() => {
+                          setOpenModal(true);
+                        }}
                         className="bg-amber w-full text-gray-900 rounded-lg uppercase hover:opacity-95"
                       >
                         Book A Appointment
                       </Button>
                       <Button
                         variant="outlined"
+                        onClick={() => {
+                          setIsListOpen(true);
+                        }}
                         className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
                       >
                         <FaRegHeart /> Save to List
                       </Button>
-                      <Modal show={openModal} size="md" onClose={onCloseModal} popup onOpen={()=> setIsModelOpen(true)}>
-                        <Modal.Header>
-                          <Modal.Body style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <Modal
+                        show={openModal}
+                        size="md"
+                        onClose={onCloseModal}
+                        popup
+                      >
+                        <Modal.Header></Modal.Header>
+                        <Modal.Body>
                           <SignupModal />
-                          </Modal.Body>
-                        </Modal.Header>
+                        </Modal.Body>
+                      </Modal>
+                      <Modal
+                        show={isListOpen}
+                        size="md"
+                        onClose={onCloseModal}
+                        popup
+                      >
+                        <Modal.Header></Modal.Header>
+                        <Modal.Body>
+                          <ListModal />
+                        </Modal.Body>
                       </Modal>
                     </div>
-                    
                   )}
                   {currentUser &&
                     provider.userRef !== currentUser._id &&
@@ -293,10 +353,18 @@ export default function Provider() {
                           Contact FOR BOOKING
                         </Button>
                         <Button
+                          onClick={handleFavorite}
                           variant="outlined"
                           className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
                         >
-                          <FaRegHeart /> Save to List
+                          {isFavorite ? (<>
+                          <FcLike className="h-3 w-3"/>
+                           <p>Saved </p>
+                           </>) :  (<>
+                          <FaRegHeart />
+                           <p>Save to
+                          List </p>
+                           </>)}
                         </Button>
                       </div>
                     )}

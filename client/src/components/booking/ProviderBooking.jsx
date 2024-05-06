@@ -25,6 +25,7 @@ export default function ProviderBooking() {
     }
     const sortedBookings = bookingData.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
     setAppointment(sortedBookings);
+    console.log("Appointment data:", sortedBookings);
   }, []);
 
   useEffect(() => {
@@ -115,7 +116,7 @@ export default function ProviderBooking() {
                 <Table.Body className="divide-y" key={bookingDetails._id}>
                   <Table.Row className="bg-white text-gray-600">
                     <Table.Cell>
-                      {bookingDetails.patientDetails.fullName}
+                      {bookingDetails.patientDetails.username}
                     </Table.Cell>
                     <Table.Cell>{bookingDetails.service.join(", ")}</Table.Cell>
                     <Table.Cell>{bookingDetails.scheduledTime}</Table.Cell>
@@ -151,7 +152,7 @@ export default function ProviderBooking() {
                             className="bg-emerald-600"
                             disabled={bookingDetails.status === "approved"}
                           >
-                            Approved
+                            Accepted
                           </Button>
                           <Button
                             className="bg-red-500"
@@ -166,7 +167,7 @@ export default function ProviderBooking() {
                             className="bg-emerald-600"
                             onClick={() => handleApprove(bookingDetails._id)}
                           >
-                            Approve
+                            Accept
                           </Button>
                           <Button
                             className="bg-red-500"
@@ -182,7 +183,7 @@ export default function ProviderBooking() {
                             className="bg-emerald-600"
                             onClick={() => handleApprove(bookingDetails._id)}
                           >
-                            Approve
+                            Accepted
                           </Button>
                           <Button
                             className="bg-red-500"

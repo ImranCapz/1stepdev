@@ -10,68 +10,77 @@ import toast from "react-hot-toast";
 import { IoIosStar } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import { MdWorkspacePremium } from "react-icons/md";
+import ListModel from "../modal/ListModel";
+import { Modal } from "flowbite-react";
+import { toggleFavorite } from "../../redux/favorite/FavoriteSlice";
+import { fetchFavoriteStatus } from "../../redux/favorite/FavoriteSlice";
+import { favoriteList } from "../../redux/favorite/FavoriteSlice";
+import { useDispatch } from "react-redux";
+import {
+  getFavoritesStart,
+  getFavoritesFailure,
+  getFavoritesSuccess,
+} from "../../redux/favorite/FavoriteSlice";
 
 export default function ProviderItem({ provider }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [review, setReview] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("urlsearchTerm");
-
+  const [listOpen, setListOpen] = useState(false);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const urlsearchTerm = queryParams.get("searchTerm");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setSearchTerm(urlsearchTerm);
   }, []);
 
-  const toggleFavorite = async () => {
+  function OnCloseModal() {
+    console.log("close modal");
+    setListOpen(false);
+  }
+
+
+  const toggleFavoriteStatus = async () => {
     if (!currentUser) {
-      toast.error("Please login to favorite a provider");
+      setListOpen(true);
       return;
     }
     try {
-      const response = await fetch(
-        `/server/favorite/favorites/${currentUser._id}?providerId=${provider._id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            providerId: provider._id,
-          }),
-        }
+      dispatch(
+        toggleFavorite({ userId: currentUser._id, providerId: provider._id })
       );
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to update favorite status");
-      }
-      setIsFavorite(data.isFavorite);
-      toast.success(data.message);
+      setIsFavorite((prevIsFavorite) => !prevIsFavorite);
     } catch (error) {
       console.error(error);
+      toast.error("Failed to update favorite status");
     }
   };
 
   useEffect(() => {
-    if (!currentUser) return;
-    const fetchFavoriteStatus = async () => {
+    const fetchFavoriteHeart = async () => {
+      if (!currentUser) {
+        return;
+      }
       try {
-        const response = await fetch(
-          `/server/favorite/favoritestatus/${currentUser._id}?providerId=${provider._id}`
+        const favoriteStatus = await dispatch(
+          fetchFavoriteStatus({
+            userId: currentUser._id,
+            providerId: provider._id,
+          })
         );
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message || "Failed to fetch favorite status");
+        if (favoriteStatus.payload !== undefined) {
+          setIsFavorite(favoriteStatus.payload);
+          console.log(favoriteStatus.payload);
         }
-        setIsFavorite(data.isFavorite);
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
-    fetchFavoriteStatus();
-  });
+    fetchFavoriteHeart();
+  }, [currentUser, dispatch, provider._id]);
 
   useEffect(() => {
     const fetchRating = async () => {
@@ -79,7 +88,6 @@ export default function ProviderItem({ provider }) {
         const res = await fetch(`/server/rating/getreview/${provider._id}`);
         const data = await res.json();
         setReview(data);
-        console.log(data);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -90,17 +98,21 @@ export default function ProviderItem({ provider }) {
   return (
     <div className="relative bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[700px]">
       <button
-        onClick={toggleFavorite}
+        onClick={toggleFavoriteStatus}
         className="p-2 absolute top-2 right-2 z-10"
       >
         {isFavorite ? (
           <FcLike size={25} />
         ) : (
-          <span style={{ color: "white" }}>
-            <GoHeartFill size={25} />
-          </span>
+          <GoHeartFill size={25} className="text-white" />
         )}
       </button>
+      <Modal show={listOpen} size="md" onClose={OnCloseModal} popup>
+        <Modal.Header></Modal.Header>
+        <Modal.Body>
+          <ListModel />
+        </Modal.Body>
+      </Modal>
       {/* <Link to={`/provider/${provider._id}`}> */}
       <img
         src={provider.imageUrls[0]}
@@ -134,32 +146,44 @@ export default function ProviderItem({ provider }) {
                 </p>
               </Link>
               <p className="text-sm text-gray-600 font-semibold truncate w-full">
-                {Array.isArray(provider.name) ? (()=>{
-                  const searchTermIndex = provider.name.findIndex(
-                    (name)=> name.toLowerCase() === searchTerm.toLowerCase()
-                  );
-                  let filteredNames = [...provider.name];
-                  if(searchTermIndex !== -1){
-                    filteredNames =[
-                      provider.name[searchTermIndex],
-                      ...provider.name.slice(0, searchTermIndex),
-                      ...provider.name.slice(searchTermIndex + 1),
-                    ];
-                  }
-                  return (
-                    <>
-                    {filteredNames.slice(0,1)}
-                    {filteredNames.length > 1 ? (
-                      <>
-                      , <Link className='hover:underline'to={`/search?searchTerm=${encodeURIComponent(filteredNames[1])}`}>
-                        {filteredNames[1]}
-                      </Link>
-                      </>
-                    ) : null}
-                    {filteredNames.length > 2 ? ` +${filteredNames.length - 2} more` : ""}
-                    </>
-                  );
-                })() : provider.name} 
+                {Array.isArray(provider.name)
+                  ? (() => {
+                      const searchTermIndex = provider.name.findIndex(
+                        (name) =>
+                          searchTerm &&
+                          name.toLowerCase() === searchTerm.toLowerCase()
+                      );
+                      let filteredNames = [...provider.name];
+                      if (searchTermIndex !== -1) {
+                        filteredNames = [
+                          provider.name[searchTermIndex],
+                          ...provider.name.slice(0, searchTermIndex),
+                          ...provider.name.slice(searchTermIndex + 1),
+                        ];
+                      }
+                      return (
+                        <>
+                          {filteredNames.slice(0, 1)}
+                          {filteredNames.length > 1 ? (
+                            <>
+                              ,{" "}
+                              <Link
+                                className="hover:underline"
+                                to={`/search?searchTerm=${encodeURIComponent(
+                                  filteredNames[1]
+                                )}`}
+                              >
+                                {filteredNames[1]}
+                              </Link>
+                            </>
+                          ) : null}
+                          {filteredNames.length > 2
+                            ? ` +${filteredNames.length - 2} more`
+                            : ""}
+                        </>
+                      );
+                    })()
+                  : provider.name}
               </p>
             </div>
             <div className="flex items-center gap-1 mt-2">
@@ -169,11 +193,10 @@ export default function ProviderItem({ provider }) {
               </p>
             </div>
             <div className="flex items-center gap-1">
-              <MdWorkspacePremium  className="h-4 w-4 text-gray-600" />
+              <MdWorkspacePremium className="h-4 w-4 text-gray-600" />
               <p className="text-sm text-gray-600 truncate w-full">
                 {provider.experience} years experience overall
               </p>
-              
             </div>
             {/* <p className="text-sm text-gray-600 line-clamp-3">
                 {provider.description}
@@ -190,7 +213,7 @@ ProviderItem.propTypes = {
   provider: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     imageUrls: PropTypes.arrayOf(PropTypes.string).isRequired,
-    name: PropTypes.string.isRequired,
+    name: PropTypes.arrayOf(PropTypes.string),
     fullName: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     experience: PropTypes.string.isRequired,

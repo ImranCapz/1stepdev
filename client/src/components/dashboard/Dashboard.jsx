@@ -15,37 +15,46 @@ export default function Dashboard() {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
  
-  useEffect(() => {
-    const fetchBooking = async () => {
-      const url = `/server/booking/getuserbookings/${currentUser._id}`;
-      console.log("Fetching bookings from URL:", url);
-      try {
-        dispatch(getBookingsStart());
-        const response = await fetch(url);
-        console.log("Response status:", response.status);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        dispatch(getBookingSuccess(data));
-        console.log("Booking data:", data);
-      } catch (error) {
-        dispatch(getBookingFailure(error));
-        console.error(
-          "An error occurred while fetching booking details:",
-          error
-        );
-      }
-    };
+  // useEffect(() => {
+  //   const fetchBooking = async () => {
+  //     const url = `/server/booking/getuserbookings/${currentUser._id}`;
+  //     console.log("Fetching bookings from URL:", url);
+  //     try {
+  //       dispatch(getBookingsStart());
+  //       const response = await fetch(url);
+  //       console.log("Response status:", response.status);
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
+  //       const data = await response.json();
+  //       dispatch(getBookingSuccess(data));
+  //       console.log("Booking data:", data);
+  //     } catch (error) {
+  //       dispatch(getBookingFailure(error));
+  //       console.error(
+  //         "An error occurred while fetching booking details:",
+  //         error
+  //       );
+  //     }
+  //   };
 
-    fetchBooking();
-  }, [currentUser._id,dispatch]);
+  //   fetchBooking();
+  // }, [currentUser._id,dispatch]);
 
+  
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
-    if (["dashboard", "createprovider","profile"].includes(tabFromUrl)) {
+    if (["dashboard", "createprovider", "profile", "Profile Setting", "Parent Details", "Bookings"].includes(tabFromUrl)) {
       setTab(tabFromUrl);
+    }
+  }, [location.search]); 
+  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const tagFromUrl = urlParams.get("tag");
+    if (["dashboard", "createprovider", "profile", "Profile Setting", "Parent Details", "Bookings"].includes(tagFromUrl)) {
+      setTab(tagFromUrl);
     }
   }, [location.search]); 
   return (
@@ -55,7 +64,7 @@ export default function Dashboard() {
       </div>
         {tab === "dashboard" && <Overview /> }
         {tab === "createprovider" && <SubmenuProvider />}
-        {tab === "profile" && < SubmenuProfile/>}
+        {(tab === "profile" || tab === "Profile Setting" || tab === "Parent Details" || tab === "Bookings" ) && < SubmenuProfile/>}
        
     </div>
   );

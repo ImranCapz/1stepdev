@@ -1,36 +1,25 @@
 import { useSelector } from "react-redux";
-import { useState } from "react";
 import { useEffect } from "react";
 import ProviderItem from "./ProviderItem";
 import SearchBar from "../SearchBar";
+import { favoriteList } from "../../redux/favorite/FavoriteSlice";
+import { useDispatch } from "react-redux";
 
 
 export default function FavoriteList() {
   const { currentUser } = useSelector((state) => state.user);
-  const [favoriteList, setFavoriteList] = useState(null);
+  const { favorites } = useSelector((state)=> state.favorite);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    if (!currentUser) {
-      return;
-    }
     const fetchFavoriteList = async () => {
-      try {
-        const res = await fetch(
-          `/server/favorite/favoritelist/${currentUser._id}`
-        );
-        const data = await res.json();
-        if (res.success === false) {
-          console.log("Error in fetching favorite list");
-          return;
-        }
-        if (Array.isArray(data.favorites)) {
-          setFavoriteList(data.favorites);
-        }
-      } catch (error) {
-        console.log("Error in fetching favorite list");
+      if (!currentUser) {
+        return;
       }
+      dispatch(favoriteList(currentUser._id));
     };
     fetchFavoriteList();
-  },[currentUser]);
+  }, [currentUser, dispatch]);
 
   return (
     <div className="">
@@ -45,14 +34,16 @@ export default function FavoriteList() {
         </div>
       </div>
       <div className="p-4 flex flex-col gap-4">
-        {favoriteList === null ? null : favoriteList.length > 0 ? (
-          favoriteList.map((provider) => (
+        {favorites === null ? null : favorites.length > 0 ? (
+          favorites.map((provider) => (
+            provider && (
             <ProviderItem
               key={provider._id}
               provider={provider}
               isFavorite={true}
-              setFavoriteList={setFavoriteList}
+
             />
+          )
           ))
         ) : (
           <div className="flex flex-col">
