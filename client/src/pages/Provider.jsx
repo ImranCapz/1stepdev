@@ -24,6 +24,7 @@ import {
 import { toggleFavorite } from "../redux/favorite/FavoriteSlice";
 import { fetchFavoriteStatus } from "../redux/favorite/FavoriteSlice";
 import { FcLike } from "react-icons/fc";
+import { IoIosShareAlt } from "react-icons/io";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -44,6 +45,7 @@ export default function Provider() {
   const [openModal, setOpenModal] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [description,setDescription] = useState(false);
   const params = useParams();
   const dispatch = useDispatch();
 
@@ -180,11 +182,24 @@ export default function Provider() {
                   />
                 </p>
                 <div className="flex flex-col items-center md:items-start">
+                  <div className="flex flex-row items-center justify-between gap-2">
                   <p className="text-2xl md:text-start text-center text-gray font-bold mt-2">
                     {provider.fullName}
+                  </p>
+                  <p className="text-xs text-center mt-2 hidden md:flex">
+                    <Button onClick={handleFavorite} variant="outlined" className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 items-center gap-2 rounded-full">
+                    {isFavorite ? ( <FcLike className="" />) : ( <FaRegHeart className="" />)} Save
+                    </Button>
+                    </p>
+                    <p className="text-xs text-center mt-2 hidden md:flex">
+                    <Button variant="outlined" className="flex flex-row  border-gray-400 text-gray-600 py-1 px-2 items-center gap-2 rounded-full">
+                    <IoIosShareAlt />Share
+                    </Button>
+                    </p>
+                  </div>
                     {/* - ₹{" "}
                 {provider.regularPrice.toLocaleString("en-US")} / Appointment */}
-                  </p>
+                  
                   <p className="text-base text-center text-slate-600 font-semibold mt-2">
                     {Array.isArray(provider.name)
                       ? `${provider.name.slice(0, 2).join(", ")} ${
@@ -194,8 +209,7 @@ export default function Provider() {
                         }`
                       : `${provider.name}`}
                   </p>
-
-                  <div className="flex flex-col items-start">
+                  <div className="flex flex-col items-start justify-start ">
                     <div className="flex items-center gap-1 mt-2">
                       <IoIosStar className="h-4 w-4 text-slate-600" />
                       <p className="text-sm text-gray-600">
@@ -214,9 +228,11 @@ export default function Provider() {
                       </p>
                     </div>
                     <p className="flex items-center gap-1 text-slate-600 text-sm truncate">
-                      <FaMapMarkerAlt className="text-gray-600" />
+                      <FaMapMarkerAlt className="text-gray-600 " />
                       <span className="text-gray-600 font-bold">Addess:</span>
+                     
                       {provider.address}
+                        
                     </p>
                     <div className="flex items-center gap-1">
                       <MdWorkspacePremium className="h-4 w-4 text-gray-600" />
@@ -230,11 +246,22 @@ export default function Provider() {
                   </div>
                 </div>
               </div>
-
-              <p className="text-slate-800">
+              <div className="flex flex-col items-start gap-2">
+              <div className="overflow-hidden">
+              <p className={`text-slate-800 overflow-ellipsis overflow-hidden ${description ? '' : 'line-clamp-3'}`}>
                 <span className="font-semibold text-black">Description - </span>
                 {provider.description}
               </p>
+              </div>
+              {!description && (
+                <button
+                className="text-sky-500 hover:text-sky-800 underline duration-200"
+                onClick={()=> setDescription(true)}
+                >
+                  Read More
+                </button>
+              )}
+              </div>
               <div className="flex flex-col items-start">
                 <div>
                   <span className="w-full flex justify-center font-bold text-slate-700 text-2xl">
@@ -361,7 +388,7 @@ export default function Provider() {
                           <FcLike className="h-3 w-3"/>
                            <p>Saved </p>
                            </>) :  (<>
-                          <FaRegHeart />
+                          <FaRegHeart className="h-3 w-3"/>
                            <p>Save to
                           List </p>
                            </>)}
