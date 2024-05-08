@@ -14,13 +14,9 @@ import ListModel from "../modal/ListModel";
 import { Modal } from "flowbite-react";
 import { toggleFavorite } from "../../redux/favorite/FavoriteSlice";
 import { fetchFavoriteStatus } from "../../redux/favorite/FavoriteSlice";
-import { favoriteList } from "../../redux/favorite/FavoriteSlice";
 import { useDispatch } from "react-redux";
-import {
-  getFavoritesStart,
-  getFavoritesFailure,
-  getFavoritesSuccess,
-} from "../../redux/favorite/FavoriteSlice";
+import { PiHandHeartFill } from "react-icons/pi";
+
 
 export default function ProviderItem({ provider }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -198,6 +194,12 @@ export default function ProviderItem({ provider }) {
                 {provider.experience} years experience overall
               </p>
             </div>
+            <div className="flex items-center gap-1">
+              <PiHandHeartFill className="h-4 w-4 text-gray-600" />
+              <p className="text-sm text-gray-600 truncate w-full">
+                {Array.isArray(provider.therapytype) ? `${provider.therapytype.slice(0,4).join(", ")}` : `${provider.therapytype}`}
+              </p>
+            </div>
             {/* <p className="text-sm text-gray-600 line-clamp-3">
                 {provider.description}
               </p> */}
@@ -214,6 +216,7 @@ ProviderItem.propTypes = {
     _id: PropTypes.string.isRequired,
     imageUrls: PropTypes.arrayOf(PropTypes.string).isRequired,
     name: PropTypes.arrayOf(PropTypes.string),
+    therapytype: PropTypes.arrayOf(PropTypes.string).isRequired,
     fullName: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     experience: PropTypes.string.isRequired,

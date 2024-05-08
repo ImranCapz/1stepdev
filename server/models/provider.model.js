@@ -35,7 +35,7 @@ const providerSchema = new mongoose.Schema(
       required: true,
     },
     therapytype: {
-      type: String,
+      type: Array,
       required: true,
     },
     availability: {

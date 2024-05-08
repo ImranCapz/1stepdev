@@ -43,6 +43,7 @@ export default function CreateProvider() {
     description: "",
     profilePicture: "",
   });
+  console.log(formData);
 
   const handleRemoveImage = (index) => {
     setFormData({
@@ -187,7 +188,16 @@ export default function CreateProvider() {
     { value: "ABA Therapy", label: "ABA Therapy" },
     { value: "Occupational Therapy", label: "Occupational Therapy" },
     { value: "School-Based Service", label: "School-Based Service" },
+    { value: "Dance Movement", label: "Dance Movement" },
+    { value: "Art as Therapy", label: "Art as Therapy" },
+    { value: "Counselling", label: "Counselling" },
   ];
+
+  const therapyType = [
+    { value: "Virtual", label: "Virtual" },
+    { value: "In-Clinic", label: "In-Clinic" },
+    { value: "In-Home", label: "In-Home" },
+  ]
   return (
     <div className="p-10 w-full mx-auto flex-col items-center">
       <h1 className="text-base text-gray-700 font-semibold text-left my-7 mt-5">
@@ -297,16 +307,6 @@ export default function CreateProvider() {
             value={formData.license}
           />
           <input
-            type="text"
-            placeholder="Years of Experience"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="experience"
-            required
-            onChange={handleChange}
-            value={formData.experience}
-          />
-
-          <input
             type="number"
             placeholder="Phone number"
             className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
@@ -327,9 +327,27 @@ export default function CreateProvider() {
                 onChange={handleChange}
                 value={formData.regularPrice}
               />
+              
               <div className="flex flex-col items-center">
                 <p>Regular Fees</p>
                 <span className="text-xs">( ₹ per Appointment )</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                id="experience"
+                min="0"
+                max="100000"
+                required
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                onChange={handleChange}
+                value={formData.experience}
+              />
+              
+              <div className="flex flex-col items-center">
+                <p>Year of Experience</p>
+                <span className="text-xs">( services )</span>
               </div>
             </div>
           </div>
@@ -344,15 +362,31 @@ export default function CreateProvider() {
             onChange={handleChange}
             value={formData.address}
           />
-          <input
-            type="text"
-            placeholder="Therepy Type"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="therapytype"
-            required
-            onChange={handleChange}
-            value={formData.therapytype}
-          />
+         <Select
+         id="therapytype"
+         options={therapyType}
+         isMulti
+         required
+         placeholder="Type of Therapy"
+         touchUi={false}
+         className="border-2 p-3 rounded-lg border-slate-500 bg-white focus:border-amber-700 hover:border-amber-500"
+         onChange={(selectedOptions)=>{
+          setFormData((prevState)=>({
+            ...prevState,
+            therapytype: selectedOptions.map((option)=>option.value),
+          }))
+         }}
+         styles={{
+          control:(provided)=>({
+            ...provided,
+            backgroundColor: "transparent",
+            minWidth: '160px',
+            border: 'none',
+            boxShadow: 'none',
+            transition: 'all 0.3s ease',
+          })
+         }}
+         />
           <div className="flex flex-col gap-4">
             <p className="font-semibold">Availability:</p>
             <div className="flex flex-row gap-4">

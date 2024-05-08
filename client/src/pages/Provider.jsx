@@ -25,6 +25,10 @@ import { toggleFavorite } from "../redux/favorite/FavoriteSlice";
 import { fetchFavoriteStatus } from "../redux/favorite/FavoriteSlice";
 import { FcLike } from "react-icons/fc";
 import { IoIosShareAlt } from "react-icons/io";
+import { useRef } from "react";
+import { MdOutlineFileCopy } from "react-icons/md";
+import { FaCheck } from "react-icons/fa6";
+import { PiHandHeartFill } from "react-icons/pi";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -44,14 +48,17 @@ export default function Provider() {
   const [review, setReview] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
+  const [isShare, setIsShare] = useState(false);
+  const [shareClicked, setShareClicked] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [description,setDescription] = useState(false);
+  const [description, setDescription] = useState(false);
   const params = useParams();
   const dispatch = useDispatch();
-
+  const urlRef = useRef(null);
   function onCloseModal() {
     setIsListOpen(false);
     setOpenModal(false);
+    setIsShare(false);
   }
 
   useEffect(() => {
@@ -66,6 +73,7 @@ export default function Provider() {
           return;
         }
         setprovider(data);
+        console.log(data);
         setLoading(false);
         setError(false);
       } catch (error) {
@@ -93,7 +101,8 @@ export default function Provider() {
   }, [params.providerId]);
 
   const handleFavorite = async () => {
-    if(!currentUser){
+    if (!currentUser) {
+      setIsListOpen(true);
       return;
     }
     try {
@@ -115,13 +124,13 @@ export default function Provider() {
         return;
       }
       try {
-       const favoriteStatus = await dispatch(
+        const favoriteStatus = await dispatch(
           fetchFavoriteStatus({
             userId: currentUser._id,
             providerId: params.providerId,
           })
         );
-        if(favoriteStatus.payload !== undefined){
+        if (favoriteStatus.payload !== undefined) {
           setIsFavorite(favoriteStatus.payload);
           console.log(favoriteStatus.payload);
         }
@@ -132,6 +141,15 @@ export default function Provider() {
     fetchFavoriteHeart();
   }, [currentUser, dispatch, params.providerId]);
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareClicked(true);
+      console.log("Copied to clipboard");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="lg:flex-row flex-col-reverse mx-auto flex w-full">
@@ -154,7 +172,7 @@ export default function Provider() {
               </SwiperSlide>
             ))}
           </Swiper>
-          <div className="fixed top-[24%] right-[3%] z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100 cursor-pointer">
+          {/* <div className="fixed top-[24%] right-[3%] z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100 cursor-pointer">
             <FaShare
               className="text-slate-500"
               onClick={() => {
@@ -165,12 +183,7 @@ export default function Provider() {
                 }, 2000);
               }}
             />
-          </div>
-          {copied && (
-            <p className="fixed top-[23%] right-[5%] z-10 rounded-md bg-slate-100 p-2">
-              Link copied!
-            </p>
-          )}
+          </div> */}
           <div className="lg:flex-row flex-col flex p-3">
             <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4">
               <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">
@@ -182,24 +195,66 @@ export default function Provider() {
                   />
                 </p>
                 <div className="flex flex-col items-center md:items-start">
-                  <div className="flex flex-row items-center justify-between gap-2">
-                  <p className="text-2xl md:text-start text-center text-gray font-bold mt-2">
-                    {provider.fullName}
-                  </p>
-                  <p className="text-xs text-center mt-2 hidden md:flex">
-                    <Button onClick={handleFavorite} variant="outlined" className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 items-center gap-2 rounded-full">
-                    {isFavorite ? ( <FcLike className="" />) : ( <FaRegHeart className="" />)} Save
-                    </Button>
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-2">
+                    <p className="text-2xl md:text-start text-center text-gray font-bold mt-2">
+                      {provider.fullName}
                     </p>
-                    <p className="text-xs text-center mt-2 hidden md:flex">
-                    <Button variant="outlined" className="flex flex-row  border-gray-400 text-gray-600 py-1 px-2 items-center gap-2 rounded-full">
-                    <IoIosShareAlt />Share
-                    </Button>
+                    <p className="flex flex-row  gap-2 text-xs text-center mt-2">
+                      <Button
+                        onClick={handleFavorite}
+                        variant="outlined"
+                        className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 items-center gap-2 rounded-full"
+                      >
+                        {isFavorite ? (
+                          <FcLike className="" />
+                        ) : (
+                          <FaRegHeart className="" />
+                        )}{" "}
+                        Save
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        onClick={() => setIsShare(true)}
+                        className="flex flex-row  border-gray-400 text-gray-600 py-1 px-2 items-center gap-2 rounded-full"
+                      >
+                        <IoIosShareAlt />
+                        Share
+                      </Button>
                     </p>
+                    <Modal show={isShare} onClose={onCloseModal} popup>
+                      <Modal.Header className="p-6 text-2xl">
+                        Share Provider Profile
+                      </Modal.Header>
+                      <Modal.Body>
+                        <div className="flex flex-row justify-between">
+                          <input
+                            ref={urlRef}
+                            value={window.location.href}
+                            className="w-full p-3 border-2 border-slate-800 focus:border-slate-300 rounded"
+                          />
+                          <button
+                            onClick={copyToClipboard}
+                            className="absolute right-6 top-1/2 p-2 rounded"
+                          >
+                            {shareClicked ? (
+                              <div className="flex flex-row items-center gap-1 p-2 text-white bg-green-400 rounded-md">
+                                <FaCheck className="" />
+                                Copied
+                              </div>
+                            ) : (
+                              <div className="flex flex-row items-center gap-1 p-2 rounded-md bg-gray-300">
+                                <MdOutlineFileCopy />
+                                Copy
+                              </div>
+                            )}
+                          </button>
+                        </div>
+                      </Modal.Body>
+                    </Modal>
                   </div>
-                    {/* - ₹{" "}
+                  {/* - ₹{" "}
                 {provider.regularPrice.toLocaleString("en-US")} / Appointment */}
-                  
+
                   <p className="text-base text-center text-slate-600 font-semibold mt-2">
                     {Array.isArray(provider.name)
                       ? `${provider.name.slice(0, 2).join(", ")} ${
@@ -230,9 +285,8 @@ export default function Provider() {
                     <p className="flex items-center gap-1 text-slate-600 text-sm truncate">
                       <FaMapMarkerAlt className="text-gray-600 " />
                       <span className="text-gray-600 font-bold">Addess:</span>
-                     
+
                       {provider.address}
-                        
                     </p>
                     <div className="flex items-center gap-1">
                       <MdWorkspacePremium className="h-4 w-4 text-gray-600" />
@@ -243,24 +297,41 @@ export default function Provider() {
                         {provider.experience} years experience overall
                       </p>
                     </div>
+                    <div className="flex items-center gap-1">
+                      <PiHandHeartFill className="h-4 w-4 text-gray-600" />
+                      <p className="text-sm text-gray-600 truncate w-full">
+                        <span className="text-gray-600 font-bold">
+                          Care Settings:{" "}
+                        </span>
+                        {Array.isArray(provider.therapytype)
+                          ? `${provider.therapytype.slice(0, 2).join(", ")}`
+                          : provider.therapytype}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col items-start gap-2">
-              <div className="overflow-hidden">
-              <p className={`text-slate-800 overflow-ellipsis overflow-hidden ${description ? '' : 'line-clamp-3'}`}>
-                <span className="font-semibold text-black">Description - </span>
-                {provider.description}
-              </p>
-              </div>
-              {!description && (
-                <button
-                className="text-sky-500 hover:text-sky-800 underline duration-200"
-                onClick={()=> setDescription(true)}
-                >
-                  Read More
-                </button>
-              )}
+                <div className="overflow-hidden">
+                  <p
+                    className={`text-slate-800 overflow-ellipsis overflow-hidden ${
+                      description ? "" : "line-clamp-3"
+                    }`}
+                  >
+                    <span className="font-semibold text-black">
+                      Description -{" "}
+                    </span>
+                    {provider.description}
+                  </p>
+                </div>
+                {!description && (
+                  <button
+                    className="text-sky-500 hover:text-sky-800 underline duration-200"
+                    onClick={() => setDescription(true)}
+                  >
+                    Read More
+                  </button>
+                )}
               </div>
               <div className="flex flex-col items-start">
                 <div>
@@ -384,14 +455,17 @@ export default function Provider() {
                           variant="outlined"
                           className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
                         >
-                          {isFavorite ? (<>
-                          <FcLike className="h-3 w-3"/>
-                           <p>Saved </p>
-                           </>) :  (<>
-                          <FaRegHeart className="h-3 w-3"/>
-                           <p>Save to
-                          List </p>
-                           </>)}
+                          {isFavorite ? (
+                            <>
+                              <FcLike className="h-3 w-3" />
+                              <p>Saved </p>
+                            </>
+                          ) : (
+                            <>
+                              <FaRegHeart className="h-3 w-3" />
+                              <p>Save to List </p>
+                            </>
+                          )}
                         </Button>
                       </div>
                     )}

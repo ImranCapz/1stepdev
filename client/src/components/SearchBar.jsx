@@ -15,10 +15,12 @@ export const SearchBar = () => {
     { value: "Speech Therapy", label: "Speech Therapy" },
     { value: "ABA Therapy", label: "ABA Therapy" },
     { value: "Occupational Therapy", label: "Occupational Therapy" },
-    { value: "A-Z Services", label: "Popular Services", isDisabled: true },
     { value: "School-Based Service", label: "School-Based Service" },
+    { value: "A-Z Services", label: "Popular Services", isDisabled: true },
+    { value: "Dance Movement", label: "Dance Movement" },
+    { value: "Art as Therapy", label: "Art as Therapy" },
+    { value: "Counselling", label: "Counselling" },
   ];
-
   const whatoptions = suggestions.map((suggestion) => ({
     value: suggestion.value,
     label: suggestion.value,
@@ -74,6 +76,8 @@ export const SearchBar = () => {
       fetchProvider(addressFromUrl);
     }
   }, []);
+
+  
   return (
     <div className="flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
       <form

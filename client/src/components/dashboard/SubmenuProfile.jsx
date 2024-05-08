@@ -103,10 +103,10 @@ export default function SubmenuProfile() {
 
       {activeComponent === "Profile setting" && (
         <div className="w-full min-h-screen transition-all duration-500">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
+          {/* <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
             {" "}
             Profile :
-          </h1>
+          </h1> */}
           <Profile />
         </div>
       )}
