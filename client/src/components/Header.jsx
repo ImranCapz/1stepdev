@@ -77,7 +77,7 @@ const Header = () => {
   };
   const navigation = [
     { title: "Home", path: "/" },
-    { title: "For Parents", path: "/create-parentprofile" },
+    { title: "For Parents", path: "/dashboard?tag=Parent%20Details" },
     {
       title: "For Providers",
       path: currentUser ? "/dashboard?tab=createprovider" : "/for-providers",

@@ -315,6 +315,15 @@ export default function CreateProvider() {
             onChange={handleChange}
             value={formData.phone}
           />
+          <input
+            type="text"
+            placeholder="Address"
+            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+            id="address"
+            required
+            onChange={handleChange}
+            value={formData.address}
+          />
           <div className="flex flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <input
@@ -353,15 +362,6 @@ export default function CreateProvider() {
           </div>
         </div>
         <div className="flex flex-col flex-1 gap-4">
-          <input
-            type="text"
-            placeholder="Address"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="address"
-            required
-            onChange={handleChange}
-            value={formData.address}
-          />
          <Select
          id="therapytype"
          options={therapyType}

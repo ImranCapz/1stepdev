@@ -20,7 +20,6 @@ import DashUsers from "./components/admin/DashUsers";
 import CreateProfile from "./pages/providerscreen/CreateProfile";
 import DashPrivateRoute from "./components/dashboard/DashPrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
-import ParentForm from "./components/parents/ParentForm";
 import FavoriteList from "./components/provider/FavoriteList";
 import ScrolltoTop from "./components/ScrolltoTop";
 import ProviderReview from "./components/review/ProviderReview";
@@ -45,7 +44,6 @@ function App() {
           <Route path="/review/:providerId" element={<ProviderReview/>} />
           <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
-            <Route path="/create-parentprofile" element={<ParentForm />} />
             <Route path="/create-provider" element={<CreateProvider />} />
             <Route
               path="/update-provider/:providerId"

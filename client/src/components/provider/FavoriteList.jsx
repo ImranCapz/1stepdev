@@ -34,14 +34,13 @@ export default function FavoriteList() {
         </div>
       </div>
       <div className="p-4 flex flex-col gap-4">
-        {favorites === null ? null : favorites.length > 0 ? (
+        {favorites && favorites.length > 0 ? (
           favorites.map((provider) => (
             provider && (
             <ProviderItem
               key={provider._id}
               provider={provider}
               isFavorite={true}
-
             />
           )
           ))

@@ -12,7 +12,6 @@ import {
   updateUserFailure,
   updateUserSuccess,
   updateUserStart,
-  signOut,
 } from "../redux/user/userSlice";
 import TopLoadingBar from "react-top-loading-bar";
 import { Link } from "react-router-dom";
@@ -273,7 +272,7 @@ export default function Profile() {
                   className="flex-1 font-semibold hover:underline truncate"
                   to={`/provider/${provider._id}`}
                 >
-                  <p>{provider.name}</p>
+                  <p>{provider.fullName}</p>
                 </Link>
                 <div className="flex flex-col items-center">
                   <button

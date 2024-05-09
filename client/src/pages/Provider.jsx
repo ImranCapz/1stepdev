@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
-import { FaMapMarkerAlt, FaShare } from "react-icons/fa";
+import { FaHome, FaMapMarkerAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import BookingContact from "../components/BookingContact";
 import StarRatings from "react-star-ratings";
@@ -16,11 +16,6 @@ import { Modal } from "flowbite-react";
 import SignupModal from "../components/SignupModal";
 import ListModal from "../components/modal/ListModel";
 import { useDispatch } from "react-redux";
-import {
-  getFavoritesStart,
-  getFavoritesFailure,
-  getFavoritesSuccess,
-} from "../redux/favorite/FavoriteSlice";
 import { toggleFavorite } from "../redux/favorite/FavoriteSlice";
 import { fetchFavoriteStatus } from "../redux/favorite/FavoriteSlice";
 import { FcLike } from "react-icons/fc";
@@ -29,6 +24,8 @@ import { useRef } from "react";
 import { MdOutlineFileCopy } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { PiHandHeartFill } from "react-icons/pi";
+import { MdOutlineVideoCameraFront } from "react-icons/md";
+import { FaClinicMedical } from "react-icons/fa";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -43,7 +40,6 @@ export default function Provider() {
   const [provider, setprovider] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [contact, setContact] = useState(false);
   const [review, setReview] = useState(0);
   const [openModal, setOpenModal] = useState(false);
@@ -151,8 +147,28 @@ export default function Provider() {
     }
   };
 
+  const subMenu = [
+    { value: "About", label: "About", offset: 176 },
+    { value: "Reviews", label: "Reviews", offset: 140 },
+    { value: "Service", label: "Service", offset: 120 },
+  ];
+
+  const handleClick = (id, offset) => {
+    const element = document.getElementById(id);
+    if (element) {
+      let adjustedOffset = offset;
+      if (window.innerWidth <= 768) {
+        // Adjust the breakpoint as necessary
+        adjustedOffset = offset / 0.7; // Adjust the offset value as necessary
+      }
+      window.scrollTo({
+        top: element.offsetTop - adjustedOffset,
+        behavior: "smooth",
+      });
+    }
+  };
   return (
-    <div className="lg:flex-row flex-col-reverse mx-auto flex w-full">
+    <div className="min-h-screen flex lg:flex-row flex-col-reverse w-full">
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
       {error && (
         <p className="text-center my-7 text-2xl">Error fetching provider</p>
@@ -172,20 +188,8 @@ export default function Provider() {
               </SwiperSlide>
             ))}
           </Swiper>
-          {/* <div className="fixed top-[24%] right-[3%] z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100 cursor-pointer">
-            <FaShare
-              className="text-slate-500"
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-                setCopied(true);
-                setTimeout(() => {
-                  setCopied(false);
-                }, 2000);
-              }}
-            />
-          </div> */}
-          <div className="lg:flex-row flex-col flex p-3">
-            <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4">
+          <div className="lg:flex-row flex-col mx-auto flex w-full p-4 md:w-5/6">
+            <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
               <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">
                 <p className="flex flex-col items-start justify-start">
                   <img
@@ -311,16 +315,29 @@ export default function Provider() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col items-start gap-2">
+              <div className="flex flex-row gap-4 mt-2 border-t border-b p-2 border-gray-300">
+                {subMenu.map((item, key) => {
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => handleClick(item.value, item.offset)}
+                      className="flex gap-4 text-slate-800 duration-200 font-semibold"
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="font-bold text-xl text-gray mt-2">
+                About {provider.fullName}
+              </span>
+              <div id="About" className="flex flex-col items-start">
                 <div className="overflow-hidden">
                   <p
                     className={`text-slate-800 overflow-ellipsis overflow-hidden ${
                       description ? "" : "line-clamp-3"
                     }`}
                   >
-                    <span className="font-semibold text-black">
-                      Description -{" "}
-                    </span>
                     {provider.description}
                   </p>
                 </div>
@@ -333,7 +350,7 @@ export default function Provider() {
                   </button>
                 )}
               </div>
-              <div className="flex flex-col items-start">
+              <div id="Reviews" className="flex flex-col items-start gap-2">
                 <div>
                   <span className="w-full flex justify-center font-bold text-slate-700 text-2xl">
                     Reviews
@@ -386,12 +403,70 @@ export default function Provider() {
                   </p>
                 </div>
               </div>
+              <div
+                id="Service"
+                className="flex flex-col border-t border-gray-300"
+              >
+                <h1 className="text-gray text-2xl mt-4 font-bold">Services</h1>
+                <div className="flex flex-wrap justify-between">
+                  {provider.name.map((service, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="flex flex-row items-center gap-2 mt-2 w-1/2"
+                      >
+                        <IoIosStar className="h-4 w-4 text-gray-600" />
+                        <p className="font-semibold text-gray-600">{service}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+                <h1 className="text-gray text-2xl mt-4 font-bold">
+                  Care Settings
+                </h1>
+                <div className="flex mt-4 flex-warp justify-between">
+                  {provider.therapytype.map((type, index) => {
+                    return (
+                      <div className='flex flex-row items-center gap-2 mt-2 w-1/2' key={index}>
+                        {type === "Virtual" && (
+                          <>
+                            <span className="flex flex-row text-2xl text-gray-600 items-center justify-between">
+                              <MdOutlineVideoCameraFront />
+                            </span>
+                            <p className="text-gray-700 font-semibold">Virtual</p>
+                          </>
+                        )}
+                        {type === "In-Clinic" && (
+                          <>
+                            <span className="flex flex-row text-xl text-gray-600 items-center justify-between">
+                            <FaClinicMedical />
+                            </span>
+                            <p className="text-gray-700 font-semibold">In-Clinic</p>
+                          </>
+                        )}
+                        {type === "In-Home" && (
+                          <>
+                            <span className="flex flex-row text-2xl text-gray-600 items-center justify-between">
+                            <FaHome />
+                            </span>
+                            <p className="text-gray-700 font-semibold">In-Home</p>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
             <div
-              className="flex w-full p-3 lg:w-1/2 lg:sticky lg:top-0"
-              style={{ alignSelf: "flex-start" }}
+              className="w-full flex p-3 lg:w-1/2 sm-w-96"
+              style={{
+                alignSelf: "flex-start",
+                position: "sticky",
+                top: "125px",
+              }}
             >
-              <div className="border-2 bg-sky-100 rounded-lg lg:sticky lg:top-0">
+              <div className="w-full border-2 bg-sky-100 rounded-lg">
                 <div className="p-6">
                   <p className="font-bold text-xl text-gray ">
                     Get in touch with {provider.fullName}
