@@ -1,6 +1,7 @@
 import Provider from "../models/provider.model.js";
 import { errorHandler } from "../utils/error.js";
 import User from "../models/user.model.js";
+import nodemailer from "nodemailer";
 
 export const createProvider = async (req, res, next) => {
   try {
@@ -102,5 +103,87 @@ export const getAdminProviders = async (req, res, next) => {
     );
   } catch (error) {
     next(error);
+  }
+};
+
+let otpStorage = {};
+
+const otpverifyProvider = async (to, subject, html) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "1step.co.in@gmail.com",
+        pass: "bdis nazv oxwj oacg",
+      },
+    });
+    await transporter.sendMail({
+      from: "1step.co.in@gmail.com",
+      to,
+      subject,
+      html,
+    });
+    return true;
+  } catch (error) {
+    console.log("Error sending email:", error);
+    return false;
+  }
+};
+
+export const sendOtp = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const validemail = await Provider.findOne({ email });
+    if (!validemail) {
+      return next(errorHandler(404, "Email not found"));
+    }
+    const generateOtp = Math.floor(Math.random() * 1000000);
+
+    otpStorage[email] = generateOtp;
+    const html = `<b>Your 1Step Verified Provider Otp : <i>${generateOtp}</i></b>`;
+    const subject = "Provider OTP Verification";
+
+    const emailSend = await otpverifyProvider(email, subject, html);
+
+    if (emailSend) {
+      return res.status(200).json("OTP sent successfully");
+    } else {
+      return res.status(500).json("Error, cant send email!");
+    }
+  } catch (error) {
+    return res.status(500).json("Error, cant send email!");
+  }
+};
+
+export const verifyOtpProvider = async (req, res, next) => {
+  const { email, otp } = req.body;
+  const storedOtp = otpStorage[email];
+  if (!storedOtp) {
+    return next(errorHandler(404, "Otp not found"));
+  }
+  const otpNumber = Number(otp.join(''));
+  if (storedOtp !== otpNumber) {
+    return next(errorHandler(401, "Invalid Otp"));
+  }
+  if (storedOtp === otpNumber) {
+    try {
+      const result = await Provider.updateOne(
+        {
+          email: email,
+        },
+        {
+          $set: {
+            verified: true,
+          },
+        }
+      );
+      if(result){
+        return res.status(200).json({success:true, message:"Provider verified successfully"});
+      }else{
+        return res.status(500).json({success:false, message:"Error, cant verify provider"});
+      } 
+    } catch (error) {
+      next(error);
+    }
   }
 };

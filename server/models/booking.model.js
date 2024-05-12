@@ -11,6 +11,10 @@ const bookingSchema = new mongoose.Schema({
     ref: "provider",
     required: true,
   },
+  patientName:{
+    type: String,
+    required: true,
+  },
   scheduledTime: {
     type: Date,
     required: true,
@@ -24,9 +28,8 @@ const bookingSchema = new mongoose.Schema({
     required: true,
   },
   sessionType: {
-    type: String,
+    type: Array,
     required: true,
-    enum: ["in-person", "online"],
   },
   status: {
     type: String,

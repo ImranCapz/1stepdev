@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const providerSchema = new mongoose.Schema(
   {
+    fullName: {
+      type: String,
+      required: true,
+    },
     name: {
       type: Array,
       required: true,
@@ -15,10 +19,6 @@ const providerSchema = new mongoose.Schema(
       required: true,
     },
     license: {
-      type: String,
-      required: true,
-    },
-    fullName: {
       type: String,
       required: true,
     },
@@ -77,6 +77,10 @@ const providerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    verified:{
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 );

@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
-import { FaHome, FaMapMarkerAlt } from "react-icons/fa";
+import { FaHome, FaMapMarkerAlt, FaClinicMedical } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import BookingContact from "../components/BookingContact";
 import StarRatings from "react-star-ratings";
 import { Button } from "@material-tailwind/react";
-import { MdWorkspacePremium } from "react-icons/md";
 import { IoIosStar } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
 import { Modal } from "flowbite-react";
@@ -19,13 +18,18 @@ import { useDispatch } from "react-redux";
 import { toggleFavorite } from "../redux/favorite/FavoriteSlice";
 import { fetchFavoriteStatus } from "../redux/favorite/FavoriteSlice";
 import { FcLike } from "react-icons/fc";
-import { IoIosShareAlt } from "react-icons/io";
+import { IoIosShareAlt, IoMdAlert } from "react-icons/io";
 import { useRef } from "react";
-import { MdOutlineFileCopy } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { PiHandHeartFill } from "react-icons/pi";
-import { MdOutlineVideoCameraFront } from "react-icons/md";
-import { FaClinicMedical } from "react-icons/fa";
+import {
+  MdOutlineVideoCameraFront,
+  MdWorkspacePremium,
+  MdOutlineFileCopy,
+} from "react-icons/md";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { FcApproval } from "react-icons/fc";
+import toast from "react-hot-toast";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -48,13 +52,21 @@ export default function Provider() {
   const [shareClicked, setShareClicked] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [description, setDescription] = useState(false);
+  const [otpOpen, setOtpOpen] = useState(false);
   const params = useParams();
   const dispatch = useDispatch();
   const urlRef = useRef(null);
+  const [otp, setOtp] = useState(Array(6).fill(""));
+  const otpRef = Array(6)
+    .fill()
+    .map(() => createRef());
+
+  console.log(otp);
   function onCloseModal() {
     setIsListOpen(false);
     setOpenModal(false);
     setIsShare(false);
+    setOtpOpen(false);
   }
 
   useEffect(() => {
@@ -158,13 +170,68 @@ export default function Provider() {
     if (element) {
       let adjustedOffset = offset;
       if (window.innerWidth <= 768) {
-        // Adjust the breakpoint as necessary
-        adjustedOffset = offset / 0.7; // Adjust the offset value as necessary
+        adjustedOffset = offset / 0.7;
       }
       window.scrollTo({
         top: element.offsetTop - adjustedOffset,
         behavior: "smooth",
       });
+    }
+  };
+
+  const otpChange = (elementIndex, event) => {
+    const newOtp = [...otp];
+    newOtp[elementIndex] = event.target.value;
+    setOtp(newOtp);
+
+    if (event.target.value && elementIndex < otpRef.length - 1) {
+      otpRef[elementIndex + 1].current.focus();
+    }
+  };
+  const handleVerifyProfile = async () => {
+    try {
+      setOtpOpen(true);
+      const res = await fetch("/server/provider/sendotp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: provider.email,
+        }),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log("Error:", data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    try {
+      const res = await fetch("/server/provider/verifyotp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: provider.email,
+          otp: otp,
+        }),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log("Error:", data.message);
+      }
+      if(data.success === true){
+        setprovider((prev) => ({ ...prev, verified: true }));
+        toast.success("Profile Verified");
+        setOtpOpen(false);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
   return (
@@ -188,7 +255,7 @@ export default function Provider() {
               </SwiperSlide>
             ))}
           </Swiper>
-          <div className="lg:flex-row flex-col mx-auto flex w-full p-4 md:w-5/6">
+          <div className="lg:flex-row flex-col mx-auto flex w-full md:w-5/6">
             <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
               <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">
                 <p className="flex flex-col items-start justify-start">
@@ -200,21 +267,20 @@ export default function Provider() {
                 </p>
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex flex-col md:flex-row items-center justify-between gap-2">
-                    <p className="text-2xl md:text-start text-center text-gray font-bold mt-2">
+                    <p className="flex flex-row items-center gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
                       {provider.fullName}
+                      {provider.verified === true && (
+                        <FcApproval title="verified" />
+                      )}
                     </p>
+
                     <p className="flex flex-row  gap-2 text-xs text-center mt-2">
                       <Button
                         onClick={handleFavorite}
                         variant="outlined"
                         className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 items-center gap-2 rounded-full"
                       >
-                        {isFavorite ? (
-                          <FcLike className="" />
-                        ) : (
-                          <FaRegHeart className="" />
-                        )}{" "}
-                        Save
+                        {isFavorite ? <FcLike /> : <FaRegHeart />} Save
                       </Button>
                       <Button
                         variant="outlined"
@@ -225,6 +291,43 @@ export default function Provider() {
                         Share
                       </Button>
                     </p>
+                    {currentUser &&
+                      provider.userRef === currentUser._id &&
+                      provider.verified === false && (
+                        <button
+                          className="flex flex-row items-center underline text-sky-500"
+                          onClick={handleVerifyProfile}
+                        >
+                          <IoMdAlert className="text-amber-500" />
+                          Verified your profile!!
+                        </button>
+                      )}
+                    <Modal show={otpOpen} onClose={onCloseModal} popup>
+                      <Modal.Header></Modal.Header>
+                      <Modal.Body>
+                        <div className="flex flex-col text-xl font-semibold text-gray gap-4">
+                          OTP Sended to your {provider.email}
+                          <div className="flex flex-col gap-4 p-10">
+                            <label>Enter OTP</label>
+                            <div className="flex flex-row gap-2 items-center justify-center">
+                              {otp.map((value, index) => (
+                                <input
+                                  key={index}
+                                  value={value}
+                                  onChange={(event) => otpChange(index, event)}
+                                  className="w-12 h-12 text-4xl text-center border-2 border-gray-300 rounded-md"
+                                  maxLength={1}
+                                  ref={otpRef[index]}
+                                />
+                              ))}
+                            </div>
+                            <Button onClick={handleVerifyOtp}>
+                              Verify OTP
+                            </Button>
+                          </div>
+                        </div>
+                      </Modal.Body>
+                    </Modal>
                     <Modal show={isShare} onClose={onCloseModal} popup>
                       <Modal.Header className="p-6 text-2xl">
                         Share Provider Profile
@@ -262,11 +365,17 @@ export default function Provider() {
                   <p className="text-base text-center text-slate-600 font-semibold mt-2">
                     {Array.isArray(provider.name)
                       ? `${provider.name.slice(0, 2).join(", ")} ${
-                          provider.name.length > 2
-                            ? `+${provider.name.length - 2}more`
-                            : ""
+                          provider.name.length > 2 ? "" : ""
                         }`
                       : `${provider.name}`}
+                    {provider.name.length > 2 && (
+                      <a
+                        onClick={() => handleClick("Service", 120)}
+                        className="hover:underline cursor-pointer"
+                      >
+                        +{provider.name.length - 2}more
+                      </a>
+                    )}
                   </p>
                   <div className="flex flex-col items-start justify-start ">
                     <div className="flex items-center gap-1 mt-2">
@@ -308,7 +417,7 @@ export default function Provider() {
                           Care Settings:{" "}
                         </span>
                         {Array.isArray(provider.therapytype)
-                          ? `${provider.therapytype.slice(0, 2).join(", ")}`
+                          ? `${provider.therapytype.join(", ")}`
                           : provider.therapytype}
                       </p>
                     </div>
@@ -415,8 +524,10 @@ export default function Provider() {
                         key={index}
                         className="flex flex-row items-center gap-2 mt-2 w-1/2"
                       >
-                        <IoIosStar className="h-4 w-4 text-gray-600" />
-                        <p className="font-semibold text-gray-600">{service}</p>
+                        <IoMdCheckmarkCircleOutline className="h-5 w-5 text-amber-400" />
+                        <p className="font-semibold text-sm md:text-lg text-gray-600">
+                          {service}
+                        </p>
                       </div>
                     );
                   })}
@@ -424,32 +535,41 @@ export default function Provider() {
                 <h1 className="text-gray text-2xl mt-4 font-bold">
                   Care Settings
                 </h1>
-                <div className="flex mt-4 flex-warp justify-between">
+                <div className="flex mt-2 flex-warp justify-between">
                   {provider.therapytype.map((type, index) => {
                     return (
-                      <div className='flex flex-row items-center gap-2 mt-2 w-1/2' key={index}>
+                      <div
+                        className="flex flex-row items-center gap-2 mt-2 w-1/2"
+                        key={index}
+                      >
                         {type === "Virtual" && (
                           <>
                             <span className="flex flex-row text-2xl text-gray-600 items-center justify-between">
                               <MdOutlineVideoCameraFront />
                             </span>
-                            <p className="text-gray-700 font-semibold">Virtual</p>
+                            <p className="text-gray-700 text-sm md:text-lg font-semibold">
+                              Virtual
+                            </p>
                           </>
                         )}
                         {type === "In-Clinic" && (
                           <>
                             <span className="flex flex-row text-xl text-gray-600 items-center justify-between">
-                            <FaClinicMedical />
+                              <FaClinicMedical />
                             </span>
-                            <p className="text-gray-700 font-semibold">In-Clinic</p>
+                            <p className="text-gray-700 text-sm md:text-lg font-semibold">
+                              In-Clinic
+                            </p>
                           </>
                         )}
                         {type === "In-Home" && (
                           <>
                             <span className="flex flex-row text-2xl text-gray-600 items-center justify-between">
-                            <FaHome />
+                              <FaHome className="h-5" />
                             </span>
-                            <p className="text-gray-700 font-semibold">In-Home</p>
+                            <p className="text-gray-700 text-sm md:text-lg font-semibold">
+                              In-Home
+                            </p>
                           </>
                         )}
                       </div>
