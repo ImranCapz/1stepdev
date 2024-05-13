@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdLocationOn } from "react-icons/md";
-import { FcLike } from "react-icons/fc";
+import { FcApproval, FcLike } from "react-icons/fc";
 import PropTypes from "prop-types";
 import { GoHeartFill } from "react-icons/go";
 import { useSelector } from "react-redux";
@@ -137,8 +137,11 @@ export default function ProviderItem({ provider }) {
             </div>
             <div className="">
               <Link to={`/provider/${provider._id}`}>
-                <p className="truncate text-xl font-bold text-slate-700 hover:underline">
+                <p className="flex flex-row items-center gap-2 truncate text-xl font-bold text-slate-700 hover:underline">
                   {provider.fullName}
+                  {provider.verified === true && (
+                        <FcApproval title="verified Profile" />
+                      )}
                 </p>
               </Link>
               <p className="text-sm text-gray-600 font-semibold truncate w-full">
@@ -224,5 +227,6 @@ ProviderItem.propTypes = {
     numberofratings: PropTypes.number,
     description: PropTypes.string.isRequired,
     profilePicture: PropTypes.string.isRequired,
+    verified: PropTypes.bool,
   }).isRequired,
 };

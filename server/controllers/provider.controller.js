@@ -137,7 +137,7 @@ export const sendOtp = async (req, res, next) => {
     if (!validemail) {
       return next(errorHandler(404, "Email not found"));
     }
-    const generateOtp = Math.floor(Math.random() * 1000000);
+    const generateOtp = Math.floor(Math.random() * 900000) + 100000;
 
     otpStorage[email] = generateOtp;
     const html = `<b>Your 1Step Verified Provider Otp : <i>${generateOtp}</i></b>`;
@@ -156,17 +156,14 @@ export const sendOtp = async (req, res, next) => {
 };
 
 export const verifyOtpProvider = async (req, res, next) => {
-  const { email, otp } = req.body;
-  const storedOtp = otpStorage[email];
-  if (!storedOtp) {
-    return next(errorHandler(404, "Otp not found"));
-  }
-  const otpNumber = Number(otp.join(''));
-  if (storedOtp !== otpNumber) {
-    return next(errorHandler(401, "Invalid Otp"));
-  }
-  if (storedOtp === otpNumber) {
-    try {
+  try {
+    const { email, otp } = req.body;
+    const storedOtp = otpStorage[email];
+    console.log(`storedOtp: ${storedOtp}, otp: ${otp}`);
+    if (!storedOtp) {
+      return res.status(400).json({ success: false, message: "OTP expired" });
+    }
+    if (storedOtp.toString() === otp) {
       const result = await Provider.updateOne(
         {
           email: email,
@@ -177,13 +174,12 @@ export const verifyOtpProvider = async (req, res, next) => {
           },
         }
       );
-      if(result){
-        return res.status(200).json({success:true, message:"Provider verified successfully"});
-      }else{
-        return res.status(500).json({success:false, message:"Error, cant verify provider"});
-      } 
-    } catch (error) {
-      next(error);
+      delete otpStorage[email];
+      return res.status(200).json({ success: true, message: "OTP verified" });
+    }else{
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
     }
+  } catch (error) {
+    next(error);
   }
 };

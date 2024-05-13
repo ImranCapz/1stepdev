@@ -30,6 +30,7 @@ import {
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { FcApproval } from "react-icons/fc";
 import toast from "react-hot-toast";
+import OtpInput from "react-otp-input";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -56,10 +57,7 @@ export default function Provider() {
   const params = useParams();
   const dispatch = useDispatch();
   const urlRef = useRef(null);
-  const [otp, setOtp] = useState(Array(6).fill(""));
-  const otpRef = Array(6)
-    .fill()
-    .map(() => createRef());
+  const [otp, setOtp] = useState(0);
 
   console.log(otp);
   function onCloseModal() {
@@ -179,15 +177,16 @@ export default function Provider() {
     }
   };
 
-  const otpChange = (elementIndex, event) => {
-    const newOtp = [...otp];
-    newOtp[elementIndex] = event.target.value;
-    setOtp(newOtp);
+  // const otpChange = (elementIndex, event) => {
+  //   const newOtp = [...otp];
+  //   newOtp[elementIndex] = event.target.value;
+  //   setOtp(newOtp);
 
-    if (event.target.value && elementIndex < otpRef.length - 1) {
-      otpRef[elementIndex + 1].current.focus();
-    }
-  };
+  //   if (event.target.value && elementIndex < otpRef.length - 1) {
+  //     otpRef[elementIndex + 1].current.focus();
+  //   }
+  // };
+
   const handleVerifyProfile = async () => {
     try {
       setOtpOpen(true);
@@ -224,16 +223,20 @@ export default function Provider() {
       const data = await res.json();
       if (data.success === false) {
         console.log("Error:", data.message);
+        toast.error(data.message);
+        return;
       }
-      if(data.success === true){
+      if (data.success === true) {
         setprovider((prev) => ({ ...prev, verified: true }));
         toast.success("Profile Verified");
         setOtpOpen(false);
       }
     } catch (error) {
       console.log(error);
+      toast.error("An error occurred while verifying the OTP.");
     }
   };
+
   return (
     <div className="min-h-screen flex lg:flex-row flex-col-reverse w-full">
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
@@ -270,7 +273,7 @@ export default function Provider() {
                     <p className="flex flex-row items-center gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
                       {provider.fullName}
                       {provider.verified === true && (
-                        <FcApproval title="verified" />
+                        <FcApproval title="verified Profile" />
                       )}
                     </p>
 
@@ -309,17 +312,27 @@ export default function Provider() {
                           OTP Sended to your {provider.email}
                           <div className="flex flex-col gap-4 p-10">
                             <label>Enter OTP</label>
-                            <div className="flex flex-row gap-2 items-center justify-center">
-                              {otp.map((value, index) => (
-                                <input
-                                  key={index}
-                                  value={value}
-                                  onChange={(event) => otpChange(index, event)}
-                                  className="w-12 h-12 text-4xl text-center border-2 border-gray-300 rounded-md"
-                                  maxLength={1}
-                                  ref={otpRef[index]}
-                                />
-                              ))}
+                            <div className="flex flex-row items-center justify-center">
+                              <OtpInput
+                                value={otp}
+                                onChange={setOtp}
+                                numInputs={6}
+                                renderInput={(props) => (
+                                  <input
+                                    {...props}
+                                    style={{
+                                      width: "2.5rem",
+                                      height: "3rem",
+                                      margin: "0 0.5rem",
+                                      fontSize: "1.5rem",
+                                      borderRadius: "4px",
+                                      border: "1px solid rgba(0,0,0,0.3)",
+                                      color: "black",
+                                      backgroundColor: "white",
+                                    }}
+                                  />
+                                )}
+                              />
                             </div>
                             <Button onClick={handleVerifyOtp}>
                               Verify OTP
