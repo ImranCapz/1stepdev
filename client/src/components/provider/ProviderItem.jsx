@@ -16,7 +16,7 @@ import { toggleFavorite } from "../../redux/favorite/FavoriteSlice";
 import { fetchFavoriteStatus } from "../../redux/favorite/FavoriteSlice";
 import { useDispatch } from "react-redux";
 import { PiHandHeartFill } from "react-icons/pi";
-
+import { selectProvider } from "../../redux/provider/providerSlice";
 
 export default function ProviderItem({ provider }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -28,7 +28,9 @@ export default function ProviderItem({ provider }) {
   const queryParams = new URLSearchParams(location.search);
   const urlsearchTerm = queryParams.get("searchTerm");
   const dispatch = useDispatch();
-
+  const providerName= encodeURIComponent(provider.fullName).replace(/%20/g,'-');
+  const providerAddress = encodeURIComponent(provider.address).replace(/%20/g,'-');
+  const url = `/provider/${providerName}-${providerAddress}`;
   useEffect(() => {
     setSearchTerm(urlsearchTerm);
   }, []);
@@ -37,7 +39,6 @@ export default function ProviderItem({ provider }) {
     console.log("close modal");
     setListOpen(false);
   }
-
 
   const toggleFavoriteStatus = async () => {
     if (!currentUser) {
@@ -91,6 +92,10 @@ export default function ProviderItem({ provider }) {
     fetchRating();
   }, [provider._id]);
 
+  const handleproviderId =()=>{
+    dispatch(selectProvider(provider._id))
+  }
+
   return (
     <div className="relative bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[700px]">
       <button
@@ -136,7 +141,7 @@ export default function ProviderItem({ provider }) {
               </p>
             </div>
             <div className="">
-              <Link to={`/provider/${provider._id}`}>
+              <Link to={url} onClick={handleproviderId}>
                 <p className="flex flex-row items-center gap-2 truncate text-xl font-bold text-slate-700 hover:underline">
                   {provider.fullName}
                   {provider.verified === true && (

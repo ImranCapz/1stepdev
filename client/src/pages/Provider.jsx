@@ -1,5 +1,5 @@
-import { createRef, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
@@ -31,6 +31,7 @@ import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { FcApproval } from "react-icons/fc";
 import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
+import { Tooltip } from "flowbite-react";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -42,6 +43,7 @@ function convert12Hrs(time) {
 export default function Provider() {
   SwiperCore.use([Navigation]);
   const { currentUser } = useSelector((state) => state.user);
+  const { id } = useSelector((state)=>state.provider);
   const [provider, setprovider] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -54,12 +56,13 @@ export default function Provider() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [description, setDescription] = useState(false);
   const [otpOpen, setOtpOpen] = useState(false);
-  const params = useParams();
   const dispatch = useDispatch();
   const urlRef = useRef(null);
   const [otp, setOtp] = useState(0);
+  const ProviderName = encodeURIComponent(provider?.fullName).replace(/%20/g, "-");
+  const ProviderAddress = encodeURIComponent(provider?.address).replace(/%20/g, "-");
+  const url = `/review/${ProviderName}-${ProviderAddress}`
 
-  console.log(otp);
   function onCloseModal() {
     setIsListOpen(false);
     setOpenModal(false);
@@ -71,7 +74,7 @@ export default function Provider() {
     const fetchprovider = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/server/provider/get/${params.providerId}`);
+        const res = await fetch(`/server/provider/get/${id}`);
         const data = await res.json();
         if (data.success === false) {
           setError(true);
@@ -89,13 +92,13 @@ export default function Provider() {
     };
     0;
     fetchprovider();
-  }, [params.providerId]);
+  }, [id]);
 
   useEffect(() => {
     const fetchRating = async () => {
       try {
         const res = await fetch(
-          `/server/rating/getreview/${params.providerId}`
+          `/server/rating/getreview/${id}`
         );
         const data = await res.json();
         setReview(data);
@@ -104,7 +107,7 @@ export default function Provider() {
       }
     };
     fetchRating();
-  }, [params.providerId]);
+  }, [id]);
 
   const handleFavorite = async () => {
     if (!currentUser) {
@@ -115,7 +118,7 @@ export default function Provider() {
       dispatch(
         toggleFavorite({
           userId: currentUser._id,
-          providerId: params.providerId,
+          providerId: id,
         })
       );
       setIsFavorite((prev) => !prev);
@@ -125,27 +128,26 @@ export default function Provider() {
   };
 
   useEffect(() => {
-    const fetchFavoriteHeart = async () => {
-      if (!currentUser) {
-        return;
-      }
-      try {
-        const favoriteStatus = await dispatch(
-          fetchFavoriteStatus({
-            userId: currentUser._id,
-            providerId: params.providerId,
-          })
-        );
-        if (favoriteStatus.payload !== undefined) {
-          setIsFavorite(favoriteStatus.payload);
-          console.log(favoriteStatus.payload);
+    if (id && currentUser) {
+      const fetchFavoriteHeart = async () => {
+        try {
+          const favoriteStatus = await dispatch(
+            fetchFavoriteStatus({
+              userId: currentUser._id,
+              providerId: id,
+            })
+          );
+          if (favoriteStatus.payload !== undefined) {
+            setIsFavorite(favoriteStatus.payload);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchFavoriteHeart();
-  }, [currentUser, dispatch, params.providerId]);
+      };
+      fetchFavoriteHeart();
+    }
+  }, [id, currentUser, dispatch]);
+
 
   const copyToClipboard = async () => {
     try {
@@ -176,16 +178,6 @@ export default function Provider() {
       });
     }
   };
-
-  // const otpChange = (elementIndex, event) => {
-  //   const newOtp = [...otp];
-  //   newOtp[elementIndex] = event.target.value;
-  //   setOtp(newOtp);
-
-  //   if (event.target.value && elementIndex < otpRef.length - 1) {
-  //     otpRef[elementIndex + 1].current.focus();
-  //   }
-  // };
 
   const handleVerifyProfile = async () => {
     try {
@@ -270,13 +262,17 @@ export default function Provider() {
                 </p>
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex flex-col md:flex-row items-center justify-between gap-2">
-                    <p className="flex flex-row items-center gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
+                    <div className="flex flex-row items-center gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
                       {provider.fullName}
                       {provider.verified === true && (
-                        <FcApproval title="verified Profile" />
+                        <div className="">
+                          <Tooltip content="Verifed Profile" animation="duration-500">
+                          <FcApproval/>
+                          </Tooltip>
+                          
+                        </div>
                       )}
-                    </p>
-
+                    </div>
                     <p className="flex flex-row  gap-2 text-xs text-center mt-2">
                       <Button
                         onClick={handleFavorite}
@@ -302,7 +298,7 @@ export default function Provider() {
                           onClick={handleVerifyProfile}
                         >
                           <IoMdAlert className="text-amber-500" />
-                          Verified your profile!!
+                          Click to Verified!!
                         </button>
                       )}
                     <Modal show={otpOpen} onClose={onCloseModal} popup>
@@ -358,7 +354,7 @@ export default function Provider() {
                           >
                             {shareClicked ? (
                               <div className="flex flex-row items-center gap-1 p-2 text-white bg-green-400 rounded-md">
-                                <FaCheck className="" />
+                                <FaCheck />
                                 Copied
                               </div>
                             ) : (
@@ -501,10 +497,7 @@ export default function Provider() {
                 <div className="flex flex-row gap-4 mt-4">
                   <Button variant="outlined">View Review</Button>
                   <Link
-                    to={{
-                      pathname: `/review/${provider._id}`,
-                      state: { provider: provider },
-                    }}
+                    to={url}
                   >
                     <Button className="blue-button">Leave Review</Button>
                   </Link>

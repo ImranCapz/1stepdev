@@ -1,6 +1,5 @@
 import Provider from "../models/provider.model.js";
 import { errorHandler } from "../utils/error.js";
-import User from "../models/user.model.js";
 import nodemailer from "nodemailer";
 
 export const createProvider = async (req, res, next) => {
@@ -159,7 +158,6 @@ export const verifyOtpProvider = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
     const storedOtp = otpStorage[email];
-    console.log(`storedOtp: ${storedOtp}, otp: ${otp}`);
     if (!storedOtp) {
       return res.status(400).json({ success: false, message: "OTP expired" });
     }

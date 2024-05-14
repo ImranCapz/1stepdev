@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { HiOutlineHandThumbUp } from "react-icons/hi2";
 import { HiOutlineHandThumbDown } from "react-icons/hi2";
@@ -11,11 +10,12 @@ import { TiStarFullOutline } from "react-icons/ti";
 import { MdLocationOn } from "react-icons/md";
 
 export default function ProviderReview() {
-  const { providerId } = useParams();
   const [provider, setProvider] = useState(null);
   const [selectedButton, setSelectedButton] = useState(null);
   const [review, setReview] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
+  const { id } = useSelector((state)=> state.provider);
+  const providerId = id
 
   useEffect(() => {
     const fetchProvider = async () => {

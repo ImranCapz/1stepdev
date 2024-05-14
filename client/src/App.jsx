@@ -39,7 +39,7 @@ function App() {
           <Route path="/forgetpassword" element={<ResetPasswordForm />} />
           <Route path="/verifyotp" element={<VerifyOtp />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/provider/:providerId" element={<Provider />} />
+          <Route path="/provider/*" element={<Provider />} />
           <Route path="/for-providers" element={<CreateProfile />} />
           <Route path="/review/:providerId" element={<ProviderReview/>} />
           <Route element={<PrivateRoute />}>

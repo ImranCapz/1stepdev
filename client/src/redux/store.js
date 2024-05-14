@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userReducer from "./user/userSlice";
 import bookingReducer from "./booking/bookingSlice";
 import favoriteReducer from "./favorite/FavoriteSlice";
+import providerReducer from "./provider/providerSlice";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -9,6 +10,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   booking: bookingReducer,
   favorite: favoriteReducer,
+  provider:providerReducer,
 });
 
 const persistConfig = {

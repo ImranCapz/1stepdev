@@ -271,7 +271,7 @@ export default function CreateProvider() {
           />
           <input
             type="text"
-            placeholder="Full Name with Degree*"
+            placeholder="Full Name*"
             className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
             id="fullName"
             required
