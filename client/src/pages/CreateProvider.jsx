@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getDownloadURL,
   getStorage,
@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { useRef } from "react";
 import Select from "react-select";
+import { Country, State, City } from "country-state-city";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -31,10 +32,16 @@ export default function CreateProvider() {
     fullName: "",
     experience: "",
     phone: "",
-    address: "",
+    address: {
+      addressLine1: "",
+      state: "",
+      city: "",
+      street: "",
+      pincode: "",
+    },
     therapytype: "",
     availability: {
-      morningStart:"08:00",
+      morningStart: "08:00",
       morningEnd: "12:00",
       eveningStart: "13:00",
       eveningEnd: "17:00",
@@ -197,9 +204,26 @@ export default function CreateProvider() {
     { value: "Virtual", label: "Virtual" },
     { value: "In-Clinic", label: "In-Clinic" },
     { value: "In-Home", label: "In-Home" },
-  ]
+  ];
+
+  const [selectedState, setSelectedState] = useState();
+  const [cities, setCities] = useState([]);
+  let country = Country.getAllCountries();
+  const [selectedCountry, setSelectedCountry] = useState(country[0]);
+  let state = State.getStatesOfCountry(selectedCountry.isoCode);
+
+  useEffect(() => {
+    if (selectedCountry && selectedState) {
+      const cities = City.getCitiesOfState(
+        selectedCountry.isoCode,
+        selectedState
+      );
+      setCities(cities);
+    }
+  }, [selectedCountry, selectedState]);
+
   return (
-    <div className="p-10 w-full mx-auto flex-col items-center">
+    <div className="md:p-10 p-2 w-full mx-auto flex-col items-center">
       <h1 className="text-base text-gray-700 font-semibold text-left my-7 mt-5">
         Fill the form to create a provider
       </h1>
@@ -307,23 +331,95 @@ export default function CreateProvider() {
             value={formData.license}
           />
           <input
-            type="number"
-            placeholder="Phone number"
+            type="text"
+            placeholder="Address Line 1"
             className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="phone"
+            id="addressLine1"
             required
             onChange={handleChange}
-            value={formData.phone}
+            value={formData.address.addressLine1}
           />
           <input
-            type="text"
-            placeholder="Address"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="address"
-            required
-            onChange={handleChange}
-            value={formData.address}
-          />
+              type="text"
+              placeholder="Street"
+              className="w-full border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+              id="street"
+              required
+              onChange={handleChange}
+              value={formData.address.street}
+            />
+          <div className="flex flex-row gap-2">
+          <Select
+              id="country"
+              options={Country.getAllCountries().map((country) => {
+                return { value: country.name, label: country.name };
+              })}
+              className="w-full"
+              placeholder="Select Country"
+              onChange={(selectedOption) => {
+                const selectedCountry = Country.getAllCountries().find(
+                  (country) => country.name === selectedOption.value
+                );
+                setSelectedCountry(selectedCountry);
+                setFormData({
+                  ...formData,
+                  address: {
+                    ...formData.address,
+                    country: selectedOption.label,
+                  },
+                });
+              }}
+            />
+            <Select
+            id="state"
+              options={state.map((state) => {
+                return { value: state.isoCode, label: state.name };
+              })}
+              placeholder="Select State"
+              className="w-full"
+              onChange={(selectedOption) => {
+                console.log("State select onChange triggered", selectedOption);
+                setSelectedState(selectedOption.value);
+                setFormData({
+                  ...formData,
+                  address: {
+                    ...formData.address,
+                    state: selectedOption.label,
+                  },
+                });
+              }}
+            />
+          </div>
+          <div className="flex flex-row gap-2">
+
+            <Select
+            id="city"
+              options={cities.map((city) => {
+                return { value: city.name, label: city.name };
+              })}
+              className="w-full"
+              placeholder="Select City"
+              onChange={(selectedOption) => {
+                setFormData({
+                  ...formData,
+                  address: {
+                    ...formData.address,
+                    city: selectedOption.label,
+                  },
+                });
+              }}
+            />
+           
+            <input
+              type="number"
+              placeholder="Pincode"
+              className="w-full border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+              id="pincode"
+              required
+              onChange={handleChange}
+              value={formData.address.pincode}
+            />
+          </div>
           <div className="flex flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <input
@@ -336,7 +432,7 @@ export default function CreateProvider() {
                 onChange={handleChange}
                 value={formData.regularPrice}
               />
-              
+
               <div className="flex flex-col items-center">
                 <p>Regular Fees</p>
                 <span className="text-xs">( ₹ per Appointment )</span>
@@ -353,7 +449,7 @@ export default function CreateProvider() {
                 onChange={handleChange}
                 value={formData.experience}
               />
-              
+
               <div className="flex flex-col items-center">
                 <p>Year of Experience</p>
                 <span className="text-xs">( services )</span>
@@ -362,32 +458,41 @@ export default function CreateProvider() {
           </div>
         </div>
         <div className="flex flex-col flex-1 gap-4">
-         <Select
-         id="therapytype"
-         options={therapyType}
-         isMulti
-         required
-         placeholder="Type of Therapy"
-         touchUi={false}
-         className="border-2 p-3 rounded-lg border-slate-500 bg-white focus:border-amber-700 hover:border-amber-500"
-         onChange={(selectedOptions)=>{
-          setFormData((prevState)=>({
-            ...prevState,
-            therapytype: selectedOptions.map((option)=>option.value),
-          }))
-         }}
-         styles={{
-          control:(provided)=>({
-            ...provided,
-            backgroundColor: "transparent",
-            minWidth: '160px',
-            border: 'none',
-            boxShadow: 'none',
-            transition: 'all 0.3s ease',
-          })
-         }}
-         />
+          <Select
+            id="therapytype"
+            options={therapyType}
+            isMulti
+            required
+            placeholder="Type of Therapy"
+            touchUi={false}
+            className="border-2 p-3 rounded-lg border-slate-500 bg-white focus:border-amber-700 hover:border-amber-500"
+            onChange={(selectedOptions) => {
+              setFormData((prevState) => ({
+                ...prevState,
+                therapytype: selectedOptions.map((option) => option.value),
+              }));
+            }}
+            styles={{
+              control: (provided) => ({
+                ...provided,
+                backgroundColor: "transparent",
+                minWidth: "160px",
+                border: "none",
+                boxShadow: "none",
+                transition: "all 0.3s ease",
+              }),
+            }}
+          />
           <div className="flex flex-col gap-4">
+            <input
+              type="number"
+              placeholder="Phone number"
+              className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+              id="phone"
+              required
+              onChange={handleChange}
+              value={formData.phone}
+            />
             <p className="font-semibold">Availability:</p>
             <div className="flex flex-row gap-4">
               <p>Morning:</p>
