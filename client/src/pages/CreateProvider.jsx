@@ -34,6 +34,7 @@ export default function CreateProvider() {
     phone: "",
     address: {
       addressLine1: "",
+      country: "",
       state: "",
       city: "",
       street: "",
@@ -50,7 +51,6 @@ export default function CreateProvider() {
     description: "",
     profilePicture: "",
   });
-  console.log(formData);
 
   const handleRemoveImage = (index) => {
     setFormData({
@@ -114,24 +114,30 @@ export default function CreateProvider() {
   };
 
   const handleChange = (e) => {
-    if (
-      e.target.type === "number" ||
-      e.target.type === "text" ||
-      e.target.type === "textarea" ||
-      e.target.type === "email"
-    ) {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
-      });
-    } else if (e.target.type === "time") {
+    const { id, value, type } = e.target;
+    const addressFields = ["addressLine1", "street", "pincode"];
+
+    if (addressFields.includes(id)) {
+      setFormData((prevState) => ({
+        ...prevState,
+        address: {
+          ...prevState.address,
+          [id]: value,
+        },
+      }));
+    } else if (type === "time") {
       setFormData((prevState) => ({
         ...prevState,
         availability: {
           ...prevState.availability,
-          [e.target.id]: e.target.value,
+          [id]: value,
         },
       }));
+    } else {
+      setFormData({
+        ...formData,
+        [id]: value,
+      });
     }
   };
 
@@ -331,30 +337,28 @@ export default function CreateProvider() {
             value={formData.license}
           />
           <input
-            type="text"
             placeholder="Address Line 1"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+            className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700 focus:outline-none focus:ring-0"
             id="addressLine1"
             required
             onChange={handleChange}
             value={formData.address.addressLine1}
           />
           <input
-              type="text"
-              placeholder="Street"
-              className="w-full border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-              id="street"
-              required
-              onChange={handleChange}
-              value={formData.address.street}
-            />
+            placeholder="Street"
+            className="w-full border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700 focus:outline-none focus:ring-0"
+            id="street"
+            required
+            onChange={handleChange}
+            value={formData.address.street}
+          />
           <div className="flex flex-row gap-2">
-          <Select
+            <Select
               id="country"
               options={Country.getAllCountries().map((country) => {
                 return { value: country.name, label: country.name };
               })}
-              className="w-full"
+              className="w-full rounded-lg border-2 border-slate-500"
               placeholder="Select Country"
               onChange={(selectedOption) => {
                 const selectedCountry = Country.getAllCountries().find(
@@ -371,12 +375,12 @@ export default function CreateProvider() {
               }}
             />
             <Select
-            id="state"
+              id="state"
               options={state.map((state) => {
                 return { value: state.isoCode, label: state.name };
               })}
               placeholder="Select State"
-              className="w-full"
+              className="w-full rounded-lg border-2 border-slate-500"
               onChange={(selectedOption) => {
                 console.log("State select onChange triggered", selectedOption);
                 setSelectedState(selectedOption.value);
@@ -391,13 +395,12 @@ export default function CreateProvider() {
             />
           </div>
           <div className="flex flex-row gap-2">
-
             <Select
-            id="city"
+              id="city"
               options={cities.map((city) => {
                 return { value: city.name, label: city.name };
               })}
-              className="w-full"
+              className="w-full border-2 rounded-lg border-slate-500"
               placeholder="Select City"
               onChange={(selectedOption) => {
                 setFormData({
@@ -409,11 +412,10 @@ export default function CreateProvider() {
                 });
               }}
             />
-           
+
             <input
-              type="number"
               placeholder="Pincode"
-              className="w-full border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+              className="w-full border-2 p-1 border-slate-500 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
               id="pincode"
               required
               onChange={handleChange}

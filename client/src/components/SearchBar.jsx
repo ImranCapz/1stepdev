@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Select from "react-select";
 import { FaSearch } from "react-icons/fa";
+import { City } from "country-state-city";
+import CreatableSelect from "react-select/creatable";
 
 export const SearchBar = () => {
   const navigate = useNavigate();
   const [searchTerm, setsearchTerm] = useState("");
   const [address, setAddress] = useState("");
+  const [cityOptions, setCityOptions] = useState([]);
   const [providers, setProviders] = useState([]);
 
+  console.log(cityOptions);
   const suggestions = [
     { value: "Popular Search", label: "Popular Services", isDisabled: true },
     { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
@@ -38,31 +42,25 @@ export const SearchBar = () => {
 
   const handlesubmit = (e) => {
     e.preventDefault();
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams();
     urlParams.set("searchTerm", searchTerm);
 
     if (!address) {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-          const res = await fetch(
-            `https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=3ff527dd52944833bd64a0290dd8f25b`
-          );
-          const data = await res.json();
-          const city = data.results[0].components.city;
+      fetch("https://ipapi.co/json/")
+        .then((res) => res.json())
+        .then(async (location) => {
+          const city = location.city;
           setAddress(city);
           urlParams.set("address", city);
           const searchQuery = urlParams.toString();
           navigate(`/search?${searchQuery}`);
         });
-      } else {
-        console.log("Geolocation is not supported by this browser.");
-      }
-    } else {
-      urlParams.set("address", address);
+    }else{
+      urlParams.set("address",address);
       const searchQuery = urlParams.toString();
       navigate(`/search?${searchQuery}`);
     }
-  };
+  }
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -74,14 +72,27 @@ export const SearchBar = () => {
     if (addressFromUrl) {
       setAddress(addressFromUrl);
       fetchProvider(addressFromUrl);
+    } else {
+      fetch("https://ipapi.co/json/")
+        .then((res) => res.json())
+        .then((location) => {
+          const state = location.region_code;
+          const cities = City.getCitiesOfState("IN", state);
+          setCityOptions(
+            cities.map((city) => ({
+              value: city.name,
+              label: city.name,
+            }))
+          );
+          setAddress(location.city);
+        });
     }
   }, []);
 
-  
   return (
     <div className="flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
       <form
-        className="flex flex-col md:flex-row space-x-3  items-center"
+        className="flex flex-col md:flex-row space-x-3 items-center"
         onSubmit={handlesubmit}
       >
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
@@ -97,6 +108,7 @@ export const SearchBar = () => {
             onChange={(option) => setsearchTerm(option.value)}
             options={whatoptions}
             placeholder="Service or provider"
+            required
             isSearchable
             className="capitalize trauncate text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
             styles={{
@@ -135,13 +147,42 @@ export const SearchBar = () => {
           >
             Where
           </label>
-          <input
+          <CreatableSelect
             type="address"
             id="address"
-            placeholder="City, State, Zip Code"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="appearance-none bg-transparent capitalize text-sm border-none w-full text-gray-700 py-2 px-3 leading-tight focus:outline-none"
+            placeholder="City, Pin Code"
+            value={cityOptions.find((option) => option.value === address)}
+            onChange={(option) => setAddress(option.value)}
+            options={cityOptions}
+            isSearchable
+            className="capitalize trauncate text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
+            styles={{
+              control: (provided) => ({
+                ...provided,
+                backgroundColor: "transparent !important",
+                minWidth: 210,
+                width: "auto",
+                border: "none",
+                outline: "none",
+                boxShadow: "none",
+                transition: "all 0.3s ease",
+              }),
+              singleValue: (provided) => ({
+                ...provided,
+                maxWidth: 160, // This sets the maximum width of the selected option text
+                position: "absolute",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isSelected
+                  ? "#F9CB5E"
+                  : provided.backgroundColor,
+                color: state.isSelected ? "#4D4A45" : provided.color,
+              }),
+            }}
           />
         </div>
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
@@ -163,7 +204,7 @@ export const SearchBar = () => {
           data-ripple-light="true"
           className="py-4 px-5 font-medium text-indigo-950 bg-sky-400 hover:bg-sky-300 transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs  rounded-lg shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none mt-4 mb-4 mr-4"
         >
-          <FaSearch />
+          <FaSearch/>
         </button>
       </form>
     </div>

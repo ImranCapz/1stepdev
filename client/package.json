@@ -32,6 +32,7 @@
     "nodemon": "^3.0.3",
     "onestep": "file:..",
     "react": "^18.2.0",
+    "react-content-loader": "^7.0.0",
     "react-countup": "^6.5.3",
     "react-datetime-picker": "^5.6.0",
     "react-dom": "^18.2.0",

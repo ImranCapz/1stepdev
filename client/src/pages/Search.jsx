@@ -7,15 +7,29 @@ import PlacesAutocomplete, {
   getLatLng,
 } from "react-places-autocomplete";
 import TopLoadingBar from "react-top-loading-bar";
+import { FaSearch } from "react-icons/fa";
+import { Button } from "@material-tailwind/react";
+import { HiOutlineFilter } from "react-icons/hi";
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import ContentLoader from "react-content-loader";
 
 export default function Search() {
   const navigate = useNavigate();
   const [searchTerm, setsearchTerm] = useState("");
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState({});
   const [loading, setLoading] = useState("false");
   const [providers, setProviders] = useState([]);
   const [showMore, setShowMore] = useState(false);
   const topLoadingBarRef = useRef(null);
+  const location = useLocation();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const suggestions = [
     { value: "Popular Search", label: "Popular Services", isDisabled: true },
@@ -36,23 +50,12 @@ export default function Search() {
     isDisabled: suggestion.isDisabled,
   }));
 
-  const options = [
-    {
-      value: "createdAt_desc",
-      label: "Latest",
-    },
-    {
-      value: "createdAt_asc",
-      label: "Oldest",
-    },
-  ];
-
   const handleSelect = async (value) => {
     try {
       setLoading(true);
       const results = await geocodeByAddress(value);
       const latLng = await getLatLng(results[0]);
-      setAddress(value);
+      setAddress({ city: value });
     } catch (error) {
       console.error("Error occurred in handleSelect:", error);
     } finally {
@@ -60,28 +63,11 @@ export default function Search() {
     }
   };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      width: 120, // Reduced width
-      height: 40, // Reduced height
-      minHeight: 30,
-    }),
-    menu: (provided) => ({
-      ...provided,
-      width: "auto",
-    }),
-  };
-
-  const handleChanges = (e) => {
-    e.preventDefault();
-  };
-
   const handlesubmit = (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("searchTerm", searchTerm);
-    urlParams.set("address", address);
+    urlParams.set("address", address.city);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
@@ -89,7 +75,6 @@ export default function Search() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
-    let addressFromUrl = urlParams.get("address");
     if (searchTermFromUrl) {
       setsearchTerm(searchTermFromUrl);
     }
@@ -97,24 +82,24 @@ export default function Search() {
     const fetchProvider = async (address) => {
       setLoading(true);
       setShowMore(false);
-      urlParams.set("address", address);
+      urlParams.set("address", address.city);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
-      console.log(data);
       if (data.length > 8) {
         setShowMore(true);
       } else {
         setShowMore(false);
       }
-      
+
       setProviders(data);
       setLoading(false);
     };
-
+    let addressFromUrl = urlParams.get("address");
     if (addressFromUrl) {
-      setAddress(addressFromUrl);
-      fetchProvider(addressFromUrl);
+      const address = { city: addressFromUrl };
+      setAddress(address);
+      fetchProvider(address);
     } else {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
@@ -123,13 +108,13 @@ export default function Search() {
           );
           const data = await res.json();
           const city = data.results[0].components.city;
-          setAddress(city);
+          setAddress({ city: city });
           fetchProvider(city);
         });
       } else {
         console.log("Geolocation is not supported by this browser.");
       }
-    }
+    } 
     topLoadingBarRef.current.complete();
   }, [location.search]);
 
@@ -147,8 +132,18 @@ export default function Search() {
     setProviders([...providers, ...data]);
   };
 
+  useEffect(() => {
+    if (providers.length !== 0) {
+      document.title = `${providers.length} BEST ${new URLSearchParams(
+        location.search
+      ).get("searchTerm")} near ${address.city}`;
+    } else {
+      document.title = "1Step";
+    }
+  });
+
   return (
-    <div className="p-4 overflow-visible">
+    <div className="p-4 md:p-8 overflow-visible">
       <TopLoadingBar
         ref={topLoadingBarRef}
         color="#ff9900"
@@ -156,14 +151,14 @@ export default function Search() {
         speed={1000}
       />{" "}
       <form
-        className="flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg md:w-1/2"
+        className="p-4 flex sm:w-[750px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg shadow-lg"
         onSubmit={handlesubmit}
       >
-        <div className="flex flex-col md:flex-row space-x-3 items-center overflow-visible">
-          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10 ">
+        <div className="flex flex-row md:flex-row space-x-3 items-center overflow-visible">
+          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 z-10">
             <label
               htmlFor="what"
-              className="font-sans py-1 px-2 block text-base text-gray-700 font-bold mt-8"
+              className="font-sans py-1 px-2 block text-base text-gray-700 font-bold"
             >
               What
             </label>
@@ -174,12 +169,12 @@ export default function Search() {
               options={whatoptions}
               placeholder="Service or provider"
               isSearchable
-              className="capitalize trauncate text-base border-slate-800 w-full text-gray-900 py-1 px-2 leading-tight"
+              className=" md:w-full capitalize trauncate md:text-base text-sm border-slate-800 text-gray-900 py-1 px-2 leading-tight"
               styles={{
                 control: (provided, state) => ({
                   ...provided,
                   backgroundColor: "transparent",
-                  minWidth: 210,
+                  minWidth: windowWidth > 786 ? 210 : 140,
                   width: "auto",
                   margin: 0,
                   border: "0px solid black",
@@ -207,16 +202,16 @@ export default function Search() {
               }}
             />
           </div>
-          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 ">
+          <div className="transform border-b-2 md:mb-1 bg-transparent text-lg duration-300 focus-within:border-amber-500  ">
             <label
               htmlFor="where"
-              className="block py-1 px-2 text-base font-bold text-gray-700 mt-8"
+              className="block py-1 px-2 text-base font-bold text-gray-700"
             >
               Where
             </label>
             <PlacesAutocomplete
-              value={address}
-              onChange={setAddress}
+              value={address.city || ""}
+              onChange={(value) => setAddress({ city: value })}
               onSelect={handleSelect}
             >
               {({
@@ -228,9 +223,9 @@ export default function Search() {
                 <div style={{ position: "relative" }}>
                   <input
                     {...getInputProps({
-                      placeholder: "City, State or Zip Code",
+                      placeholder: "City or Zip Code",
                       className:
-                        "appearance-none bg-transparent capitalize text-base border-none w-full text-gray-700 py-3 px-4 leading-tight focus:outline-none location-search-input focus:outline-none focus:border-transparent focus:ring-0",
+                        "w-28 md:w-full appearance-none bg-transparent capitalize md:text-base text-sm border-none text-gray-700 py-3 px-4 leading-tight focus:outline-none location-search-input focus:outline-none focus:border-transparent focus:ring-0",
                     })}
                   />
                   <div
@@ -263,10 +258,10 @@ export default function Search() {
               )}
             </PlacesAutocomplete>
           </div>
-          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
+          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 sm:block hidden">
             <label
               htmlFor="insurance"
-              className="block py-1 px-2 text-base font-bold text-gray-700 mt-8"
+              className="block py-1 px-2 text-base font-bold text-gray-700"
             >
               Insurance
             </label>
@@ -279,27 +274,50 @@ export default function Search() {
           </div>
           <button
             type="submit"
-            className=" py-3 px-4 font-medium  text-indigo-950 bg-sky-300 hover:bg-sky-200 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0"
+            className="py-3 px-4 font-medium  text-indigo-950 bg-sky-300 hover:bg-sky-200 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0"
           >
-            Search
+            <span className="lg:inline hidden">Search</span>
+            <FaSearch className="lg:hidden inline" />
           </button>
         </div>
       </form>
-      <div className="">
+      <div className="space-y-3">
         <div className="sm:flex-col lg:flex-row lg:w-1/2"> </div>
         <div>
           <div className="py-2 flex items-center">
-            <label className=" font-semibold mr-2">Sort:</label>
-            <Select
-              id="sort_order"
-              options={options}
-              styles={customStyles}
-              onChange={handleChanges}
-              defaultValue={"created_at_dec"}
-            />
+            <Button
+              variant="outlined"
+              className="flex flex-row text-gray-800 items-center gap-2 font-bold"
+            >
+              <HiOutlineFilter />
+              Filter
+            </Button>
+          </div>
+          <div className="breadcrumbs font-semibold text-sm mt-2 text-gray-700">
+            <Link to={"/"}>Home</Link> &gt;
+            <Link
+              to={`/search?searchTerm=${searchTerm}&address=${address.city}`}
+            >
+              &nbsp;{new URLSearchParams(location.search).get("searchTerm")}
+            </Link>{" "}
+            &gt;
+            <Link
+              to={`/search?searchTerm=${searchTerm}&address=${address.city}`}
+            >
+              &nbsp;{new URLSearchParams(location.search).get("address")}
+            </Link>
           </div>
         </div>
-        <div className="p-7 flex flex-col gap-4">
+        {providers.length !== 0 && (
+          <>
+            <div className="font-bold text-xl md:text-3xl text-gray">
+              {providers.length} Best{" "}
+              {new URLSearchParams(location.search).get("searchTerm")} near{" "}
+              {address.city}
+            </div>
+          </>
+        )}
+        <div className="flex flex-col gap-4">
           {!loading && providers.length === 0 && (
             <p className="text-center text-xl text-slate-700">
               We couldn&apos;t find any doctors for you
@@ -307,15 +325,44 @@ export default function Search() {
           )}
           {loading && (
             <p className="text-center text-xl text-slate-700 w-full">
-              Loading...
+              <ContentLoader
+                viewBox="0 0 500 475"
+                height={475}
+                width={500}
+              >
+                <circle cx="70.2" cy="73.2" r="41.3" />
+                <rect x="129.9" y="29.5" width="125.5" height="17" />
+                <rect x="129.9" y="64.7" width="296" height="17" />
+                <rect x="129.9" y="97.8" width="253.5" height="17" />
+                <rect x="129.9" y="132.3" width="212.5" height="17" />
+
+                <circle cx="70.7" cy="243.5" r="41.3" />
+                <rect x="130.4" y="199.9" width="125.5" height="17" />
+                <rect x="130.4" y="235" width="296" height="17" />
+                <rect x="130.4" y="268.2" width="253.5" height="17" />
+                <rect x="130.4" y="302.6" width="212.5" height="17" />
+
+                <circle cx="70.7" cy="412.7" r="41.3" />
+                <rect x="130.4" y="369" width="125.5" height="17" />
+                <rect x="130.4" y="404.2" width="296" height="17" />
+                <rect x="130.4" y="437.3" width="253.5" height="17" />
+                <rect x="130.4" y="471.8" width="212.5" height="17" />
+              </ContentLoader>
             </p>
           )}
           {!loading &&
             providers &&
             providers.map((provider) => {
-              return <ProviderItem key={provider._id} provider={{ ...provider, totalrating: parseFloat(provider.totalrating) }} />;
+              return (
+                <ProviderItem
+                  key={provider._id}
+                  provider={{
+                    ...provider,
+                    totalrating: parseFloat(provider.totalrating),
+                  }}
+                />
+              );
             })}
-
           {showMore && (
             <button
               onClick={onShowMoreClick}

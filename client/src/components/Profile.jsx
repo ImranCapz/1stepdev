@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import { FaRegUser } from "react-icons/fa";
 import { FiMail } from "react-icons/fi";
 import { PiLockSimpleBold } from "react-icons/pi";
+import { selectProvider } from "../redux/provider/providerSlice";
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -268,7 +269,7 @@ export default function Profile() {
                     className="h-16 w-16 object-contain"
                   />
                 </Link>
-                <Link
+                <Link onClick={()=> dispatch(selectProvider(provider._id))}
                   className="flex-1 font-semibold hover:underline truncate"
                   to={`/provider/${provider._id}`}
                 >

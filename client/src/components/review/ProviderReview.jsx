@@ -14,8 +14,8 @@ export default function ProviderReview() {
   const [selectedButton, setSelectedButton] = useState(null);
   const [review, setReview] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
-  const { id } = useSelector((state)=> state.provider);
-  const providerId = id
+  const { id } = useSelector((state) => state.provider);
+  const providerId = id;
 
   useEffect(() => {
     const fetchProvider = async () => {
@@ -205,13 +205,13 @@ export default function ProviderReview() {
               <img
                 src={provider.profilePicture}
                 alt="profile"
-                className="h-24 w-24 rounded-full object-cover shadow-sm "
+                className="rounded-full size-32 object-cover shadow-sm "
               />
             </div>
             <p className="text-2xl text-slate-700  mt-2 font-semibold">
               {provider.fullName}
             </p>
-            <div className="text-xs text-slate-700 mt-2 text-center font-semibold">
+            <div className="md:text-sm text-xs text-slate-700 mt-2 text-center font-semibold">
               {Array.isArray(provider.name) ? (
                 <>
                   <p>{provider.name.slice(0, 2).join(", ")}</p>
@@ -226,10 +226,11 @@ export default function ProviderReview() {
                 <p>{provider.name}</p>
               )}
             </div>
-            <div className="flex flex-row items-center justify-center mt-2 gap-2">
-              <MdLocationOn className="h-4 w-4 text-sky-300" />
-              <p className="text-sm text-gray-700 truncate w-full">
-                {provider.address}
+            <div className="flex mt-2">
+              <MdLocationOn className="h-4 w-4 items-center text-sky-300" />
+              <p className="flex flex-col text-sm text-gray-700 truncate w-full md:w-auto">
+                {provider.address.city},{provider.address.pincode}
+                <span className="block md:inline text-center"></span>
               </p>
             </div>
             <div className="flex flex-row items-center justify-center mt-2 gap-2">

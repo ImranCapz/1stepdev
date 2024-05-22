@@ -72,7 +72,14 @@ export const getProviders = async (req, res, next) => {
     }
 
     const searchTerm = req.query.searchTerm || "";
+
     const address = req.query.address || "";
+    let city, pincode;
+    if(isNaN(address)){
+      city=address;
+    }else{
+      pincode=address;
+    }
 
     const sort = req.query.sort || "createdAt";
 
@@ -80,7 +87,10 @@ export const getProviders = async (req, res, next) => {
 
     const providers = await Provider.find({
       name: { $regex: searchTerm, $options: "i" },
-      address: { $regex: address, $options: "i" },
+      $and:[
+        { "address.city": city ? { $regex:city, $options: 'i'} : {$exists: true}},
+        { "address.pincode": pincode ? pincode :  {$exists: true}}
+      ]
     })
       .sort({ [sort]: order })
       .limit(limit)

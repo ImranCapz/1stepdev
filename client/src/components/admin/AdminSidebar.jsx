@@ -6,11 +6,13 @@ import { Link } from "react-router-dom";
 import { RiDashboardFill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { signOut } from "../../redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminSidebar() {
   const location = useLocation();
   const [tab, setTab] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -30,6 +32,7 @@ export default function AdminSidebar() {
         console.log(data.message);
       } else {
         dispatch(signOut());
+        navigate("/");
       }
     } catch (error) {
       console.log(error.message);

@@ -28,7 +28,7 @@ import {
   MdOutlineFileCopy,
 } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { FcApproval } from "react-icons/fc";
+import { FcApproval, FcInfo } from "react-icons/fc";
 import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import { Tooltip } from "flowbite-react";
@@ -43,7 +43,8 @@ function convert12Hrs(time) {
 export default function Provider() {
   SwiperCore.use([Navigation]);
   const { currentUser } = useSelector((state) => state.user);
-  const { id } = useSelector((state)=>state.provider);
+
+  const { id } = useSelector((state) => state.provider);
   const [provider, setprovider] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -59,9 +60,15 @@ export default function Provider() {
   const dispatch = useDispatch();
   const urlRef = useRef(null);
   const [otp, setOtp] = useState(0);
-  const ProviderName = encodeURIComponent(provider?.fullName).replace(/%20/g, "-");
-  const ProviderAddress = encodeURIComponent(provider?.address).replace(/%20/g, "-");
-  const url = `/review/${ProviderName}-${ProviderAddress}`
+  const ProviderName = encodeURIComponent(provider?.fullName).replace(
+    /%20/g,
+    "-"
+  );
+  const ProviderAddress = encodeURIComponent(provider?.address?.state).replace(
+    /%20/g,
+    "-"
+  );
+  const url = `/review/${ProviderName}-${ProviderAddress}`;
 
   function onCloseModal() {
     setIsListOpen(false);
@@ -69,6 +76,10 @@ export default function Provider() {
     setIsShare(false);
     setOtpOpen(false);
   }
+
+  useEffect(() => {
+    document.title = `${provider?.fullName} | ${provider?.address?.state}`;
+  }, [provider]);
 
   useEffect(() => {
     const fetchprovider = async () => {
@@ -97,9 +108,7 @@ export default function Provider() {
   useEffect(() => {
     const fetchRating = async () => {
       try {
-        const res = await fetch(
-          `/server/rating/getreview/${id}`
-        );
+        const res = await fetch(`/server/rating/getreview/${id}`);
         const data = await res.json();
         setReview(data);
       } catch (error) {
@@ -147,7 +156,6 @@ export default function Provider() {
       fetchFavoriteHeart();
     }
   }, [id, currentUser, dispatch]);
-
 
   const copyToClipboard = async () => {
     try {
@@ -231,7 +239,11 @@ export default function Provider() {
 
   return (
     <div className="min-h-screen flex lg:flex-row flex-col-reverse w-full">
-      {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
+      {loading && (
+        <>
+          <div className="h-[200px] bg-gray-200 animate-pulse"></div>
+        </>
+      )}
       {error && (
         <p className="text-center my-7 text-2xl">Error fetching provider</p>
       )}
@@ -262,45 +274,47 @@ export default function Provider() {
                 </p>
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex flex-col md:flex-row items-center justify-between gap-2">
-                    <div className="flex flex-row items-center gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
+                    <div className="flex flex-row items-center space-x-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
+                      <Link></Link>
                       {provider.fullName}
                       {provider.verified === true && (
                         <div className="">
-                          <Tooltip content="Verifed Profile" animation="duration-500">
-                          <FcApproval/>
+                          <Tooltip
+                            content="Verifed Profile"
+                            animation="duration-500"
+                          >
+                            <FcApproval />
                           </Tooltip>
-                          
+                        </div>
+                      )}
+                      {provider.verified === false && (
+                        <div className="">
+                          <Tooltip
+                            content="Profile is not claimed"
+                            animation="duration-500"
+                          >
+                            <FcInfo />
+                          </Tooltip>
                         </div>
                       )}
                     </div>
-                    <p className="flex flex-row  gap-2 text-xs text-center mt-2">
+                    <p className="flex flex-row space-x-2 text-xs text-center mt-2">
                       <Button
                         onClick={handleFavorite}
                         variant="outlined"
-                        className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 items-center gap-2 rounded-full"
+                        className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 gap-1 items-center rounded-full"
                       >
                         {isFavorite ? <FcLike /> : <FaRegHeart />} Save
                       </Button>
                       <Button
                         variant="outlined"
                         onClick={() => setIsShare(true)}
-                        className="flex flex-row  border-gray-400 text-gray-600 py-1 px-2 items-center gap-2 rounded-full"
+                        className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 gap-1 items-center rounded-full"
                       >
                         <IoIosShareAlt />
                         Share
                       </Button>
                     </p>
-                    {currentUser &&
-                      provider.userRef === currentUser._id &&
-                      provider.verified === false && (
-                        <button
-                          className="flex flex-row items-center underline text-sky-500"
-                          onClick={handleVerifyProfile}
-                        >
-                          <IoMdAlert className="text-amber-500" />
-                          Click to Verified!!
-                        </button>
-                      )}
                     <Modal show={otpOpen} onClose={onCloseModal} popup>
                       <Modal.Header></Modal.Header>
                       <Modal.Body>
@@ -407,8 +421,8 @@ export default function Provider() {
                     <p className="flex items-center gap-1 text-slate-600 text-sm truncate">
                       <FaMapMarkerAlt className="text-gray-600 " />
                       <span className="text-gray-600 font-bold">Addess:</span>
-
-                      {provider.address}
+                      {provider.address.addressLine1} {provider.address.city},{" "}
+                      {provider.address.state}
                     </p>
                     <div className="flex items-center gap-1">
                       <MdWorkspacePremium className="h-4 w-4 text-gray-600" />
@@ -496,9 +510,7 @@ export default function Provider() {
                 </div>
                 <div className="flex flex-row gap-4 mt-4">
                   <Button variant="outlined">View Review</Button>
-                  <Link
-                    to={url}
-                  >
+                  <Link to={url}>
                     <Button className="blue-button">Leave Review</Button>
                   </Link>
                 </div>
@@ -582,10 +594,11 @@ export default function Provider() {
                     );
                   })}
                 </div>
+                {provider.verified === true && <div></div>}
               </div>
             </div>
             <div
-              className="w-full flex p-3 lg:w-1/2 sm-w-96"
+              className="w-full flex flex-col space-y-3 p-3 lg:w-1/2 sm-w-96"
               style={{
                 alignSelf: "flex-start",
                 position: "sticky",
@@ -673,6 +686,26 @@ export default function Provider() {
                   {contact && <BookingContact provider={provider} />}
                 </div>
               </div>
+              <>
+                {currentUser &&
+                  provider.userRef === currentUser._id &&
+                  provider.verified === false && (
+                    <div className="flex justify-center border border-slate-200 p-4 rounded-lg bg-sky-100">
+                      <button
+                        className="flex flex-row space-x-2 items-center"
+                        onClick={handleVerifyProfile}
+                      >
+                        <IoMdAlert className="text-amber-500" />
+                        <span className="text-slate-700">
+                          is this your profile
+                        </span>
+                        <p className="flex flex-row items-center underline text-gray font-semibold">
+                          Claim Your Profile
+                        </p>
+                      </button>
+                    </div>
+                  )}
+              </>
             </div>
           </div>
         </div>

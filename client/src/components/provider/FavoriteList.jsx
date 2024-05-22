@@ -5,11 +5,11 @@ import SearchBar from "../SearchBar";
 import { favoriteList } from "../../redux/favorite/FavoriteSlice";
 import { useDispatch } from "react-redux";
 
-
 export default function FavoriteList() {
   const { currentUser } = useSelector((state) => state.user);
-  const { favorites } = useSelector((state)=> state.favorite);
+  const { favorites } = useSelector((state) => state.favorite);
   const dispatch = useDispatch();
+  console.log("favorite", favorites);
 
   useEffect(() => {
     const fetchFavoriteList = async () => {
@@ -34,18 +34,20 @@ export default function FavoriteList() {
         </div>
       </div>
       <div className="p-4 flex flex-col gap-4">
-        {favorites && favorites.length > 0 ? (
-          favorites.map((provider) => (
-            provider && (
-            <ProviderItem
-              key={provider._id}
-              provider={provider}
-              isFavorite={true}
-            />
-          )
-          ))
+        {favorites === undefined || favorites === null ? (
+          <div>Loading...</div>
+        ) : favorites.filter(Boolean).length > 0 ? (
+          favorites
+            .filter(Boolean)
+            .map((provider) => (
+              <ProviderItem
+                key={provider._id}
+                provider={provider}
+                isFavorite={true}
+              />
+            ))
         ) : (
-          <div className="flex flex-col">
+          <div className="flex flex-col mt-4">
             <div className="flex flex-col items-center text-2xl font-semibold mb-6 text-zinc-600">
               No Favorite Providers Not yet saved
             </div>
