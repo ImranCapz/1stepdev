@@ -5,14 +5,15 @@ import { FaSearch } from "react-icons/fa";
 import { City } from "country-state-city";
 import CreatableSelect from "react-select/creatable";
 
-export const SearchBar = () => {
+import PropTypes from "prop-types";
+
+export const SearchBar = ({ defaultSearchTerm }) => {
   const navigate = useNavigate();
-  const [searchTerm, setsearchTerm] = useState("");
+  const [searchTerm, setsearchTerm] = useState(defaultSearchTerm || "");
   const [address, setAddress] = useState("");
   const [cityOptions, setCityOptions] = useState([]);
   const [providers, setProviders] = useState([]);
 
-  console.log(cityOptions);
   const suggestions = [
     { value: "Popular Search", label: "Popular Services", isDisabled: true },
     { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
@@ -210,5 +211,9 @@ export const SearchBar = () => {
     </div>
   );
 };
+
+SearchBar.propTypes ={
+  defaultSearchTerm: PropTypes.string
+}
 
 export default SearchBar;

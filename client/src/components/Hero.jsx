@@ -2,9 +2,22 @@
 import Typewriter from 'typewriter-effect';
 import { Link, useNavigate } from "react-router-dom";
 import { SearchBar} from '../components/SearchBar';
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from 'react';
 
 
 const Hero = () => {
+
+  
+  const {searchTerm} = useParams();
+  const [defaultsearchTerm, setDefaultSearchTerm] = useState(searchTerm);
+
+  useEffect(()=>{
+    setDefaultSearchTerm(searchTerm)
+  },[searchTerm]);
+
+    document.title = "Your first step for all therapy needs"
+
     const integrations = [
         {
             title: "",
@@ -78,7 +91,7 @@ const Hero = () => {
               </svg>
             </Link>
           </div><br></br>
-          <SearchBar />
+          <SearchBar defaultSearchTerm={defaultsearchTerm} />
         </div>
         
         <div className="flex-1 max-w-xl mx-auto mt-14 xl:mt-0">

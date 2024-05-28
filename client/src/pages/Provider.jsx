@@ -28,6 +28,7 @@ import {
   MdOutlineFileCopy,
 } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { FcApproval, FcInfo } from "react-icons/fc";
 import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
@@ -43,7 +44,6 @@ function convert12Hrs(time) {
 export default function Provider() {
   SwiperCore.use([Navigation]);
   const { currentUser } = useSelector((state) => state.user);
-
   const { id } = useSelector((state) => state.provider);
   const [provider, setprovider] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -60,6 +60,14 @@ export default function Provider() {
   const dispatch = useDispatch();
   const urlRef = useRef(null);
   const [otp, setOtp] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("urlsearchTerm");
+  const searchQuery = new URLSearchParams(location.search);
+  const urlsearchTerm = searchQuery.get("service");
+
+  useEffect(() => {
+    setSearchTerm(urlsearchTerm);
+  }, [urlsearchTerm]);
+
   const ProviderName = encodeURIComponent(provider?.fullName).replace(
     /%20/g,
     "-"
@@ -68,6 +76,7 @@ export default function Provider() {
     /%20/g,
     "-"
   );
+
   const url = `/review/${ProviderName}-${ProviderAddress}`;
 
   function onCloseModal() {
@@ -78,8 +87,8 @@ export default function Provider() {
   }
 
   useEffect(() => {
-    document.title = `${provider?.fullName} | ${provider?.address?.state}`;
-  }, [provider]);
+    document.title = `${provider?.fullName} | ${urlsearchTerm} |${provider?.address?.state}`;
+  }, [provider, urlsearchTerm]);
 
   useEffect(() => {
     const fetchprovider = async () => {
@@ -221,6 +230,7 @@ export default function Provider() {
         }),
       });
       const data = await res.json();
+      console.log("verified Data", data);
       if (data.success === false) {
         console.log("Error:", data.message);
         toast.error(data.message);
@@ -273,19 +283,32 @@ export default function Provider() {
                   />
                 </p>
                 <div className="flex flex-col items-center md:items-start">
+                  <div className="flex flex-row text-gray-600 font-semibold text-sm space-x-1">
+                    <Link className="capitalize" to={`/${urlsearchTerm}`}>
+                      {urlsearchTerm}
+                    </Link>
+                    {/* <p className="text-gray-400">&gt;</p>
+                    <Link className="capitalize">{provider.address.state}&nbsp;</Link> */}
+                    <p className="text-gray-400">&gt;</p>
+                    <Link
+                      className="capitalize"
+                      to={`/search?searchTerm=${searchTerm}&address=${provider.address.city}`}
+                    >
+                      {provider.address.city}
+                    </Link>
+                  </div>
                   <div className="flex flex-col md:flex-row items-center justify-between gap-2">
-                    <div className="flex flex-row items-center space-x-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
-                      <Link></Link>
+                    <div className="flex flex-row items-center space-x-2 gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
                       {provider.fullName}
                       {provider.verified === true && (
-                        <div className="">
+                        <>
                           <Tooltip
                             content="Verifed Profile"
                             animation="duration-500"
                           >
                             <FcApproval />
                           </Tooltip>
-                        </div>
+                        </>
                       )}
                       {provider.verified === false && (
                         <div className="">
@@ -385,20 +408,45 @@ export default function Provider() {
                   {/* - ₹{" "}
                 {provider.regularPrice.toLocaleString("en-US")} / Appointment */}
 
-                  <p className="text-base text-center text-slate-600 font-semibold mt-2">
+                  <p className="text-base text-center text-slate-600 font-bold mt-2">
                     {Array.isArray(provider.name)
-                      ? `${provider.name.slice(0, 2).join(", ")} ${
-                          provider.name.length > 2 ? "" : ""
-                        }`
-                      : `${provider.name}`}
-                    {provider.name.length > 2 && (
-                      <a
-                        onClick={() => handleClick("Service", 120)}
-                        className="hover:underline cursor-pointer"
-                      >
-                        +{provider.name.length - 2}more
-                      </a>
-                    )}
+                      ? (() => {
+                          const searchTermIndex = provider.name.findIndex(
+                            (name) =>
+                              searchTerm &&
+                              name.toLowerCase() === searchTerm.toLowerCase()
+                          );
+                          let filteredNames = [...provider.name];
+                          if (searchTermIndex !== -1) {
+                            filteredNames = [
+                              provider.name[searchTermIndex],
+                              ...provider.name.slice(0, searchTermIndex),
+                              ...provider.name.slice(searchTermIndex + 1),
+                            ];
+                          }
+                          return (
+                            <>
+                              {filteredNames.slice(0, 1)}
+                              {filteredNames.length > 1 ? (
+                                <>
+                                  ,{" "}
+                                  <Link
+                                    className="hover:underline"
+                                    to={`/search?searchTerm=${encodeURIComponent(
+                                      filteredNames[1]
+                                    )}&address=${provider.address.city}`}
+                                  >
+                                    {filteredNames[1]}
+                                  </Link>
+                                </>
+                              ) : null}
+                              {filteredNames.length > 2
+                                ? ` +${filteredNames.length - 2} more`
+                                : ""}
+                            </>
+                          );
+                        })()
+                      : provider.name}
                   </p>
                   <div className="flex flex-col items-start justify-start ">
                     <div className="flex items-center gap-1 mt-2">
@@ -530,6 +578,23 @@ export default function Provider() {
                   </p>
                 </div>
               </div>
+              <div>
+                {provider.verified === true && (
+                  <div className="mt-2">
+                    <h1 className="text-gray font-bold text-2xl">
+                      Accreditions
+                    </h1>
+                    <IoShieldCheckmarkOutline className="size-10 text-gray-600 mt-2" />
+                    <h2 className="text-gray font-bold text-base">
+                      Claimed Profile
+                    </h2>
+                    <p className="w-40 text-gray-500">
+                      This provider has submitted proof of credentials and has
+                      claimed their profile.
+                    </p>
+                  </div>
+                )}
+              </div>
               <div
                 id="Service"
                 className="flex flex-col border-t border-gray-300"
@@ -594,7 +659,6 @@ export default function Provider() {
                     );
                   })}
                 </div>
-                {provider.verified === true && <div></div>}
               </div>
             </div>
             <div

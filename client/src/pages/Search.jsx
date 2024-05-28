@@ -1,5 +1,5 @@
 import Select from "react-select";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import ProviderItem from "../components/provider/ProviderItem";
 import PlacesAutocomplete, {
@@ -13,17 +13,23 @@ import { HiOutlineFilter } from "react-icons/hi";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ContentLoader from "react-content-loader";
+import { Pagination } from "flowbite-react";
 
 export default function Search() {
   const navigate = useNavigate();
   const [searchTerm, setsearchTerm] = useState("");
   const [address, setAddress] = useState({});
-  const [loading, setLoading] = useState("false");
+  const [providerloading, setProviderLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [providers, setProviders] = useState([]);
-  const [showMore, setShowMore] = useState(false);
   const topLoadingBarRef = useRef(null);
   const location = useLocation();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  //pageination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -52,19 +58,17 @@ export default function Search() {
 
   const handleSelect = async (value) => {
     try {
-      setLoading(true);
       const results = await geocodeByAddress(value);
       const latLng = await getLatLng(results[0]);
       setAddress({ city: value });
     } catch (error) {
       console.error("Error occurred in handleSelect:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handlesubmit = (e) => {
     e.preventDefault();
+
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("searchTerm", searchTerm);
     urlParams.set("address", address.city);
@@ -73,6 +77,7 @@ export default function Search() {
   };
 
   useEffect(() => {
+
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
     if (searchTermFromUrl) {
@@ -81,17 +86,10 @@ export default function Search() {
 
     const fetchProvider = async (address) => {
       setLoading(true);
-      setShowMore(false);
       urlParams.set("address", address.city);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
-      if (data.length > 8) {
-        setShowMore(true);
-      } else {
-        setShowMore(false);
-      }
-
       setProviders(data);
       setLoading(false);
     };
@@ -114,23 +112,33 @@ export default function Search() {
       } else {
         console.log("Geolocation is not supported by this browser.");
       }
-    } 
+    }
     topLoadingBarRef.current.complete();
   }, [location.search]);
 
-  const onShowMoreClick = async () => {
-    const numberofproviders = providers.length();
-    const startIndex = numberofproviders;
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("startIndex", startIndex);
-    const searchQuery = urlParams.toString();
-    const res = await fetch(`/server/provider/get?${searchQuery}`);
-    const data = await res.json();
-    if (data.length < 8) {
-      setShowMore(false);
+  const onPageChange = async (page) => {
+    try {
+      topLoadingBarRef.current.continuousStart();
+      setCurrentPage(page);
+      const startIndex = (page - 1) * itemsPerPage;
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set("startIndex", startIndex);
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/server/provider/get?${searchQuery}`);
+      const data = await res.json();
+      console.log("page data", data);
+      setProviders(data.providers);
+      setTotalCount(data.totalCount);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+      console.error("Error occurred in onPageChange:", error);
     }
-    setProviders([...providers, ...data]);
+    topLoadingBarRef.current.complete();
   };
+
+  useEffect(() => {
+    onPageChange(1);
+  }, [searchTerm, address]);
 
   useEffect(() => {
     if (providers.length !== 0) {
@@ -141,6 +149,15 @@ export default function Search() {
       document.title = "1Step";
     }
   });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setProviderLoading(false);
+      setLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer); // This will clear the timeout if the component is unmounted before the 2 seconds are up
+  }, []);
 
   return (
     <div className="p-4 md:p-8 overflow-visible">
@@ -293,19 +310,13 @@ export default function Search() {
               Filter
             </Button>
           </div>
-          <div className="breadcrumbs font-semibold text-sm mt-2 text-gray-700">
-            <Link to={"/"}>Home</Link> &gt;
-            <Link
-              to={`/search?searchTerm=${searchTerm}&address=${address.city}`}
-            >
+          <div className="breadcrumbs flex flex-row font-semibold text-sm mt-2 text-gray-700">
+            <Link to={"/"}>Home</Link>&nbsp;&gt;
+            <Link to={`/${searchTerm}`}>
               &nbsp;{new URLSearchParams(location.search).get("searchTerm")}
             </Link>{" "}
-            &gt;
-            <Link
-              to={`/search?searchTerm=${searchTerm}&address=${address.city}`}
-            >
-              &nbsp;{new URLSearchParams(location.search).get("address")}
-            </Link>
+            &nbsp;&gt;
+            <p>&nbsp;{new URLSearchParams(location.search).get("address")}</p>
           </div>
         </div>
         {providers.length !== 0 && (
@@ -313,63 +324,78 @@ export default function Search() {
             <div className="font-bold text-xl md:text-3xl text-gray">
               {providers.length} Best{" "}
               {new URLSearchParams(location.search).get("searchTerm")} near{" "}
-              {address.city}
+              {new URLSearchParams(location.search).get("address")}
             </div>
           </>
         )}
         <div className="flex flex-col gap-4">
-          {!loading && providers.length === 0 && (
-            <p className="text-center text-xl text-slate-700">
-              We couldn&apos;t find any doctors for you
-            </p>
+          {providerloading ? (
+            providers.length > 0 ? (
+              <p className="text-center text-xl text-slate-700 w-full">
+                <ContentLoader viewBox="0 0 500 475" height={475} width={500}>
+                  {Array.from({ length: providers.length }).map((_, index) => (
+                    <React.Fragment key={index}>
+                      <circle cx="70.2" cy={`${73.2 + index * 170}`} r="41.3" />
+                      <rect
+                        x="129.9"
+                        y={`${29.5 + index * 170}`}
+                        width="125.5"
+                        height="10"
+                      />
+                      <rect
+                        x="129.9"
+                        y={`${64.7 + index * 170}`}
+                        width="296.5"
+                        height="10"
+                      />
+                      <rect
+                        x="129.9"
+                        y={`${97.8 + index * 170}`}
+                        width="253.5"
+                        height="10"
+                      />
+                      <rect
+                        x="129.9"
+                        y={`${132.3 + index * 170}`}
+                        width="212.5"
+                        height="10"
+                      />
+                    </React.Fragment>
+                  ))}
+                </ContentLoader>
+              </p>
+            ) : null
+          ) : (
+            <>
+              {providers.length > 0 ? (
+                providers.map((provider) => {
+                  return (
+                    <ProviderItem
+                      key={provider._id}
+                      provider={{
+                        ...provider,
+                        totalrating: parseFloat(provider.totalrating),
+                      }}
+                    />
+                  );
+                })
+              ) : (
+                <p className="text-center text-xl text-slate-700">
+                  We couldn&apos;t find any doctors for you
+                </p>
+              )}
+            </>
           )}
-          {loading && (
-            <p className="text-center text-xl text-slate-700 w-full">
-              <ContentLoader
-                viewBox="0 0 500 475"
-                height={475}
-                width={500}
-              >
-                <circle cx="70.2" cy="73.2" r="41.3" />
-                <rect x="129.9" y="29.5" width="125.5" height="17" />
-                <rect x="129.9" y="64.7" width="296" height="17" />
-                <rect x="129.9" y="97.8" width="253.5" height="17" />
-                <rect x="129.9" y="132.3" width="212.5" height="17" />
 
-                <circle cx="70.7" cy="243.5" r="41.3" />
-                <rect x="130.4" y="199.9" width="125.5" height="17" />
-                <rect x="130.4" y="235" width="296" height="17" />
-                <rect x="130.4" y="268.2" width="253.5" height="17" />
-                <rect x="130.4" y="302.6" width="212.5" height="17" />
-
-                <circle cx="70.7" cy="412.7" r="41.3" />
-                <rect x="130.4" y="369" width="125.5" height="17" />
-                <rect x="130.4" y="404.2" width="296" height="17" />
-                <rect x="130.4" y="437.3" width="253.5" height="17" />
-                <rect x="130.4" y="471.8" width="212.5" height="17" />
-              </ContentLoader>
-            </p>
-          )}
-          {!loading &&
-            providers &&
-            providers.map((provider) => {
-              return (
-                <ProviderItem
-                  key={provider._id}
-                  provider={{
-                    ...provider,
-                    totalrating: parseFloat(provider.totalrating),
-                  }}
-                />
-              );
-            })}
-          {showMore && (
-            <button
-              onClick={onShowMoreClick}
-              className="text-green-700 hover:underline p-7"
-            >
-              Show More
-            </button>
+          {totalCount > 9 && (
+            <div>
+              <Pagination
+                totalPages={Math.ceil(totalCount / itemsPerPage)}
+                currentPage={currentPage}
+                onPageChange={onPageChange}
+                showIcons
+              />
+            </div>
           )}
         </div>
       </div>

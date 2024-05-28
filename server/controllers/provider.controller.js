@@ -96,7 +96,14 @@ export const getProviders = async (req, res, next) => {
       .limit(limit)
       .skip(startIndex);
 
-    return res.status(200).json(providers);
+      const totalCount = await Provider.countDocuments({
+        name: { $regex: searchTerm, $options: "i" },
+        $and:[
+          { "address.city": city ? { $regex:city, $options: 'i'} : {$exists: true}},
+          { "address.pincode": pincode ? pincode :  {$exists: true}}
+        ]
+      });
+    return res.status(200).json({providers, totalCount});
   } catch (error) {
     next(error);
   }

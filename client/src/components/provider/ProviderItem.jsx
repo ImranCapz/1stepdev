@@ -14,6 +14,7 @@ import { fetchFavoriteStatus } from "../../redux/favorite/FavoriteSlice";
 import { selectProvider } from "../../redux/provider/providerSlice";
 import { IoHeartSharp } from "react-icons/io5";
 import { PiHandHeartFill } from "react-icons/pi";
+import { Tooltip } from "flowbite-react";
 
 export default function ProviderItem({ provider }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -25,6 +26,7 @@ export default function ProviderItem({ provider }) {
   const queryParams = new URLSearchParams(location.search);
   const urlsearchTerm = queryParams.get("searchTerm");
   const dispatch = useDispatch();
+
   const providerName = encodeURIComponent(provider.fullName).replace(
     /%20/g,
     "-"
@@ -37,11 +39,11 @@ export default function ProviderItem({ provider }) {
   const pincode = encodeURIComponent(provider.address.pincode);
 
   const pathName = `/provider/${providerName}`;
-  const search = `?city=${providerCity}-${providerState}-service=${searchTerm}&pincode=${pincode}`;
+  const search = `?city=${providerCity}?state=${providerState}&service=${searchTerm}&pincode=${pincode}`;
 
   useEffect(() => {
     setSearchTerm(urlsearchTerm);
-  }, []);
+  },[]);
 
   function OnCloseModal() {
     console.log("close modal");
@@ -81,7 +83,6 @@ export default function ProviderItem({ provider }) {
         );
         if (favoriteStatus.payload !== undefined) {
           setIsFavorite(favoriteStatus.payload);
-          console.log(favoriteStatus.payload);
         }
       } catch (error) {
         console.log(error);
@@ -105,7 +106,7 @@ export default function ProviderItem({ provider }) {
 
   return (
     <>
-      <div className="w-full relative border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg sm:w-[700px]">
+      <div className="w-full relative border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg sm:w-[750px]">
         <button
           onClick={toggleFavoriteStatus}
           className="p-2 absolute top-2 right-2 z-10"
@@ -130,12 +131,15 @@ export default function ProviderItem({ provider }) {
       /> */}
         <div className="flex flex-col gap-2 p-3 w-full md:flex-row items-start md:items-center">
           <div className="flex flex-col items-start">
-            <div className="flex">
-              <img
-                src={provider.profilePicture}
-                alt="provider profile"
-                className="h-16 w-16 md:w-28 md:h-28 md:mb-0 rounded-full object-cover"
-              />
+            <div className="w-full flex">
+              <div className="relative h-16 w-16 md:w-28 md:h-28 rounded-full overflow-hidden md:border-8 border-gray-100">
+                <img
+                  src={provider.profilePicture}
+                  alt="provider profile"
+                  className="absolute w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
               <div className="ml-4">
                 <div className="flex items-center gap-1">
                   <IoIosStar className="h-4 w-4 text-amber-400" />
@@ -157,14 +161,22 @@ export default function ProviderItem({ provider }) {
                   }}
                   onClick={() => dispatch(selectProvider(provider._id))}
                 >
-                  <p className="flex flex-row items-center gap-2 truncate text-xl font-bold text-slate-700 hover:underline">
+                  <div className="flex flex-row items-center gap-2 truncate text-xl font-bold text-slate-700 hover:underline">
                     {provider.fullName}
                     {provider.verified === true && (
-                      <FcApproval title="verified Profile" />
+                      <>
+                        <Tooltip
+                          content="Verifed Profile"
+                          animation="duration-500"
+                          placement="right"
+                        >
+                          <FcApproval />
+                        </Tooltip>
+                      </>
                     )}
-                  </p>
+                  </div>
                 </Link>
-                <p className="text-xs md:text-sm text-gray-600 font-semibold truncate w-full">
+                <div className="text-xs md:text-sm text-gray-600 font-semibold truncate w-full">
                   {Array.isArray(provider.name)
                     ? (() => {
                         const searchTermIndex = provider.name.findIndex(
@@ -190,7 +202,7 @@ export default function ProviderItem({ provider }) {
                                   className="hover:underline"
                                   to={`/search?searchTerm=${encodeURIComponent(
                                     filteredNames[1]
-                                  )}`}
+                                  )}&address=${provider.address.city}`}
                                 >
                                   {filteredNames[1]}
                                 </Link>
@@ -203,7 +215,7 @@ export default function ProviderItem({ provider }) {
                         );
                       })()
                     : provider.name}
-                </p>
+                </div>
                 <div className="md:inline hidden">
                   <div className="flex items-center gap-1 mt-1">
                     <MdLocationOn className="h-4 w-4 text-gray-600" />
@@ -257,6 +269,7 @@ export default function ProviderItem({ provider }) {
               to={{
                 pathname: pathName,
                 search: search,
+                state: { searchTerm: searchTerm },
               }}
             >
               <button

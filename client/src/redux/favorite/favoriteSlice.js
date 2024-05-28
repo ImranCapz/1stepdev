@@ -36,7 +36,6 @@ export const toggleFavorite = createAsyncThunk(
         }
       );
       const data = await res.json();
-      console.log(data);
       if (!res.ok) {
         throw new Error(data.message || "Failed to update favorite status");
       }
@@ -55,7 +54,6 @@ export const fetchFavoriteStatus = createAsyncThunk(
       `/server/favorite/favoriteStatus/${userId}?providerId=${providerId}`
     );
     const data = await res.json();
-    console.log(data);
     if (data.success === false) {
       throw new Error(data.message || "Failed to fetch favorite status");
     }

@@ -31,7 +31,8 @@ function App() {
         <Header />
         <ScrolltoTop />
         <Routes>
-          <Route path="/" element={<Hero />} />
+          <Route path="/:searchTerm/*" element={<Hero />} />
+          <Route path="/*" element={<Hero />} />
           <Route path="/freescreeners" element={<Features />} />
           <Route path="/question" element={<Question />} />
           <Route path="/signin" element={<Signin />} />
