@@ -101,7 +101,7 @@ const Header = () => {
     },
     {
       title: "Occupational Therapy",
-      path: "/search?searchTerm=Occupational+Therapy",
+      path: "/search?searchTerm=Occupational%20Therapy",
     },
     { title: "Speech Therapy", path: "/search?searchTerm=Speech%20Therapy" },
     {
@@ -327,7 +327,7 @@ const Header = () => {
         </div>
       </div>
       <nav className="border-b">
-        <ul className="flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8">
+        <ul className="hidden md:flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8">
           {submenuNav.map((item, idx) => {
             if (item.title === "Learn:" || item.title === "|") {
               return (

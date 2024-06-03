@@ -34,6 +34,7 @@ export default function OAuth() {
       });
       const data = await res.json();
       dispatch(signinSuccess(data));
+      navigate("/");
     } catch (error) {
       topLoadingBarRef1.current.continuousStart(50);
       console.error(error);

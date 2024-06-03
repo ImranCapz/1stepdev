@@ -1,3 +1,4 @@
+import status from "statuses";
 import Provider from "../models/provider.model.js";
 import { errorHandler } from "../utils/error.js";
 import nodemailer from "nodemailer";
@@ -60,6 +61,19 @@ export const getProvider = async (req, res, next) => {
   }
 };
 
+export const fetchProvider = async (req, res, next) => {
+  try {
+    const fetchprovider = await Provider.findOne({ userRef: req.params.id });
+    if (!fetchprovider) {
+      return res.status(404).json({ message: "Provider not found", status: false});
+    } else {
+      return res.status(200).json({ status:true , fetchprovider});
+    }
+  } catch (error) { 
+    next(error);
+  }
+};
+
 export const getProviders = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 9;
@@ -75,10 +89,10 @@ export const getProviders = async (req, res, next) => {
 
     const address = req.query.address || "";
     let city, pincode;
-    if(isNaN(address)){
-      city=address;
-    }else{
-      pincode=address;
+    if (isNaN(address)) {
+      city = address;
+    } else {
+      pincode = address;
     }
 
     const sort = req.query.sort || "createdAt";
@@ -87,23 +101,31 @@ export const getProviders = async (req, res, next) => {
 
     const providers = await Provider.find({
       name: { $regex: searchTerm, $options: "i" },
-      $and:[
-        { "address.city": city ? { $regex:city, $options: 'i'} : {$exists: true}},
-        { "address.pincode": pincode ? pincode :  {$exists: true}}
-      ]
+      $and: [
+        {
+          "address.city": city
+            ? { $regex: city, $options: "i" }
+            : { $exists: true },
+        },
+        { "address.pincode": pincode ? pincode : { $exists: true } },
+      ],
     })
       .sort({ [sort]: order })
       .limit(limit)
       .skip(startIndex);
 
-      const totalCount = await Provider.countDocuments({
-        name: { $regex: searchTerm, $options: "i" },
-        $and:[
-          { "address.city": city ? { $regex:city, $options: 'i'} : {$exists: true}},
-          { "address.pincode": pincode ? pincode :  {$exists: true}}
-        ]
-      });
-    return res.status(200).json({providers, totalCount});
+    const totalCount = await Provider.countDocuments({
+      name: { $regex: searchTerm, $options: "i" },
+      $and: [
+        {
+          "address.city": city
+            ? { $regex: city, $options: "i" }
+            : { $exists: true },
+        },
+        { "address.pincode": pincode ? pincode : { $exists: true } },
+      ],
+    });
+    return res.status(200).json({ providers, totalCount });
   } catch (error) {
     next(error);
   }
@@ -191,7 +213,7 @@ export const verifyOtpProvider = async (req, res, next) => {
       );
       delete otpStorage[email];
       return res.status(200).json({ success: true, message: "OTP verified" });
-    }else{
+    } else {
       return res.status(400).json({ success: false, message: "Invalid OTP" });
     }
   } catch (error) {

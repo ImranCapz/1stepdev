@@ -43,7 +43,8 @@ export default function ProviderItem({ provider }) {
 
   useEffect(() => {
     setSearchTerm(urlsearchTerm);
-  },[]);
+    window.scrollTo({ top:0 })
+  },[urlsearchTerm]);
 
   function OnCloseModal() {
     console.log("close modal");

@@ -5,28 +5,23 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { app } from "../firebase";
+import { app } from "../../firebase";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { useRef } from "react";
 import Select from "react-select";
 import { Country, State, City } from "country-state-city";
-import { useDispatch } from "react-redux";
-import { selectProvider } from "../redux/provider/providerSlice";
-import BeatLoader from "react-spinners/BeatLoader";
 
-export default function CreateProvider() {
+export default function AdminProviderCreate() {
   const { currentUser } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const [imageUploadError, setImageUploadError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
   const navigate = useNavigate();
   const fileRef = useRef(null);
-  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     imageUrls: [],
@@ -56,7 +51,7 @@ export default function CreateProvider() {
     description: "",
     profilePicture: "",
   });
-  console.log("Formdata", formData);
+
   const handleRemoveImage = (index) => {
     setFormData({
       ...formData,
@@ -169,7 +164,6 @@ export default function CreateProvider() {
         setError(data.message);
       }
       navigate(`/provider/${data._id}`);
-      dispatch(selectProvider(data._id));
     } catch (error) {
       setError(error.message);
       setLoading(false);
@@ -234,74 +228,11 @@ export default function CreateProvider() {
     }
   }, [selectedCountry, selectedState]);
 
-  useEffect(() => {
-    const fetchProvider = async () => {
-      setLoading(true);
-      if (!currentUser) {
-        return;
-      }
-      const res = await fetch(
-        `/server/provider/fetchprovider/${currentUser._id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await res.json();
-      setData(data);
-      setLoading(false);
-      if (data.status === true) {
-        console.log(data);
-        setFormData({
-          ...formData,
-          ...data.fetchprovider,
-          name: data.fetchprovider.name.map((name) =>
-            service.find((option) => option.value === name)
-          ),
-          therapytype: data.fetchprovider.therapytype.map((name) =>
-            therapyType.find((option) => option.value === name)
-          ),
-          address: {
-            ...formData.address,
-            addressLine1: data.fetchprovider.address.addressLine1,
-            street: data.fetchprovider.address.street,
-            country: data.fetchprovider.address.country,
-            state: data.fetchprovider.address.state,
-            city: data.fetchprovider.address.city,
-          },
-        });
-      }
-    };
-    fetchProvider();
-  }, [currentUser]);
-
   return (
     <div className="md:p-10 p-2 w-full mx-auto flex-col items-center">
-      {loading ? (
-      <>
-      <div style={{ display:'flex', justifyContent:'center', alignItems:'center' }}>
-        <BeatLoader color="#10ebd8" loading={loading} size={20} />
-      </div>
-      </>) : (
-      <>
-      {currentUser._id ===
-      (data && data.fetchprovider && data.fetchprovider.userRef) ? (
-        <>
-          <h1 className="flex flex-col p-2 font-bold text-2xl text-gray">
-            {" "}
-            Your Provider Details :
-          </h1>
-        </>
-      ) : (
-        <>
-          <h1 className="text-base text-gray-700 font-semibold text-left my-7 mt-5">
-            Fill the form to create a provider
-          </h1>
-        </>
-      )}
-
+      <h1 className="text-base text-gray-700 font-semibold text-left my-7 mt-5">
+        Fill the form to create a provider
+      </h1>
       <input
         type="file"
         id="profilePicture"
@@ -344,20 +275,12 @@ export default function CreateProvider() {
         <div className="flex flex-col gap-4 flex-1">
           <Select
             id="name"
-            key={formData.name}
             options={service}
             isMulti
             required
             placeholder="What service do you provide?"
             touchUi={false}
             className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700  hover:border-amber-500"
-            defaultValue={
-              Array.isArray(formData.name)
-                ? formData.name.map((name) =>
-                    service.find((option) => option.value === name.value)
-                  )
-                : []
-            }
             onChange={(selectedOptions) => {
               setFormData((preState) => ({
                 ...preState,
@@ -432,11 +355,6 @@ export default function CreateProvider() {
           <div className="flex flex-row gap-2">
             <Select
               id="country"
-              key={formData.address.country}
-              defaultValue={{
-                value: formData.address.country,
-                label: formData.address.country,
-              }}
               options={Country.getAllCountries().map((country) => {
                 return { value: country.name, label: country.name };
               })}
@@ -458,17 +376,13 @@ export default function CreateProvider() {
             />
             <Select
               id="state"
-              key={`state-${formData.address.state}`}
-              defaultValue={{
-                value: formData.address.state,
-                label: formData.address.state,
-              }}
               options={state.map((state) => {
                 return { value: state.isoCode, label: state.name };
               })}
               placeholder="Select State"
               className="w-full rounded-lg border-2 border-slate-500"
               onChange={(selectedOption) => {
+                console.log("State select onChange triggered", selectedOption);
                 setSelectedState(selectedOption.value);
                 setFormData({
                   ...formData,
@@ -483,11 +397,6 @@ export default function CreateProvider() {
           <div className="flex flex-row gap-2">
             <Select
               id="city"
-              key={formData.address.city}
-              defaultValue={{
-                value: formData.address.city,
-                label: formData.address.city,
-              }}
               options={cities.map((city) => {
                 return { value: city.name, label: city.name };
               })}
@@ -552,20 +461,12 @@ export default function CreateProvider() {
         </div>
         <div className="flex flex-col flex-1 gap-4">
           <Select
-            key={formData.therapytype}
             id="therapytype"
             options={therapyType}
             isMulti
             required
             placeholder="Type of Therapy"
             touchUi={false}
-            defaultValue={
-              Array.isArray(formData.therapytype)
-                ? formData.therapytype.map((name) =>
-                    therapyType.find((option) => option.value === name.value)
-                  )
-                : []
-            }
             className="border-2 p-3 rounded-lg border-slate-500 bg-white focus:border-amber-700 hover:border-amber-500"
             onChange={(selectedOptions) => {
               setFormData((prevState) => ({
@@ -691,32 +592,15 @@ export default function CreateProvider() {
                 </button>
               </div>
             ))}
-          {currentUser._id ===
-          (data && data.fetchprovider && data.fetchprovider.userRef) ? (
-            <>
-              <button
-                disabled={loading || uploading}
-                className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
-              >
-                {loading ? "Updating Provider " : "Update Provider"}
-              </button>
-              {error && <p className="text-red-700 text-xs">{error}</p>}
-            </>
-          ) : (
-            <>
-              <button
-                disabled={loading || uploading}
-                className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
-              >
-                {loading ? "Creating Provider" : "Create Provider"}
-              </button>
-              {error && <p className="text-red-700 text-xs">{error}</p>}
-            </>
-          )}
+          <button
+            disabled={loading || uploading}
+            className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
+          >
+            {loading ? "Creating Provider" : "Create Provider"}
+          </button>
+          {error && <p className="text-red-700 text-xs">{error}</p>}
         </div>
       </form>
-      </>)}
-      
     </div>
   );
 }

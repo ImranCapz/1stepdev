@@ -2,15 +2,20 @@ import casual from 'casual';
 import Provider from "../server/models/provider.model.js";
 import Express from "express";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+import cookieParser from 'cookie-parser';
 
 const app = Express();
 app.use(Express.json());
+app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO).then(()=>{
   console.log("Connected to MongoDB");
 })
-.catch(()=>{
+.catch((error)=>{
   console.log("Could not connect to MongoDB");
+  console.log(error);
 })
 
 app.listen(3000,()=>{

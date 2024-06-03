@@ -5,12 +5,12 @@ import CreateProvider from "../../pages/CreateProvider";
 import ProviderBooking from "../booking/ProviderBooking";
 
 export default function SubmenuProvider() {
-  const [activeComponent, setActiveComponent] = useState("Create Provider");
+  const [activeComponent, setActiveComponent] = useState("Providers");
   const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
 
   const submenuNav = useMemo(() => [
-    { title: "Create Provider" },
+    { title: "Providers" },
     { title: "Appointment" },
   ], []);
 
@@ -46,12 +46,8 @@ export default function SubmenuProvider() {
         </ul>
       </nav>
 
-      {activeComponent === "Create Provider" && (
+      {activeComponent === "Providers" && (
         <div className="w-full min-h-screen transition-all duration-500">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
-            {" "}
-            Create Provider :
-          </h1>
           <CreateProvider />
         </div>
       )}

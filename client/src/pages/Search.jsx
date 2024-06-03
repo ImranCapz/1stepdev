@@ -68,7 +68,6 @@ export default function Search() {
 
   const handlesubmit = (e) => {
     e.preventDefault();
-
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("searchTerm", searchTerm);
     urlParams.set("address", address.city);
@@ -77,20 +76,20 @@ export default function Search() {
   };
 
   useEffect(() => {
-
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
     if (searchTermFromUrl) {
       setsearchTerm(searchTermFromUrl);
     }
-
     const fetchProvider = async (address) => {
       setLoading(true);
+      const urlParams = new URLSearchParams(location.search);
+      urlParams.set("searchTerm", searchTerm);
       urlParams.set("address", address.city);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
-      setProviders(data);
+      setProviders(data.providers);
       setLoading(false);
     };
     let addressFromUrl = urlParams.get("address");
@@ -117,28 +116,22 @@ export default function Search() {
   }, [location.search]);
 
   const onPageChange = async (page) => {
-    try {
-      topLoadingBarRef.current.continuousStart();
-      setCurrentPage(page);
-      const startIndex = (page - 1) * itemsPerPage;
-      const urlParams = new URLSearchParams(window.location.search);
-      urlParams.set("startIndex", startIndex);
-      const searchQuery = urlParams.toString();
-      const res = await fetch(`/server/provider/get?${searchQuery}`);
-      const data = await res.json();
-      console.log("page data", data);
-      setProviders(data.providers);
-      setTotalCount(data.totalCount);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch (error) {
-      console.error("Error occurred in onPageChange:", error);
-    }
-    topLoadingBarRef.current.complete();
+    setCurrentPage(page);
+    const startIndex = (page - 1) * itemsPerPage;
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/server/provider/get?${searchQuery}`);
+    const data = await res.json();
+    console.log("page data", data);
+    setProviders(data.providers);
+    setTotalCount(data.totalCount);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {
     onPageChange(1);
-  }, [searchTerm, address]);
+  }, []);
 
   useEffect(() => {
     if (providers.length !== 0) {
@@ -156,7 +149,7 @@ export default function Search() {
       setLoading(false);
     }, 800);
 
-    return () => clearTimeout(timer); // This will clear the timeout if the component is unmounted before the 2 seconds are up
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -242,7 +235,7 @@ export default function Search() {
                     {...getInputProps({
                       placeholder: "City or Zip Code",
                       className:
-                        "w-28 md:w-full appearance-none bg-transparent capitalize md:text-base text-sm border-none text-gray-700 py-3 px-4 leading-tight focus:outline-none location-search-input focus:outline-none focus:border-transparent focus:ring-0",
+                        "w-28 md:w-full appearance-none bg-transparent capitalize md:text-base text-sm border-none text-gray-700 py-3 px-3 leading-tight focus:outline-none location-search-input focus:outline-none focus:border-transparent focus:ring-0",
                     })}
                   />
                   <div
@@ -286,7 +279,7 @@ export default function Search() {
               type="text"
               id="insurance"
               placeholder="Not Sure? Skip"
-              className=" bg-transparent text-base border-none w-full text-gray-700  py-3 px-4 leading-tight focus:outline-none focus:border-transparent focus:ring-0"
+              className="bg-transparent text-base border-none w-full text-gray-700  py-3 px-4 leading-tight focus:outline-none focus:border-transparent focus:ring-0"
             />
           </div>
           <button
@@ -319,7 +312,7 @@ export default function Search() {
             <p>&nbsp;{new URLSearchParams(location.search).get("address")}</p>
           </div>
         </div>
-        {providers.length !== 0 && (
+        {providers.length !== 0 && !providerloading && (
           <>
             <div className="font-bold text-xl md:text-3xl text-gray">
               {providers.length} Best{" "}
@@ -386,8 +379,7 @@ export default function Search() {
               )}
             </>
           )}
-
-          {totalCount > 9 && (
+          {providers.length > 0 && totalCount > 9 && !providerloading && (
             <div>
               <Pagination
                 totalPages={Math.ceil(totalCount / itemsPerPage)}

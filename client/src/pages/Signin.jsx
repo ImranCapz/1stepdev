@@ -42,7 +42,7 @@ export const Signin = () => {
       }
       dispatch(signinSuccess(data));
       toast.success('Successfully Login');
-      navigate('/freescreeners');
+      navigate('/');
     } catch (error) {
       dispatch(signinFailure(error));
     } finally {

@@ -68,7 +68,6 @@ export const updateParent = async (req, res, next)=> {
           email: req.body.email,
           ...(req.body.password && { password: bcryptjs.hashSync(req.body.password, 10) }),
           profilePicture: req.body.profilePicture,
-          // Add the parent details fields here
           isParent: req.body.isParent,
           dob: req.body.dob,
           gender: req.body.gender,

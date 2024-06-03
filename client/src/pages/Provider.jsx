@@ -259,7 +259,7 @@ export default function Provider() {
       )}
       {provider && !loading && !error && (
         <div>
-          <Swiper navigation>
+          {/* <Swiper navigation>
             {provider.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
@@ -271,7 +271,7 @@ export default function Provider() {
                 ></div>
               </SwiperSlide>
             ))}
-          </Swiper>
+          </Swiper> */}
           <div className="lg:flex-row flex-col mx-auto flex w-full md:w-5/6">
             <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
               <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">

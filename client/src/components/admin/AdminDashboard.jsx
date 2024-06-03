@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import DashUsers from "./DashUsers";
-import CreateProvider from "../../pages/CreateProvider";
 import Overview from "./Overview";
+import AdminProviderCreate from "./AdminProviderCreate";
 
 export default function AdminDashboard() {
   const location = useLocation();
@@ -24,7 +24,7 @@ export default function AdminDashboard() {
       <div>{tab === "dashboard" && <Overview />}</div> 
         
         {tab === "users" && <DashUsers />}
-        {tab === "createprovider" && <CreateProvider />}
+        {tab === "createprovider" && <AdminProviderCreate />}
     </div>
   );
 }
