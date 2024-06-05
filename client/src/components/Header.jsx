@@ -80,39 +80,37 @@ const Header = () => {
     },
     {
       title: [
-        <div
-          key="heartIcon"
-          style={{ display: "flex", alignItems: "center" }}
-          onClick={() => (currentUser ? null : setOpenModal(true))}
-        >
+        <div key="heartIcon" style={{ display: "flex", alignItems: "center" }}>
           {currentUser ? (
-            <>
-              <button
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "5px",
-                }}
-                className="gap-1"
-              >
-                <FaRegHeart /> Lists
-              </button>
-            </>
+            <Link
+              to="/favorite-list"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginRight: "5px",
+              }}
+              className="gap-1"
+            >
+              <FaRegHeart /> Lists
+            </Link>
           ) : (
-            <>
-              <FaRegHeart
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "5px",
-                }}
-              />{" "}
-              Lists
-            </>
+            <button
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginRight: "5px",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenModal(true);
+              }}
+              className="gap-1"
+            >
+              <FaRegHeart /> Lists
+            </button>
           )}
         </div>,
       ],
-      path: currentUser ? "/favorite-list" : "#",
     },
     { title: "About Us", path: "" },
   ];
