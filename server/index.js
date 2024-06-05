@@ -1,4 +1,4 @@
-import Express from "express";
+import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRouter from "./routes/user.route.js";
@@ -17,9 +17,9 @@ dotenv.config();
 
 const __dirname = path.resolve();
 
-const app = Express();
+const app = express();
 
-app.use(Express.static(path.join(__dirname,'/client/dist')));
+app.use(express.static(path.join(__dirname,'/client/dist')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname,'client','dist','index.html'))
