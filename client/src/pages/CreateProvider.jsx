@@ -23,7 +23,7 @@ export default function CreateProvider() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
+  const [providerData, setProviderData] = useState({});
   const navigate = useNavigate();
   const fileRef = useRef(null);
   const dispatch = useDispatch();
@@ -175,7 +175,6 @@ export default function CreateProvider() {
       setLoading(false);
     }
   };
-
   const handleImageClick = (e) => {
     e.preventDefault();
     fileRef.current.click();
@@ -250,18 +249,18 @@ export default function CreateProvider() {
         }
       );
       const data = await res.json();
-      setData(data);
+      console.log(data)
+      setProviderData(data);
       setLoading(false);
       if (data.status === true) {
-        console.log(data);
         setFormData({
           ...formData,
           ...data.fetchprovider,
-          name: data.fetchprovider.name.map((name) =>
-            service.find((option) => option.value === name)
+          name: data.fetchprovider.name.map(
+            (name) => service.find((option) => option.value === name).value
           ),
-          therapytype: data.fetchprovider.therapytype.map((name) =>
-            therapyType.find((option) => option.value === name)
+          therapytype: data.fetchprovider.therapytype.map(
+            (name) => therapyType.find((option) => option.value === name).value
           ),
           address: {
             ...formData.address,
@@ -270,6 +269,7 @@ export default function CreateProvider() {
             country: data.fetchprovider.address.country,
             state: data.fetchprovider.address.state,
             city: data.fetchprovider.address.city,
+            pincode: data.fetchprovider.address.pincode,
           },
         });
       }
@@ -277,446 +277,491 @@ export default function CreateProvider() {
     fetchProvider();
   }, [currentUser]);
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      if (formData.imageUrls.length < 1)
+        return toast.error("You must upload at least one image");
+      setError(false);
+      console.log("Provider", providerData);
+      const res = await fetch(
+        `/server/provider/update/${providerData.fetchprovider._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+            userRef: currentUser._id,
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        setError(data.message);
+      }
+     toast.success("Provider updated successfully");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   return (
     <div className="md:p-10 p-2 w-full mx-auto flex-col items-center">
       {loading ? (
-      <>
-      <div style={{ display:'flex', justifyContent:'center', alignItems:'center' }}>
-        <BeatLoader color="#10ebd8" loading={loading} size={20} />
-      </div>
-      </>) : (
-      <>
-      {currentUser._id ===
-      (data && data.fetchprovider && data.fetchprovider.userRef) ? (
         <>
-          <h1 className="flex flex-col p-2 font-bold text-2xl text-gray">
-            {" "}
-            Your Provider Details :
-          </h1>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+          <BeatLoader color="#10ebd8" loading={loading} size={20} />
+          </div>
         </>
       ) : (
         <>
-          <h1 className="text-base text-gray-700 font-semibold text-left my-7 mt-5">
-            Fill the form to create a provider
-          </h1>
-        </>
-      )}
-
-      <input
-        type="file"
-        id="profilePicture"
-        name="profilePicture"
-        ref={fileRef}
-        hidden
-        accept="image/*"
-        required
-        onChange={handleProfileImageChange}
-      />
-
-      <div className="relative w-24 h-24 mx-auto group">
-        <label
-          htmlFor="profilePicture"
-          className="w-24 h-24 cursor-pointer"
-          onClick={handleImageClick}
-        >
-          <img
-            src={
-              formData.profilePicture ||
-              "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
-            }
-            alt="profile"
-            className="w-24 h-24 rounded-full object-cover border-4 border-[lightgray]"
-          />
-          <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
-            <img
-              src="https://www.svgrepo.com/show/33565/upload.svg"
-              alt="camera"
-              className="w-8 h-8"
-            />
-            <p className="text-white text-xs">Choose Profile</p>
-          </div>
-        </label>
-      </div>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row gap-4 mt-6"
-      >
-        <div className="flex flex-col gap-4 flex-1">
-          <Select
-            id="name"
-            key={formData.name}
-            options={service}
-            isMulti
-            required
-            placeholder="What service do you provide?"
-            touchUi={false}
-            className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700  hover:border-amber-500"
-            defaultValue={
-              Array.isArray(formData.name)
-                ? formData.name.map((name) =>
-                    service.find((option) => option.value === name.value)
-                  )
-                : []
-            }
-            onChange={(selectedOptions) => {
-              setFormData((preState) => ({
-                ...preState,
-                name: selectedOptions.map((option) => option.value),
-              }));
-            }}
-            styles={{
-              control: (provided) => ({
-                ...provided,
-                backgroundColor: "transparent",
-                minWidth: "160px",
-                border: "none",
-                outline: "none",
-                boxShadow: "none",
-                transition: "all 0.3s ease",
-              }),
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Full Name*"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="fullName"
-            required
-            onChange={handleChange}
-            value={formData.fullName}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="border-2 p-3 rounded-lg focus:border-amber-600 focus:ring-0"
-            id="email"
-            required
-            onChange={handleChange}
-            value={formData.email}
-          />
-          <input
-            type="text"
-            placeholder="Qualification(e.g.,Psychologist, Counselor)"
-            className="border-2 p-3 rounded-lg focus:border-amber-600 focus:ring-0"
-            id="qualification"
-            required
-            onChange={handleChange}
-            value={formData.qualification}
-          />
-
-          <input
-            type="text"
-            placeholder="Licensing (License number, issuing authority)"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="license"
-            required
-            onChange={handleChange}
-            value={formData.license}
-          />
-          <input
-            placeholder="Address Line 1"
-            className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="addressLine1"
-            required
-            onChange={handleChange}
-            value={formData.address.addressLine1}
-          />
-          <input
-            placeholder="Street"
-            className="w-full border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="street"
-            required
-            onChange={handleChange}
-            value={formData.address.street}
-          />
-          <div className="flex flex-row gap-2">
-            <Select
-              id="country"
-              key={formData.address.country}
-              defaultValue={{
-                value: formData.address.country,
-                label: formData.address.country,
-              }}
-              options={Country.getAllCountries().map((country) => {
-                return { value: country.name, label: country.name };
-              })}
-              className="w-full rounded-lg border-2 border-slate-500"
-              placeholder="Select Country"
-              onChange={(selectedOption) => {
-                const selectedCountry = Country.getAllCountries().find(
-                  (country) => country.name === selectedOption.value
-                );
-                setSelectedCountry(selectedCountry);
-                setFormData({
-                  ...formData,
-                  address: {
-                    ...formData.address,
-                    country: selectedOption.label,
-                  },
-                });
-              }}
-            />
-            <Select
-              id="state"
-              key={`state-${formData.address.state}`}
-              defaultValue={{
-                value: formData.address.state,
-                label: formData.address.state,
-              }}
-              options={state.map((state) => {
-                return { value: state.isoCode, label: state.name };
-              })}
-              placeholder="Select State"
-              className="w-full rounded-lg border-2 border-slate-500"
-              onChange={(selectedOption) => {
-                setSelectedState(selectedOption.value);
-                setFormData({
-                  ...formData,
-                  address: {
-                    ...formData.address,
-                    state: selectedOption.label,
-                  },
-                });
-              }}
-            />
-          </div>
-          <div className="flex flex-row gap-2">
-            <Select
-              id="city"
-              key={formData.address.city}
-              defaultValue={{
-                value: formData.address.city,
-                label: formData.address.city,
-              }}
-              options={cities.map((city) => {
-                return { value: city.name, label: city.name };
-              })}
-              className="w-full border-2 rounded-lg border-slate-500"
-              placeholder="Select City"
-              onChange={(selectedOption) => {
-                setFormData({
-                  ...formData,
-                  address: {
-                    ...formData.address,
-                    city: selectedOption.label,
-                  },
-                });
-              }}
-            />
-
-            <input
-              placeholder="Pincode"
-              className="w-full border-2 p-1 border-slate-500 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-              id="pincode"
-              required
-              onChange={handleChange}
-              value={formData.address.pincode}
-            />
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="regularPrice"
-                min="50"
-                max="100000"
-                required
-                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-                onChange={handleChange}
-                value={formData.regularPrice}
-              />
-
-              <div className="flex flex-col items-center">
-                <p>Regular Fees</p>
-                <span className="text-xs">( ₹ per Appointment )</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="experience"
-                min="0"
-                max="100000"
-                required
-                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-                onChange={handleChange}
-                value={formData.experience}
-              />
-
-              <div className="flex flex-col items-center">
-                <p>Year of Experience</p>
-                <span className="text-xs">( services )</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col flex-1 gap-4">
-          <Select
-            key={formData.therapytype}
-            id="therapytype"
-            options={therapyType}
-            isMulti
-            required
-            placeholder="Type of Therapy"
-            touchUi={false}
-            defaultValue={
-              Array.isArray(formData.therapytype)
-                ? formData.therapytype.map((name) =>
-                    therapyType.find((option) => option.value === name.value)
-                  )
-                : []
-            }
-            className="border-2 p-3 rounded-lg border-slate-500 bg-white focus:border-amber-700 hover:border-amber-500"
-            onChange={(selectedOptions) => {
-              setFormData((prevState) => ({
-                ...prevState,
-                therapytype: selectedOptions.map((option) => option.value),
-              }));
-            }}
-            styles={{
-              control: (provided) => ({
-                ...provided,
-                backgroundColor: "transparent",
-                minWidth: "160px",
-                border: "none",
-                boxShadow: "none",
-                transition: "all 0.3s ease",
-              }),
-            }}
-          />
-          <div className="flex flex-col gap-4">
-            <input
-              type="number"
-              placeholder="Phone number"
-              className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-              id="phone"
-              required
-              onChange={handleChange}
-              value={formData.phone}
-            />
-            <p className="font-semibold">Availability:</p>
-            <div className="flex flex-row gap-4">
-              <p>Morning:</p>
-              <input
-                type="time"
-                id="morningStart"
-                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-                required
-                value={formData.availability.morningStart}
-                onChange={handleChange}
-              />
-              <input
-                type="time"
-                id="morningEnd"
-                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-                required
-                value={formData.availability.morningEnd}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="flex flex-row gap-4 pl-1">
-              <p>Evening:</p>
-              <input
-                type="time"
-                id="eveningStart"
-                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-                required
-                value={formData.availability.eveningStart}
-                onChange={handleChange}
-              />
-              <input
-                type="time"
-                id="eveningEnd"
-                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-                required
-                value={formData.availability.eveningEnd}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <textarea
-            type="text"
-            placeholder="Biography"
-            className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-            id="description"
-            required
-            onChange={handleChange}
-            value={formData.description}
-          />
-          <p className="font-semibold">
-            Images:
-            <span className="font-normal text-gray-600 ml-2">
-              The first image will be the cover. pick image for showcase (max 6)
-            </span>
-          </p>
-
-          <div className="flex gap-4">
-            <input
-              onChange={(e) => setFiles(e.target.files)}
-              className="p-3 border border-gray-300 rounded w-full"
-              type="file"
-              id="images"
-              accept="image/*"
-              multiple
-            />
-            <button
-              type="button"
-              disabled={uploading}
-              onClick={handleImageSubmit}
-              className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85"
-            >
-              {uploading ? "uploading..." : "upload"}
-            </button>
-          </div>
-          <p className="text-red-700 text-xs">
-            {imageUploadError && imageUploadError}
-          </p>
-          {formData.imageUrls.length > 0 &&
-            formData.imageUrls.map((url, index) => (
-              <div
-                key={index}
-                className="flex justify-between p-3 border items-center"
-              >
-                <img
-                  src={url}
-                  alt="image"
-                  className="w-20 h-20 object-contain rounded-lg"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(index)}
-                  className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75"
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
           {currentUser._id ===
-          (data && data.fetchprovider && data.fetchprovider.userRef) ? (
+          (providerData &&
+            providerData.fetchprovider &&
+            providerData.fetchprovider.userRef) ? (
             <>
-              <button
-                disabled={loading || uploading}
-                className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
-              >
-                {loading ? "Updating Provider " : "Update Provider"}
-              </button>
-              {error && <p className="text-red-700 text-xs">{error}</p>}
+              <h1 className="flex flex-col p-2 font-bold text-2xl text-gray">
+                {" "}
+                Your Provider Details :
+              </h1>
             </>
           ) : (
             <>
-              <button
-                disabled={loading || uploading}
-                className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
-              >
-                {loading ? "Creating Provider" : "Create Provider"}
-              </button>
-              {error && <p className="text-red-700 text-xs">{error}</p>}
+              <h1 className="text-base text-gray-700 font-semibold text-left my-7 mt-5">
+                Fill the form to create a provider
+              </h1>
             </>
           )}
-        </div>
-      </form>
-      </>)}
-      
+
+          <input
+            type="file"
+            id="profilePicture"
+            name="profilePicture"
+            ref={fileRef}
+            hidden
+            accept="image/*"
+            required
+            onChange={handleProfileImageChange}
+          />
+
+          <div className="relative w-24 h-24 mx-auto group">
+            <label
+              htmlFor="profilePicture"
+              className="w-24 h-24 cursor-pointer"
+              onClick={handleImageClick}
+            >
+              <img
+                src={
+                  formData.profilePicture ||
+                  "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                }
+                alt="profile"
+                className="w-24 h-24 rounded-full object-cover border-4 border-[lightgray]"
+              />
+              <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
+                <img
+                  src="https://www.svgrepo.com/show/33565/upload.svg"
+                  alt="camera"
+                  className="w-8 h-8"
+                />
+                <p className="text-white text-xs">Choose Profile</p>
+              </div>
+            </label>
+          </div>
+          <form className="flex flex-col sm:flex-row gap-4 mt-6 max-w-1/3">
+            <div className="flex flex-col gap-4 flex-1">
+              <Select
+                id="name"
+                key={formData.name}
+                options={service}
+                isMulti
+                required
+                placeholder="What service do you provide?"
+                touchUi={false}
+                className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700  hover:border-amber-500"
+                defaultValue={
+                  Array.isArray(formData.name)
+                    ? formData.name.map((name) =>
+                        service.find((option) => option.value === name)
+                      )
+                    : []
+                }
+                onChange={(selectedOptions) => {
+                  setFormData((preState) => ({
+                    ...preState,
+                    name: selectedOptions.map((option) => option.value),
+                  }));
+                }}
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    backgroundColor: "transparent",
+                    minWidth: "160px",
+                    border: "none",
+                    outline: "none",
+                    boxShadow: "none",
+                    transition: "all 0.3s ease",
+                  }),
+                }}
+              />
+              <input
+                type="text"
+                placeholder="Full Name*"
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                id="fullName"
+                required
+                onChange={handleChange}
+                value={formData.fullName}
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                className="border-2 p-3 rounded-lg focus:border-amber-600 focus:ring-0"
+                id="email"
+                required
+                onChange={handleChange}
+                value={formData.email}
+              />
+              <input
+                type="text"
+                placeholder="Qualification(e.g.,Psychologist, Counselor)"
+                className="border-2 p-3 rounded-lg focus:border-amber-600 focus:ring-0"
+                id="qualification"
+                required
+                onChange={handleChange}
+                value={formData.qualification}
+              />
+
+              <input
+                type="text"
+                placeholder="Licensing (License number, issuing authority)"
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                id="license"
+                required
+                onChange={handleChange}
+                value={formData.license}
+              />
+              <input
+                placeholder="Address Line 1"
+                className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700 focus:outline-none focus:ring-0"
+                id="addressLine1"
+                required
+                onChange={handleChange}
+                value={formData.address.addressLine1}
+              />
+              <input
+                placeholder="Street"
+                className="w-full border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700 focus:outline-none focus:ring-0"
+                id="street"
+                required
+                onChange={handleChange}
+                value={formData.address.street}
+              />
+              <div className="flex flex-row gap-2">
+                <Select
+                  id="country"
+                  key={formData.address.country}
+                  defaultValue={{
+                    value: formData.address.country,
+                    label: formData.address.country,
+                  }}
+                  options={Country.getAllCountries().map((country) => {
+                    return { value: country.name, label: country.name };
+                  })}
+                  className="w-full rounded-lg border-2 border-slate-500"
+                  placeholder="Select Country"
+                  onChange={(selectedOption) => {
+                    const selectedCountry = Country.getAllCountries().find(
+                      (country) => country.name === selectedOption.value
+                    );
+                    setSelectedCountry(selectedCountry);
+                    setFormData({
+                      ...formData,
+                      address: {
+                        ...formData.address,
+                        country: selectedOption.label,
+                      },
+                    });
+                  }}
+                />
+                <Select
+                  id="state"
+                  key={`state-${formData.address.state}`}
+                  defaultValue={{
+                    value: formData.address.state,
+                    label: formData.address.state,
+                  }}
+                  options={state.map((state) => {
+                    return { value: state.isoCode, label: state.name };
+                  })}
+                  placeholder="Select State"
+                  className="w-full rounded-lg border-2 border-slate-500"
+                  onChange={(selectedOption) => {
+                    setSelectedState(selectedOption.value);
+                    setFormData({
+                      ...formData,
+                      address: {
+                        ...formData.address,
+                        state: selectedOption.label,
+                      },
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex flex-row gap-2">
+                <Select
+                  id="city"
+                  key={formData.address.city}
+                  defaultValue={{
+                    value: formData.address.city,
+                    label: formData.address.city,
+                  }}
+                  options={cities.map((city) => {
+                    return { value: city.name, label: city.name };
+                  })}
+                  className="w-full border-2 rounded-lg border-slate-500"
+                  placeholder="Select City"
+                  onChange={(selectedOption) => {
+                    setFormData({
+                      ...formData,
+                      address: {
+                        ...formData.address,
+                        city: selectedOption.label,
+                      },
+                    });
+                  }}
+                />
+
+                <input
+                  placeholder="Pincode"
+                  className="w-full border-2 p-1 border-slate-500 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                  id="pincode"
+                  required
+                  onChange={handleChange}
+                  value={formData.address.pincode}
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    id="regularPrice"
+                    min="50"
+                    max="100000"
+                    required
+                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    onChange={handleChange}
+                    value={formData.regularPrice}
+                  />
+
+                  <div className="flex flex-col items-center">
+                    <p>Regular Fees</p>
+                    <span className="text-xs">( ₹ per Appointment )</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    id="experience"
+                    min="0"
+                    max="100000"
+                    required
+                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    onChange={handleChange}
+                    value={formData.experience}
+                  />
+
+                  <div className="flex flex-col items-center">
+                    <p>Year of Experience</p>
+                    <span className="text-xs">( services )</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col flex-1 gap-4">
+              <Select
+                key={formData.therapytype}
+                id="therapytype"
+                options={therapyType}
+                isMulti
+                required
+                placeholder="Type of Therapy"
+                touchUi={false}
+                defaultValue={
+                  Array.isArray(formData.therapytype)
+                    ? formData.therapytype.map((name) =>
+                        therapyType.find(
+                          (option) => option.value === name
+                        )
+                      )
+                    : []
+                }
+                className="border-2 p-3 rounded-lg border-slate-500 bg-white focus:border-amber-700 hover:border-amber-500"
+                onChange={(selectedOptions) => {
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    therapytype: selectedOptions.map((option) => option.value),
+                  }));
+                }}
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    backgroundColor: "transparent",
+                    minWidth: "160px",
+                    border: "none",
+                    boxShadow: "none",
+                    transition: "all 0.3s ease",
+                  }),
+                }}
+              />
+              <div className="flex flex-col gap-4">
+                <input
+                  type="number"
+                  placeholder="Phone number"
+                  className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                  id="phone"
+                  required
+                  onChange={handleChange}
+                  value={formData.phone}
+                />
+                <p className="font-semibold">Availability:</p>
+                <div className="flex flex-row gap-4">
+                  <p>Morning:</p>
+                  <input
+                    type="time"
+                    id="morningStart"
+                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    required
+                    value={formData.availability.morningStart}
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="time"
+                    id="morningEnd"
+                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    required
+                    value={formData.availability.morningEnd}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex flex-row gap-4 pl-1">
+                  <p>Evening:</p>
+                  <input
+                    type="time"
+                    id="eveningStart"
+                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    required
+                    value={formData.availability.eveningStart}
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="time"
+                    id="eveningEnd"
+                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    required
+                    value={formData.availability.eveningEnd}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              <textarea
+                type="text"
+                placeholder="Biography"
+                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                id="description"
+                required
+                onChange={handleChange}
+                value={formData.description}
+              />
+              <p className="font-semibold">
+                Images:
+                <span className="font-normal text-gray-600 ml-2">
+                  The first image will be the cover. pick image for showcase
+                  (max 6)
+                </span>
+              </p>
+
+              <div className="flex gap-4">
+                <input
+                  onChange={(e) => setFiles(e.target.files)}
+                  className="p-3 border border-gray-300 rounded w-full"
+                  type="file"
+                  id="images"
+                  accept="image/*"
+                  multiple
+                />
+                <button
+                  type="button"
+                  disabled={uploading}
+                  onClick={handleImageSubmit}
+                  className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85"
+                >
+                  {uploading ? "uploading..." : "upload"}
+                </button>
+              </div>
+              <p className="text-red-700 text-xs">
+                {imageUploadError && imageUploadError}
+              </p>
+              {formData.imageUrls.length > 0 &&
+                formData.imageUrls.map((url, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between p-3 border items-center"
+                  >
+                    <img
+                      src={url}
+                      alt="image"
+                      className="w-20 h-20 object-contain rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              {currentUser._id ===
+              (providerData &&
+                providerData.fetchprovider &&
+                providerData.fetchprovider.userRef) ? (
+                <>
+                  <button
+                    type="submit"
+                    onClick={handleUpdate}
+                    disabled={loading || uploading}
+                    className="p-3 bg-blue-600 text-white rounded=lg rounded-lg Captialize hover:opacity-95 disabled:opacity-80 transition-all duration-300 ease-in-out"
+                  >
+                    {loading ? "Saving..." : "Save Changes"}
+                  </button>
+                  {error && <p className="text-red-700 text-xs">{error}</p>}
+                </>
+              ) : (
+                <>
+                  <button
+                    type="submit"
+                    onClick={handleSubmit}
+                    disabled={loading || uploading}
+                    className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
+                  >
+                    {loading ? "Creating Provider" : "Create Provider"}
+                  </button>
+                  {error && <p className="text-red-700 text-xs">{error}</p>}
+                </>
+              )}
+            </div>
+          </form>
+        </>
+      )}
     </div>
   );
 }

@@ -259,7 +259,7 @@ export default function Provider() {
       )}
       {provider && !loading && !error && (
         <div>
-          {/* <Swiper navigation>
+          <Swiper navigation>
             {provider.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
@@ -271,8 +271,8 @@ export default function Provider() {
                 ></div>
               </SwiperSlide>
             ))}
-          </Swiper> */}
-          <div className="lg:flex-row flex-col mx-auto flex w-full md:w-5/6">
+          </Swiper>
+          <div className="lg:flex-row flex-col mx-auto flex md:w-5/6 justify-center">
             <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
               <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">
                 <p className="flex flex-col items-start justify-start">
@@ -662,7 +662,7 @@ export default function Provider() {
               </div>
             </div>
             <div
-              className="w-full flex flex-col space-y-3 p-3 lg:w-1/2 sm-w-96"
+              className="w-full flex flex-col space-y-3 p-3 lg:w-1/2 "
               style={{
                 alignSelf: "flex-start",
                 position: "sticky",
@@ -674,7 +674,16 @@ export default function Provider() {
                   <p className="font-bold text-xl text-gray ">
                     Get in touch with {provider.fullName}
                   </p>
-
+                  {/* <div className="video-responsive">
+                    <iframe
+                      width="300"
+                      height="150"
+                      src="https://www.youtube.com/embed/sV1-4FTuQRY" // replace YOUR_VIDEO_ID with your YouTube video's ID
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
+                  </div> */}
                   {!currentUser && (
                     <div className="flex flex-col mt-2 gap-4">
                       <Button

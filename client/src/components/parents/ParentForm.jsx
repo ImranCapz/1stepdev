@@ -275,7 +275,7 @@ export default function ParentForm() {
             />
             <button
               disabled={!isModified || loading}
-              className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
+              className="p-3 bg-sky-600 rounded-lg text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-60 transition ease-in-out duration-300"
             >
               {loading ? "Saving..." : "Save"}
             </button>

@@ -379,7 +379,7 @@ export default function Search() {
               )}
             </>
           )}
-          {providers.length > 0 && totalCount > 9 && !providerloading && (
+          {providers.length > 0 && totalCount > itemsPerPage && !providerloading && (
             <div>
               <Pagination
                 totalPages={Math.ceil(totalCount / itemsPerPage)}

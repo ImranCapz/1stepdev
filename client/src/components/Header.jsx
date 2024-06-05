@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import TopLoadingBar from "react-top-loading-bar";
 import toast from "react-hot-toast";
 import { FaRegHeart } from "react-icons/fa";
+import { Modal } from "flowbite-react";
+import ListModel from "./modal/ListModel";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -17,6 +19,7 @@ const Header = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const topLoadingBarRef = useRef(null);
+  const [openModal, setOpenModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(0);
   const location = useLocation();
 
@@ -80,15 +83,27 @@ const Header = () => {
     { title: "For Parents", path: "/dashboard?tag=Parent%20Details" },
     {
       title: "For Providers",
-      path: currentUser ? "/dashboard?tab=createprovider" : "/for-providers",
+      path: currentUser ? "/dashboard?tab=providers" : "/for-providers",
     },
     {
       title: [
-        <span style={{ display: "flex", alignItems: "center" }} key="heartIcon">
-          <FaRegHeart style={{ marginRight: "5px" }} /> Lists
-        </span>,
+        <div
+          key="heartIcon"
+          style={{ display: "flex", alignItems: "center"}}
+          onClick={() => (currentUser ? null : setOpenModal(true))}
+        >
+          {currentUser ? (
+            <Link to={'/favorite-list'} style={{ display: "flex", alignItems: "center",marginRight: "5px" }} className="gap-1">
+              <FaRegHeart/> Lists
+            </Link>
+          ) : (
+            <>
+              <FaRegHeart style={{ display: "flex", alignItems: "center",marginRight: "5px" }} /> Lists
+            </>
+          )}
+        </div>,
       ],
-      path: currentUser ? "/favorite-list" : "/signin",
+      path: "",
     },
     { title: "About Us", path: "" },
   ];
@@ -114,6 +129,10 @@ const Header = () => {
     { title: "Early Concerns: Start Here", path: "/early-concerns" },
     { title: "Read Expert Guides", path: "/expert-guides" },
   ];
+
+  function onCloseModal() {
+    setOpenModal(false);
+  }
   return (
     <header className="text-base lg:text-sm sticky top-0 z-50 bg-white border-b">
       <TopLoadingBar
@@ -122,6 +141,12 @@ const Header = () => {
         height={3}
         speed={1000}
       />
+      <Modal show={openModal} size="md" onClose={onCloseModal} popup>
+        <Modal.Header></Modal.Header>
+        <Modal.Body>
+          <ListModel />
+        </Modal.Body>
+      </Modal>
       <div
         className={`bg-sky-200 items-center gap-x-14 px-4 max-w-screen-4xl mx-auto lg:flex lg:px-8 lg:static ${
           state ? "h-full fixed inset-x-0" : ""

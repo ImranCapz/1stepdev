@@ -57,8 +57,7 @@ export const ProviderLogin = () => {
       }  
 
       toast.success('Account Created Successfully');
-      console.log('Navigating to /create-provider');
-      navigate('/create-provider');   
+      navigate('/dashboard?tab=providers');   
     } catch (error) {
       setLoading(false);
       setError(true);

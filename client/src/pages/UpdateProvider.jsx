@@ -126,8 +126,6 @@ export default function UpdateProvider() {
     try {
       if (formData.imageUrls.length < 1)
         return toast.error("You must upload at least one image");
-      if (+formData.regularPrice < +formData.discountPrice)
-        return toast.error("Discound price must be lower than regular price");
       setLoading(true);
       setError(false);
       const res = await fetch(`/server/provider/update/${params.providerId}`, {

@@ -45,7 +45,7 @@ export default function Dashboard() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
-    if (["dashboard", "createprovider", "profile", "Profile Setting", "Parent Details", "Bookings"].includes(tabFromUrl)) {
+    if (["dashboard", "providers", "profile", "Profile Setting", "Parent Details", "Bookings"].includes(tabFromUrl)) {
       setTab(tabFromUrl);
     }
   }, [location.search]); 
@@ -53,7 +53,7 @@ export default function Dashboard() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tagFromUrl = urlParams.get("tag");
-    if (["dashboard", "createprovider", "profile", "Profile Setting", "Parent Details", "Bookings"].includes(tagFromUrl)) {
+    if (["dashboard", "providers", "profile", "Profile Setting", "Parent Details", "Bookings"].includes(tagFromUrl)) {
       setTab(tagFromUrl);
     }
   }, [location.search]); 
@@ -63,7 +63,7 @@ export default function Dashboard() {
         <DashSidebar />
       </div>
         {tab === "dashboard" && <Overview /> }
-        {tab === "createprovider" && <SubmenuProvider />}
+        {tab === "providers" && <SubmenuProvider />}
         {(tab === "profile" || tab === "Profile Setting" || tab === "Parent Details" || tab === "Bookings" ) && < SubmenuProfile/>}
        
     </div>
