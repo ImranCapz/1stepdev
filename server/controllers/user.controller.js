@@ -5,7 +5,7 @@ import bcryptjs from "bcryptjs";
 
 export const test = (req, res) => {
   res.json({
-    message: "server is working",
+    message: "Made by Capztone Innovative Team",
   });
 };
 

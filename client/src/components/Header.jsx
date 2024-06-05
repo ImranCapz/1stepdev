@@ -112,7 +112,7 @@ const Header = () => {
           )}
         </div>,
       ],
-      path: "/favorite-list",
+      path: currentUser ? "/favorite-list" : "#",
     },
     { title: "About Us", path: "" },
   ];

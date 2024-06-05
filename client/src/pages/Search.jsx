@@ -73,6 +73,7 @@ export default function Search() {
     urlParams.set("address", address.city);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
+    setCurrentPage(1);
   };
 
   useEffect(() => {
