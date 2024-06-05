@@ -249,7 +249,7 @@ export default function CreateProvider() {
         }
       );
       const data = await res.json();
-      console.log({data})
+      console.log(data)
       setProviderData(data);
       setLoading(false);
       if (data.status === true) {

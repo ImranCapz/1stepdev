@@ -15,6 +15,7 @@ const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [state, setState] = useState(false);
+  const [address, setAddress] = useState("");
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -57,7 +58,6 @@ const Header = () => {
     setDropdownVisible(!isDropdownVisible);
   };
 
-
   const handleSubmenuClick = (itemTitle) => {
     topLoadingBarRef.current.continuousStart(50);
     if (itemTitle === "Overview") {
@@ -86,17 +86,18 @@ const Header = () => {
           onClick={() => (currentUser ? null : setOpenModal(true))}
         >
           {currentUser ? (
-            <Link
-              to={"/favorite-list"}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginRight: "5px",
-              }}
-              className="gap-1"
-            >
-              <FaRegHeart /> Lists
-            </Link>
+            <>
+              <button
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "5px",
+                }}
+                className="gap-1"
+              >
+                <FaRegHeart /> Lists
+              </button>
+            </>
           ) : (
             <>
               <FaRegHeart
@@ -111,25 +112,35 @@ const Header = () => {
           )}
         </div>,
       ],
-      path: "",
+      path: "/favorite-list",
     },
     { title: "About Us", path: "" },
   ];
+
+  useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((data) => setAddress(data.city))
+      .catch((err) => console.log(err));
+  }, []);
 
   const submenuNav = [
     { title: "Overview", path: "/" },
     {
       title: "Diagnostic Evaluation",
-      path: "/search?searchTerm=Diagnostic%20Evaluation",
+      path: `/search?searchTerm=Diagnostic%20Evaluation&address=${address}`,
     },
     {
       title: "Occupational Therapy",
-      path: "/search?searchTerm=Occupational%20Therapy",
+      path: `/search?searchTerm=Occupational%20Therapy&address=${address}`,
     },
-    { title: "Speech Therapy", path: "/search?searchTerm=Speech%20Therapy" },
+    {
+      title: "Speech Therapy",
+      path: `/search?searchTerm=Speech%20Therapy&address=${address}`,
+    },
     {
       title: "School-Based Service",
-      path: "/search?searchTerm=School-Based+Service",
+      path: `/search?searchTerm=School-Based+Service&address=${address}`,
     },
 
     { title: "|" },
@@ -237,7 +248,7 @@ const Header = () => {
                   key={idx}
                   to={item.path}
                   className="block text-gray-700 hover:text-gray-900"
-                  onClick={()=> setState(false)}
+                  onClick={() => setState(false)}
                 >
                   {item.title}
                 </Link>
@@ -258,7 +269,6 @@ const Header = () => {
                     onClick={toggleDropdown}
                     ref={dropdownRef}
                   />
-                  {/* Dropdown menu */}
                   <div
                     id="userDropdown"
                     className={`z-10 ${
@@ -335,23 +345,23 @@ const Header = () => {
                 </div>
               ) : (
                 // <img src={currentUser.profilePicture} alt='profile' className="h-8 w-8 rounded-full object-cover"/>
-                <>
+                <div className="flex md:flex-row flex-col gap-4 ">
                   <Link
                     to="/signin"
-                    onClick={()=> setState(false)}
-                    className="block py-3 text-center text-slate-900 hover:text-amber-400 border rounded-lg md:border-none transition-all duration-300 ease-in-out"
+                    onClick={() => setState(false)}
+                    className=" block py-3 text-center text-slate-900 hover:text-amber-400 border rounded-lg md:border-none transition-all duration-300 ease-in-out"
                   >
                     Sign in
                   </Link>
 
                   <Link
                     to="/signup"
-                    onClick={()=> setState(false)}
+                    onClick={() => setState(false)}
                     className="block py-3 px-4 font-medium text-center text-indigo-950 bg-amber-400 hover:bg-amber-300 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out"
                   >
                     Sign Up
                   </Link>
-                </>
+                </div>
               )}
             </div>
           </ul>
