@@ -57,13 +57,6 @@ const Header = () => {
     setDropdownVisible(!isDropdownVisible);
   };
 
-  const handleSigninClick = () => {
-    setState(false);
-  };
-
-  const handleSignupClick = () => {
-    setState(false);
-  };
 
   const handleSubmenuClick = (itemTitle) => {
     topLoadingBarRef.current.continuousStart(50);
@@ -89,16 +82,31 @@ const Header = () => {
       title: [
         <div
           key="heartIcon"
-          style={{ display: "flex", alignItems: "center"}}
+          style={{ display: "flex", alignItems: "center" }}
           onClick={() => (currentUser ? null : setOpenModal(true))}
         >
           {currentUser ? (
-            <Link to={'/favorite-list'} style={{ display: "flex", alignItems: "center",marginRight: "5px" }} className="gap-1">
-              <FaRegHeart/> Lists
+            <Link
+              to={"/favorite-list"}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginRight: "5px",
+              }}
+              className="gap-1"
+            >
+              <FaRegHeart /> Lists
             </Link>
           ) : (
             <>
-              <FaRegHeart style={{ display: "flex", alignItems: "center",marginRight: "5px" }} /> Lists
+              <FaRegHeart
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "5px",
+                }}
+              />{" "}
+              Lists
             </>
           )}
         </div>,
@@ -229,6 +237,7 @@ const Header = () => {
                   key={idx}
                   to={item.path}
                   className="block text-gray-700 hover:text-gray-900"
+                  onClick={()=> setState(false)}
                 >
                   {item.title}
                 </Link>
@@ -263,7 +272,7 @@ const Header = () => {
                         {currentUser.email}
                       </div>
                     </div>
-                    <ul
+                    <div
                       className="py-2 text-sm text-gray-700 dark:text-gray-200"
                       aria-labelledby="avatarButton"
                     >
@@ -312,39 +321,36 @@ const Header = () => {
                           Earnings
                         </a>
                       </li> */}
-                    </ul>
+                    </div>
                     <div className="py-1">
-                      <a
-                        href="#"
+                      <Link
+                        to="/"
                         onClick={handleSignout}
                         className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                       >
                         Sign out
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
               ) : (
                 // <img src={currentUser.profilePicture} alt='profile' className="h-8 w-8 rounded-full object-cover"/>
                 <>
-                  <li>
-                    <Link
-                      to="/signin"
-                      onClick={handleSigninClick}
-                      className="block py-3 text-center text-slate-900 hover:text-amber-400 border rounded-lg md:border-none transition-all duration-300 ease-in-out"
-                    >
-                      Sign in
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/signup"
-                      onClick={handleSignupClick}
-                      className="block py-3 px-4 font-medium text-center text-indigo-950 bg-amber-400 hover:bg-amber-300 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out"
-                    >
-                      Sign Up
-                    </Link>
-                  </li>
+                  <Link
+                    to="/signin"
+                    onClick={()=> setState(false)}
+                    className="block py-3 text-center text-slate-900 hover:text-amber-400 border rounded-lg md:border-none transition-all duration-300 ease-in-out"
+                  >
+                    Sign in
+                  </Link>
+
+                  <Link
+                    to="/signup"
+                    onClick={()=> setState(false)}
+                    className="block py-3 px-4 font-medium text-center text-indigo-950 bg-amber-400 hover:bg-amber-300 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out"
+                  >
+                    Sign Up
+                  </Link>
                 </>
               )}
             </div>

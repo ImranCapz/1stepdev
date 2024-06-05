@@ -110,7 +110,7 @@ export default function CreateProfile() {
   const [showComponent, setShowComponent] = useState(false);
 
   return (
-    <div className="flex flex-col items-center min-h-screen w-full">
+    <div className="md:p-1 p-4 flex flex-col items-center min-h-screen w-full">
       {!showComponent && (
         <div className="flex flex-col justify-center mt-60 outline outline-offset-2 outline-1 outline-gray-300 bg-sky-100 rounded-lg ">
           <div className="">
@@ -126,7 +126,7 @@ export default function CreateProfile() {
                 </p>
                 <h4 className="text-sm font-semibold text-gray-600">
                   we might not have a profile for you yet. The good news - you{" "}
-                  <br />
+                  
                   can create a profile for free!
                 </h4>
               </div>
