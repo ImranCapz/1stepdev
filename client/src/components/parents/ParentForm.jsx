@@ -5,7 +5,6 @@ import {
   updateUserSuccess,
   updateUserFailure,
 } from "../../redux/user/userSlice";
-import { useNavigate } from "react-router";
 import BeatLoader from "react-spinners/BeatLoader";
 import toast from "react-hot-toast";
 
@@ -77,6 +76,7 @@ export default function ParentForm() {
   useEffect(() => {
     const fetchParentDetails = async () => {
       dispatch(updateUserStart());
+      setLoading(true);
       try {
         const res = await fetch(`server/parent/getparent/${currentUser._id}`);
         const data = await res.json();
@@ -104,6 +104,7 @@ export default function ParentForm() {
         console.log(error);
         dispatch(updateUserFailure(error));
       }
+      setLoading(false);
     };
     fetchParentDetails();
   }, [currentUser._id, dispatch]);
