@@ -751,7 +751,7 @@ export default function CreateProvider() {
                     type="submit"
                     onClick={handleSubmit}
                     disabled={loading || uploading}
-                    className="p-3 bg-slate-700 text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
+                    className="p-3 bg-slate-700 rounded-lg text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
                   >
                     {loading ? "Creating Provider" : "Create Provider"}
                   </button>

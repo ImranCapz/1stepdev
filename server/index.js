@@ -10,6 +10,8 @@ import favoriteRouter from "./routes/favorite.route.js";
 import bookingRouter from "./routes/booking.route.js";
 import cookieParser from "cookie-parser";
 import path from "path";
+import cors from "cors";
+
 // import Provider from "./models/provider.model.js";
 // import casual from "casual";
 
@@ -19,10 +21,12 @@ const __dirname = path.resolve();
 
 const app = express();
 
-
-
 app.use(express.json());
-
+app.use(
+  cors({
+    origin: ["https://onestepdev.onrender.com/", "http://localhost:3000"],
+  })
+);
 app.use(cookieParser());
 
 mongoose
@@ -46,10 +50,10 @@ app.use("/server/rating", ratingRouter);
 app.use("/server/favorite", favoriteRouter);
 app.use("/server/booking", bookingRouter);
 
-app.use(express.static(path.join(__dirname,'/client/dist')));
+app.use(express.static(path.join(__dirname, "/client/dist")));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname,'client','dist','index.html'))
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
 
 app.use((err, req, res, next) => {

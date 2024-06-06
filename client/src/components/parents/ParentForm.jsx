@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateUserStart,
@@ -7,12 +7,15 @@ import {
 } from "../../redux/user/userSlice";
 import BeatLoader from "react-spinners/BeatLoader";
 import toast from "react-hot-toast";
+import TopLoadingBar from "react-top-loading-bar";
 
 
 export default function ParentForm() {
   const { currentUser, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [loading , setLoading] = useState(false);
+  const [btnloader, setBtnLoader] = useState(false);
+  const TopLoadingBarRef = useRef(null);
   const [isModified, setIsModified] = useState(false);
   const [formData, setFormData] = useState({
     isParent: false,
@@ -49,7 +52,9 @@ export default function ParentForm() {
     }
     dispatch(updateUserStart());
     try {
+      TopLoadingBarRef.current.continuousStart(50);
       dispatch(updateUserStart());
+      setBtnLoader(true);
       const res = await fetch(`server/user/updateparent/${currentUser._id}`, {
         method: "POST",
         headers: {
@@ -68,8 +73,11 @@ export default function ParentForm() {
      }else{
       toast.error("Parent Details Successfully Removed")
      }
+     setBtnLoader(false);
     } catch (error) {
       dispatch(updateUserFailure(error));
+    }finally{
+      TopLoadingBarRef.current.complete();
     }
   };
 
@@ -111,6 +119,7 @@ export default function ParentForm() {
 
   return (
     <div className="p-3 max-w-4xl mx-auto flex-col items-center">
+      <TopLoadingBar ref={TopLoadingBarRef} color="#ff9900" height={3} />
       {loading ? (
         <div style={{ display:'flex', justifyContent:'center', alignItems:'center' }}> 
         <BeatLoader color="#10ebd8" loading={loading} size={15} />
@@ -282,7 +291,7 @@ export default function ParentForm() {
               disabled={!isModified || loading}
               className="p-3 bg-sky-600 rounded-lg text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-60 transition ease-in-out duration-300"
             >
-              {loading ? "Saving..." : "Save"}
+              {btnloader ? "Saving..." : "Save"}
             </button>
             {error && <p className="text-red-700 text-xs">{error}</p>}
           </div>

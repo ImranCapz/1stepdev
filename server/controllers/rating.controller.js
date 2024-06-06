@@ -20,7 +20,6 @@ export const reviewProvider = async (req, res, next) => {
     }
     const ratings = await Rating.find({ provider: providerId });
     let totalratings = ratings.length;
-    console.log('Total ratings before calculation:', totalratings);
     let ratingsum = ratings
       .map((item) => item.star)
       .reduce((pre, curr) => pre + curr, 0);
