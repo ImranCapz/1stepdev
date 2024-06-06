@@ -7,12 +7,13 @@ import {
 } from "../../redux/user/userSlice";
 import { useNavigate } from "react-router";
 import BeatLoader from "react-spinners/BeatLoader";
+import toast from "react-hot-toast";
 
 
 export default function ParentForm() {
-  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const { currentUser, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [loading , setLoading] = useState(false);
   const [isModified, setIsModified] = useState(false);
   const [formData, setFormData] = useState({
     isParent: false,
@@ -63,7 +64,11 @@ export default function ParentForm() {
         return;
       }
       dispatch(updateUserSuccess(data));
-      navigate("/dashboard?tag=Parent%20Details");	
+     if(formData.isParent){
+      toast.success("Parent details updated successfully");
+     }else{
+      toast.error("Parent Details Successfully Removed")
+     }
     } catch (error) {
       dispatch(updateUserFailure(error));
     }
@@ -94,7 +99,6 @@ export default function ParentForm() {
           phoneNumber: data.phoneNumber || "",
         };
         setFormData(definedData);
-        console.log(definedData);
         dispatch(updateUserSuccess(data));
       } catch (error) {
         console.log(error);
