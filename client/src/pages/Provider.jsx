@@ -263,7 +263,7 @@ export default function Provider() {
             {provider.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
-                  className="h-[200px]"
+                  className="h-[200px] hidden lg:block"
                   style={{
                     background: `url(${url}) center no-repeat`,
                     backgroundSize: "cover",
@@ -301,14 +301,14 @@ export default function Provider() {
                     <div className="flex flex-row items-center space-x-2 gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
                       {provider.fullName}
                       {provider.verified === true && (
-                        <>
-                          <Tooltip
-                            content="Verifed Profile"
-                            animation="duration-500"
-                          >
-                            <FcApproval />
-                          </Tooltip>
-                        </>
+                        <div className="">
+                        <Tooltip
+                          content="Verifed Profile"
+                          animation="duration-500"
+                        >
+                          <FcApproval />
+                        </Tooltip>
+                      </div>
                       )}
                       {provider.verified === false && (
                         <div className="">
@@ -448,7 +448,7 @@ export default function Provider() {
                         })()
                       : provider.name}
                   </p>
-                  <div className="flex flex-col items-start justify-start ">
+                  <div className="flex flex-col items-start justify-start">
                     <div className="flex items-center gap-1 mt-2">
                       <IoIosStar className="h-4 w-4 text-slate-600" />
                       <p className="text-sm text-gray-600">

@@ -39,7 +39,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgetpassword" element={<ResetPasswordForm />} />
           <Route path="/verifyotp" element={<VerifyOtp />} />
-          <Route path="/search" element={<Search />} />
+          <Route path="/search" element={<Search/>} />
           <Route path="/provider/*" element={<Provider />} />
           <Route path="/for-providers" element={<CreateProfile />} />
           <Route path="/review/:providerId" element={<ProviderReview/>} />

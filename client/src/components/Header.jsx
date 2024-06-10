@@ -122,19 +122,19 @@ const Header = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  const submenuNav = [
+  const getSubmenuNav = (address)=> [
     { title: "Overview", path: "/" },
     {
       title: "Diagnostic Evaluation",
-      path: `/search?searchTerm=Diagnostic%20Evaluation&address=${address}`,
+      path: `/search?searchTerm=Diagnostic+Evaluation&address=${address}`,
     },
     {
       title: "Occupational Therapy",
-      path: `/search?searchTerm=Occupational%20Therapy&address=${address}`,
+      path: `/search?searchTerm=Occupational+Therapy&address=${address}`,
     },
     {
       title: "Speech Therapy",
-      path: `/search?searchTerm=Speech%20Therapy&address=${address}`,
+      path: `/search?searchTerm=Speech+Therapy&address=${address}`,
     },
     {
       title: "School-Based Service",
@@ -146,6 +146,8 @@ const Header = () => {
     { title: "Early Concerns: Start Here", path: "/early-concerns" },
     { title: "Read Expert Guides", path: "/expert-guides" },
   ];
+
+  const submenuNav = getSubmenuNav(address);
 
   function onCloseModal() {
     setOpenModal(false);
@@ -165,7 +167,7 @@ const Header = () => {
         </Modal.Body>
       </Modal>
       <div
-        className={`bg-sky-200 items-center gap-x-14 px-4 max-w-screen-4xl mx-auto lg:flex lg:px-8 lg:static ${
+        className={`main-color items-center gap-x-14 px-4 max-w-screen-4xl mx-auto lg:flex lg:px-8 lg:static ${
           state ? "h-full fixed inset-x-0" : ""
         }`}
       >
@@ -347,7 +349,7 @@ const Header = () => {
                   <Link
                     to="/signin"
                     onClick={() => setState(false)}
-                    className=" block py-3 text-center text-slate-900 hover:text-amber-400 border rounded-lg md:border-none transition-all duration-300 ease-in-out"
+                    className=" block py-3 text-center text-slate-900 hover:text-purple-400 border rounded-lg md:border-none transition-all duration-300 ease-in-out"
                   >
                     Sign in
                   </Link>
@@ -355,7 +357,7 @@ const Header = () => {
                   <Link
                     to="/signup"
                     onClick={() => setState(false)}
-                    className="block py-3 px-4 font-medium text-center text-indigo-950 bg-amber-400 hover:bg-amber-300 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out"
+                    className="block py-3 px-4 font-medium text-center text-indigo-950 btn-color active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out"
                   >
                     Sign Up
                   </Link>

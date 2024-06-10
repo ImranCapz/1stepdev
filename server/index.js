@@ -50,11 +50,11 @@ app.use("/server/rating", ratingRouter);
 app.use("/server/favorite", favoriteRouter);
 app.use("/server/booking", bookingRouter);
 
-app.use(express.static(path.join(__dirname, "/client/dist")));
+// app.use(express.static(path.join(__dirname, "/client/dist")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
-});
+// app.get("*", (_req, res) => {
+//   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+// });
 
 app.use((err, req, res, next) => {
   const stateCode = err.statusCode || 500;

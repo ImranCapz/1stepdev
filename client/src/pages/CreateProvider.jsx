@@ -15,6 +15,7 @@ import { Country, State, City } from "country-state-city";
 import { useDispatch } from "react-redux";
 import { selectProvider } from "../redux/provider/providerSlice";
 import BeatLoader from "react-spinners/BeatLoader";
+import { FileInput } from "flowbite-react";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -249,7 +250,7 @@ export default function CreateProvider() {
         }
       );
       const data = await res.json();
-      console.log(data)
+      console.log(data);
       setProviderData(data);
       setLoading(false);
       if (data.status === true) {
@@ -301,14 +302,14 @@ export default function CreateProvider() {
       if (data.success) {
         setError(data.message);
       }
-     toast.success("Provider updated successfully");
+      toast.success("Provider updated successfully");
     } catch (error) {
       setError(error.message);
     }
   };
 
   return (
-    <div className="md:p-10 p-2 w-full mx-auto flex-col items-center">
+    <div className="md:p-10 p-5 w-full mx-auto flex-col items-center bg-sky-100">
       {loading ? (
         <>
           <div
@@ -318,7 +319,7 @@ export default function CreateProvider() {
               alignItems: "center",
             }}
           >
-          <BeatLoader color="#10ebd8" loading={loading} size={20} />
+            <BeatLoader color="#10ebd8" loading={loading} size={20} />
           </div>
         </>
       ) : (
@@ -376,8 +377,9 @@ export default function CreateProvider() {
               </div>
             </label>
           </div>
-          <form className="flex flex-col sm:flex-row gap-4 mt-6 max-w-1/3">
-            <div className="flex flex-col gap-4 flex-1">
+          <form className="flex flex-col sm:flex-row gap-4 mt-6 max-w-1/3 bg-white md:p-10 p-6 rounded-lg">
+            <div className="flex flex-col gap-2 flex-1">
+              <label className="font-semibold text-main">Select service*</label>
               <Select
                 id="name"
                 key={formData.name}
@@ -386,7 +388,7 @@ export default function CreateProvider() {
                 required
                 placeholder="What service do you provide?"
                 touchUi={false}
-                className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700  hover:border-amber-500"
+                className="border-2 p-3 rounded-lg border-slate-300 input hover:border-purple-400"
                 defaultValue={
                   Array.isArray(formData.name)
                     ? formData.name.map((name) =>
@@ -412,46 +414,41 @@ export default function CreateProvider() {
                   }),
                 }}
               />
+              <label className="font-semibold text-main">Full Name*</label>
               <input
                 type="text"
-                placeholder="Full Name*"
-                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                placeholder="Full Name"
+                className="border-2 p-3 rounded-lg border-slate-300 input focus:outline-none focus:ring-0"
                 id="fullName"
                 required
                 onChange={handleChange}
                 value={formData.fullName}
               />
+              <label className="font-semibold text-main">Email*</label>
               <input
                 type="email"
                 placeholder="Email"
-                className="border-2 p-3 rounded-lg focus:border-amber-600 focus:ring-0"
+                className="border-2 p-3 rounded-lg input focus:ring-0 border-slate-300"
                 id="email"
                 required
                 onChange={handleChange}
                 value={formData.email}
               />
+              <label className="font-semibold text-main">Qualification*</label>
               <input
                 type="text"
-                placeholder="Qualification(e.g.,Psychologist, Counselor)"
-                className="border-2 p-3 rounded-lg focus:border-amber-600 focus:ring-0"
+                placeholder="(e.g.,Psychologist, Counselor)"
+                className="border-2 p-3 rounded-lg input focus:ring-0 border-slate-300"
                 id="qualification"
                 required
                 onChange={handleChange}
                 value={formData.qualification}
               />
 
+              <label className="font-semibold text-main">Address*</label>
               <input
-                type="text"
-                placeholder="Licensing (License number, issuing authority)"
-                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
-                id="license"
-                required
-                onChange={handleChange}
-                value={formData.license}
-              />
-              <input
-                placeholder="Address Line 1"
-                className="border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700 focus:outline-none focus:ring-0"
+                placeholder="Address"
+                className="border-2 p-3 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
                 id="addressLine1"
                 required
                 onChange={handleChange}
@@ -459,7 +456,7 @@ export default function CreateProvider() {
               />
               <input
                 placeholder="Street"
-                className="w-full border-2 p-3 rounded-lg border-slate-500 focus:border-amber-700 focus:outline-none focus:ring-0"
+                className="w-full border-2 p-3 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
                 id="street"
                 required
                 onChange={handleChange}
@@ -468,16 +465,20 @@ export default function CreateProvider() {
               <div className="flex flex-row gap-2">
                 <Select
                   id="country"
+                  placeholder="Country"
                   key={formData.address.country}
-                  defaultValue={{
-                    value: formData.address.country,
-                    label: formData.address.country,
-                  }}
+                  defaultValue={
+                    formData.address.country
+                      ? {
+                          value: formData.address.country,
+                          label: formData.address.country,
+                        }
+                      : undefined
+                  }
                   options={Country.getAllCountries().map((country) => {
                     return { value: country.name, label: country.name };
                   })}
-                  className="w-full rounded-lg border-2 border-slate-500"
-                  placeholder="Select Country"
+                  className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
                   onChange={(selectedOption) => {
                     const selectedCountry = Country.getAllCountries().find(
                       (country) => country.name === selectedOption.value
@@ -491,19 +492,34 @@ export default function CreateProvider() {
                       },
                     });
                   }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "transparent",
+                      minWidth: "160px",
+                      border: "none",
+                      outline: "none",
+                      boxShadow: "none",
+                      transition: "all 0.3s ease",
+                    }),
+                  }}
                 />
                 <Select
                   id="state"
                   key={`state-${formData.address.state}`}
-                  defaultValue={{
-                    value: formData.address.state,
-                    label: formData.address.state,
-                  }}
+                  defaultValue={
+                    formData.address.state
+                      ? {
+                          value: formData.address.state,
+                          label: formData.address.state,
+                        }
+                      : undefined
+                  }
                   options={state.map((state) => {
                     return { value: state.isoCode, label: state.name };
                   })}
-                  placeholder="Select State"
-                  className="w-full rounded-lg border-2 border-slate-500"
+                  placeholder="State"
+                  className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
                   onChange={(selectedOption) => {
                     setSelectedState(selectedOption.value);
                     setFormData({
@@ -514,20 +530,35 @@ export default function CreateProvider() {
                       },
                     });
                   }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "transparent",
+                      minWidth: "160px",
+                      border: "none",
+                      outline: "none",
+                      boxShadow: "none",
+                      transition: "all 0.3s ease",
+                    }),
+                  }}
                 />
               </div>
               <div className="flex flex-row gap-2">
                 <Select
                   id="city"
                   key={formData.address.city}
-                  defaultValue={{
-                    value: formData.address.city,
-                    label: formData.address.city,
-                  }}
+                  defaultValue={
+                    formData.address.city
+                      ? {
+                          value: formData.address.city,
+                          label: formData.address.city,
+                        }
+                      : undefined
+                  }
                   options={cities.map((city) => {
                     return { value: city.name, label: city.name };
                   })}
-                  className="w-full border-2 rounded-lg border-slate-500"
+                  className="w-full border-2 rounded-lg border-slate-300 hover:border-purple-400"
                   placeholder="Select City"
                   onChange={(selectedOption) => {
                     setFormData({
@@ -538,11 +569,21 @@ export default function CreateProvider() {
                       },
                     });
                   }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "transparent",
+                      minWidth: "160px",
+                      border: "none",
+                      outline: "none",
+                      boxShadow: "none",
+                      transition: "all 0.3s ease",
+                    }),
+                  }}
                 />
-
                 <input
                   placeholder="Pincode"
-                  className="w-full border-2 p-1 border-slate-500 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                  className="w-full border-2 p-1 border-slate-300 rounded-lg input focus:outline-none focus:ring-0"
                   id="pincode"
                   required
                   onChange={handleChange}
@@ -551,42 +592,51 @@ export default function CreateProvider() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <div className="flex items-center gap-2">
+                  <label className="font-semibold text-main md:text-base text-sm">
+                    Fee per appoinment*
+                  </label>
                   <input
                     type="number"
                     id="regularPrice"
                     min="50"
                     max="100000"
                     required
-                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     onChange={handleChange}
                     value={formData.regularPrice}
                   />
 
                   <div className="flex flex-col items-center">
-                    <p>Regular Fees</p>
-                    <span className="text-xs">( ₹ per Appointment )</span>
+                    <p className="text-main md:text-base text-xs font-semibold">Regular Fees</p>
+                    <span className="text-main font-semibold md:text-base text-xs">( ₹ per Appointment )</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
+                  <label className="font-semibold text-main md:text-base text-sm">
+                    Years of Experience* &nbsp;
+                  </label>
                   <input
                     type="number"
                     id="experience"
                     min="0"
                     max="100000"
                     required
-                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     onChange={handleChange}
                     value={formData.experience}
                   />
 
-                  <div className="flex flex-col items-center">
-                    <p>Year of Experience</p>
-                    <span className="text-xs">( services )</span>
+                  <div className="flex flex-col items-center ">
+                  <p className="text-main md:text-base text-xs font-semibold">Service</p>
+                  <span className="text-main font-semibold md:text-base text-xs">( no. of Experience )</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col flex-1 gap-4">
+            <div className="flex flex-col flex-1 gap-2">
+              <label className="font-semibold text-main">
+                Select your therapy type*
+              </label>
               <Select
                 key={formData.therapytype}
                 id="therapytype"
@@ -598,13 +648,11 @@ export default function CreateProvider() {
                 defaultValue={
                   Array.isArray(formData.therapytype)
                     ? formData.therapytype.map((name) =>
-                        therapyType.find(
-                          (option) => option.value === name
-                        )
+                        therapyType.find((option) => option.value === name)
                       )
                     : []
                 }
-                className="border-2 p-3 rounded-lg border-slate-500 bg-white focus:border-amber-700 hover:border-amber-500"
+                className="border-2 p-3 rounded-lg border-slate-300 bg-white input hover:border-purple-400"
                 onChange={(selectedOptions) => {
                   setFormData((prevState) => ({
                     ...prevState,
@@ -622,23 +670,34 @@ export default function CreateProvider() {
                   }),
                 }}
               />
-              <div className="flex flex-col gap-4">
+              <label className="font-semibold text-main">Licensing*</label>
+              <input
+                type="text"
+                placeholder="(License number, issuing authority)"
+                className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                id="license"
+                required
+                onChange={handleChange}
+                value={formData.license}
+              />
+              <div className="flex flex-col gap-2">
+                <label className="font-semibold text-main">Phone*</label>
                 <input
                   type="number"
                   placeholder="Phone number"
-                  className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                  className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                   id="phone"
                   required
                   onChange={handleChange}
                   value={formData.phone}
                 />
-                <p className="font-semibold">Availability:</p>
+                <p className="font-semibold text-main">Availability:</p>
                 <div className="flex flex-row gap-4">
-                  <p>Morning:</p>
+                  <p className="font-semibold text-main">Morning:</p>
                   <input
                     type="time"
                     id="morningStart"
-                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     required
                     value={formData.availability.morningStart}
                     onChange={handleChange}
@@ -646,18 +705,18 @@ export default function CreateProvider() {
                   <input
                     type="time"
                     id="morningEnd"
-                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     required
                     value={formData.availability.morningEnd}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="flex flex-row gap-4 pl-1">
-                  <p>Evening:</p>
+                  <p className="font-semibold text-main">Evening:</p>
                   <input
                     type="time"
                     id="eveningStart"
-                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     required
                     value={formData.availability.eveningStart}
                     onChange={handleChange}
@@ -665,7 +724,7 @@ export default function CreateProvider() {
                   <input
                     type="time"
                     id="eveningEnd"
-                    className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     required
                     value={formData.availability.eveningEnd}
                     onChange={handleChange}
@@ -675,13 +734,13 @@ export default function CreateProvider() {
               <textarea
                 type="text"
                 placeholder="Biography"
-                className="border-2 p-3 rounded-lg focus:border-amber-700 focus:outline-none focus:ring-0"
+                className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                 id="description"
                 required
                 onChange={handleChange}
                 value={formData.description}
               />
-              <p className="font-semibold">
+              <p className="font-semibold text-main">
                 Images:
                 <span className="font-normal text-gray-600 ml-2">
                   The first image will be the cover. pick image for showcase
@@ -689,10 +748,10 @@ export default function CreateProvider() {
                 </span>
               </p>
 
-              <div className="flex gap-4">
-                <input
+              <div className="flex flex-row items-center gap-4">
+                <FileInput
                   onChange={(e) => setFiles(e.target.files)}
-                  className="p-3 border border-gray-300 rounded w-full"
+                  className="p-3 rounded w-full"
                   type="file"
                   id="images"
                   accept="image/*"
@@ -702,7 +761,7 @@ export default function CreateProvider() {
                   type="button"
                   disabled={uploading}
                   onClick={handleImageSubmit}
-                  className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85"
+                  className="p-2 max-h-10 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85"
                 >
                   {uploading ? "uploading..." : "upload"}
                 </button>
@@ -751,7 +810,7 @@ export default function CreateProvider() {
                     type="submit"
                     onClick={handleSubmit}
                     disabled={loading || uploading}
-                    className="p-3 bg-slate-700 rounded-lg text-white rounded=lg uppercase hover:opacity-95 disabled:opacity-80"
+                    className="p-3 btn-color rounded-lg font-semibold  rounded=lg hover:opacity-85 disabled:opacity-80 transition-all duration-300 ease-in-out"
                   >
                     {loading ? "Creating Provider" : "Create Provider"}
                   </button>

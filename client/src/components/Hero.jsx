@@ -67,8 +67,8 @@ const Hero = () => {
             ))
             }
           </div>
-          <h1 className="text-4xl text-gray-800 font-extrabold mx-px md:text-5xl">
-            Your first step for{" "}
+          <h1 className="text-4xl text-main font-extrabold mx-px md:text-5xl">
+            Your first step for getAllStates{" "}
             <Typewriter
               options={{
                 strings: ["ABA", "care", "speech", "physical"],
@@ -83,7 +83,7 @@ const Hero = () => {
           </p>
           <div className="items-center justify-center gap-x-3 space-y-3 sm:flex sm:space-y-0 xl:justify-start">
             <Link to={"/question"}
-              className="flex items-center justify-center gap-x-2 py-2 px-4 text-indigo-950 bg-amber-400 hover:bg-amber-300 active:bg-amber-400 active:shadow-none rounded-lg shadow md:inline-flex transistion-all duration-300 ease-in-out"
+              className="flex items-center justify-center gap-x-2 py-2 px-4 text-indigo-950 btn-color active:bg-amber-400 active:shadow-none rounded-lg shadow md:inline-flex transistion-all duration-300 ease-in-out"
             >
               Get Free Screeners
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">

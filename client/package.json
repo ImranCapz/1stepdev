@@ -24,7 +24,7 @@
     "express": "^4.18.2",
     "firebase": "^10.8.0",
     "flowbite": "^2.3.0",
-    "flowbite-react": "^0.7.5",
+    "flowbite-react": "^0.7.8",
     "google-auth-library": "^9.6.3",
     "googleapis": "^133.0.0",
     "install": "^0.13.0",

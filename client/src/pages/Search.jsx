@@ -14,6 +14,12 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import { Pagination } from "flowbite-react";
+import {
+  Drawer,
+  Typography,
+  IconButton,
+} from "@material-tailwind/react";
+import { Checkbox } from "flowbite-react";
 
 export default function Search() {
   const navigate = useNavigate();
@@ -26,10 +32,21 @@ export default function Search() {
   const location = useLocation();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  //checkbox
+  const [checkbox, setCheckbox] = useState('');
+  const handlecheckbox = (e) => {
+    setCheckbox(e.target.id);
+  }
+
   //pageination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
   const [totalCount, setTotalCount] = useState(0);
+
+  //drawer
+  const [open, setOpen] = React.useState(false);
+  const openDrawer = () => setOpen(true);
+  const closeDrawer = () => setOpen(false);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -78,11 +95,13 @@ export default function Search() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
+    console.log("useEffect triggered", location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
-    if (searchTermFromUrl) {
+    if (searchTermFromUrl && searchTermFromUrl !== searchTerm) {
       setsearchTerm(searchTermFromUrl);
     }
     const fetchProvider = async (address) => {
+      console.log("fetchProvider called", address);
       setLoading(true);
       const urlParams = new URLSearchParams(location.search);
       urlParams.set("searchTerm", searchTerm);
@@ -148,7 +167,7 @@ export default function Search() {
     const timer = setTimeout(() => {
       setProviderLoading(false);
       setLoading(false);
-    }, 800);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -161,8 +180,73 @@ export default function Search() {
         height={3}
         speed={1000}
       />{" "}
+      <div className="w-full overflow-visible">
+        <React.Fragment>
+          <Drawer open={open} onClose={closeDrawer} className="p-4 z-50">
+            <div className="mb-6 flex items-center justify-between">
+              <Typography
+                variant="h5"
+                color="blue-gray"
+                className="b-2 border-b w-full "
+              >
+                Filters
+              </Typography>
+              <IconButton
+                variant="text"
+                color="blue-gray"
+                onClick={closeDrawer}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="h-5 w-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </IconButton>
+            </div>
+            <div className="mb-4">
+                <h1 className="mb-4">Care Settings</h1>
+                <div className="flex flex-col items-start border p-3 border-slate-300 rounded-lg">
+                  <div className="">
+                  <div>
+                  <Checkbox id="virtual" color="blue" checked={checkbox === "virtual"} className="mr-2" onChange={handlecheckbox}/>
+                  <label>Virtual</label>
+                  </div>
+                  <Checkbox id="clinic" color="blue"className="mr-2"checked={checkbox === "clinic"} onChange={handlecheckbox}/ >
+                  <label>In-Clinic</label>
+                  </div>
+                  <div>
+                  <Checkbox id="home" color="blue" className="mr-2" checked={checkbox === "home"} onChange={handlecheckbox}/>
+                  <label>In-Home</label>
+                  </div>
+                  </div>
+            </div>
+            <div className="flex gap-2 text-center">
+              <Button
+                size="sm"
+                variant="outlined"
+                className="flex gap-2 w-full text-center"
+                onClick={closeDrawer}
+              >
+                Cancel
+              </Button>
+              <Button size="sm" className="flex gap-2 w-full">
+                Save
+              </Button>
+            </div>
+          </Drawer>
+        </React.Fragment>
+      </div>
       <form
-        className="p-4 flex sm:w-[750px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg shadow-lg"
+        className="p-4 flex sm:w-[600px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg shadow-lg"
         onSubmit={handlesubmit}
       >
         <div className="flex flex-row md:flex-row space-x-3 items-center overflow-visible">
@@ -176,7 +260,7 @@ export default function Search() {
             <Select
               id="what"
               value={whatoptions.find((option) => option.value === searchTerm)}
-              onChange={(option) => setsearchTerm(option.value)}
+              onChange={(option) => setsearchTerm(option ? option.value : "")}
               options={whatoptions}
               placeholder="Service or provider"
               isSearchable
@@ -269,7 +353,7 @@ export default function Search() {
               )}
             </PlacesAutocomplete>
           </div>
-          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 sm:block hidden">
+          {/* <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 sm:block hidden">
             <label
               htmlFor="insurance"
               className="block py-1 px-2 text-base font-bold text-gray-700"
@@ -282,10 +366,10 @@ export default function Search() {
               placeholder="Not Sure? Skip"
               className="bg-transparent text-base border-none w-full text-gray-700  py-3 px-4 leading-tight focus:outline-none focus:border-transparent focus:ring-0"
             />
-          </div>
+          </div> */}
           <button
             type="submit"
-            className="py-3 px-4 font-medium  text-indigo-950 bg-sky-300 hover:bg-sky-200 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0"
+            className="py-3 px-4 font-medium btn-color text-indigo-950 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0"
           >
             <span className="lg:inline hidden">Search</span>
             <FaSearch className="lg:hidden inline" />
@@ -299,11 +383,13 @@ export default function Search() {
             <Button
               variant="outlined"
               className="flex flex-row text-gray-800 items-center gap-2 font-bold"
+              onClick={openDrawer}
             >
               <HiOutlineFilter />
               Filter
             </Button>
           </div>
+
           <div className="breadcrumbs flex flex-row font-semibold text-sm mt-2 text-gray-700">
             <Link to={"/"}>Home</Link>&nbsp;&gt;
             <Link to={`/${searchTerm}`}>
@@ -380,16 +466,18 @@ export default function Search() {
               )}
             </>
           )}
-          {providers.length > 0 && totalCount > itemsPerPage && !providerloading && (
-            <div>
-              <Pagination
-                totalPages={Math.ceil(totalCount / itemsPerPage)}
-                currentPage={currentPage}
-                onPageChange={onPageChange}
-                showIcons
-              />
-            </div>
-          )}
+          {providers.length > 0 &&
+            totalCount > itemsPerPage &&
+            !providerloading && (
+              <div>
+                <Pagination
+                  totalPages={Math.ceil(totalCount / itemsPerPage)}
+                  currentPage={currentPage}
+                  onPageChange={onPageChange}
+                  showIcons
+                />
+              </div>
+            )}
         </div>
       </div>
     </div>

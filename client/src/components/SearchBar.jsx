@@ -91,7 +91,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
   }, []);
 
   return (
-    <div className="flex justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
+    <div className="flex max-w-[600px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
       <form
         className="flex flex-col md:flex-row space-x-3 items-center"
         onSubmit={handlesubmit}
@@ -186,7 +186,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
             }}
           />
         </div>
-        <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
+        {/* <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
           <label
             htmlFor="insurance"
             className="block py-1 px-2 text-base font-bold text-gray-700 mt-8"
@@ -199,11 +199,11 @@ export const SearchBar = ({ defaultSearchTerm }) => {
             placeholder="Not Sure? Skip"
             className="appearance-none bg-transparent capitalize text-sm border-none w-full text-gray-700 py-2 px-3 leading-tight focus:outline-none focus:border-transparent focus:ring-0 "
           />
-        </div>
+        </div> */}
         <button
           type="submit"
           data-ripple-light="true"
-          className="py-4 px-5 font-medium text-indigo-950 bg-sky-400 hover:bg-sky-300 transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs  rounded-lg shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none mt-4 mb-4 mr-4"
+          className="py-4 px-5 font-medium text-indigo-950 btn-color transition ease-in-out duration-300 disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs  rounded-lg shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none mt-4 mb-4 mr-4"
         >
           <FaSearch/>
         </button>

@@ -63,7 +63,7 @@ export default function SubmenuProfile() {
   }, [location.search, submenuNav]);
 
   return (
-    <div className="flex flex-col w-full transition-all duration-500">
+    <div className="flex flex-col w-full transition-all duration-500 ">
       <nav className="block border-b items-start">
         <ul className=" flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8 mt-4">
           {submenuNav.map((item, idx) => (
@@ -111,8 +111,8 @@ export default function SubmenuProfile() {
         </div>
       )}
       {activeComponent === "Parent Details" && (
-        <div className="w-full">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
+        <div className="w-full bg-sky-100">
+          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800">
             {" "}
             {currentUser.isParent
               ? "Your Parent Details :"
