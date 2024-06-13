@@ -1,12 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 import CreateProvider from "../../pages/CreateProvider";
 import ProviderBooking from "../booking/ProviderBooking";
 
 export default function SubmenuProvider() {
   const [activeComponent, setActiveComponent] = useState("Providers");
-  const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
 
   const submenuNav = useMemo(() => [
@@ -33,7 +31,7 @@ export default function SubmenuProvider() {
             <li key={idx} className="py-1">
               <Link
                 to={`?tag=${item.title}`}
-                className={`block py-2 px-3 rounded-lg text-gray-700 hover:text-amber-500 hover:bg-amber-100 duration-150 ${
+                className={`block py-2 px-3 rounded-lg md:text-base text-sm text-gray-700 hover:text-amber-500 hover:bg-amber-100 duration-150 ${
                   activeComponent === item.title
                     ? "border-b-2 border-amber-500"
                     : ""
@@ -53,7 +51,7 @@ export default function SubmenuProvider() {
       )}
       {activeComponent === "Appointment" &&(
         <div className="w-full">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
+          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800">
             {" "}
             {/* {currentUser.isParent ? "Your Parent Details :" : 'Fill the form for Parent Profile :'} */}
           </h1>

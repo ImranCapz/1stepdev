@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    favorites:[{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "provider",
-    }],
     username: {
       type: String,
       required: true,
@@ -31,53 +27,59 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    fullName: {
-      type: String,
-      default: "",
-    },
-    dob: {
-      type: Date,
-      default: "",
-    },
-    gender: {
-      type: String,
-      default: "",
-    },
-    height: {
-      type: String,
-      default: "",
-    },
-    weight: {
-      type: String,
-      default: "",
-    },
-    bloodGroup: {
-      type: String,
-      default: "",
-    },
-    medicalHistory: {
-      type: String,
-      default: "",
-    },
-    allergies: {
-      type: String,
-      default: "",
-    },
-    emergencyContact: {
-      type: String,
-      default: "",
-    },
-    insurance: {
-      type: String,
-      default: "",
-    },
-    address: {
-      type: String,
-      default: "",
-    },
-    phoneNumber: {
-      type: String,
-      default: "",
+    parentDetails: {
+      fullName: {
+        type: String,
+        default: "",
+      },
+      lookingFor: {
+        type: Array,
+        default: [],
+      },
+      dob: {
+        type: Date,
+        default: null,
+      },
+      gender: {
+        type: String,
+        default: "",
+      },
+      height: {
+        type: String,
+        default: "",
+      },
+      weight: {
+        type: String,
+        default: "",
+      },
+      bloodGroup: {
+        type: String,
+        default: "",
+      },
+      medicalHistory: {
+        type: String,
+        default: "",
+      },
+      allergies: {
+        type: String,
+        default: "",
+      },
+      emergencyContact: {
+        type: String,
+        default: "",
+      },
+      insurance: {
+        type: String,
+        default: "",
+      },
+      address: {
+        type: String,
+        default: "",
+      },
+      phoneNumber: {
+        type: String,
+        default: "",
+      },
     },
   },
   { timestamps: true }

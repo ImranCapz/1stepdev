@@ -248,7 +248,7 @@ export default function Provider() {
   };
 
   return (
-    <div className="min-h-screen flex lg:flex-row flex-col-reverse w-full">
+    <div className="w-full mx-auto flex lg:flex-row flex-col-reverse">
       {loading && (
         <>
           <div className="h-[200px] bg-gray-200 animate-pulse"></div>
@@ -263,7 +263,7 @@ export default function Provider() {
             {provider.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
-                  className="h-[200px] hidden lg:block"
+                  className="h-[200px] hidden lg:block w-full"
                   style={{
                     background: `url(${url}) center no-repeat`,
                     backgroundSize: "cover",

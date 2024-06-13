@@ -11,6 +11,7 @@ import {
   getBookingFailure,
 } from "../../redux/booking/bookingSlice";
 import { BeatLoader } from "react-spinners";
+import SearchBar from "../SearchBar";
 
 export default function UserBooking() {
   const [booking, setBooking] = useState([]);
@@ -49,8 +50,8 @@ export default function UserBooking() {
   }, [currentUser._id, dispatch]);
 
   return (
-    <>
-      <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300">
+    <> 
+      <div className={`table-auto md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 max-h-screen ${booking && booking.length > 0 ? 'overflow-x-scroll' : ''}`}>
         {loading ? (
           <div
             style={{
@@ -124,7 +125,14 @@ export default function UserBooking() {
             </Table>
           </>
         ) : (
-          <h1 className="text-2xl text-gray font-bold mb-5">No Bookings Yet</h1>
+          <div>
+            <h1 className="text-2xl text-gray font-bold mb-5 max-h-screen">
+              No Bookings Yet
+            </h1>
+            <div className="flex flex-col mx-auto items-center">
+              <SearchBar />
+            </div>
+          </div>
         )}
       </div>
     </>

@@ -377,7 +377,7 @@ export default function CreateProvider() {
               </div>
             </label>
           </div>
-          <form className="flex flex-col sm:flex-row gap-4 mt-6 max-w-1/3 bg-white md:p-10 p-6 rounded-lg">
+          <form className="flex flex-col sm:flex-row gap-4 mt-6 bg-white md:p-20 p-6 rounded-lg">
             <div className="flex flex-col gap-2 flex-1">
               <label className="font-semibold text-main">Select service*</label>
               <Select

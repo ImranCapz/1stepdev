@@ -70,7 +70,7 @@ export default function SubmenuProfile() {
             <li key={idx} className="py-1">
               <Link
                 to={`?tag=${item.title}`}
-                className={`block py-2 px-3 rounded-lg text-gray-700 hover:text-amber-500 hover:bg-amber-100 duration-150 ${
+                className={`block py-2 px-3 rounded-lg md:text-base text-sm text-gray-700 hover:text-amber-500 hover:bg-amber-100 duration-150 ${
                   activeComponent === item.title
                     ? "border-b-2 border-amber-500"
                     : ""
@@ -111,8 +111,8 @@ export default function SubmenuProfile() {
         </div>
       )}
       {activeComponent === "Parent Details" && (
-        <div className="w-full bg-sky-100">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800">
+        <div className="w-full bg-gray-100">
+          <h1 className="flex flex-col mt-6 p-2 pl-6  font-bold md:text-2xl text-xl text-zinc-800">
             {" "}
             {currentUser.isParent
               ? "Your Parent Details :"

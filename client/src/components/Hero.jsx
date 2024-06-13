@@ -68,7 +68,7 @@ const Hero = () => {
             }
           </div>
           <h1 className="text-4xl text-main font-extrabold mx-px md:text-5xl">
-            Your first step for getAllStates{" "}
+            Your first step for all{" "}
             <Typewriter
               options={{
                 strings: ["ABA", "care", "speech", "physical"],
