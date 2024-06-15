@@ -91,7 +91,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
   }, []);
 
   return (
-    <div className="flex max-w-[600px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
+    <div className="flex max-w-[750px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
       <form
         className="flex flex-col md:flex-row space-x-3 items-center"
         onSubmit={handlesubmit}
@@ -116,7 +116,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
               control: (provided) => ({
                 ...provided,
                 backgroundColor: "transparent !important",
-                minWidth: 210,
+                minWidth: 260,
                 width: "auto",
                 border: "none",
                 outline: "none",
@@ -161,7 +161,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
               control: (provided) => ({
                 ...provided,
                 backgroundColor: "transparent !important",
-                minWidth: 210,
+                minWidth: 260,
                 width: "auto",
                 border: "none",
                 outline: "none",

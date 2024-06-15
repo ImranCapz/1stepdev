@@ -9,6 +9,9 @@ import BeatLoader from "react-spinners/BeatLoader";
 import toast from "react-hot-toast";
 import TopLoadingBar from "react-top-loading-bar";
 import Select from "react-select";
+import Input from "react-phone-number-input/input";
+import { IoMdAlert } from "react-icons/io";
+
 
 export default function ParentForm() {
   const { currentUser, error } = useSelector((state) => state.user);
@@ -16,7 +19,11 @@ export default function ParentForm() {
   const [loading, setLoading] = useState(false);
   const [btnloader, setBtnLoader] = useState(false);
   const TopLoadingBarRef = useRef(null);
+  const [value, setValue] = useState();
+  const [emergvalue, setEmergValue] = useState();
   const [isModified, setIsModified] = useState(false);
+  const [phoneValid, setPhoneValid] = useState(true);
+  const [emergencyContact, setEmergencyContact] = useState(true);
   const [formData, setFormData] = useState({
     isParent: false,
     parentDetails: {
@@ -29,13 +36,12 @@ export default function ParentForm() {
       bloodGroup: "",
       medicalHistory: "",
       allergies: "",
-      emergencyContact: "",
+      emergencyContact: emergvalue,
       insurance: "",
       address: "",
-      phoneNumber: "",
+      phoneNumber: value,
     },
   });
-  console.log(formData);
 
   const service = [
     { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
@@ -50,6 +56,13 @@ export default function ParentForm() {
 
   const handleChange = (e) => {
     let value = e.target.value;
+    if (e.target.id === "phoneNumber") {
+      if (value.length !== 10) {
+        setPhoneValid(false);
+      } else {
+        setPhoneValid(true);
+      }
+    }
     if (e.target.id === "isParent") {
       value = e.target.value === "Yes" ? true : false;
       setFormData({
@@ -73,6 +86,21 @@ export default function ParentForm() {
     if (!isModified) {
       return;
     }
+    if (formData.parentDetails?.phoneNumber.length !== 13) {
+      toast.error("Phone number should be 10 digits");
+      setPhoneValid(false);
+      return;
+    }else{
+      setPhoneValid(true);
+    }
+    if(formData.parentDetails?.emergencyContact.length !== 13){
+      toast.error("Emergency Contact should be 10 digits");
+      setEmergencyContact(false);
+      return;
+    }else{
+      setEmergencyContact(true);
+    }
+
     dispatch(updateUserStart());
     try {
       TopLoadingBarRef.current.continuousStart(50);
@@ -91,6 +119,7 @@ export default function ParentForm() {
         return;
       }
       dispatch(updateUserSuccess(data));
+
       if (formData.isParent) {
         toast.success("Parent details updated successfully");
       } else {
@@ -111,7 +140,6 @@ export default function ParentForm() {
       try {
         const res = await fetch(`server/parent/getparent/${currentUser._id}`);
         const data = await res.json();
-        console.log(data);
         if (data.success === false) {
           return;
         }
@@ -119,7 +147,9 @@ export default function ParentForm() {
           isParent: data.isParent || false,
           lookingFor: data.parentDetails?.lookingFor || [],
           fullName: data.parentDetails?.fullName || "",
-          dob: data.parentDetails?.dob ? new Date(data.parentDetails?.dob).toISOString().split("T")[0] : "",
+          dob: data.parentDetails?.dob
+            ? new Date(data.parentDetails?.dob).toISOString().split("T")[0]
+            : "",
           gender: data.parentDetails?.gender || "",
           height: data.parentDetails?.height || "",
           weight: data.parentDetails?.weight || "",
@@ -211,19 +241,33 @@ export default function ParentForm() {
               value={formData.parentDetails?.bloodGroup}
             />
             <label htmlFor="gender" className="text-sm font-semibold text-main">
-              Emergency Contact :
+            <p className="flex flex-row items-center">
+                {!emergencyContact && <IoMdAlert className="text-red-700 text-sm" />}
+                Emergency Contact :{" "}
+              </p>
             </label>
-            <input
-              type="text"
+            <Input
               placeholder="Emergency Contact"
-              className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0"
-              id="emergencyContact"
-              required
-              onChange={handleChange}
+              className={`border-2 p-2 input rounded-lg focus:outline-none focus:ring-0 ${
+                !phoneValid ? "error" : ""
+              }`}
               value={formData.parentDetails?.emergencyContact}
+              onChange={(value) => {
+                setEmergValue(value);
+                setFormData({
+                  ...formData,
+                  parentDetails: {
+                    ...formData.parentDetails,
+                    emergencyContact: value,
+                  },
+                });
+                setIsModified(true);
+              }}
+              required
             />
+            {!emergencyContact  && ( <p className="text-sm text-red-500 font-semibold">Please enter a 10-digit number</p> )}
             <label htmlFor="gender" className="text-sm font-semibold text-main">
-              Address : (city, state, country, pincode)
+              Address : (city, state, pincode)
             </label>
             <textarea
               type="text"
@@ -245,51 +289,22 @@ export default function ParentForm() {
               className="input border-2 p-2 rounded-lg focus:ring-0 md:w-60"
               id="fullName"
               maxLength="62"
-              minLength="10"
+              minLength="5"
               required
               onChange={handleChange}
               value={formData.parentDetails?.fullName}
             />
             <label name="fullName" className="text-sm font-semibold text-main">
-              What therapy your looking for?
+              Enter your DOB :
             </label>
-            <Select
-              id="name"
-              key={formData.parentDetails?.lookingFor}
-              options={service}
-              isMulti
+            <input
+              type="date"
+              placeholder="Date of Birth"
+              className="input border-2 p-2 rounded-lg  focus:ring-0 md:w-60"
+              id="dob"
               required
-              placeholder="looking for?"
-              touchUi={false}
-              className="border-2 p-1 rounded-lg border-slate-300 input hover:border-purple-400"
-              defaultValue={
-                Array.isArray(formData.parentDetails?.lookingFor)
-                  ? formData.parentDetails?.lookingFor.map((name) =>
-                      service.find((option) => option.value === name)
-                    )
-                  : []
-              }
-              onChange={(selectedOptions) => {
-                setFormData((preState) => ({
-                  ...preState,
-                  parentDetails:{
-                    ...preState.parentDetails,
-                    lookingFor: selectedOptions.map((option)=> option.value)
-                  }
-                }));
-                setIsModified(true);
-              }}
-              styles={{
-                control: (provided) => ({
-                  ...provided,
-                  backgroundColor: "transparent",
-                  minWidth: "160px",
-                  border: "none",
-                  outline: "none",
-                  boxShadow: "none",
-                  transition: "all 0.3s ease",
-                }),
-              }}
+              onChange={handleChange}
+              value={formData.parentDetails?.dob}
             />
             <label className="text-sm font-semibold text-main">Height*</label>
             <input
@@ -329,16 +344,45 @@ export default function ParentForm() {
           </div>
           <div className="flex flex-col flex-1 gap-2 w-full">
             <label name="fullName" className="text-sm font-semibold text-main">
-              Enter your DOB :
+              What therapy your looking for?
             </label>
-            <input
-              type="date"
-              placeholder="Date of Birth"
-              className="input border-2 p-2 rounded-lg  focus:ring-0 md:w-60"
-              id="dob"
+            <Select
+              id="name"
+              key={formData.parentDetails?.lookingFor}
+              options={service}
+              isMulti
               required
-              onChange={handleChange}
-              value={formData.parentDetails?.dob}
+              placeholder="looking for?"
+              touchUi={false}
+              className="border-2 rounded-lg border-slate-300 bg-white input hover:border-purple-400 md:w-60"
+              defaultValue={
+                Array.isArray(formData.parentDetails?.lookingFor)
+                  ? formData.parentDetails?.lookingFor.map((name) =>
+                      service.find((option) => option.value === name)
+                    )
+                  : []
+              }
+              onChange={(selectedOptions) => {
+                setFormData((preState) => ({
+                  ...preState,
+                  parentDetails: {
+                    ...preState.parentDetails,
+                    lookingFor: selectedOptions.map((option) => option.value),
+                  },
+                }));
+                setIsModified(true);
+              }}
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  backgroundColor: "transparent",
+                  minWidth: "160px",
+                  border: "none",
+                  outline: "none",
+                  boxShadow: "none",
+                  transition: "all 0.3s ease",
+                }),
+              }}
             />
             <label className="text-sm font-semibold text-main">Weight*</label>
             <input
@@ -350,7 +394,7 @@ export default function ParentForm() {
               onChange={handleChange}
               value={formData.parentDetails?.weight}
             />
-            <label htmlFor="gender" className="text-sm font-semibold text-main">
+            <label className="text-sm font-semibold text-main">
               Allergies :
             </label>
             <input
@@ -362,21 +406,35 @@ export default function ParentForm() {
               onChange={handleChange}
               value={formData.parentDetails?.allergies}
             />
-            <label htmlFor="gender" className="text-sm font-semibold text-main">
-              Phone Number :
+            <label className="text-sm font-semibold text-main">
+              <p className="flex flex-row items-center">
+                {!phoneValid && <IoMdAlert className="text-red-700 text-sm" />}
+                Phone Number :{" "}
+              </p>
             </label>
-            <input
-              type="text"
-              placeholder="Phone Number"
-              className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0"
-              id="phoneNumber"
-              required
-              onChange={handleChange}
+            <Input
+              placeholder="Enter phone number"
+              className={`border-2 p-2 input rounded-lg focus:outline-none focus:ring-0 ${
+                !phoneValid ? "error" : ""
+              }`}
               value={formData.parentDetails?.phoneNumber}
+              onChange={(value) => {
+                setValue(value);
+                setFormData({
+                  ...formData,
+                  parentDetails: {
+                    ...formData.parentDetails,
+                    phoneNumber: value,
+                  },
+                });
+                setIsModified(true);
+              }}
+              required
             />
+            {!phoneValid  && ( <p className="text-sm text-red-500 font-semibold">Please enter a 10-digit number</p> )}
             <button
               disabled={!isModified || loading}
-              className="p-3 btn-color rounded-lg mt-16 font-semibold rounded=lg uppercase hover:opacity-95 disabled:opacity-60 transition ease-in-out duration-300"
+              className="p-2 btn-color rounded-lg mt-8 font-semibold rounded=lg uppercase hover:opacity-95 disabled:opacity-60 transition ease-in-out duration-300"
             >
               {btnloader ? "Saving..." : "Save"}
             </button>

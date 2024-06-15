@@ -322,7 +322,7 @@ export default function Provider() {
                       )}
                     </div>
                     <p className="flex flex-row space-x-2 text-xs text-center mt-2">
-                      <Button
+                    <Button
                         onClick={handleFavorite}
                         variant="outlined"
                         className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 gap-1 items-center rounded-full"

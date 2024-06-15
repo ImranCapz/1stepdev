@@ -173,7 +173,7 @@ export default function Search() {
   }, []);
 
   return (
-    <div className="p-4 md:p-8 overflow-visible">
+    <div className="p-4 md:p-8 md:pl-32 overflow-visible">
       <TopLoadingBar
         ref={topLoadingBarRef}
         color="#ff9900"

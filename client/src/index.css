@@ -33,7 +33,7 @@ input[type="text"]:focus {
   /* background-color: #A8D7CD; */
   /* background-color: #FDE3B2; */
   /* background-color: #ebd2f3; */
-  background-color:#DCD7FE ;
+  background-color:#d1bee0 ;
   color:#DCD7FE;
 }
 .secondary-color {
@@ -69,3 +69,13 @@ input[type="text"]:focus {
   color:#1F2937;
 }
 
+.bg-footer{
+  background-color: #381952;
+}
+.bg-down{
+  background-color: #140020;
+}
+
+.error{
+  border-color: #e04a4a;
+}

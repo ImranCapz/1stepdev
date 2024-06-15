@@ -126,7 +126,7 @@ const Header = () => {
     { title: "Overview", path: "/" },
     {
       title: "Diagnostic Evaluation",
-      path: `/search?searchTerm=Diagnostic+Evaluation&address=${address}`,
+      path: `/freescreeners`,
     },
     {
       title: "Occupational Therapy",

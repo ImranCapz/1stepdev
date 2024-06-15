@@ -16,6 +16,8 @@ import { useDispatch } from "react-redux";
 import { selectProvider } from "../redux/provider/providerSlice";
 import BeatLoader from "react-spinners/BeatLoader";
 import { FileInput } from "flowbite-react";
+import Input from "react-phone-number-input/input";
+import { IoMdAlert } from "react-icons/io";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -28,7 +30,7 @@ export default function CreateProvider() {
   const navigate = useNavigate();
   const fileRef = useRef(null);
   const dispatch = useDispatch();
-
+  const [value, setValue] = useState();
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -37,7 +39,7 @@ export default function CreateProvider() {
     license: "",
     fullName: "",
     experience: "",
-    phone: "",
+    phone: value,
     address: {
       addressLine1: "",
       country: "",
@@ -57,6 +59,13 @@ export default function CreateProvider() {
     description: "",
     profilePicture: "",
   });
+  const [Errors, setErrors] = useState({
+    phone: false,
+    email: false,
+    description: false,
+    profilePicture: false,
+  });
+
   console.log("Formdata", formData);
   const handleRemoveImage = (index) => {
     setFormData({
@@ -150,8 +159,47 @@ export default function CreateProvider() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (formData.imageUrls.length < 1)
+      let errors = { ...Errors };
+      if (!formData.profilePicture || formData.profilePicture.length < 1) {
+        errors.profilePicture = true;
+        setErrors(errors);
+        return toast.error("You must upload a profile picture");
+      } else {
+        errors.profilePicture = false;
+        setErrors(errors);
+      }
+      if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        errors.email = true;
+        setErrors(errors);
+        return toast.error("Invalid email address");
+      } else {
+        errors.email = false;
+        setErrors(errors);
+      }
+      if (!formData.phone || formData.phone.length !== 13) {
+        errors.phone = true;
+        setErrors(errors);
+        return toast.error("Phone number must be 10 digits");
+      } else {
+        errors.phone = false;
+        setErrors(errors);
+      }
+      if (!formData.description || formData.description.length < 50) {
+        errors.description = true;
+        setErrors(errors);
+        return toast.error("Description must be at least 50 characters");
+      } else {
+        errors.description = false;
+        setErrors(errors);
+      }
+      if (!formData.imageUrls || formData.imageUrls.length < 1) {
+        errors.imageUrls = true;
+        setErrors(errors);
         return toast.error("You must upload at least one image");
+      } else {
+        errors.imageUrls = false;
+        setErrors(errors);
+      }
       setLoading(true);
       setError(false);
       const res = await fetch("/server/provider/create", {
@@ -176,6 +224,7 @@ export default function CreateProvider() {
       setLoading(false);
     }
   };
+
   const handleImageClick = (e) => {
     e.preventDefault();
     fileRef.current.click();
@@ -341,7 +390,6 @@ export default function CreateProvider() {
               </h1>
             </>
           )}
-
           <input
             type="file"
             id="profilePicture"
@@ -352,7 +400,6 @@ export default function CreateProvider() {
             required
             onChange={handleProfileImageChange}
           />
-
           <div className="relative w-24 h-24 mx-auto group">
             <label
               htmlFor="profilePicture"
@@ -365,7 +412,7 @@ export default function CreateProvider() {
                   "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
                 }
                 alt="profile"
-                className="w-24 h-24 rounded-full object-cover border-4 border-[lightgray]"
+                className={`w-24 h-24 rounded-full object-cover border-4 border-[lightgray] ${Errors.profilePicture && "border-red-500"}`}
               />
               <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
                 <img
@@ -377,8 +424,12 @@ export default function CreateProvider() {
               </div>
             </label>
           </div>
-          <form className="flex flex-col sm:flex-row gap-4 mt-6 bg-white md:p-20 p-6 rounded-lg">
-            <div className="flex flex-col gap-2 flex-1">
+          <div className="w-full flex justify-center mt-2">
+             {Errors.profilePicture  && ( <p className="text-sm text-red-500 font-semibold">
+            Please upload a profile picture</p> )}
+          </div>
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-10 mt-6 bg-white md:p-20 p-6 rounded-lg">
+            <div className="flex flex-col gap-3 flex-1">
               <label className="font-semibold text-main">Select service*</label>
               <Select
                 id="name"
@@ -388,7 +439,7 @@ export default function CreateProvider() {
                 required
                 placeholder="What service do you provide?"
                 touchUi={false}
-                className="border-2 p-3 rounded-lg border-slate-300 input hover:border-purple-400"
+                className="border-2 p-1 rounded-lg border-slate-300 input hover:border-purple-400"
                 defaultValue={
                   Array.isArray(formData.name)
                     ? formData.name.map((name) =>
@@ -418,37 +469,41 @@ export default function CreateProvider() {
               <input
                 type="text"
                 placeholder="Full Name"
-                className="border-2 p-3 rounded-lg border-slate-300 input focus:outline-none focus:ring-0"
+                className="border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0"
                 id="fullName"
                 required
                 onChange={handleChange}
                 value={formData.fullName}
               />
-              <label className="font-semibold text-main">Email*</label>
+              <label className="font-semibold text-main"><p className="flex flex-row items-center">
+                { Errors.email && <IoMdAlert className="text-red-700 text-sm" />}
+               Email*{" "}
+              </p></label>
               <input
-                type="email"
                 placeholder="Email"
-                className="border-2 p-3 rounded-lg input focus:ring-0 border-slate-300"
+                className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
+                  Errors.email ? "error" : ""
+                }`}
                 id="email"
                 required
                 onChange={handleChange}
                 value={formData.email}
               />
+              {Errors.email  && ( <p className="text-sm text-red-500 font-semibold">Please enter a valid email address.</p> )}
               <label className="font-semibold text-main">Qualification*</label>
               <input
                 type="text"
                 placeholder="(e.g.,Psychologist, Counselor)"
-                className="border-2 p-3 rounded-lg input focus:ring-0 border-slate-300"
+                className="border-2 p-2 rounded-lg input focus:ring-0 border-slate-300"
                 id="qualification"
                 required
                 onChange={handleChange}
                 value={formData.qualification}
               />
-
               <label className="font-semibold text-main">Address*</label>
               <input
                 placeholder="Address"
-                className="border-2 p-3 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
+                className="border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
                 id="addressLine1"
                 required
                 onChange={handleChange}
@@ -456,9 +511,8 @@ export default function CreateProvider() {
               />
               <input
                 placeholder="Street"
-                className="w-full border-2 p-3 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
+                className="w-full border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
                 id="street"
-                required
                 onChange={handleChange}
                 value={formData.address.street}
               />
@@ -534,7 +588,7 @@ export default function CreateProvider() {
                     control: (provided) => ({
                       ...provided,
                       backgroundColor: "transparent",
-                      minWidth: "160px",
+                      minWidth: "100px",
                       border: "none",
                       outline: "none",
                       boxShadow: "none",
@@ -593,7 +647,7 @@ export default function CreateProvider() {
               <div className="flex flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <label className="font-semibold text-main md:text-base text-sm">
-                    Fee per appoinment*
+                    fee per Appoinment*
                   </label>
                   <input
                     type="number"
@@ -607,8 +661,12 @@ export default function CreateProvider() {
                   />
 
                   <div className="flex flex-col items-center">
-                    <p className="text-main md:text-base text-xs font-semibold">Regular Fees</p>
-                    <span className="text-main font-semibold md:text-base text-xs">( ₹ per Appointment )</span>
+                    <p className="text-main md:text-sm text-xs font-semibold">
+                      Regular Fees
+                    </p>
+                    <span className="text-main font-semibold text-xs">
+                      ( ₹ per Appointment )
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -627,13 +685,17 @@ export default function CreateProvider() {
                   />
 
                   <div className="flex flex-col items-center ">
-                  <p className="text-main md:text-base text-xs font-semibold">Service</p>
-                  <span className="text-main font-semibold md:text-base text-xs">( no. of Experience )</span>
+                    <p className="text-main md:text-sm text-xs font-semibold">
+                      Service
+                    </p>
+                    <span className="text-main font-semibold text-xs">
+                      ( no. of Experience )
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col flex-1 gap-2">
+            <div className="flex flex-col flex-1 gap-3">
               <label className="font-semibold text-main">
                 Select your therapy type*
               </label>
@@ -652,7 +714,7 @@ export default function CreateProvider() {
                       )
                     : []
                 }
-                className="border-2 p-3 rounded-lg border-slate-300 bg-white input hover:border-purple-400"
+                className="border-2 p-1 rounded-lg border-slate-300 bg-white input hover:border-purple-400"
                 onChange={(selectedOptions) => {
                   setFormData((prevState) => ({
                     ...prevState,
@@ -674,30 +736,45 @@ export default function CreateProvider() {
               <input
                 type="text"
                 placeholder="(License number, issuing authority)"
-                className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                 id="license"
                 required
                 onChange={handleChange}
                 value={formData.license}
               />
               <div className="flex flex-col gap-2">
-                <label className="font-semibold text-main">Phone*</label>
-                <input
-                  type="number"
+                <label className="font-semibold text-main">
+                  <p className="flex flex-row items-center">
+                    {Errors.phone && (
+                      <IoMdAlert className="text-red-700 text-sm" />
+                    )}
+                    Phone*
+                  </p>
+                </label>
+                <Input
                   placeholder="Phone number"
-                  className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                  className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
+                    Errors.phone ? "error" : ""
+                  }`}
                   id="phone"
                   required
-                  onChange={handleChange}
+                  onChange={(value) => {
+                    setValue(value);
+                    setFormData({
+                      ...formData,
+                      phone: value,
+                    });
+                  }}
                   value={formData.phone}
                 />
+                {Errors.phone  && ( <p className="text-sm text-red-500 font-semibold">Please enter a 10-digit number.</p> )}
                 <p className="font-semibold text-main">Availability:</p>
                 <div className="flex flex-row gap-4">
                   <p className="font-semibold text-main">Morning:</p>
                   <input
                     type="time"
                     id="morningStart"
-                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                    className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     required
                     value={formData.availability.morningStart}
                     onChange={handleChange}
@@ -705,7 +782,7 @@ export default function CreateProvider() {
                   <input
                     type="time"
                     id="morningEnd"
-                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                    className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     required
                     value={formData.availability.morningEnd}
                     onChange={handleChange}
@@ -716,7 +793,7 @@ export default function CreateProvider() {
                   <input
                     type="time"
                     id="eveningStart"
-                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                    className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     required
                     value={formData.availability.eveningStart}
                     onChange={handleChange}
@@ -724,7 +801,7 @@ export default function CreateProvider() {
                   <input
                     type="time"
                     id="eveningEnd"
-                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                   className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     required
                     value={formData.availability.eveningEnd}
                     onChange={handleChange}
@@ -734,12 +811,16 @@ export default function CreateProvider() {
               <textarea
                 type="text"
                 placeholder="Biography"
-                className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
+                  Errors.description ? "error" : ""
+                }`}
                 id="description"
                 required
                 onChange={handleChange}
                 value={formData.description}
               />
+              {Errors.description  && ( <p className="text-sm text-red-500 font-semibold">
+                Please write a 50-word description in the field.</p> )}
               <p className="font-semibold text-main">
                 Images:
                 <span className="font-normal text-gray-600 ml-2">
@@ -761,10 +842,13 @@ export default function CreateProvider() {
                   type="button"
                   disabled={uploading}
                   onClick={handleImageSubmit}
-                  className="p-2 max-h-10 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85"
+                  className={`p-2 max-h-10 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85 ${Errors.imageUrls && "error"}`}
                 >
                   {uploading ? "uploading..." : "upload"}
                 </button>
+              </div>
+              <div className="">
+                {Errors.imageUrls && ( <p className="text-sm text-red-500 font-semibold"> Please upload at least one image.</p> )}
               </div>
               <p className="text-red-700 text-xs">
                 {imageUploadError && imageUploadError}
@@ -808,7 +892,6 @@ export default function CreateProvider() {
                 <>
                   <button
                     type="submit"
-                    onClick={handleSubmit}
                     disabled={loading || uploading}
                     className="p-3 btn-color rounded-lg font-semibold  rounded=lg hover:opacity-85 disabled:opacity-80 transition-all duration-300 ease-in-out"
                   >
