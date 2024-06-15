@@ -412,7 +412,9 @@ export default function CreateProvider() {
                   "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
                 }
                 alt="profile"
-                className={`w-24 h-24 rounded-full object-cover border-4 border-[lightgray] ${Errors.profilePicture && "border-red-500"}`}
+                className={`w-24 h-24 rounded-full object-cover border-4 border-[lightgray] ${
+                  Errors.profilePicture && "border-red-500"
+                }`}
               />
               <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
                 <img
@@ -425,10 +427,16 @@ export default function CreateProvider() {
             </label>
           </div>
           <div className="w-full flex justify-center mt-2">
-             {Errors.profilePicture  && ( <p className="text-sm text-red-500 font-semibold">
-            Please upload a profile picture</p> )}
+            {Errors.profilePicture && (
+              <p className="text-sm text-red-500 font-semibold">
+                Please upload a profile picture
+              </p>
+            )}
           </div>
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-10 mt-6 bg-white md:p-20 p-6 rounded-lg">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col sm:flex-row gap-10 mt-6 bg-white md:p-20 p-6 rounded-lg"
+          >
             <div className="flex flex-col gap-3 flex-1">
               <label className="font-semibold text-main">Select service*</label>
               <Select
@@ -475,10 +483,14 @@ export default function CreateProvider() {
                 onChange={handleChange}
                 value={formData.fullName}
               />
-              <label className="font-semibold text-main"><p className="flex flex-row items-center">
-                { Errors.email && <IoMdAlert className="text-red-700 text-sm" />}
-               Email*{" "}
-              </p></label>
+              <label className="font-semibold text-main">
+                <p className="flex flex-row items-center">
+                  {Errors.email && (
+                    <IoMdAlert className="text-red-700 text-sm" />
+                  )}
+                  Email*{" "}
+                </p>
+              </label>
               <input
                 placeholder="Email"
                 className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
@@ -489,7 +501,11 @@ export default function CreateProvider() {
                 onChange={handleChange}
                 value={formData.email}
               />
-              {Errors.email  && ( <p className="text-sm text-red-500 font-semibold">Please enter a valid email address.</p> )}
+              {Errors.email && (
+                <p className="text-sm text-red-500 font-semibold">
+                  Please enter a valid email address.
+                </p>
+              )}
               <label className="font-semibold text-main">Qualification*</label>
               <input
                 type="text"
@@ -509,6 +525,7 @@ export default function CreateProvider() {
                 onChange={handleChange}
                 value={formData.address.addressLine1}
               />
+              <label className="font-semibold text-main">Street</label>
               <input
                 placeholder="Street"
                 className="w-full border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
@@ -516,133 +533,145 @@ export default function CreateProvider() {
                 onChange={handleChange}
                 value={formData.address.street}
               />
-              <div className="flex flex-row gap-2">
-                <Select
-                  id="country"
-                  placeholder="Country"
-                  key={formData.address.country}
-                  defaultValue={
-                    formData.address.country
-                      ? {
-                          value: formData.address.country,
-                          label: formData.address.country,
-                        }
-                      : undefined
-                  }
-                  options={Country.getAllCountries().map((country) => {
-                    return { value: country.name, label: country.name };
-                  })}
-                  className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
-                  onChange={(selectedOption) => {
-                    const selectedCountry = Country.getAllCountries().find(
-                      (country) => country.name === selectedOption.value
-                    );
-                    setSelectedCountry(selectedCountry);
-                    setFormData({
-                      ...formData,
-                      address: {
-                        ...formData.address,
-                        country: selectedOption.label,
-                      },
-                    });
-                  }}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      backgroundColor: "transparent",
-                      minWidth: "160px",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: "none",
-                      transition: "all 0.3s ease",
-                    }),
-                  }}
-                />
-                <Select
-                  id="state"
-                  key={`state-${formData.address.state}`}
-                  defaultValue={
-                    formData.address.state
-                      ? {
-                          value: formData.address.state,
-                          label: formData.address.state,
-                        }
-                      : undefined
-                  }
-                  options={state.map((state) => {
-                    return { value: state.isoCode, label: state.name };
-                  })}
-                  placeholder="State"
-                  className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
-                  onChange={(selectedOption) => {
-                    setSelectedState(selectedOption.value);
-                    setFormData({
-                      ...formData,
-                      address: {
-                        ...formData.address,
-                        state: selectedOption.label,
-                      },
-                    });
-                  }}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      backgroundColor: "transparent",
-                      minWidth: "100px",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: "none",
-                      transition: "all 0.3s ease",
-                    }),
-                  }}
-                />
+              <div className="flex flex-row gap-2 items-center">
+                <div className="w-full flex flex-col gap-2">
+                  <label className="font-semibold text-main">Country*</label>
+                  <Select
+                    id="country"
+                    placeholder="Country"
+                    key={formData.address.country}
+                    defaultValue={
+                      formData.address.country
+                        ? {
+                            value: formData.address.country,
+                            label: formData.address.country,
+                          }
+                        : undefined
+                    }
+                    options={Country.getAllCountries().map((country) => {
+                      return { value: country.name, label: country.name };
+                    })}
+                    className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
+                    onChange={(selectedOption) => {
+                      const selectedCountry = Country.getAllCountries().find(
+                        (country) => country.name === selectedOption.value
+                      );
+                      setSelectedCountry(selectedCountry);
+                      setFormData({
+                        ...formData,
+                        address: {
+                          ...formData.address,
+                          country: selectedOption.label,
+                        },
+                      });
+                    }}
+                    styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        backgroundColor: "transparent",
+                        minWidth: "160px",
+                        border: "none",
+                        outline: "none",
+                        boxShadow: "none",
+                        transition: "all 0.3s ease",
+                      }),
+                    }}
+                  />
+                </div>
+                <div className="w-full flex flex-col gap-2">
+                  <label className="font-semibold text-main">State*</label>
+                  <Select
+                    id="state"
+                    key={`state-${formData.address.state}`}
+                    defaultValue={
+                      formData.address.state
+                        ? {
+                            value: formData.address.state,
+                            label: formData.address.state,
+                          }
+                        : undefined
+                    }
+                    options={state.map((state) => {
+                      return { value: state.isoCode, label: state.name };
+                    })}
+                    placeholder="State"
+                    className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
+                    onChange={(selectedOption) => {
+                      setSelectedState(selectedOption.value);
+                      setFormData({
+                        ...formData,
+                        address: {
+                          ...formData.address,
+                          state: selectedOption.label,
+                        },
+                      });
+                    }}
+                    styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        backgroundColor: "transparent",
+                        minWidth: "100px",
+                        border: "none",
+                        outline: "none",
+                        boxShadow: "none",
+                        transition: "all 0.3s ease",
+                      }),
+                    }}
+                  />
+                </div>
               </div>
               <div className="flex flex-row gap-2">
-                <Select
-                  id="city"
-                  key={formData.address.city}
-                  defaultValue={
-                    formData.address.city
-                      ? {
-                          value: formData.address.city,
-                          label: formData.address.city,
-                        }
-                      : undefined
-                  }
-                  options={cities.map((city) => {
-                    return { value: city.name, label: city.name };
-                  })}
-                  className="w-full border-2 rounded-lg border-slate-300 hover:border-purple-400"
-                  placeholder="Select City"
-                  onChange={(selectedOption) => {
-                    setFormData({
-                      ...formData,
-                      address: {
-                        ...formData.address,
-                        city: selectedOption.label,
-                      },
-                    });
-                  }}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      backgroundColor: "transparent",
-                      minWidth: "160px",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: "none",
-                      transition: "all 0.3s ease",
-                    }),
-                  }}
-                />
-                <input
-                  placeholder="Pincode"
-                  className="w-full border-2 p-1 border-slate-300 rounded-lg input focus:outline-none focus:ring-0"
-                  id="pincode"
-                  required
-                  onChange={handleChange}
-                  value={formData.address.pincode}
-                />
+                <div className="w-full flex flex-col gap-2">
+                  <label className="font-semibold text-main">City*</label>
+                  <Select
+                    id="city"
+                    key={formData.address.city}
+                    defaultValue={
+                      formData.address.city
+                        ? {
+                            value: formData.address.city,
+                            label: formData.address.city,
+                          }
+                        : undefined
+                    }
+                    options={cities.map((city) => {
+                      return { value: city.name, label: city.name };
+                    })}
+                    className="w-full border-2 rounded-lg border-slate-300 hover:border-purple-400"
+                    placeholder="Select City"
+                    onChange={(selectedOption) => {
+                      setFormData({
+                        ...formData,
+                        address: {
+                          ...formData.address,
+                          city: selectedOption.label,
+                        },
+                      });
+                    }}
+                    styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        backgroundColor: "transparent",
+                        minWidth: "160px",
+                        border: "none",
+                        outline: "none",
+                        boxShadow: "none",
+                        transition: "all 0.3s ease",
+                      }),
+                    }}
+                  />
+                </div>
+                <div className="w-full flex flex-col gap-2">
+                  <label className="font-semibold text-main">Pincode*</label>
+                  <input
+                    placeholder="Pincode"
+                    className="w-full border-2 p-1.5 border-slate-300 rounded-lg input focus:outline-none focus:ring-0"
+                    id="pincode"
+                    required
+                    onChange={handleChange}
+                    value={formData.address.pincode}
+                  />
+                </div>
               </div>
               <div className="flex flex-wrap gap-2">
                 <div className="flex items-center gap-2">
@@ -665,7 +694,7 @@ export default function CreateProvider() {
                       Regular Fees
                     </p>
                     <span className="text-main font-semibold text-xs">
-                      ( ₹ per Appointment )
+                      ( ₹ Appointment )
                     </span>
                   </div>
                 </div>
@@ -767,7 +796,11 @@ export default function CreateProvider() {
                   }}
                   value={formData.phone}
                 />
-                {Errors.phone  && ( <p className="text-sm text-red-500 font-semibold">Please enter a 10-digit number.</p> )}
+                {Errors.phone && (
+                  <p className="text-sm text-red-500 font-semibold">
+                    Please enter a 10-digit number.
+                  </p>
+                )}
                 <p className="font-semibold text-main">Availability:</p>
                 <div className="flex flex-row gap-4">
                   <p className="font-semibold text-main">Morning:</p>
@@ -801,7 +834,7 @@ export default function CreateProvider() {
                   <input
                     type="time"
                     id="eveningEnd"
-                   className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                    className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
                     required
                     value={formData.availability.eveningEnd}
                     onChange={handleChange}
@@ -819,8 +852,11 @@ export default function CreateProvider() {
                 onChange={handleChange}
                 value={formData.description}
               />
-              {Errors.description  && ( <p className="text-sm text-red-500 font-semibold">
-                Please write a 50-word description in the field.</p> )}
+              {Errors.description && (
+                <p className="text-sm text-red-500 font-semibold">
+                  Please write a 50-word description in the field.
+                </p>
+              )}
               <p className="font-semibold text-main">
                 Images:
                 <span className="font-normal text-gray-600 ml-2">
@@ -842,13 +878,20 @@ export default function CreateProvider() {
                   type="button"
                   disabled={uploading}
                   onClick={handleImageSubmit}
-                  className={`p-2 max-h-10 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85 ${Errors.imageUrls && "error"}`}
+                  className={`p-2 max-h-10 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85 ${
+                    Errors.imageUrls && "error"
+                  }`}
                 >
                   {uploading ? "uploading..." : "upload"}
                 </button>
               </div>
               <div className="">
-                {Errors.imageUrls && ( <p className="text-sm text-red-500 font-semibold"> Please upload at least one image.</p> )}
+                {Errors.imageUrls && (
+                  <p className="text-sm text-red-500 font-semibold">
+                    {" "}
+                    Please upload at least one image.
+                  </p>
+                )}
               </div>
               <p className="text-red-700 text-xs">
                 {imageUploadError && imageUploadError}

@@ -264,7 +264,8 @@ const Header = () => {
                     data-dropdown-toggle="userDropdown"
                     data-dropdown-placement="bottom-start"
                     className="w-10 h-10 rounded-full cursor-pointer"
-                    src={currentUser.profilePicture}
+                    src={currentUser.profilePicture ||
+                  "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"}
                     alt="User dropdown"
                     onClick={toggleDropdown}
                     ref={dropdownRef}

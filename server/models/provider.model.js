@@ -50,7 +50,6 @@ const providerSchema = new mongoose.Schema(
       },
       street: {
         type: String,
-        required: true,
       },
       pincode: {
         type: Number,

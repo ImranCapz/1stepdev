@@ -23,8 +23,20 @@ import Dashboard from "./components/dashboard/Dashboard";
 import FavoriteList from "./components/provider/FavoriteList";
 import ScrolltoTop from "./components/ScrolltoTop";
 import ProviderReview from "./components/review/ProviderReview";
-
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { signOut } from "../src/redux/user/userSlice";
+import Cookies from "js-cookie";
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = Cookies.get("access_token");
+    if (!token) {
+      dispatch(signOut());
+    }
+  }, [dispatch]);
+
   return (
     <>
       <BrowserRouter>
@@ -39,10 +51,10 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgetpassword" element={<ResetPasswordForm />} />
           <Route path="/verifyotp" element={<VerifyOtp />} />
-          <Route path="/search" element={<Search/>} />
+          <Route path="/search" element={<Search />} />
           <Route path="/provider/*" element={<Provider />} />
           <Route path="/for-providers" element={<CreateProfile />} />
-          <Route path="/review/:providerId" element={<ProviderReview/>} />
+          <Route path="/review/:providerId" element={<ProviderReview />} />
           <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/create-provider" element={<CreateProvider />} />
