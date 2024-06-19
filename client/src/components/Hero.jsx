@@ -188,7 +188,7 @@ const Hero = () => {
       </div>
       <div className="w-full flex flex-col px-4 py-9 mx-auto justify-center bg-home">
         <h2 className="text-3xl font-extrabold text-center text-main">
-          Read Expert Guides
+        Latest Articles
         </h2>
         <h3 className="font-bold text-center text-main mt-2">
           Unlock In-Depth Knowledge with Expert Guides
@@ -235,13 +235,13 @@ const Hero = () => {
       </div>
       <div className="flex flex-col px-4 py-9 mx-auto justify-center max-w-screen-2xl items-center">
         <h2 className="text-3xl font-extrabold text-center text-main">
-          Free Child developement tools{" "}
+        Join 1Step for free{" "}
         </h2>
-        <h3 className="md:w-1/2 text-center text-main mt-2">
+        {/* <h3 className="md:w-1/2 text-center text-main mt-2">
           Empower Your Parenting with Free Child Development Tools Access
           Essential Resources to Foster Your Child&nbsp;s Growth for Free
-        </h3>
-        <div className="text-center flex flex-col md:flex-row gap-2 md:gap-8 p-3 mx-auto mt-4">
+        </h3> */}
+        <div className="text-center flex flex-col md:flex-row gap-2 md:gap-8 p-3 mx-auto mt-8">
           <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300">
             <div>
               <p className="flex flex-col items-center">

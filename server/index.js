@@ -24,7 +24,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://onestepdev.onrender.com/", "http://localhost:3000"],
+    origin: ["https://onestepdev.onrender.com/", "http://localhost:3000",'http://1step.co.in/'],
   })
 );
 app.use(cookieParser());

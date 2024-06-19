@@ -151,7 +151,7 @@ const Header = () => {
     { title: "|" },
     { title: "Learn:" },
     { title: "Early Concerns: Start Here", path: "/early-concerns" },
-    { title: "Read Expert Guides", path: "/expert-guides" },
+    { title: "Latest Articles", path: "/latest-articles" },
   ];
 
   const submenuNav = getSubmenuNav(address);
