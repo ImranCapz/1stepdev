@@ -282,7 +282,7 @@ export default function Profile() {
                   >
                     Delete
                   </button>
-                  <Link to={`/update-provider/${provider._id}`}>
+                  <Link to='/dashboard?tab=providers'>
                     <button className="text-green-700 uppercase">EDIT</button>
                   </Link>
                 </div>

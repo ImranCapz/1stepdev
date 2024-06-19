@@ -11,7 +11,6 @@ import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./components/Profile";
 import VerifyOtp from "./pages/VerifyOtp";
 import CreateProvider from "./pages/CreateProvider";
-import UpdateProvider from "./pages/UpdateProvider";
 import Provider from "./pages/Provider";
 import Search from "./pages/Search";
 import AdminPrivateRoute from "./components/admin/AdminPrivateRoute";
@@ -58,10 +57,6 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/create-provider" element={<CreateProvider />} />
-            <Route
-              path="/update-provider/:providerId"
-              element={<UpdateProvider />}
-            />
             <Route path="/favorite-list" element={<FavoriteList />} />
           </Route>
           <Route element={<AdminPrivateRoute />}>

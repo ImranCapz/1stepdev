@@ -79,3 +79,11 @@ input[type="text"]:focus {
 .error{
   border-color: #e04a4a;
 }
+
+.bg-home{
+  background-color: #FDDFF9;
+}
+
+.bg-rec{
+  background-color: #D488F4;
+}

@@ -140,7 +140,14 @@ const Header = () => {
       title: "School-Based Service",
       path: `/search?searchTerm=School-Based+Service&address=${address}`,
     },
-
+    // {
+    //   title: "Arts as Therapy",
+    //   path: `/search?searchTerm=Arts+as+Therapy&address=${address}`,
+    // },
+    // {
+    //   title: "Music Therapy",
+    //   path: `/search?searchTerm=Music+Therapy&address=${address}`,
+    // },
     { title: "|" },
     { title: "Learn:" },
     { title: "Early Concerns: Start Here", path: "/early-concerns" },

@@ -4,6 +4,7 @@ import Select from "react-select";
 import { FaSearch } from "react-icons/fa";
 import { City } from "country-state-city";
 import CreatableSelect from "react-select/creatable";
+import  {suggestions} from "./suggestions";
 
 import PropTypes from "prop-types";
 
@@ -14,18 +15,6 @@ export const SearchBar = ({ defaultSearchTerm }) => {
   const [cityOptions, setCityOptions] = useState([]);
   const [providers, setProviders] = useState([]);
 
-  const suggestions = [
-    { value: "Popular Search", label: "Popular Services", isDisabled: true },
-    { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
-    { value: "Speech Therapy", label: "Speech Therapy" },
-    { value: "ABA Therapy", label: "ABA Therapy" },
-    { value: "Occupational Therapy", label: "Occupational Therapy" },
-    { value: "School-Based Service", label: "School-Based Service" },
-    { value: "A-Z Services", label: "Popular Services", isDisabled: true },
-    { value: "Dance Movement", label: "Dance Movement" },
-    { value: "Art as Therapy", label: "Art as Therapy" },
-    { value: "Counselling", label: "Counselling" },
-  ];
   const whatoptions = suggestions.map((suggestion) => ({
     value: suggestion.value,
     label: suggestion.value,

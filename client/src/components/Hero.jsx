@@ -4,20 +4,20 @@ import { SearchBar } from "../components/SearchBar";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import imagehome from "../assets/homeiamge.jpg";
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  Typography,
-  Button,
-  CardHeader,
-  Tooltip,
-  Avatar,
-} from "@material-tailwind/react";
+import { Card, Modal } from "flowbite-react";
+import { SlSpeech } from "react-icons/sl";
+import { LuStethoscope } from "react-icons/lu";
+import { FaHandHoldingMedical } from "react-icons/fa";
+import ListModel from "./modal/ListModel";
+import heartIcon from "../assets/listLike.png";
+import freescanner from "../assets/freescanner.png";
+import search from "../assets/search.png";
+import { RiMusic2Fill } from "react-icons/ri";
 
 const Hero = () => {
   const { searchTerm } = useParams();
   const [defaultsearchTerm, setDefaultSearchTerm] = useState(searchTerm);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     setDefaultSearchTerm(searchTerm);
@@ -25,6 +25,14 @@ const Hero = () => {
 
   document.title = "Your first step for all therapy needs";
 
+  function onCloseModal() {
+    setOpenModal(false);
+  }
+
+  const startSearching = ()=> {
+    window.scrollTo(0, 0);
+    navigate("/Diagnostic%20Evaluation");
+  }
   const integrations = [
     {
       title: "",
@@ -94,7 +102,7 @@ const Hero = () => {
       <div className="max-w-screen-2xl mx-auto px-4 py-9 gap-12 text-gray-600 md:px-8 xl:flex">
         <div className="space-y-5 max-w-2xl mx-auto text-center xl:text-left">
           <div className="flex flex-wrap items-center justify-center gap-6 xl:justify-start">
-            {features.map((item, idx) => (
+            {/* {features.map((item, idx) => (
               <div
                 key={idx}
                 className="flex items-center gap-x-2 text-gray-500 text-sm"
@@ -102,7 +110,7 @@ const Hero = () => {
                 {item.icon}
                 {item.name}
               </div>
-            ))}
+            ))} */}
           </div>
           <h1 className="text-4xl text-main font-extrabold mx-px md:text-5xl">
             Your first step for all{" "}
@@ -178,55 +186,138 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      {/* <div className="flex flex-col">
-        <div className="flex flex-row">
-        <Card className="max-w-[24rem] overflow-hidden">
-      <CardHeader
-        floated={false}
-        shadow={false}
-        color="transparent"
-        className="m-0 rounded-none"
-      >
-        <img
-          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80"
-          alt="ui/ux review check"
-        />
-      </CardHeader>
-      <CardBody>
-        <Typography variant="h4" color="blue-gray">
-          UI/UX Review Check
-        </Typography>
-        <Typography variant="lead" color="gray" className="mt-3 font-normal">
-          Because it&apos;s about motivating the doers. Because I&apos;m here to
-          follow my dreams and inspire others.
-        </Typography>
-      </CardBody>
-      <CardFooter className="flex items-center justify-between">
-        <div className="flex items-center -space-x-3">
-          <Tooltip content="Natali Craig">
-            <Avatar
-              size="sm"
-              variant="circular"
-              alt="natali craig"
-              src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1061&q=80"
-              className="border-2 border-white hover:z-10"
-            />
-          </Tooltip>
-          <Tooltip content="Tania Andrew">
-            <Avatar
-              size="sm"
-              variant="circular"
-              alt="tania andrew"
-              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-              className="border-2 border-white hover:z-10"
-            />
-          </Tooltip>
+      <div className="w-full flex flex-col px-4 py-9 mx-auto justify-center bg-home">
+        <h2 className="text-3xl font-extrabold text-center text-main">
+          Read Expert Guides
+        </h2>
+        <h3 className="font-bold text-center text-main mt-2">
+          Unlock In-Depth Knowledge with Expert Guides
+        </h3>
+        <div className="text-center flex flex-wrap justify-between gap-2 p-3 mx-auto mt-4">
+          <Card className="w-40 h-24 bg-rec hover:shadow-xl transition ease-in-out duration-300">
+            <p className="flex flex-col items-center gap-2">
+              <SlSpeech />
+              <span className="text-sm">Speech Therapy</span>
+            </p>
+          </Card>
+          <Card className="w-40 h-24 bg-rec hover:shadow-xl transition ease-in-out duration-300">
+            <p className="flex flex-col items-center gap-2">
+              <RiMusic2Fill />
+              <span className="text-sm">Music Therapy</span>
+            </p>
+          </Card>
+
+          <Card className="w-40 h-24 bg-rec hover:shadow-xl transition ease-in-out duration-300">
+            <p className="flex flex-col items-center gap-2">
+              <LuStethoscope />
+              <span className="text-sm">Diagnostic Evaluation</span>
+            </p>
+          </Card>
+          <Card className="w-40 h-24 bg-rec hover:shadow-xl transition ease-in-out duration-300">
+            <p className="flex flex-col items-center gap-2">
+              <LuStethoscope />
+              <span className="text-sm">Occupational Therapy</span>
+            </p>
+          </Card>
+          <Card className="w-40 h-24 bg-rec hover:shadow-xl transition ease-in-out duration-300">
+            <p className="flex flex-col items-center gap-2">
+              <LuStethoscope />
+              <span className="text-sm">School-Based Service</span>
+            </p>
+          </Card>
+          <Card className="w-40 h-24 bg-rec hover:shadow-xl transition ease-in-out duration-300">
+            <p className="flex flex-col items-center gap-2">
+              <FaHandHoldingMedical />
+              <span className="text-sm">ABA Therapy</span>
+            </p>
+          </Card>
         </div>
-        <Typography className="font-normal">January 10</Typography>
-      </CardFooter>
-    </Card>
+      </div>
+      <div className="flex flex-col px-4 py-9 mx-auto justify-center max-w-screen-2xl items-center">
+        <h2 className="text-3xl font-extrabold text-center text-main">
+          Free Child developement tools{" "}
+        </h2>
+        <h3 className="md:w-1/2 text-center text-main mt-2">
+          Empower Your Parenting with Free Child Development Tools Access
+          Essential Resources to Foster Your Child&nbsp;s Growth for Free
+        </h3>
+        <div className="text-center flex flex-col md:flex-row gap-2 md:gap-8 p-3 mx-auto mt-4">
+          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300">
+            <div>
+              <p className="flex flex-col items-center">
+                <img src={search} alt="heartIcon" className="w-16 h-16 mb-4" />
+                <span className="text-2xl font-bold text-main mb-6">
+                  Search Therapist
+                </span>
+              </p>
+              <p className="text-sm">
+                Your first step for all therapy solutions. Find the Perfect
+                Therapist for Your Needs.
+              </p>
+              <button
+                onClick={() => startSearching()}
+                className="w-48 justify-center items-center mt-10 p-2 text-sm bg-sky-100 rounded-md font-semibold text-sky-600 hover:bg-sky-200 transition duration-300"
+              >
+                Start Searching
+              </button>
+            </div>
+          </Card>
+          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300">
+            <div>
+              <p className="flex flex-col items-center">
+                <img
+                  src={freescanner}
+                  alt="heartIcon"
+                  className="w-16 h-16 mb-4"
+                />
+                <span className="text-2xl font-bold text-main mb-6">
+                  Free Screeners
+                </span>
+              </p>
+              <p className="text-sm">
+                Get answers in 5 min by taking a screener widely used by health
+                experts.
+              </p>
+              <button
+                onClick={() => navigate("/freescreeners")}
+                className="w-48 justify-center items-center mt-10 p-2 text-sm bg-sky-100 rounded-md font-semibold text-sky-600 hover:bg-sky-200 transition duration-300"
+              >
+                Take Free Screener
+              </button>
+            </div>
+          </Card>
+
+          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300">
+            <div>
+              <p className="flex flex-col items-center">
+                <img
+                  src={heartIcon}
+                  alt="heartIcon"
+                  className="w-16 h-16 mb-4"
+                />
+                <span className="text-2xl font-bold text-main mb-6">
+                  Create a favorite list
+                </span>
+              </p>
+              <p className="text-sm">
+                Keep all your favorite providers in one place.
+              </p>
+              <button
+                onClick={() => setOpenModal(true)}
+                className="w-48 justify-center items-center mt-10 p-2 text-sm bg-sky-100 rounded-md font-semibold text-sky-600 hover:bg-sky-200 transition duration-300"
+              >
+                Create First List
+              </button>
+            </div>
+          </Card>
         </div>
-      </div> */}
+        <Modal show={openModal} size="md" onClose={onCloseModal} popup>
+          <Modal.Header></Modal.Header>
+          <Modal.Body>
+            <ListModel />
+          </Modal.Body>
+        </Modal>
+      </div>
     </section>
   );
 };
