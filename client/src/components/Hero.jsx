@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import imagehome from "../assets/homeiamge.jpg";
+import  imagehome from "../assets/homeimage.png"
 import { Card, Modal } from "flowbite-react";
 import { SlSpeech } from "react-icons/sl";
 import { LuStethoscope } from "react-icons/lu";
@@ -148,7 +148,7 @@ const Hero = () => {
             </Link>
           </div>
           <br></br>
-          <SearchBar defaultSearchTerm={defaultsearchTerm} />
+          <SearchBar defaultSearchTerm={defaultsearchTerm}/>
         </div>
         <div className="flex-1 max-w-xl mx-auto mt-14 xl:mt-0">
           <div className="relative">

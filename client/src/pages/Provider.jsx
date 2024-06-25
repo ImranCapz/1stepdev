@@ -33,6 +33,7 @@ import { FcApproval, FcInfo } from "react-icons/fc";
 import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import { Tooltip } from "flowbite-react";
+import ContentLoader from "react-content-loader"
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -251,7 +252,7 @@ export default function Provider() {
     <div className="w-full mx-auto flex lg:flex-row flex-col-reverse">
       {loading && (
         <>
-          <div className="h-[200px] bg-gray-200 animate-pulse"></div>
+          <div className="h-[200px] bg-gray-200 animate-pulse">loading</div>
         </>
       )}
       {error && (
@@ -259,7 +260,7 @@ export default function Provider() {
       )}
       {provider && !loading && !error && (
         <div>
-          <Swiper navigation>
+          {/* <Swiper navigation>
             {provider.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
@@ -271,7 +272,7 @@ export default function Provider() {
                 ></div>
               </SwiperSlide>
             ))}
-          </Swiper>
+          </Swiper> */}
           <div className="lg:flex-row flex-col mx-auto flex md:w-5/6 justify-center">
             <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
               <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">

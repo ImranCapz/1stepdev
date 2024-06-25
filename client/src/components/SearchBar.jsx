@@ -4,7 +4,7 @@ import Select from "react-select";
 import { FaSearch } from "react-icons/fa";
 import { City } from "country-state-city";
 import CreatableSelect from "react-select/creatable";
-import  {suggestions} from "./suggestions";
+import { suggestions } from "./suggestions";
 
 import PropTypes from "prop-types";
 
@@ -14,6 +14,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
   const [address, setAddress] = useState("");
   const [cityOptions, setCityOptions] = useState([]);
   const [providers, setProviders] = useState([]);
+  const [windowwidth, setWindowWidth] = useState(window.innerWidth);
 
   const whatoptions = suggestions.map((suggestion) => ({
     value: suggestion.value,
@@ -45,12 +46,12 @@ export const SearchBar = ({ defaultSearchTerm }) => {
           const searchQuery = urlParams.toString();
           navigate(`/search?${searchQuery}`);
         });
-    }else{
-      urlParams.set("address",address);
+    } else {
+      urlParams.set("address", address);
       const searchQuery = urlParams.toString();
       navigate(`/search?${searchQuery}`);
     }
-  }
+  };
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -79,10 +80,16 @@ export const SearchBar = ({ defaultSearchTerm }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("Resize", handleResize);
+  }, []);
+
   return (
     <div className="flex max-w-[750px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
       <form
-        className="flex flex-col md:flex-row space-x-3 items-center"
+        className="flex flex-row space-x-3 items-center"
         onSubmit={handlesubmit}
       >
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
@@ -97,7 +104,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
             value={whatoptions.find((option) => option.value === searchTerm)}
             onChange={(option) => setsearchTerm(option.value)}
             options={whatoptions}
-            placeholder="Service or provider"
+            placeholder="search provider"
             required
             isSearchable
             className="capitalize trauncate text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
@@ -105,7 +112,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
               control: (provided) => ({
                 ...provided,
                 backgroundColor: "transparent !important",
-                minWidth: 260,
+                minWidth: windowwidth < 786 ? 150 : 260,
                 width: "auto",
                 border: "none",
                 outline: "none",
@@ -114,7 +121,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
               }),
               singleValue: (provided) => ({
                 ...provided,
-                maxWidth: 160, // This sets the maximum width of the selected option text
+                maxWidth: 160, 
                 position: "absolute",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -137,7 +144,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
           >
             Where
           </label>
-          <CreatableSelect
+          <Select
             type="address"
             id="address"
             placeholder="City, Pin Code"
@@ -150,7 +157,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
               control: (provided) => ({
                 ...provided,
                 backgroundColor: "transparent !important",
-                minWidth: 260,
+                minWidth:  windowwidth < 786 ? 100 : 260,
                 width: "auto",
                 border: "none",
                 outline: "none",
@@ -159,7 +166,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
               }),
               singleValue: (provided) => ({
                 ...provided,
-                maxWidth: 160, // This sets the maximum width of the selected option text
+                maxWidth: 160,
                 position: "absolute",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -194,15 +201,15 @@ export const SearchBar = ({ defaultSearchTerm }) => {
           data-ripple-light="true"
           className="py-4 px-5 font-medium text-indigo-950 btn-color transition ease-in-out duration-300 disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs  rounded-lg shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none mt-4 mb-4 mr-4"
         >
-          <FaSearch/>
+          <FaSearch />
         </button>
       </form>
     </div>
   );
 };
 
-SearchBar.propTypes ={
-  defaultSearchTerm: PropTypes.string
-}
+SearchBar.propTypes = {
+  defaultSearchTerm: PropTypes.string,
+};
 
 export default SearchBar;

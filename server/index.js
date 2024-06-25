@@ -20,14 +20,9 @@ dotenv.config();
 const __dirname = path.resolve();
 
 const app = express();
-
 app.use(express.json());
-app.use(
-  cors({
-    origin: ["https://onestepdev.onrender.com/", "http://localhost:3000",'http://1step.co.in/'],
-  })
-);
 app.use(cookieParser());
+app.use(cors());
 
 mongoose
   .connect(process.env.MONGO)
@@ -50,11 +45,11 @@ app.use("/server/rating", ratingRouter);
 app.use("/server/favorite", favoriteRouter);
 app.use("/server/booking", bookingRouter);
 
-app.use(express.static(path.join(__dirname, "/client/dist")));
+// app.use(express.static(path.join(__dirname, "/client/dist")));
 
-app.get("*", (_req, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
-});
+// app.get("*", (_req, res) => {
+//   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+// });
 
 app.use((err, req, res, next) => {
   const stateCode = err.statusCode || 500;

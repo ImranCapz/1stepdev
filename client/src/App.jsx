@@ -26,15 +26,20 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { signOut } from "../src/redux/user/userSlice";
 import Cookies from "js-cookie";
+
 function App() {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const token = Cookies.get("access_token");
-    if (!token) {
-      dispatch(signOut());
-    }
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const checkToken = () => {
+  //     const token = Cookies.get("access_token");
+  //     console.log(token);
+  //     if (!token) {
+  //       dispatch(signOut());
+  //     }
+  //   };
+  //   checkToken();
+  // }, [dispatch]);
 
   return (
     <>
