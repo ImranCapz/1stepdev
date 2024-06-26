@@ -51,7 +51,7 @@ export default function FavoriteList() {
             <div className="flex flex-col items-center text-2xl font-semibold mb-6 text-zinc-600">
               No Favorite Providers Not yet saved
             </div>
-            <div className="flex-col md:flex items-center text-2xl font-semibold mt-6 mb-6 ">
+            <div className="flex-col md:flex items-center text-2xl font-semibold mt-6 mb-6">
               <SearchBar />
             </div>
           </div>

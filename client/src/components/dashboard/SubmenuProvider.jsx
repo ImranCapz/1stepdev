@@ -9,6 +9,7 @@ export default function SubmenuProvider() {
 
   const submenuNav = useMemo(() => [
     { title: "Providers" },
+    { title: "Provider Message"},
     { title: "Appointment" },
   ], []);
 

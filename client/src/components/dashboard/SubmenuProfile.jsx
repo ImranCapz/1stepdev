@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import Profile from "../Profile";
 import ParentForm from "../parents/ParentForm";
+import MessageDash from "./MessageDash";
 import { useSelector } from "react-redux";
 import UserBooking from "../booking/UserBooking";
 import { MdNotificationsActive } from "react-icons/md";
@@ -25,6 +26,7 @@ export default function SubmenuProfile() {
     () => [
       { title: "Profile setting" },
       { title: "Parent Details" },
+      { title: "Message"},
       { title: "Bookings" },
     ],
     []
@@ -125,6 +127,12 @@ export default function SubmenuProfile() {
         <div className="w-full">
           <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 "></h1>
           <UserBooking />
+        </div>
+      )}
+      {activeComponent === "Message" && (
+        <div className="w-full">
+          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 "></h1>
+          <MessageDash />
         </div>
       )}
     </div>

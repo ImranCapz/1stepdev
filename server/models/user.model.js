@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: "",
       },
+      childName: {
+        type: String,
+        default: "",
+      },
       lookingFor: {
         type: Array,
         default: [],

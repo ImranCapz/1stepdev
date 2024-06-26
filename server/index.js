@@ -11,18 +11,22 @@ import bookingRouter from "./routes/booking.route.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 import cors from "cors";
+import http from "http";
+import socketSetup from "./socket.js";
 
 // import Provider from "./models/provider.model.js";
 // import casual from "casual";
 
 dotenv.config();
 
-const __dirname = path.resolve();
+// const __dirname = path.resolve();
 
 const app = express();
+const server = http.createServer(app);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+socketSetup(server);
 
 mongoose
   .connect(process.env.MONGO)
@@ -33,7 +37,7 @@ mongoose
     console.log("Could not connect to MongoDB");
   });
 
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 

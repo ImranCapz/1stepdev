@@ -15,31 +15,31 @@ export default function Dashboard() {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
  
-  // useEffect(() => {
-  //   const fetchBooking = async () => {
-  //     const url = `/server/booking/getuserbookings/${currentUser._id}`;
-  //     console.log("Fetching bookings from URL:", url);
-  //     try {
-  //       dispatch(getBookingsStart());
-  //       const response = await fetch(url);
-  //       console.log("Response status:", response.status);
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       const data = await response.json();
-  //       dispatch(getBookingSuccess(data));
-  //       console.log("Booking data:", data);
-  //     } catch (error) {
-  //       dispatch(getBookingFailure(error));
-  //       console.error(
-  //         "An error occurred while fetching booking details:",
-  //         error
-  //       );
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchBooking = async () => {
+      const url = `/server/booking/getuserbookings/${currentUser._id}`;
+      console.log("Fetching bookings from URL:", url);
+      try {
+        dispatch(getBookingsStart());
+        const response = await fetch(url);
+        console.log("Response status:", response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        dispatch(getBookingSuccess(data));
+        console.log("Booking data:", data);
+      } catch (error) {
+        dispatch(getBookingFailure(error));
+        console.error(
+          "An error occurred while fetching booking details:",
+          error
+        );
+      }
+    };
 
-  //   fetchBooking();
-  // }, [currentUser._id,dispatch]);
+    fetchBooking();
+  }, [currentUser._id,dispatch]);
 
   
   useEffect(() => {

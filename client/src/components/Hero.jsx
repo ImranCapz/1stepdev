@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import  imagehome from "../assets/homeimage.png"
+import imagehome from "../assets/homeimage.png";
 import { Card, Modal } from "flowbite-react";
 import { SlSpeech } from "react-icons/sl";
 import { LuStethoscope } from "react-icons/lu";
@@ -29,10 +29,10 @@ const Hero = () => {
     setOpenModal(false);
   }
 
-  const startSearching = ()=> {
+  const startSearching = () => {
     window.scrollTo(0, 0);
     navigate("/Diagnostic%20Evaluation");
-  }
+  };
   const integrations = [
     {
       title: "",
@@ -148,11 +148,11 @@ const Hero = () => {
             </Link>
           </div>
           <br></br>
-          <SearchBar defaultSearchTerm={defaultsearchTerm}/>
+          <SearchBar defaultSearchTerm={defaultsearchTerm} />
         </div>
         <div className="flex-1 max-w-xl mx-auto mt-14 xl:mt-0">
           <div className="relative">
-            <img src={imagehome} alt="hero" className="rounded-lg size-120" />
+            <img src={imagehome} alt="hero" className="rounded-lg size-120"/>
             {/* <div className="max-w-screen-xl mx-auto px-4 md:text-center md:px-8">
               <div className="max-w-xl space-y-3 md:mx-auto">
                 <h1 className="text-gray-800 text-xl font-extrabold sm:text-2xl">Screening Tool</h1>
@@ -188,12 +188,12 @@ const Hero = () => {
       </div>
       <div className="w-full flex flex-col px-4 py-9 mx-auto justify-center bg-home">
         <h2 className="text-3xl font-extrabold text-center text-main">
-        Latest Articles
+          Latest Articles
         </h2>
         <h3 className="font-bold text-center text-main mt-2">
           Unlock In-Depth Knowledge with Expert Guides
         </h3>
-        <div className="text-center flex flex-wrap justify-between gap-2 p-3 mx-auto mt-4">
+        <div className="text-center flex flex-wrap justify-between gap-2 md:p-3 mx-auto mt-4">
           <Card className="w-40 h-24 bg-rec hover:shadow-xl transition ease-in-out duration-300">
             <p className="flex flex-col items-center gap-2">
               <SlSpeech />
@@ -235,7 +235,7 @@ const Hero = () => {
       </div>
       <div className="flex flex-col px-4 py-9 mx-auto justify-center max-w-screen-2xl items-center">
         <h2 className="text-3xl font-extrabold text-center text-main">
-        Join 1Step for free{" "}
+          Join 1Step for free{" "}
         </h2>
         {/* <h3 className="md:w-1/2 text-center text-main mt-2">
           Empower Your Parenting with Free Child Development Tools Access

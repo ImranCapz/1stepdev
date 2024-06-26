@@ -21,6 +21,7 @@ const Header = () => {
   const navigate = useNavigate();
   const topLoadingBarRef = useRef(null);
   const [openModal, setOpenModal] = useState(false);
+  const [parentModal, setParentModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(0);
   const location = useLocation();
 

@@ -29,6 +29,7 @@ export default function ParentForm() {
     parentDetails: {
       fullName: "",
       lookingFor: [],
+      childName: "",
       dob: "",
       gender: "",
       height: "",
@@ -146,6 +147,7 @@ export default function ParentForm() {
         const definedData = {
           isParent: data.isParent || false,
           lookingFor: data.parentDetails?.lookingFor || [],
+          childName: data.parentDetails?.childName || "",
           fullName: data.parentDetails?.fullName || "",
           dob: data.parentDetails?.dob
             ? new Date(data.parentDetails?.dob).toISOString().split("T")[0]
@@ -384,7 +386,17 @@ export default function ParentForm() {
                 }),
               }}
             />
-            <label className="text-sm font-semibold text-main">Weight*</label>
+            <label className="text-sm font-semibold text-main">Child Name*</label>
+            <input
+              type="text"
+              placeholder="Child Name"
+              className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0 "
+              id="childName"
+              required
+              onChange={handleChange}
+              value={formData.parentDetails?.childName}
+            />
+             <label className="text-sm font-semibold text-main">Weight*</label>
             <input
               type="text"
               placeholder="Weight"

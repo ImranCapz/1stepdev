@@ -37,6 +37,7 @@ export const updateParent = async (req, res, next) => {
           isParent: req.body.isParent,
           parentDetails: {
             lookingFor: req.body.parentDetails.lookingFor,
+            childName: req.body.parentDetails.childName,
             dob: req.body.parentDetails.dob,
             gender: req.body.parentDetails.gender,
             address: req.body.parentDetails.address,

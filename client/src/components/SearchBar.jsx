@@ -87,7 +87,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
   }, []);
 
   return (
-    <div className="flex max-w-[750px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
+    <div className="flex max-w-[750px] max-h-[300px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
       <form
         className="flex flex-row space-x-3 items-center"
         onSubmit={handlesubmit}
@@ -107,7 +107,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
             placeholder="search provider"
             required
             isSearchable
-            className="capitalize trauncate text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
+            className="capitalize trauncate text-xs md:text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
             styles={{
               control: (provided) => ({
                 ...provided,
@@ -137,7 +137,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
             }}
           />
         </div>
-        <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">
+        <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
           <label
             htmlFor="where"
             className="block py-1 px-2 text-base font-bold text-gray-700 mt-8"
@@ -152,12 +152,12 @@ export const SearchBar = ({ defaultSearchTerm }) => {
             onChange={(option) => setAddress(option.value)}
             options={cityOptions}
             isSearchable
-            className="capitalize trauncate text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
+            className="capitalize trauncate text-xs md:text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
             styles={{
               control: (provided) => ({
                 ...provided,
                 backgroundColor: "transparent !important",
-                minWidth:  windowwidth < 786 ? 100 : 260,
+                minWidth:  windowwidth < 786 ? 110 : 260,
                 width: "auto",
                 border: "none",
                 outline: "none",

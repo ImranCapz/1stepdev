@@ -184,10 +184,10 @@ export default function CreateProvider() {
         errors.phone = false;
         setErrors(errors);
       }
-      if (!formData.description || formData.description.length < 50) {
+      if (!formData.description || formData.description.length < 40) {
         errors.description = true;
         setErrors(errors);
-        return toast.error("Description must be at least 50 characters");
+        return toast.error("Description must be at least 40 characters");
       } else {
         errors.description = false;
         setErrors(errors);
@@ -725,6 +725,27 @@ export default function CreateProvider() {
               </div>
             </div>
             <div className="flex flex-col flex-1 gap-3">
+            <p className="font-semibold text-main">
+                Explain About your therapy section*
+                <span className="text-sm">&nbsp;&nbsp;(40 minimum words)</span>
+              </p>
+              <textarea
+                type="text"
+                placeholder="Now is the chance to show your future clients that your approach to therapy will make a real difference!"
+                rows={5}
+                className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
+                  Errors.description ? "error" : ""
+                }`}
+                id="description"
+                required
+                onChange={handleChange}
+                value={formData.description}
+              />
+              {Errors.description && (
+                <p className="text-sm text-red-500 font-semibold">
+                  Please write a 40-word description in the field.
+                </p>
+              )}
               <label className="font-semibold text-main">
                 Select your therapy type*
               </label>
@@ -841,22 +862,7 @@ export default function CreateProvider() {
                   />
                 </div>
               </div>
-              <textarea
-                type="text"
-                placeholder="Biography"
-                className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
-                  Errors.description ? "error" : ""
-                }`}
-                id="description"
-                required
-                onChange={handleChange}
-                value={formData.description}
-              />
-              {Errors.description && (
-                <p className="text-sm text-red-500 font-semibold">
-                  Please write a 50-word description in the field.
-                </p>
-              )}
+
               <p className="font-semibold text-main">
                 Images:
                 <span className="font-normal text-gray-600 ml-2">

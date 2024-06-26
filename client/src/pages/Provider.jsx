@@ -33,7 +33,7 @@ import { FcApproval, FcInfo } from "react-icons/fc";
 import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import { Tooltip } from "flowbite-react";
-import ContentLoader from "react-content-loader"
+import ContentLoader from "react-content-loader";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -303,13 +303,13 @@ export default function Provider() {
                       {provider.fullName}
                       {provider.verified === true && (
                         <div className="">
-                        <Tooltip
-                          content="Verifed Profile"
-                          animation="duration-500"
-                        >
-                          <FcApproval />
-                        </Tooltip>
-                      </div>
+                          <Tooltip
+                            content="Verifed Profile"
+                            animation="duration-500"
+                          >
+                            <FcApproval />
+                          </Tooltip>
+                        </div>
                       )}
                       {provider.verified === false && (
                         <div className="">
@@ -323,7 +323,7 @@ export default function Provider() {
                       )}
                     </div>
                     <p className="flex flex-row space-x-2 text-xs text-center mt-2">
-                    <Button
+                      <Button
                         onClick={handleFavorite}
                         variant="outlined"
                         className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 gap-1 items-center rounded-full"
