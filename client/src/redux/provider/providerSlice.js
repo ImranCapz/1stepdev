@@ -13,6 +13,11 @@ export const providerSlice = createSlice({
     selectProvider: (state, action) => {
       state.id = action.payload;
     },
+    providerData:(state,action)=>{
+      state.currentProvider = action.payload;
+      state.loading=false;
+      state.error=false;
+    }
   },
 });
 

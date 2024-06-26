@@ -11,7 +11,7 @@ import StarRatings from "react-star-ratings";
 import { Button } from "@material-tailwind/react";
 import { IoIosStar } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
-import { Modal } from "flowbite-react";
+import { Modal, Textarea } from "flowbite-react";
 import SignupModal from "../components/SignupModal";
 import ListModal from "../components/modal/ListModel";
 import { useDispatch } from "react-redux";
@@ -34,6 +34,7 @@ import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import { Tooltip } from "flowbite-react";
 import ContentLoader from "react-content-loader";
+import { AiFillThunderbolt } from "react-icons/ai";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -50,6 +51,7 @@ export default function Provider() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [contact, setContact] = useState(false);
+  const [message, setMessage] = useState(false);
   const [review, setReview] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
@@ -62,35 +64,43 @@ export default function Provider() {
   const urlRef = useRef(null);
   const [otp, setOtp] = useState(0);
   const [searchTerm, setSearchTerm] = useState("urlsearchTerm");
-  const searchQuery = new URLSearchParams(location.search);
-  const urlsearchTerm = searchQuery.get("service");
 
+  const searchQuery = new URLSearchParams(location.search);
+  const urlsearchTerm = searchQuery.get("service")
+  
   useEffect(() => {
     setSearchTerm(urlsearchTerm);
   }, [urlsearchTerm]);
 
-  const ProviderName = encodeURIComponent(provider?.fullName).replace(
-    /%20/g,
-    "-"
-  );
-  const ProviderAddress = encodeURIComponent(provider?.address?.state).replace(
-    /%20/g,
-    "-"
-  );
+  //title 
+  const providerUrlName = location.pathname;
+  const extractname = providerUrlName.split('/');
+  const provName = extractname[2].replace(/-/g,' ');
+  console.log(provName);
 
-  const url = `/review/${ProviderName}-${ProviderAddress}`;
-
-  function onCloseModal() {
-    setIsListOpen(false);
-    setOpenModal(false);
-    setIsShare(false);
-    setOtpOpen(false);
-  }
+  //send message
+  const [sendMessage, setSendMessage] = useState();
+  useEffect(() => {
+    setSendMessage(`Hi ${provName},\nMy name is ${currentUser.username}, and I am seeking a therapist for ${searchTerm}. I would like to start as soon as possible. Are you available? Could you contact me so we can discuss this further?\nHave a great day! Talk to you soon.\nBest regards,\n${currentUser.username}`);
+  }, [searchTerm, provName, currentUser.username]);
 
   useEffect(() => {
-    document.title = `${provider?.fullName} | ${urlsearchTerm} |${provider?.address?.state}`;
-  }, [provider, urlsearchTerm]);
+    document.title = `${provName} | ${urlsearchTerm}`;
+  }, [provName, urlsearchTerm]);
 
+// Review URL
+const ProviderName = encodeURIComponent(provider?.fullName).replace(/%20/g, "-");
+const ProviderAddress = encodeURIComponent(provider?.address?.state).replace(/%20/g, "-");
+const url = `/review/${ProviderName}-${ProviderAddress}`;
+
+function onCloseModal() {
+  setIsListOpen(false);
+  setOpenModal(false);
+  setIsShare(false);
+  setOtpOpen(false);
+}
+
+  //fetch provider
   useEffect(() => {
     const fetchprovider = async () => {
       try {
@@ -115,6 +125,7 @@ export default function Provider() {
     fetchprovider();
   }, [id]);
 
+  //fetch provider rating
   useEffect(() => {
     const fetchRating = async () => {
       try {
@@ -663,14 +674,15 @@ export default function Provider() {
               </div>
             </div>
             <div
-              className="w-full flex flex-col space-y-3 p-3 lg:w-1/2 "
+              className="w-full flex flex-col space-y-3 p-3 mt-6 max-w-[460px]"
               style={{
                 alignSelf: "flex-start",
                 position: "sticky",
                 top: "125px",
               }}
             >
-              <div className="w-full border-2 bg-sky-100 rounded-lg">
+              {!message && (
+                <div className="w-full border-2 bg-sky-100 rounded-lg">
                 <div className="p-6">
                   <p className="font-bold text-xl text-gray ">
                     Get in touch with {provider.fullName}
@@ -758,6 +770,52 @@ export default function Provider() {
                       </div>
                     )}
                   {contact && <BookingContact provider={provider} />}
+                </div>
+              </div>
+              )}      
+              <div className="w-full border-2 bg-sky-100 rounded-lg">
+                <div className="p-6">
+                  <p className="font-bold text-xl text-gray ">
+                    Get a Quick Response
+                  </p>
+                  {!currentUser && (
+                    <div className="flex flex-col mt-2 gap-4">
+                      <Button
+                        onClick={() => {
+                          setOpenModal(true);
+                        }}
+                        className="bg-sky-400 w-full text-gray-900 rounded-lg uppercase hover:opacity-95"
+                      >
+                        Send a Message
+                      </Button>
+                    </div>
+                  )}
+                  {currentUser &&
+                    provider.userRef !== currentUser._id &&
+                    !message && (
+                      <div className="flex flex-col mt-2 gap-4">
+                        <Button
+                          onClick={() => setMessage(true)}
+                          className="w-full bg-sky-400 text-gray-900 rounded-lg uppercase hover:opacity-95"
+                        >
+                          Send a Message
+                        </Button>
+                      </div>
+                    )}
+                  {message && (
+                    <div className="mt-2 text-sm font-semibold">
+                      <Textarea
+                        rows={8}
+                        className="text-gray-700 border-gray-400"
+                        onChange={(e)=> setSendMessage(e.target.value)}
+                        value={sendMessage}
+                      />
+                      <div className="flex flex-row gap-2 mt-4">
+                        <Button onClick={()=> setMessage(false)} variant="outlined" className="w-full">Cancel</Button>
+                        <Button className="w-full bg-sky-400 text-gray-800">Send a Message</Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               <>
