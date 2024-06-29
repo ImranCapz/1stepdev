@@ -8,6 +8,7 @@ import parentRouter from "./routes/parent.route.js";
 import ratingRouter from "./routes/rating.route.js";
 import favoriteRouter from "./routes/favorite.route.js";
 import bookingRouter from "./routes/booking.route.js";
+import messageRouter from "./routes/message.route.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 import cors from "cors";
@@ -25,7 +26,6 @@ const app = express();
 const server = http.createServer(app);
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
 socketSetup(server);
 
 mongoose
@@ -48,6 +48,7 @@ app.use("/server/parent", parentRouter);
 app.use("/server/rating", ratingRouter);
 app.use("/server/favorite", favoriteRouter);
 app.use("/server/booking", bookingRouter);
+app.use("/server/message", messageRouter);
 
 // app.use(express.static(path.join(__dirname, "/client/dist")));
 

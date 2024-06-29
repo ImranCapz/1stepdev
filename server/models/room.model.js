@@ -1,6 +1,11 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
-const messageSchema = new mongoose.Schema({
+const roomSchema = new mongoose.Schema({
+    roomID: {
+        type: String,
+        required: true,
+        unique: true
+    },
     sender: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -13,16 +18,16 @@ const messageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'provider'
     },
-    message: {
-        type: String,
-        required: true
-    },
+    messages: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Message'
+    }],
     createdAt: {
         type: Date,
         default: Date.now
     }
 });
 
-const Message = mongoose.model('Message', messageSchema);
+const Room = mongoose.model('Room', roomSchema);
 
-export default Message;
+export default Room

@@ -35,6 +35,10 @@ import OtpInput from "react-otp-input";
 import { Tooltip } from "flowbite-react";
 import ContentLoader from "react-content-loader";
 import { AiFillThunderbolt } from "react-icons/ai";
+import io from "socket.io-client";
+import { current } from "@reduxjs/toolkit";
+import { useNavigate } from "react-router-dom";
+import e from "cors";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -63,42 +67,90 @@ export default function Provider() {
   const dispatch = useDispatch();
   const urlRef = useRef(null);
   const [otp, setOtp] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("urlsearchTerm");
+  const navigate = useNavigate();
 
+  //socket
+  const SOCKET_SERVER_URL = "http://localhost:3000";
+  const [socket, setSocket] = useState(null);
+  const [receivedMessage, setReceivedMessage] = useState([]);
+  console.log(receivedMessage);
+
+  useEffect(() => {
+    const newSocket = io(SOCKET_SERVER_URL, { withCredentials: true });
+    setSocket(newSocket);
+
+    newSocket.on("recieveMessage", (message) => {
+      setReceivedMessage((prevMsg) => [...prevMsg, message]);
+    });
+
+    return () => newSocket.close();
+  }, [currentUser, id]);
+
+  const handleSendMessage = () => {
+    if (socket) {
+      socket.emit("joinRoom", { sender: currentUser._id, provider: id });
+      socket.emit(
+        "sendMessage",
+        {
+          message: sendMessage,
+          sender: currentUser._id,
+          reciever: provider.userRef,
+          provider: id,
+        },
+        (getroomid) => {
+          if (getroomid.success) {
+            navigate(`/dashboard?tag=Message/${getroomid.roomId}`);
+          } else {
+            console.log("error");
+          }
+        }
+      );
+    }
+  };
+
+  //url searchTerm
+  const [searchTerm, setSearchTerm] = useState("urlsearchTerm");
   const searchQuery = new URLSearchParams(location.search);
-  const urlsearchTerm = searchQuery.get("service")
-  
+  const urlsearchTerm = searchQuery.get("service");
+
   useEffect(() => {
     setSearchTerm(urlsearchTerm);
   }, [urlsearchTerm]);
 
-  //title 
+  //title
   const providerUrlName = location.pathname;
-  const extractname = providerUrlName.split('/');
-  const provName = extractname[2].replace(/-/g,' ');
-  console.log(provName);
+  const extractname = providerUrlName.split("/");
+  const provName = extractname[2].replace(/-/g, " ");
 
   //send message
   const [sendMessage, setSendMessage] = useState();
   useEffect(() => {
-    setSendMessage(`Hi ${provName},\nMy name is ${currentUser.username}, and I am seeking a therapist for ${searchTerm}. I would like to start as soon as possible. Are you available? Could you contact me so we can discuss this further?\nHave a great day! Talk to you soon.\nBest regards,\n${currentUser.username}`);
+    setSendMessage(
+      `Hi ${provName},\nMy name is ${currentUser.username}, and I am seeking a therapist for ${searchTerm}. I would like to start as soon as possible. Are you available? Could you contact me so we can discuss this further?\nHave a great day! Talk to you soon.\nBest regards,\n${currentUser.username}`
+    );
   }, [searchTerm, provName, currentUser.username]);
 
   useEffect(() => {
     document.title = `${provName} | ${urlsearchTerm}`;
   }, [provName, urlsearchTerm]);
 
-// Review URL
-const ProviderName = encodeURIComponent(provider?.fullName).replace(/%20/g, "-");
-const ProviderAddress = encodeURIComponent(provider?.address?.state).replace(/%20/g, "-");
-const url = `/review/${ProviderName}-${ProviderAddress}`;
+  // Review URL
+  const ProviderName = encodeURIComponent(provider?.fullName).replace(
+    /%20/g,
+    "-"
+  );
+  const ProviderAddress = encodeURIComponent(provider?.address?.state).replace(
+    /%20/g,
+    "-"
+  );
+  const url = `/review/${ProviderName}-${ProviderAddress}`;
 
-function onCloseModal() {
-  setIsListOpen(false);
-  setOpenModal(false);
-  setIsShare(false);
-  setOtpOpen(false);
-}
+  function onCloseModal() {
+    setIsListOpen(false);
+    setOpenModal(false);
+    setIsShare(false);
+    setOtpOpen(false);
+  }
 
   //fetch provider
   useEffect(() => {
@@ -113,7 +165,6 @@ function onCloseModal() {
           return;
         }
         setprovider(data);
-        console.log(data);
         setLoading(false);
         setError(false);
       } catch (error) {
@@ -121,7 +172,6 @@ function onCloseModal() {
         setError(true);
       }
     };
-    0;
     fetchprovider();
   }, [id]);
 
@@ -683,11 +733,11 @@ function onCloseModal() {
             >
               {!message && (
                 <div className="w-full border-2 bg-sky-100 rounded-lg">
-                <div className="p-6">
-                  <p className="font-bold text-xl text-gray ">
-                    Get in touch with {provider.fullName}
-                  </p>
-                  {/* <div className="video-responsive">
+                  <div className="p-6">
+                    <p className="font-bold text-xl text-gray ">
+                      Get in touch with {provider.fullName}
+                    </p>
+                    {/* <div className="video-responsive">
                     <iframe
                       width="300"
                       height="150"
@@ -697,82 +747,82 @@ function onCloseModal() {
                       allowfullscreen
                     ></iframe>
                   </div> */}
-                  {!currentUser && (
-                    <div className="flex flex-col mt-2 gap-4">
-                      <Button
-                        onClick={() => {
-                          setOpenModal(true);
-                        }}
-                        className="bg-amber w-full text-gray-900 rounded-lg uppercase hover:opacity-95"
-                      >
-                        Book A Appointment
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => {
-                          setIsListOpen(true);
-                        }}
-                        className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
-                      >
-                        <FaRegHeart /> Save to List
-                      </Button>
-                      <Modal
-                        show={openModal}
-                        size="md"
-                        onClose={onCloseModal}
-                        popup
-                      >
-                        <Modal.Header></Modal.Header>
-                        <Modal.Body>
-                          <SignupModal />
-                        </Modal.Body>
-                      </Modal>
-                      <Modal
-                        show={isListOpen}
-                        size="md"
-                        onClose={onCloseModal}
-                        popup
-                      >
-                        <Modal.Header></Modal.Header>
-                        <Modal.Body>
-                          <ListModal />
-                        </Modal.Body>
-                      </Modal>
-                    </div>
-                  )}
-                  {currentUser &&
-                    provider.userRef !== currentUser._id &&
-                    !contact && (
+                    {!currentUser && (
                       <div className="flex flex-col mt-2 gap-4">
                         <Button
-                          onClick={() => setContact(true)}
+                          onClick={() => {
+                            setOpenModal(true);
+                          }}
                           className="bg-amber w-full text-gray-900 rounded-lg uppercase hover:opacity-95"
                         >
-                          Contact FOR BOOKING
+                          Book A Appointment
                         </Button>
                         <Button
-                          onClick={handleFavorite}
                           variant="outlined"
+                          onClick={() => {
+                            setIsListOpen(true);
+                          }}
                           className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
                         >
-                          {isFavorite ? (
-                            <>
-                              <FcLike className="h-3 w-3" />
-                              <p>Saved </p>
-                            </>
-                          ) : (
-                            <>
-                              <FaRegHeart className="h-3 w-3" />
-                              <p>Save to List </p>
-                            </>
-                          )}
+                          <FaRegHeart /> Save to List
                         </Button>
+                        <Modal
+                          show={openModal}
+                          size="md"
+                          onClose={onCloseModal}
+                          popup
+                        >
+                          <Modal.Header></Modal.Header>
+                          <Modal.Body>
+                            <SignupModal />
+                          </Modal.Body>
+                        </Modal>
+                        <Modal
+                          show={isListOpen}
+                          size="md"
+                          onClose={onCloseModal}
+                          popup
+                        >
+                          <Modal.Header></Modal.Header>
+                          <Modal.Body>
+                            <ListModal />
+                          </Modal.Body>
+                        </Modal>
                       </div>
                     )}
-                  {contact && <BookingContact provider={provider} />}
+                    {currentUser &&
+                      provider.userRef !== currentUser._id &&
+                      !contact && (
+                        <div className="flex flex-col mt-2 gap-4">
+                          <Button
+                            onClick={() => setContact(true)}
+                            className="bg-amber w-full text-gray-900 rounded-lg uppercase hover:opacity-95"
+                          >
+                            Contact FOR BOOKING
+                          </Button>
+                          <Button
+                            onClick={handleFavorite}
+                            variant="outlined"
+                            className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
+                          >
+                            {isFavorite ? (
+                              <>
+                                <FcLike className="h-3 w-3" />
+                                <p>Saved </p>
+                              </>
+                            ) : (
+                              <>
+                                <FaRegHeart className="h-3 w-3" />
+                                <p>Save to List </p>
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      )}
+                    {contact && <BookingContact provider={provider} />}
+                  </div>
                 </div>
-              </div>
-              )}      
+              )}
               <div className="w-full border-2 bg-sky-100 rounded-lg">
                 <div className="p-6">
                   <p className="font-bold text-xl text-gray ">
@@ -807,12 +857,23 @@ function onCloseModal() {
                       <Textarea
                         rows={8}
                         className="text-gray-700 border-gray-400"
-                        onChange={(e)=> setSendMessage(e.target.value)}
+                        onChange={(e) => setSendMessage(e.target.value)}
                         value={sendMessage}
                       />
                       <div className="flex flex-row gap-2 mt-4">
-                        <Button onClick={()=> setMessage(false)} variant="outlined" className="w-full">Cancel</Button>
-                        <Button className="w-full bg-sky-400 text-gray-800">Send a Message</Button>
+                        <Button
+                          onClick={() => setMessage(false)}
+                          variant="outlined"
+                          className="w-full"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleSendMessage}
+                          className="w-full bg-sky-400 text-gray-800"
+                        >
+                          Send a Message
+                        </Button>
                       </div>
                     </div>
                   )}

@@ -318,6 +318,7 @@
     "text-table": "^0.2.0",
     "thenify": "^3.3.1",
     "thenify-all": "^1.6.0",
+    "timeago-react": "^3.0.6",
     "to-fast-properties": "^2.0.0",
     "to-regex-range": "^5.0.1",
     "toidentifier": "^1.0.1",
