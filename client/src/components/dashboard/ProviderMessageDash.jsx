@@ -2,20 +2,23 @@ import { Button } from "@material-tailwind/react";
 import { BiSend } from "react-icons/bi";
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import ReactTimeAgo from "react-time-ago";
 import io from "socket.io-client";
 import toast from "react-hot-toast";
 
-export default function MessageDash() {
+// time ago
+import ReactTimeAgo from "react-time-ago";
+
+export default function ProviderMessageDash() {
   const { currentUser } = useSelector((state) => state.user);
-  const [providerDetails, setProviderDetails] = useState([]);
-  const [selectedProvider, setSelectedProvider] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
+  const [providerId, setProviderId] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState([]);
   const [limitedMessages, setLimitedMessages] = useState([]);
   const messageContainerRef = useRef(null);
 
-  //socket
+  // socket.io
   const SOCKET_SERVER_URL = "http://localhost:3000";
   const [socket, setSocket] = useState(null);
   const [send, setSend] = useState("");
@@ -25,12 +28,12 @@ export default function MessageDash() {
     setSocket(newSocket);
 
     newSocket.on("receiveMessage", ({ sender, message }) => {
-      setNewMessage((newmessage) => [
-        ...newmessage,
+      setNewMessage((prevMsg) => [
+        ...prevMsg,
         { sender, message, createdAt: new Date() },
       ]);
-      setLimitedMessages((newmessage) => [
-        ...newmessage,
+      setLimitedMessages((prevMsg) => [
+        ...prevMsg,
         { sender, message, createdAt: new Date() },
       ]);
     });
@@ -42,45 +45,47 @@ export default function MessageDash() {
     if (send === "") return toast.error("Message cannot be empty");
     if (socket) {
       socket.emit("joinRoom", {
-        roomId: `${currentUser._id}_${selectedProvider._id}`,
+        roomId: `${selectedUser._id}_${providerId}`,
         sender: currentUser._id,
-        provider: selectedProvider._id,
-        reciever: selectedProvider.userRef,
+        provider: providerId,
+        receiver: selectedUser._id,
       });
       socket.emit("sendMessage", {
-        roomId: `${currentUser._id}_${selectedProvider._id}`,
+        roomId: `${selectedUser._id}_${providerId}`,
         message: send,
         sender: currentUser._id,
-        provider: selectedProvider._id,
-        reciever: selectedProvider.userRef,
+        provider: providerId,
+        receiver: selectedUser._id,
       });
       setSend("");
     }
   };
 
   useEffect(() => {
-    if (selectedProvider && socket) {
-      const roomId = `${currentUser._id}_${selectedProvider._id}`;
+    if (selectedUser && socket) {
+      const roomId = `${selectedUser._id}_${providerId}`;
       socket.emit("joinRoom", {
-        roomId: roomId,
+        roomId,
         sender: currentUser._id,
-        provider: selectedProvider._id,
-        reciever: selectedProvider.userRef,
+        provider: providerId,
+        receiver: selectedUser._id,
       });
     }
-  }, [selectedProvider, socket, currentUser._id]);
+  }, [selectedUser, socket, currentUser._id, providerId]);
 
+  // fetch user and provider details
   useEffect(() => {
     const fetchProvidermsg = async () => {
       try {
         const res = await fetch(
-          `/server/message/getprovider/${currentUser._id}`
+          `/server/message/getuserprovider/${currentUser._id}`
         );
         const data = await res.json();
         if (data.success === false) {
           return;
         }
-        setProviderDetails(data);
+        setUserDetails(data.users);
+        setProviderId(data.providerId);
       } catch (error) {
         console.log(error);
       }
@@ -88,9 +93,9 @@ export default function MessageDash() {
     fetchProvidermsg();
   }, [currentUser._id]);
 
-  const handleProviderClick = async (provider) => {
-    setSelectedProvider(provider);
-    const roomID = `${currentUser._id}_${provider._id}`;
+  const handleProviderClick = async (user) => {
+    setSelectedUser(user);
+    const roomID = `${user._id}_${providerId}`;
     try {
       const res = await fetch(`/server/message/getmessage/${roomID}`);
       const data = await res.json();
@@ -98,47 +103,49 @@ export default function MessageDash() {
         return;
       }
       setMessages(data);
-      setLimitedMessages(data.slice(-10));
+      setLimitedMessages(data.slice(-9));
     } catch (error) {
       console.log(error);
     }
   };
 
-  //scroll up load message
-
+  //effecive scroll
   useEffect(() => {
     const handleScroll = () => {
-      const theshold = 10;
+      const threshold = 50;
       if (
         messageContainerRef.current &&
-        messageContainerRef.current.scrollTop <= theshold
+        messageContainerRef.current.scrollTop <= threshold
       ) {
-        loadPreviousMessage();
+        loadPreviousMessages();
       }
     };
+
+    // Ensure messageContainerRef.current is not null before adding the event listener
     if (messageContainerRef.current) {
       const messageContainer = messageContainerRef.current;
       messageContainer.addEventListener("scroll", handleScroll);
 
+      // Return a cleanup function that removes the event listener
       return () => {
         if (messageContainer) {
           messageContainer.removeEventListener("scroll", handleScroll);
         }
       };
     }
-  }, [limitedMessages]);
+  }, [limitedMessages]); // Dependency array
 
-  const loadPreviousMessage = () => {
-    const numofMsgShow = 10;
+  const loadPreviousMessages = () => {
+    const numberofMsgToShow = 10;
     const currentLength = limitedMessages.length;
-    const scrollUpMsg = messages.slice(
-      Math.max(0, messages.length - currentLength - numofMsgShow),
+    const addMsg = messages.slice(
+      Math.max(0, messages.length - currentLength - numberofMsgToShow),
       messages.length - currentLength
     );
-    setLimitedMessages((prev) => [...scrollUpMsg, ...prev]);
+    setLimitedMessages([...addMsg, ...limitedMessages]);
   };
 
-  //scroll to bottom
+  //scrolltoBottom
 
   const scrollToBottom = () => {
     if (messageContainerRef.current) {
@@ -151,35 +158,35 @@ export default function MessageDash() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [newMessage, messages]);
+  }, [messages, newMessage]);
 
   return (
-    <div className="w-full flex max-h-[520px] overflow-hidden">
-      <div className="w-1/4 bg-gray-100 p-4">
-        <div className="flex flex-col gap-5 items-center overflow-y-auto">
-          {providerDetails.length > 0 ? (
+    <div className="w-full flex max-h-[500px] overflow-hidden">
+      <div className="w-1/4 bg-gray-100 p-4 h-full overflow-y-auto">
+        <div className="flex flex-col gap-5 items-center">
+          {userDetails.length > 0 ? (
             <>
-              {providerDetails.map((provider) => {
+              {userDetails.map((user) => {
                 const isSelected =
-                  selectedProvider && selectedProvider._id === provider._id;
+                  selectedUser && selectedUser._id === user._id;
                 return (
                   <div
-                    key={provider._id}
+                    key={user._id}
                     className={`w-full p-3 rounded-lg flex items-center border-b-4 border-gray-200 pb-2 cursor-pointer ${
                       isSelected ? "bg-purple-200" : ""
                     }`}
-                    onClick={() => handleProviderClick(provider)}
+                    onClick={() => handleProviderClick(user)}
                   >
                     <img
-                      src={provider.profilePicture}
+                      src={user.profilePicture}
                       alt="provider logo"
-                      className="size-14 md:size-14 rounded-full mr-4 object-cover"
+                      className="size-12 md:size-14 rounded-full mr-4 object-cover"
                     />
                     <div>
                       <p className="font-bold items-center justify-center text-gray hidden md:block">
-                        {provider.fullName}
+                        {user.username}
                       </p>
-                      <p className="text-sm">{messages.message}</p>
+                      <p className="text-xs md:text-xs">{messages.message}</p>
                     </div>
                   </div>
                 );
@@ -190,17 +197,17 @@ export default function MessageDash() {
           )}
         </div>
       </div>
-      <div className="w-3/4 p-4 flex flex-col bg-purple-100">
-        {selectedProvider ? (
+      <div className="w-3/4 p-4 flex flex-col bg-purple-100 overflow-hidden">
+        {selectedUser ? (
           <>
-            <div className="flex flex-row">
+            <div className="flex flex-row mb-4">
               <img
-                src={selectedProvider.profilePicture}
+                src={selectedUser.profilePicture}
                 alt="provider logo"
-                className="size-10 rounded-full"
+                className="size-10 rounded-full object-cover"
               />
-              <h2 className="flex ml-2 capitalize font-semibold border-b-2 pb-5 border-sky-200 w-full">
-                {selectedProvider.fullName}
+              <h2 className="flex ml-2 capitalize font-semibold border-b-2 pb-2 border-sky-200 w-full">
+                {selectedUser.username}
               </h2>
             </div>
             <div className="flex flex-col flex-grow overflow-y-auto">
@@ -212,7 +219,7 @@ export default function MessageDash() {
                   <div
                     key={message._id}
                     className={`m-2 ${
-                      message.sender === currentUser._id
+                      String(message.sender) === String(currentUser._id)
                         ? "text-right"
                         : "text-left"
                     } ${message.message.length > 30 ? "w-2/3" : "w-auto"}`}
@@ -226,9 +233,9 @@ export default function MessageDash() {
                     >
                       {message.sender !== currentUser._id && (
                         <img
-                          src={selectedProvider.profilePicture}
-                          alt="provider logo"
-                          className="size-9 rounded-full mr-2 object-cover"
+                          src={selectedUser.profilePicture}
+                          alt="user logo"
+                          className="size-8 rounded-full mr-2 object-cover"
                         />
                       )}
                       <div
@@ -250,12 +257,12 @@ export default function MessageDash() {
                         <img
                           src={currentUser.profilePicture}
                           alt="user logo"
-                          className="size-9 rounded-full ml-2 object-cover"
+                          className="size-8 rounded-full ml-2"
                         />
                       )}
                     </div>
                     <div
-                      className={`${
+                      className={`md:text-sm ${
                         message.sender === currentUser._id
                           ? "mr-10 text-right"
                           : "ml-10 text-left"
@@ -274,15 +281,13 @@ export default function MessageDash() {
           </>
         ) : (
           <>
-            <h2>Select a Provider</h2>
+            <h2>Select a user</h2>
           </>
         )}
-        <div className="flex-grow">
-          <h2></h2>
-        </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-4">
           <input
             type="text"
+            required
             placeholder="Type a message..."
             className="w-full p-3 rounded-lg"
             value={send}

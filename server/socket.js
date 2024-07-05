@@ -13,9 +13,8 @@ const socketSetup = (server) => {
   io.on("connection", (socket) => {
     console.log("User connected");
 
-    socket.on("joinRoom", async ({ sender, reciever,provider }) => {
+    socket.on("joinRoom", async ({roomId, sender, reciever, provider }) => {
       try {
-        const roomId = `${sender}_${provider}`;
         console.log(`Joining room ${roomId}`);
         let room = await Room.findOne({ roomID: roomId });
         if (!room) {
@@ -35,35 +34,38 @@ const socketSetup = (server) => {
         }
         socket.join(roomId);
         console.log(`User ${sender} joined room ${roomId}`);
-        socket.emit('roomJoined',{ roomId : roomId, success: true});
+        socket.emit("roomJoined", { roomId: roomId, success: true });
       } catch (error) {
         console.log("Error joining room:", error);
         socket.emit("roomJoined", { success: false });
       }
     });
 
-    socket.on("sendMessage", async ({ message, sender, reciever, provider }) => {
-      const roomId = `${sender}_${provider}`;
-      const newMessage = new Message({
-        sender,
-        reciever,
-        provider,
-        message,
-      });
-      await newMessage
-        .save()
-        .then((savedMessage) =>
-          console.log("Message saved successfully", savedMessage)
-        )
-        .catch((error) => console.error("Error saving message:", error));
-      await Room.findOneAndUpdate(
-        { roomID: roomId },
-        { $push: { messages: newMessage._id } }
-      );
-      io.to(roomId).emit("receiveMessage", { sender, message });
-      console.log(`Message sent in room ${roomId}: ${message}`);
-      socket.emit("messageSent", { roomId: roomId, success: true });
-    });
+    socket.on(
+      "sendMessage",
+      async ({ roomId, message, sender, reciever, provider }) => {
+        const newMessage = new Message({
+          sender,
+          reciever,
+          provider,
+          message,
+        });
+        await newMessage
+          .save()
+          .then((savedMessage) =>
+            console.log("Message saved successfully", savedMessage)
+          )
+          .catch((error) => console.error("Error saving message:", error));
+        await Room.findOneAndUpdate(
+          { roomID: roomId },
+          { $push: { messages: newMessage._id } }
+        );
+        io.to(roomId).emit("receiveMessage", { sender, message });
+        console.log(`Message sent in room ${roomId}: ${message}`);
+        socket.emit("messageSent", { roomId: roomId, success: true });
+      }
+    );
+
     socket.on("disconnect", () => {
       console.log("User disconnected");
     });

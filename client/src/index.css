@@ -10,6 +10,16 @@ input[type="text"]:focus {
   box-shadow: none;
 }
 
+.chat-container {
+  max-height: 300px; /* Adjust based on your layout */
+  overflow-y: auto;
+}
+
+.main-container {
+  height: 100vh;
+  overflow: hidden;
+}
+
 .blue-button {
   background-color: #a287b6;
 }

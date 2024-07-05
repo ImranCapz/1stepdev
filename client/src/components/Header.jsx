@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import logo from "../assets/logo.svg";
+import logo from "../assets/oneStepLogo.png";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -80,20 +80,22 @@ const Header = () => {
       path: currentUser ? "/dashboard?tab=providers" : "/for-providers",
     },
     {
-      title: [
-        <div key="heartIcon" style={{ display: "flex", alignItems: "center" }}>
+      title: (
+        <p key="heartIcon" style={{ display: "flex", alignItems: "center" }}>
           {currentUser ? (
-            <Link
-              to="/favorite-list"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginRight: "5px",
-              }}
-              className="gap-1"
-            >
-              <FaRegHeart /> Lists
-            </Link>
+            <>
+              <Link
+                to="/favorite-list"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "5px",
+                }}
+                className="gap-1"
+              >
+                <FaRegHeart /> Lists
+              </Link>
+            </>
           ) : (
             <button
               style={{
@@ -110,10 +112,10 @@ const Header = () => {
               <FaRegHeart /> Lists
             </button>
           )}
-        </div>,
-      ],
+        </p>
+      ),
     },
-    { title: "About Us", path: "" },
+    { title: "About Us", path: "/" },
   ];
 
   useEffect(() => {
@@ -123,7 +125,7 @@ const Header = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  const getSubmenuNav = (address)=> [
+  const getSubmenuNav = (address) => [
     { title: "Overview", path: "/" },
     {
       title: "Diagnostic Evaluation",
@@ -272,8 +274,10 @@ const Header = () => {
                     data-dropdown-toggle="userDropdown"
                     data-dropdown-placement="bottom-start"
                     className="w-10 h-10 rounded-full cursor-pointer"
-                    src={currentUser.profilePicture ||
-                  "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"}
+                    src={
+                      currentUser.profilePicture ||
+                      "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                    }
                     alt="User dropdown"
                     onClick={toggleDropdown}
                     ref={dropdownRef}
@@ -312,21 +316,25 @@ const Header = () => {
                               to="/dashboard?tab=dashboard"
                               className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
                             >
-                              Dashboard
+                              My Dashboard
                             </Link>
                             <Link
-                              to="/dashboard?tab=createprovider"
+                              to="/dashboard?tab=providers"
                               className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
                             >
                               Providers
                             </Link>
-                          </li>
-                          <li>
+                            <Link
+                              to="/dashboard?tag=Message"
+                              className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
+                            >
+                              Message
+                            </Link>
                             <Link
                               to="/dashboard?tab=profile"
                               className="block px-4 py-2 text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
                             >
-                              Settings
+                              Profile
                             </Link>
                           </li>
                         </div>

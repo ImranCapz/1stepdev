@@ -2,30 +2,34 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import CreateProvider from "../../pages/CreateProvider";
 import ProviderBooking from "../booking/ProviderBooking";
+import ProviderMessageDash from "./ProviderMessageDash";
 
 export default function SubmenuProvider() {
   const [activeComponent, setActiveComponent] = useState("Providers");
   const location = useLocation();
 
-  const submenuNav = useMemo(() => [
-    { title: "Providers" },
-    { title: "Provider Message"},
-    { title: "Appointment" },
-  ], []);
+  const submenuNav = useMemo(
+    () => [
+      { title: "Providers" },
+      { title: "Provider Message" },
+      { title: "Appointment" },
+    ],
+    []
+  );
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tagFromUrl = urlParams.get("tag");
     if (tagFromUrl) {
-      const validTag = submenuNav.find(item => item.title === tagFromUrl);
-      if(validTag){
+      const validTag = submenuNav.find((item) => item.title === tagFromUrl);
+      if (validTag) {
         setActiveComponent(tagFromUrl);
       }
     }
   }, [location.search, submenuNav]);
 
   return (
-    <div className="flex flex-col w-full transition-all duration-500">
+    <div className="flex flex-col w-full h-screen transition-all duration-500 overflow-hidden">
       <nav className="block border-b items-start">
         <ul className=" flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8 mt-4">
           {submenuNav.map((item, idx) => (
@@ -50,12 +54,15 @@ export default function SubmenuProvider() {
           <CreateProvider />
         </div>
       )}
-      {activeComponent === "Appointment" &&(
-        <div className="w-full">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800">
-            {" "}
-            {/* {currentUser.isParent ? "Your Parent Details :" : 'Fill the form for Parent Profile :'} */}
-          </h1>
+      {activeComponent === "Provider Message" && (
+        <div className="transition-all min-h-screen duration-500 overflow-hidden">
+          <h1 className="flex flex-col font-bold text-2xl text-zinc-800 overflow-hidden"></h1>
+          <ProviderMessageDash />
+        </div>
+      )}
+      {activeComponent === "Appointment" && (
+        <div className="w-full min-h-screen transition-all duration-500">
+          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800"></h1>
           <ProviderBooking />
         </div>
       )}

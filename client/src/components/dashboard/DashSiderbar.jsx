@@ -1,11 +1,13 @@
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiArrowSmRight, HiUser } from "react-icons/hi";
+import { HiArrowSmRight } from "react-icons/hi";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { RiDashboardFill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../redux/user/userSlice";
+import { MdManageAccounts , MdSupervisorAccount } from "react-icons/md";
+import { IoIosChatboxes } from "react-icons/io";
 
 export default function DashSidebar() {
   const location = useLocation();
@@ -52,24 +54,35 @@ export default function DashSidebar() {
               Dashboard
             </Sidebar.Item>
           </Link>
+
+          <Link to="/dashboard?tab=providers">
+            <Sidebar.Item
+              active={tab === "providers"}
+              icon={MdSupervisorAccount}
+              labelColor="light"
+              as="div"
+            >
+              Providers
+            </Sidebar.Item>
+          </Link>
+          <Link to="/dashboard?tab=messages">
+            <Sidebar.Item
+              active={tab === "messages"}
+              icon={IoIosChatboxes}
+              labelColor="light"
+              as="div"
+            >
+              Message
+            </Sidebar.Item>
+          </Link>
           <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               active={tab === "profile"}
-              icon={HiUser}
+              icon={MdManageAccounts}
               labelColor="light"
               as="div"
             >
               Profile
-            </Sidebar.Item>
-          </Link>
-          <Link to="/dashboard?tab=providers">
-            <Sidebar.Item
-              active={tab === "providers"}
-              icon={HiUser}
-              labelColor="light"
-              as="div"
-            >
-             Providers
             </Sidebar.Item>
           </Link>
           <Sidebar.Item

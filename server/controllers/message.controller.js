@@ -1,6 +1,7 @@
 import Room from "../models/room.model.js";
 import Provider from "../models/provider.model.js";
 import Message from "../models/message.model.js";
+import User from "../models/user.model.js";
 
 export const getRoomMessages = async (req, res, next) => {
   try {
@@ -37,6 +38,36 @@ export const getMessages = async (req, res, next) => {
       (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
     );
     return res.status(200).json(messages);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserforProvider = async (req, res, next) => {
+  const userId = req.params.userId;
+  try {
+    const user = await Room.find({ reciever: userId }).populate("sender");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userids = [
+      ...new Set(user.map((user) => user.sender._id.toString())),
+    ];
+    const users = await User.find({ _id: { $in: userids } }).select(
+      "-password"
+    );
+    if (!user || user.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    }
+    const provider = await Provider.findOne({ userRef: userId }).select("_id");
+    if (!provider || provider.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Provider not found", success: false });
+    }
+    return res.status(200).json({ users, providerId: provider._id });
   } catch (error) {
     next(error);
   }

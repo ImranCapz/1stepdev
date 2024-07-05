@@ -26,6 +26,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { signOut } from "../src/redux/user/userSlice";
 import Cookies from "js-cookie";
+import ProviderMessageDash from "./components/dashboard/ProviderMessageDash";
 
 function App() {
   const dispatch = useDispatch();
@@ -51,7 +52,6 @@ function App() {
           <Route path="/*" element={<Hero />} />
           <Route path="/freescreeners" element={<Features />} />
           <Route path="/question" element={<Question />} />
-
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgetpassword" element={<ResetPasswordForm />} />
@@ -61,6 +61,7 @@ function App() {
           <Route path="/for-providers" element={<CreateProfile />} />
           <Route path="/review/:providerId" element={<ProviderReview />} />
           <Route element={<PrivateRoute />}>
+            <Route path="/message" element={<ProviderMessageDash />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/create-provider" element={<CreateProvider />} />
             <Route path="/favorite-list" element={<FavoriteList />} />
@@ -73,7 +74,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
         </Routes>
-        <Footer />
+        {/* <Footer /> */}
       </BrowserRouter>
     </>
   );

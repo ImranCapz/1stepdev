@@ -7,11 +7,12 @@ import SubmenuProvider from "./SubmenuProvider";
 import { useSelector } from "react-redux";
 import { getBookingsStart, getBookingSuccess, getBookingFailure } from "../../redux/booking/bookingSlice";
 import { useDispatch } from "react-redux";
+import  MessageDash  from "./MessageDash";
 
 
 export default function Dashboard() {
   const location = useLocation();
-  const [tab, setTab] = useState("dashboard");
+  const [tab, setTab] = useState("Dashboard");
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
  
@@ -45,7 +46,7 @@ export default function Dashboard() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
-    if (["dashboard", "providers", "profile", "Profile Setting", "Parent Details", "Bookings"].includes(tabFromUrl)) {
+    if (["dashboard", "providers", "profile", "Profile Setting", "Parent Details", "Bookings","messages"].includes(tabFromUrl)) {
       setTab(tabFromUrl);
     }
   }, [location.search]); 
@@ -53,7 +54,7 @@ export default function Dashboard() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tagFromUrl = urlParams.get("tag");
-    if (["dashboard", "providers", "profile", "Profile Setting", "Parent Details", "Bookings"].includes(tagFromUrl)) {
+    if (["dashboard", "providers", "profile", "Profile Setting", "Parent Details", "Bookings","messages"].includes(tagFromUrl)) {
       setTab(tagFromUrl);
     }
   }, [location.search]); 
@@ -65,7 +66,7 @@ export default function Dashboard() {
         {tab === "dashboard" && <Overview /> }
         {tab === "providers" && <SubmenuProvider />}
         {(tab === "profile" || tab === "Profile Setting" || tab === "Parent Details" || tab === "Bookings" ) && < SubmenuProfile/>}
-       
+        {tab === "messages" && <MessageDash/>}
     </div>
   );
 }

@@ -26,7 +26,6 @@ export default function SubmenuProfile() {
     () => [
       { title: "Profile setting" },
       { title: "Parent Details" },
-      { title: "Message"},
       { title: "Bookings" },
     ],
     []
@@ -127,12 +126,6 @@ export default function SubmenuProfile() {
         <div className="w-full">
           <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 "></h1>
           <UserBooking />
-        </div>
-      )}
-      {activeComponent === "Message" && (
-        <div className="w-full">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 "></h1>
-          <MessageDash />
         </div>
       )}
     </div>

@@ -36,9 +36,7 @@ import { Tooltip } from "flowbite-react";
 import ContentLoader from "react-content-loader";
 import { AiFillThunderbolt } from "react-icons/ai";
 import io from "socket.io-client";
-import { current } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
-import e from "cors";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -79,16 +77,20 @@ export default function Provider() {
     const newSocket = io(SOCKET_SERVER_URL, { withCredentials: true });
     setSocket(newSocket);
 
-    newSocket.on("recieveMessage", (message) => {
+    newSocket.on("receiveMessage", (message) => {
       setReceivedMessage((prevMsg) => [...prevMsg, message]);
     });
 
     return () => newSocket.close();
-  }, [currentUser, id]);
+  }, []);
 
   const handleSendMessage = () => {
     if (socket) {
-      socket.emit("joinRoom", { sender: currentUser._id, provider: id });
+      socket.emit("joinRoom", {
+        sender: currentUser._id,
+        reciever: provider.userRef,
+        provider: id,
+      });
       socket.emit(
         "sendMessage",
         {
@@ -97,13 +99,7 @@ export default function Provider() {
           reciever: provider.userRef,
           provider: id,
         },
-        (getroomid) => {
-          if (getroomid.success) {
-            navigate(`/dashboard?tag=Message/${getroomid.roomId}`);
-          } else {
-            console.log("error");
-          }
-        }
+        navigate("/dashboard?tab=messages")
       );
     }
   };

@@ -30,7 +30,7 @@ export default function CreateProvider() {
   const navigate = useNavigate();
   const fileRef = useRef(null);
   const dispatch = useDispatch();
-  const [value, setValue] = useState();
+  const [value, setValue] = useState('');
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -725,7 +725,7 @@ export default function CreateProvider() {
               </div>
             </div>
             <div className="flex flex-col flex-1 gap-3">
-            <p className="font-semibold text-main">
+              <p className="font-semibold text-main">
                 Explain About your therapy section*
                 <span className="text-sm">&nbsp;&nbsp;(40 minimum words)</span>
               </p>
