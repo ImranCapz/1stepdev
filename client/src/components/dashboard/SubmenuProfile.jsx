@@ -66,7 +66,7 @@ export default function SubmenuProfile() {
   return (
     <div className="flex flex-col w-full transition-all duration-500 ">
       <nav className="block border-b items-start">
-        <ul className=" flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8 mt-4">
+        <ul className=" flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8">
           {submenuNav.map((item, idx) => (
             <li key={idx} className="py-1">
               <Link
@@ -112,13 +112,13 @@ export default function SubmenuProfile() {
         </div>
       )}
       {activeComponent === "Parent Details" && (
-        <div className="w-full bg-gray-100">
-          <h1 className="flex flex-col mt-6 p-2 pl-6  font-bold md:text-2xl text-xl text-zinc-800">
+        <div className="items-center bg-gray-100">
+          {/* <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold md:text-2xl text-xl text-zinc-800">
             {" "}
             {currentUser.isParent
               ? "Your Parent Details :"
               : "Fill the form for Parent Profile :"}
-          </h1>
+          </h1> */}
           <ParentForm />
         </div>
       )}

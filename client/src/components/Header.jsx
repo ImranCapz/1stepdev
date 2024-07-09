@@ -10,8 +10,9 @@ import toast from "react-hot-toast";
 import { FaRegHeart } from "react-icons/fa";
 import { Modal } from "flowbite-react";
 import ListModel from "./modal/ListModel";
+import PropTypes from "prop-types";
 
-const Header = () => {
+const Header = ({ showSubMenu }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [state, setState] = useState(false);
@@ -385,71 +386,77 @@ const Header = () => {
           </ul>
         </div>
       </div>
-      <nav className="border-b">
-        <ul className="hidden md:flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8">
-          {submenuNav.map((item, idx) => {
-            if (item.title === "Learn:" || item.title === "|") {
-              return (
-                <li key={idx} className="py-1">
-                  <span className="block py-2 px-3 rounded-lg text-gray-700">
-                    {item.title}
-                  </span>
-                </li>
-              );
-            }
+      {showSubMenu && (
+        <nav className="border-b">
+          <ul className="hidden md:flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8">
+            {submenuNav.map((item, idx) => {
+              if (item.title === "Learn:" || item.title === "|") {
+                return (
+                  <li key={idx} className="py-1">
+                    <span className="block py-2 px-3 rounded-lg text-gray-700">
+                      {item.title}
+                    </span>
+                  </li>
+                );
+              }
 
-            if (item.title === "For Providers") {
+              if (item.title === "For Providers") {
+                return (
+                  <li
+                    key={idx}
+                    className={`py-1 transition-colors duration-200 ease-in-out ${
+                      item.path === location.pathname
+                        ? "border-b-2 border-amber-500"
+                        : ""
+                    }`}
+                  >
+                    <Link
+                      to={currentUser ? "/create-provider" : "/signin"}
+                      onClick={(e) => {
+                        setSelectedItem(idx);
+                        if (!currentUser) {
+                          e.preventDefault();
+                          toast.error(
+                            "You must be logged in to create a provider."
+                          );
+                        }
+                      }}
+                      className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150"
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                );
+              }
+
               return (
                 <li
                   key={idx}
                   className={`py-1 transition-colors duration-200 ease-in-out ${
-                    item.path === location.pathname
+                    location.pathname + location.search === item.path
                       ? "border-b-2 border-amber-500"
                       : ""
                   }`}
                 >
                   <Link
-                    to={currentUser ? "/create-provider" : "/signin"}
-                    onClick={(e) => {
-                      setSelectedItem(idx);
-                      if (!currentUser) {
-                        e.preventDefault();
-                        toast.error(
-                          "You must be logged in to create a provider."
-                        );
-                      }
-                    }}
-                    className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150"
+                    to={item.path}
+                    onClick={() => handleSubmenuClick(item.title)}
+                    className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150 cursor-pointer"
                   >
-                    {item.title}
+                    {Array.isArray(item.title) ? item.title : item.title}
                   </Link>
                 </li>
               );
-            }
-
-            return (
-              <li
-                key={idx}
-                className={`py-1 transition-colors duration-200 ease-in-out ${
-                  location.pathname + location.search === item.path
-                    ? "border-b-2 border-amber-500"
-                    : ""
-                }`}
-              >
-                <Link
-                  to={item.path}
-                  onClick={() => handleSubmenuClick(item.title)}
-                  className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150 cursor-pointer"
-                >
-                  {Array.isArray(item.title) ? item.title : item.title}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+            })}
+          </ul>
+        </nav>
+      )}
     </header>
   );
 };
 
 export default Header;
+
+Header.propTypes = {
+  showSubMenu: PropTypes.bool,
+};

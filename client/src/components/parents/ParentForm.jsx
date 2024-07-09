@@ -12,7 +12,6 @@ import Select from "react-select";
 import Input from "react-phone-number-input/input";
 import { IoMdAlert } from "react-icons/io";
 
-
 export default function ParentForm() {
   const { currentUser, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -91,14 +90,14 @@ export default function ParentForm() {
       toast.error("Phone number should be 10 digits");
       setPhoneValid(false);
       return;
-    }else{
+    } else {
       setPhoneValid(true);
     }
-    if(formData.parentDetails?.emergencyContact.length !== 13){
+    if (formData.parentDetails?.emergencyContact.length !== 13) {
       toast.error("Emergency Contact should be 10 digits");
       setEmergencyContact(false);
       return;
-    }else{
+    } else {
       setEmergencyContact(true);
     }
 
@@ -178,7 +177,7 @@ export default function ParentForm() {
   }, [currentUser._id, dispatch]);
 
   return (
-    <div className="p-7 max-w-2xl flex-col items-center  rounded-lg">
+    <div className="p-7 flex-col items-center rounded-lg">
       <TopLoadingBar ref={TopLoadingBarRef} color="#ff9900" height={3} />
       {loading ? (
         <div
@@ -193,9 +192,9 @@ export default function ParentForm() {
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row md:gap-14 gap-4 justify-between w-full"
+          className="flex flex-col sm:flex-row md:gap-4 gap-4"
         >
-          <div className="flex flex-col flex-1 gap-2 w-full">
+          <div className="flex flex-col flex-1 gap-2">
             <label
               htmlFor="isParent"
               className="text-sm font-semibold text-main"
@@ -207,7 +206,7 @@ export default function ParentForm() {
               name="isParent"
               value={formData.isParent ? "Yes" : "No"}
               onChange={handleChange}
-              className="input border-2 p-2 rounded-lg focus:ring-0 md:w-60"
+              className="input border-2 p-2 rounded-lg focus:ring-0"
               required
             >
               <option value="">Select</option>
@@ -236,15 +235,17 @@ export default function ParentForm() {
             <input
               type="text"
               placeholder="BloodGroup"
-              className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0 "
+              className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
               id="bloodGroup"
               required
               onChange={handleChange}
               value={formData.parentDetails?.bloodGroup}
             />
             <label htmlFor="gender" className="text-sm font-semibold text-main">
-            <p className="flex flex-row items-center">
-                {!emergencyContact && <IoMdAlert className="text-red-700 text-sm" />}
+              <p className="flex flex-row items-center">
+                {!emergencyContact && (
+                  <IoMdAlert className="text-red-700 text-sm" />
+                )}
                 Emergency Contact :{" "}
               </p>
             </label>
@@ -267,7 +268,11 @@ export default function ParentForm() {
               }}
               required
             />
-            {!emergencyContact  && ( <p className="text-sm text-red-500 font-semibold">Please enter a 10-digit number</p> )}
+            {!emergencyContact && (
+              <p className="text-sm text-red-500 font-semibold">
+                Please enter a 10-digit number
+              </p>
+            )}
             <label htmlFor="gender" className="text-sm font-semibold text-main">
               Address : (city, state, pincode)
             </label>
@@ -288,7 +293,7 @@ export default function ParentForm() {
             <input
               type="text"
               placeholder="Full Name"
-              className="input border-2 p-2 rounded-lg focus:ring-0 md:w-60"
+              className="input border-2 p-2 rounded-lg focus:ring-0"
               id="fullName"
               maxLength="62"
               minLength="5"
@@ -302,7 +307,7 @@ export default function ParentForm() {
             <input
               type="date"
               placeholder="Date of Birth"
-              className="input border-2 p-2 rounded-lg  focus:ring-0 md:w-60"
+              className="input border-2 p-2 rounded-lg  focus:ring-0"
               id="dob"
               required
               onChange={handleChange}
@@ -356,7 +361,7 @@ export default function ParentForm() {
               required
               placeholder="looking for?"
               touchUi={false}
-              className="border-2 rounded-lg border-slate-300 bg-white input hover:border-purple-400 md:w-60"
+              className="border-2 rounded-lg border-slate-300 bg-white input hover:border-purple-400"
               defaultValue={
                 Array.isArray(formData.parentDetails?.lookingFor)
                   ? formData.parentDetails?.lookingFor.map((name) =>
@@ -386,7 +391,9 @@ export default function ParentForm() {
                 }),
               }}
             />
-            <label className="text-sm font-semibold text-main">Child Name*</label>
+            <label className="text-sm font-semibold text-main">
+              Child Name*
+            </label>
             <input
               type="text"
               placeholder="Child Name"
@@ -396,7 +403,7 @@ export default function ParentForm() {
               onChange={handleChange}
               value={formData.parentDetails?.childName}
             />
-             <label className="text-sm font-semibold text-main">Weight*</label>
+            <label className="text-sm font-semibold text-main">Weight*</label>
             <input
               type="text"
               placeholder="Weight"
@@ -443,7 +450,11 @@ export default function ParentForm() {
               }}
               required
             />
-            {!phoneValid  && ( <p className="text-sm text-red-500 font-semibold">Please enter a 10-digit number</p> )}
+            {!phoneValid && (
+              <p className="text-sm text-red-500 font-semibold">
+                Please enter a 10-digit number
+              </p>
+            )}
             <button
               disabled={!isModified || loading}
               className="p-2 btn-color rounded-lg mt-8 font-semibold rounded=lg uppercase hover:opacity-95 disabled:opacity-60 transition ease-in-out duration-300"

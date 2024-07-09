@@ -6,6 +6,7 @@ import ReactTimeAgo from "react-time-ago";
 import io from "socket.io-client";
 import toast from "react-hot-toast";
 import SearchBar from "../SearchBar";
+import TopLoadingBar from "react-top-loading-bar";
 
 export default function MessageDash() {
   const { currentUser } = useSelector((state) => state.user);
@@ -16,6 +17,7 @@ export default function MessageDash() {
   const [limitedMessages, setLimitedMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const messageContainerRef = useRef(null);
+  const topLoadingBarRef = useRef(null);
   console.log(limitedMessages);
 
   //socket
@@ -74,8 +76,9 @@ export default function MessageDash() {
   }, [selectedProvider, socket, currentUser._id]);
 
   useEffect(() => {
-    setLoading(true);
     const fetchProvidermsg = async () => {
+      setLoading(true);
+      topLoadingBarRef.current.continuousStart();
       try {
         const res = await fetch(
           `/server/message/getprovider/${currentUser._id}`
@@ -87,6 +90,7 @@ export default function MessageDash() {
         console.log("data", data);
         setProviderDetails(data);
         setLoading(false);
+        topLoadingBarRef.current.complete(50);
       } catch (error) {
         console.log(error);
       }
@@ -170,8 +174,27 @@ export default function MessageDash() {
     scrollToBottom();
   }, [newMessage, messages]);
 
+  if (loading) {
+    return (
+      <>
+        <TopLoadingBar
+          color="#ff9900"
+          ref={topLoadingBarRef}
+          height={3}
+          speed={1000}
+        />
+      </>
+    );
+  }
+
   return (
     <>
+      <TopLoadingBar
+        color="#ff9900"
+        ref={topLoadingBarRef}
+        height={3}
+        speed={1000}
+      />
       {providerDetails.length > 0 ? (
         <>
           <div className="w-full flex max-h-[480px] overflow-hidden">

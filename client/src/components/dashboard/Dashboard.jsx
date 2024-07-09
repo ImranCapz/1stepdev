@@ -59,8 +59,8 @@ export default function Dashboard() {
     }
   }, [location.search]); 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row ">
-      <div className="md:w-56">
+    <div className="min-h-screen flex flex-col mx-auto">
+      <div className="w-full">
         <DashSidebar />
       </div>
         {tab === "dashboard" && <Overview /> }

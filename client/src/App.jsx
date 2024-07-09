@@ -2,7 +2,7 @@ import Hero from "./components/Hero";
 import Features from "./components/Features";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Question from "./components/Question";
 import { ResetPasswordForm } from "./pages/ResetPasswordForm";
 import { Signup } from "./pages/Signup";
@@ -22,15 +22,18 @@ import Dashboard from "./components/dashboard/Dashboard";
 import FavoriteList from "./components/provider/FavoriteList";
 import ScrolltoTop from "./components/ScrolltoTop";
 import ProviderReview from "./components/review/ProviderReview";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { signOut } from "../src/redux/user/userSlice";
-import Cookies from "js-cookie";
+// import { useDispatch } from "react-redux";
+// import { useEffect } from "react";
+// import { signOut } from "../src/redux/user/userSlice";
+// import Cookies from "js-cookie";
 import ProviderMessageDash from "./components/dashboard/ProviderMessageDash";
 import MessageDash from "./components/dashboard/MessageDash";
 
 function App() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+  const location = useLocation();
+
+  const pathWithoutSubMenu = ["/dashboard", "/mymessages"];
 
   // useEffect(() => {
   //   const checkToken = () => {
@@ -45,39 +48,37 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <Header />
-        <ScrolltoTop />
-        <Routes>
-          <Route path="/:searchTerm/*" element={<Hero />} />
-          <Route path="/*" element={<Hero />} />
-          <Route path="/freescreeners" element={<Features />} />
-          <Route path="/question" element={<Question />} />
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgetpassword" element={<ResetPasswordForm />} />
-          <Route path="/verifyotp" element={<VerifyOtp />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/provider/*" element={<Provider />} />
-          <Route path="/for-providers" element={<CreateProfile />} />
-          <Route path="/review/:providerId" element={<ProviderReview />} />
-          <Route element={<PrivateRoute />}>
-            <Route path="/mymessages" element={<MessageDash />} />
-            <Route path="/provider" element={<ProviderMessageDash />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/create-provider" element={<CreateProvider />} />
-            <Route path="/favorite-list" element={<FavoriteList />} />
-          </Route>
-          <Route element={<AdminPrivateRoute />}>
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/users" element={<DashUsers />} />
-          </Route>
-          <Route element={<DashPrivateRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
-        </Routes>
-        {/* <Footer /> */}
-      </BrowserRouter>
+      <Header showSubMenu={!pathWithoutSubMenu.includes(location.pathname)} />
+      <ScrolltoTop />
+      <Routes>
+        <Route path="/:searchTerm/*" element={<Hero />} />
+        <Route path="/*" element={<Hero />} />
+        <Route path="/freescreeners" element={<Features />} />
+        <Route path="/question" element={<Question />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgetpassword" element={<ResetPasswordForm />} />
+        <Route path="/verifyotp" element={<VerifyOtp />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/provider/*" element={<Provider />} />
+        <Route path="/for-providers" element={<CreateProfile />} />
+        <Route path="/review/:providerId" element={<ProviderReview />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/mymessages" element={<MessageDash />} />
+          <Route path="/provider" element={<ProviderMessageDash />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/create-provider" element={<CreateProvider />} />
+          <Route path="/favorite-list" element={<FavoriteList />} />
+        </Route>
+        <Route element={<AdminPrivateRoute />}>
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/users" element={<DashUsers />} />
+        </Route>
+        <Route element={<DashPrivateRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+      </Routes>
+      {/* <Footer /> */}
     </>
   );
 }
