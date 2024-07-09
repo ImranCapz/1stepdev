@@ -31,7 +31,7 @@ export default function SubmenuProvider() {
   return (
     <div className="flex flex-col w-full h-screen transition-all duration-500 overflow-hidden">
       <nav className="block border-b items-start">
-        <ul className=" flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8 mt-4">
+        <ul className=" flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto">
           {submenuNav.map((item, idx) => (
             <li key={idx} className="py-1">
               <Link
@@ -55,8 +55,8 @@ export default function SubmenuProvider() {
         </div>
       )}
       {activeComponent === "Provider Message" && (
-        <div className="transition-all min-h-screen duration-500 overflow-hidden">
-          <h1 className="flex flex-col font-bold text-2xl text-zinc-800 overflow-hidden"></h1>
+        <div className="w-full min-h-screen transition-all duration-500">
+          <h1 className="flex flex-col font-bold text-2xl text-zinc-800"></h1>
           <ProviderMessageDash />
         </div>
       )}

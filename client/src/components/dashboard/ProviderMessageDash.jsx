@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import toast from "react-hot-toast";
+import './Message.css'
 
 // time ago
 import ReactTimeAgo from "react-time-ago";
@@ -16,6 +17,7 @@ export default function ProviderMessageDash() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState([]);
   const [limitedMessages, setLimitedMessages] = useState([]);
+  const [isOnline, setIsOnline] = useState(false);
   const messageContainerRef = useRef(null);
 
   // socket.io
@@ -42,7 +44,9 @@ export default function ProviderMessageDash() {
   }, []);
 
   const handleSendMessage = () => {
-    if (send === "") return toast.error("Message cannot be empty");
+    if (send === "") {
+      toast.error("Message cannot be empty");
+    }
     if (socket) {
       socket.emit("joinRoom", {
         roomId: `${selectedUser._id}_${providerId}`,
@@ -61,6 +65,14 @@ export default function ProviderMessageDash() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+
   useEffect(() => {
     if (selectedUser && socket) {
       const roomId = `${selectedUser._id}_${providerId}`;
@@ -72,6 +84,20 @@ export default function ProviderMessageDash() {
       });
     }
   }, [selectedUser, socket, currentUser._id, providerId]);
+
+  //Online status
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit("Online", currentUser._id);
+
+      socket.on("UserOnline", ({ userId, isOnline }) => {
+        if (userId === selectedUser._id) {
+          setIsOnline(isOnline);
+        }
+      });
+    }
+  }, []);
 
   // fetch user and provider details
   useEffect(() => {
@@ -121,19 +147,19 @@ export default function ProviderMessageDash() {
       }
     };
 
-    // Ensure messageContainerRef.current is not null before adding the event listener
+    
     if (messageContainerRef.current) {
       const messageContainer = messageContainerRef.current;
       messageContainer.addEventListener("scroll", handleScroll);
 
-      // Return a cleanup function that removes the event listener
+      
       return () => {
         if (messageContainer) {
           messageContainer.removeEventListener("scroll", handleScroll);
         }
       };
     }
-  }, [limitedMessages]); // Dependency array
+  }, [limitedMessages]);
 
   const loadPreviousMessages = () => {
     const numberofMsgToShow = 10;
@@ -159,9 +185,9 @@ export default function ProviderMessageDash() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, newMessage]);
-
+                       
   return (
-    <div className="w-full flex max-h-[500px] overflow-hidden">
+    <div className="w-full flex max-h-[430px]">
       <div className="w-1/4 bg-gray-100 p-4 h-full overflow-y-auto">
         <div className="flex flex-col gap-5 items-center">
           {userDetails.length > 0 ? (
@@ -206,7 +232,7 @@ export default function ProviderMessageDash() {
                 alt="provider logo"
                 className="size-10 rounded-full object-cover"
               />
-              <h2 className="flex ml-2 capitalize font-semibold border-b-2 pb-2 border-sky-200 w-full">
+              <h2 className="flex ml-2 capitalize font-semibold border-b-2 pb-2 border-purple-500 w-full">
                 {selectedUser.username}
               </h2>
             </div>
@@ -218,11 +244,7 @@ export default function ProviderMessageDash() {
                 {limitedMessages.map((message) => (
                   <div
                     key={message._id}
-                    className={`m-2 ${
-                      String(message.sender) === String(currentUser._id)
-                        ? "text-right"
-                        : "text-left"
-                    } ${message.message.length > 30 ? "w-2/3" : "w-auto"}`}
+                    className={`m-2`}
                   >
                     <div
                       className={`flex items-center ${
@@ -243,7 +265,7 @@ export default function ProviderMessageDash() {
                           message.sender === currentUser._id
                             ? "bg-sky-300 rounded-l-xl rounded-tr-xl"
                             : "bg-gray-300 rounded-r-xl rounded-tl-xl"
-                        }`}
+                        }  ${message.message.length > 30 ? "w-2/3" : "w-auto"}`}
                       >
                         {message.message}
                         <span className="ml-2" style={{ fontSize: "10px" }}>
@@ -257,7 +279,7 @@ export default function ProviderMessageDash() {
                         <img
                           src={currentUser.profilePicture}
                           alt="user logo"
-                          className="size-8 rounded-full ml-2"
+                          className="size-9 rounded-full ml-2 object-cover"
                         />
                       )}
                     </div>
@@ -284,6 +306,9 @@ export default function ProviderMessageDash() {
             <h2>Select a user</h2>
           </>
         )}
+        <div className="flex-grow">
+          <h2></h2>
+        </div>
         <div className="flex gap-2 mt-4">
           <input
             type="text"
@@ -291,6 +316,7 @@ export default function ProviderMessageDash() {
             placeholder="Type a message..."
             className="w-full p-3 rounded-lg"
             value={send}
+            onKeyDown={handleKeyDown}
             onChange={(e) => setSend(e.target.value)}
           />
           <Button

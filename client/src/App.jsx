@@ -27,6 +27,7 @@ import { useEffect } from "react";
 import { signOut } from "../src/redux/user/userSlice";
 import Cookies from "js-cookie";
 import ProviderMessageDash from "./components/dashboard/ProviderMessageDash";
+import MessageDash from "./components/dashboard/MessageDash";
 
 function App() {
   const dispatch = useDispatch();
@@ -61,7 +62,8 @@ function App() {
           <Route path="/for-providers" element={<CreateProfile />} />
           <Route path="/review/:providerId" element={<ProviderReview />} />
           <Route element={<PrivateRoute />}>
-            <Route path="/message" element={<ProviderMessageDash />} />
+            <Route path="/mymessages" element={<MessageDash />} />
+            <Route path="/provider" element={<ProviderMessageDash />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/create-provider" element={<CreateProvider />} />
             <Route path="/favorite-list" element={<FavoriteList />} />

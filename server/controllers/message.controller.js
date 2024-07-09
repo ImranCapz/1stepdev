@@ -13,7 +13,9 @@ export const getRoomMessages = async (req, res, next) => {
     const providerIds = [
       ...new Set(room.map((room) => room.provider._id.toString())),
     ];
-    const providers = await Provider.find({ _id: { $in: providerIds } });
+    const providers = await Provider.find({
+      _id: { $in: providerIds },
+    });
     if (!providers || providers.length === 0) {
       return res
         .status(404)

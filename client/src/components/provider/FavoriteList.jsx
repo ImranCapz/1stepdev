@@ -22,7 +22,7 @@ export default function FavoriteList() {
   }, [currentUser, dispatch]);
 
   return (
-    <div className="">
+    <>
       <div className="h-52vh md:h-72vh bg-listbg bg-cover bg-center flex flex-col justify-center items-center text-white">
         <div className="">
           <h1 className="flex flex-col items-center text-2xl font-semibold text-zinc-600">
@@ -57,6 +57,6 @@ export default function FavoriteList() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

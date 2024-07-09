@@ -83,19 +83,20 @@ const Header = () => {
       title: (
         <p key="heartIcon" style={{ display: "flex", alignItems: "center" }}>
           {currentUser ? (
-            <>
-              <Link
-                to="/favorite-list"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "5px",
-                }}
-                className="gap-1"
-              >
-                <FaRegHeart /> Lists
-              </Link>
-            </>
+            <button
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginRight: "5px",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/favorite-list");
+              }}
+              className="gap-1"
+            >
+              <FaRegHeart /> Lists
+            </button>
           ) : (
             <button
               style={{

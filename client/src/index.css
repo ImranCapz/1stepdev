@@ -97,3 +97,20 @@ input[type="text"]:focus {
 .bg-rec{
   background-color: #BC9DD3;
 }
+
+/* .message-container {
+  width: 100%;
+  overflow-y: auto;
+}
+
+@media screen and (min-height: 720px) {
+  .message-container {
+    height: 300px;
+  }
+}
+
+@media screen and (min-height: 1080px) {
+  .message-container {
+    height: 200px;
+  }
+}  */

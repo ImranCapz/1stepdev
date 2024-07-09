@@ -70,16 +70,10 @@ export default function Provider() {
   //socket
   const SOCKET_SERVER_URL = "http://localhost:3000";
   const [socket, setSocket] = useState(null);
-  const [receivedMessage, setReceivedMessage] = useState([]);
-  console.log(receivedMessage);
 
   useEffect(() => {
     const newSocket = io(SOCKET_SERVER_URL, { withCredentials: true });
     setSocket(newSocket);
-
-    newSocket.on("receiveMessage", (message) => {
-      setReceivedMessage((prevMsg) => [...prevMsg, message]);
-    });
 
     return () => newSocket.close();
   }, []);
@@ -87,20 +81,19 @@ export default function Provider() {
   const handleSendMessage = () => {
     if (socket) {
       socket.emit("joinRoom", {
+        roomId: `${currentUser._id}_${id}`,
         sender: currentUser._id,
         reciever: provider.userRef,
         provider: id,
       });
-      socket.emit(
-        "sendMessage",
-        {
-          message: sendMessage,
-          sender: currentUser._id,
-          reciever: provider.userRef,
-          provider: id,
-        },
-        navigate("/dashboard?tab=messages")
-      );
+      socket.emit("sendMessage", {
+        roomId: `${currentUser._id}_${id}`,
+        message: sendMessage,
+        sender: currentUser._id,
+        reciever: provider.userRef,
+        provider: id,
+      });
+      navigate("/mymessages");
     }
   };
 

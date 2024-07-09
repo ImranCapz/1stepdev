@@ -7,13 +7,14 @@ export default {
   ],
   theme: {
     extend: {
-      backgroundImage: theme => ({
-        'listbg': "url('../../client/src/components/provider/listbg.jpg')",
+      backgroundImage: (theme) => ({
+        listbg: "url('../../client/src/components/provider/listbg.jpg')",
+        nomsgbg: "url('../../client/src/assets/nomessage.jpg')",
       }),
 
       height: {
-        '52vh': '20vh',
-        '72vh': '30vh',
+        "52vh": "20vh",
+        "72vh": "30vh",
       },
       colors: {
         primary: {
@@ -30,16 +31,16 @@ export default {
           950: "#172554",
         },
         gray: {
-          '50': '#F9FAFB',
-          '100': '#F3F4F6',
-          '200': '#E5E7EB',
-          '300': '#D1D5DB',
-          '400': '#9CA3AF',
-          '500': '#6B7280',
-          '600': '#4B5563',
-          '700': '#374151',
-          '800': '#1F2937',
-          '900': '#111827',
+          50: "#F9FAFB",
+          100: "#F3F4F6",
+          200: "#E5E7EB",
+          300: "#D1D5DB",
+          400: "#9CA3AF",
+          500: "#6B7280",
+          600: "#4B5563",
+          700: "#374151",
+          800: "#1F2937",
+          900: "#111827",
         },
       },
       fontFamily: {
@@ -81,10 +82,7 @@ export default {
     },
   },
   variants: {
-    borderColor: ['responsive', 'hover', 'focus','focus-inner'],
+    borderColor: ["responsive", "hover", "focus", "focus-inner"],
   },
-  plugins: [
-    require("flowbite/plugin"),
-    require("tailwind-scrollbar"),
-  ],
+  plugins: [require("flowbite/plugin"), require("tailwind-scrollbar")],
 };

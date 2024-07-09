@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import ReactTimeAgo from "react-time-ago";
 import io from "socket.io-client";
 import toast from "react-hot-toast";
+import SearchBar from "../SearchBar";
 
 export default function MessageDash() {
   const { currentUser } = useSelector((state) => state.user);
@@ -13,7 +14,9 @@ export default function MessageDash() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState([]);
   const [limitedMessages, setLimitedMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const messageContainerRef = useRef(null);
+  console.log(limitedMessages);
 
   //socket
   const SOCKET_SERVER_URL = "http://localhost:3000";
@@ -71,6 +74,7 @@ export default function MessageDash() {
   }, [selectedProvider, socket, currentUser._id]);
 
   useEffect(() => {
+    setLoading(true);
     const fetchProvidermsg = async () => {
       try {
         const res = await fetch(
@@ -80,7 +84,9 @@ export default function MessageDash() {
         if (data.success === false) {
           return;
         }
+        console.log("data", data);
         setProviderDetails(data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -102,6 +108,17 @@ export default function MessageDash() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handlekeydown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const countWords = (message) => {
+    return message.split(" ").length;
   };
 
   //scroll up load message
@@ -154,149 +171,182 @@ export default function MessageDash() {
   }, [newMessage, messages]);
 
   return (
-    <div className="w-full flex max-h-[520px] overflow-hidden">
-      <div className="w-1/4 bg-gray-100 p-4">
-        <div className="flex flex-col gap-5 items-center overflow-y-auto">
-          {providerDetails.length > 0 ? (
-            <>
-              {providerDetails.map((provider) => {
-                const isSelected =
-                  selectedProvider && selectedProvider._id === provider._id;
-                return (
-                  <div
-                    key={provider._id}
-                    className={`w-full p-3 rounded-lg flex items-center border-b-4 border-gray-200 pb-2 cursor-pointer ${
-                      isSelected ? "bg-purple-200" : ""
-                    }`}
-                    onClick={() => handleProviderClick(provider)}
-                  >
-                    <img
-                      src={provider.profilePicture}
-                      alt="provider logo"
-                      className="size-14 md:size-14 rounded-full mr-4 object-cover"
-                    />
-                    <div>
-                      <p className="font-bold items-center justify-center text-gray hidden md:block">
-                        {provider.fullName}
-                      </p>
-                      <p className="text-sm">{messages.message}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </>
-          ) : (
-            <>no messages found</>
-          )}
-        </div>
-      </div>
-      <div className="w-3/4 p-4 flex flex-col bg-purple-100">
-        {selectedProvider ? (
-          <>
-            <div className="flex flex-row">
-              <img
-                src={selectedProvider.profilePicture}
-                alt="provider logo"
-                className="size-10 rounded-full"
-              />
-              <h2 className="flex ml-2 capitalize font-semibold border-b-2 pb-5 border-sky-200 w-full">
-                {selectedProvider.fullName}
-              </h2>
-            </div>
-            <div className="flex flex-col flex-grow overflow-y-auto">
-              <div
-                ref={messageContainerRef}
-                style={{ overflowY: "scroll", height: "400px" }}
-              >
-                {limitedMessages.map((message) => (
-                  <div
-                    key={message._id}
-                    className={`m-2 ${
-                      message.sender === currentUser._id
-                        ? "text-right"
-                        : "text-left"
-                    } ${message.message.length > 30 ? "w-2/3" : "w-auto"}`}
-                  >
-                    <div
-                      className={`flex items-center ${
-                        String(message.sender) === String(currentUser._id)
-                          ? "justify-end"
-                          : ""
-                      }`}
-                    >
-                      {message.sender !== currentUser._id && (
-                        <img
-                          src={selectedProvider.profilePicture}
-                          alt="provider logo"
-                          className="size-9 rounded-full mr-2 object-cover"
-                        />
-                      )}
-                      <div
-                        className={`p-2 text-xs md:text-base ${
-                          message.sender === currentUser._id
-                            ? "bg-sky-300 rounded-l-xl rounded-tr-xl"
-                            : "bg-gray-300 rounded-r-xl rounded-tl-xl"
-                        }`}
-                      >
-                        {message.message}
-                        <span className="ml-2" style={{ fontSize: "10px" }}>
-                          {new Date(message.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </span>
-                      </div>
-                      {message.sender === currentUser._id && (
-                        <img
-                          src={currentUser.profilePicture}
-                          alt="user logo"
-                          className="size-9 rounded-full ml-2 object-cover"
-                        />
-                      )}
-                    </div>
-                    <div
-                      className={`${
-                        message.sender === currentUser._id
-                          ? "mr-10 text-right"
-                          : "ml-10 text-left"
-                      }`}
-                      style={{ fontSize: "12px" }}
-                    >
-                      <ReactTimeAgo
-                        locale="en-US"
-                        date={new Date(message.createdAt)}
-                      />
-                    </div>
-                  </div>
-                ))}
+    <>
+      {providerDetails.length > 0 ? (
+        <>
+          <div className="w-full flex max-h-[480px] overflow-hidden">
+            <div className="w-1/4 bg-gray-100 p-4 h-full overflow-y-auto">
+              <div className="flex flex-col gap-5 items-center overflow-y-auto">
+                {providerDetails.length > 0 ? (
+                  <>
+                    {providerDetails.map((provider) => {
+                      const isSelected =
+                        selectedProvider &&
+                        selectedProvider._id === provider._id;
+                      return (
+                        <div
+                          key={provider._id}
+                          className={`w-full p-3 rounded-lg flex items-center border-b-4 border-gray-200 pb-2 cursor-pointer ${
+                            isSelected ? "bg-purple-200" : ""
+                          }`}
+                          onClick={() => handleProviderClick(provider)}
+                        >
+                          <img
+                            src={provider.profilePicture}
+                            alt="provider logo"
+                            className="size-14 md:size-14 rounded-full mr-4 object-cover"
+                          />
+                          <div>
+                            <p className="font-bold items-center justify-center text-gray hidden md:block">
+                              {provider.fullName}
+                            </p>
+                            <p className="text-sm">{messages.message}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <>no messages found</>
+                )}
               </div>
             </div>
-          </>
-        ) : (
-          <>
-            <h2>Select a Provider</h2>
-          </>
-        )}
-        <div className="flex-grow">
-          <h2></h2>
-        </div>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Type a message..."
-            className="w-full p-3 rounded-lg"
-            value={send}
-            onChange={(e) => setSend(e.target.value)}
-          />
-          <Button
-            onClick={handleSendMessage}
-            variant="outlined"
-            className="bg-sky-400 border-gray-400"
-          >
-            <BiSend className="size-5" />
-          </Button>
-        </div>
-      </div>
-    </div>
+            <div className="w-3/4 p-4 flex flex-col bg-purple-100 overflow-hidden">
+              {selectedProvider ? (
+                <>
+                  <div className="flex flex-row">
+                    <img
+                      src={selectedProvider.profilePicture}
+                      alt="provider logo"
+                      className="size-10 rounded-full"
+                    />
+                    <h2 className="flex ml-2 capitalize font-semibold border-b-2 pb-5 border-purple-500 w-full">
+                      {selectedProvider.fullName}
+                    </h2>
+                  </div>
+                  <div className="flex flex-col flex-grow overflow-y-auto">
+                    <div
+                      ref={messageContainerRef}
+                      style={{ overflowY: "scroll", height: "400px" }}
+                    >
+                      {limitedMessages.map((message) => (
+                        <div key={message._id} className={`m-2`}>
+                          <div
+                            className={`flex items-center ${
+                              String(message.sender) === String(currentUser._id)
+                                ? "justify-end"
+                                : ""
+                            }`}
+                          >
+                            {message.sender !== currentUser._id && (
+                              <img
+                                src={selectedProvider.profilePicture}
+                                alt="provider logo"
+                                className="size-9 rounded-full mr-2 object-cover"
+                              />
+                            )}
+                            <div
+                              className={`p-2 text-xs md:text-base ${
+                                message.sender === currentUser._id
+                                  ? "bg-sky-300 rounded-l-xl rounded-tr-xl"
+                                  : "bg-gray-300 rounded-r-xl rounded-tl-xl"
+                              } ${
+                                countWords(message.message) > 10
+                                  ? "w-2/3"
+                                  : "w-max"
+                              }`}
+                            >
+                              {message.message}
+                              <span
+                                className="ml-2"
+                                style={{ fontSize: "10px" }}
+                              >
+                                {new Date(message.createdAt).toLocaleTimeString(
+                                  [],
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
+                              </span>
+                            </div>
+                            {message.sender === currentUser._id && (
+                              <img
+                                src={currentUser.profilePicture}
+                                alt="user logo"
+                                className="size-9 rounded-full ml-2 object-cover"
+                              />
+                            )}
+                          </div>
+                          <div
+                            className={`${
+                              message.sender === currentUser._id
+                                ? "mr-10 text-right"
+                                : "ml-10 text-left"
+                            }`}
+                            style={{ fontSize: "12px" }}
+                          >
+                            <ReactTimeAgo
+                              locale="en-US"
+                              date={new Date(message.createdAt)}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2>Select a Provider</h2>
+                </>
+              )}
+              <div className="flex-grow">
+                <h2></h2>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Type a message..."
+                  className="w-full p-3 rounded-lg"
+                  value={send}
+                  onKeyDown={handlekeydown}
+                  onChange={(e) => setSend(e.target.value)}
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  variant="outlined"
+                  className="bg-sky-400 border-gray-400"
+                >
+                  <BiSend className="size-5" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="flex flex-col w-full max-h-screen p- mx-auto">
+            <div className="h-52vh md:h-72vh bg-nomsgbg bg-cover bg-center flex flex-col justify-center items-center text-white">
+              <div className="">
+                <h1 className="flex flex-col items-center text-4xl font-bold  text-gray-700">
+                  No Message, yet
+                </h1>
+                <h1 className="flex flex-col items-center text-2xl font-semibold mt-6 text-zinc-600">
+                  Find a best therapy for you need
+                </h1>
+              </div>
+            </div>
+            {/* <div className="flex flex-col items-center">
+            <h1 className="text-3xl font-bold text-gray mt-2">No Message, yet</h1>
+            <h2 className="text-xl mt-4 ">Find a best therapy for you need </h2>
+          </div> */}
+            <div className="flex items-center justify-center mt-6">
+              <SearchBar />
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 }

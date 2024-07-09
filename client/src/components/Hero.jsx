@@ -13,9 +13,11 @@ import heartIcon from "../assets/listLike.png";
 import freescanner from "../assets/freescanner.png";
 import search from "../assets/search.png";
 import { RiMusic2Fill } from "react-icons/ri";
+import { useSelector } from "react-redux";
 
 const Hero = () => {
   const { searchTerm } = useParams();
+  const { currentUser } = useSelector((state) => state.user);
   const [defaultsearchTerm, setDefaultSearchTerm] = useState(searchTerm);
   const [openModal, setOpenModal] = useState(false);
 
@@ -152,7 +154,7 @@ const Hero = () => {
         </div>
         <div className="flex-1 max-w-xl mx-auto mt-14 xl:mt-0">
           <div className="relative">
-            <img src={imagehome} alt="hero" className="rounded-lg size-120"/>
+            <img src={imagehome} alt="hero" className="rounded-lg size-120" />
             {/* <div className="max-w-screen-xl mx-auto px-4 md:text-center md:px-8">
               <div className="max-w-xl space-y-3 md:mx-auto">
                 <h1 className="text-gray-800 text-xl font-extrabold sm:text-2xl">Screening Tool</h1>
@@ -303,7 +305,9 @@ const Hero = () => {
                 Keep all your favorite providers in one place.
               </p>
               <button
-                onClick={() => setOpenModal(true)}
+                onClick={() =>
+                  currentUser ? navigate("/favorite-list") : setOpenModal(true)
+                }
                 className="w-48 justify-center items-center mt-10 p-2 text-sm bg-sky-100 rounded-md font-semibold text-sky-600 hover:bg-sky-200 transition duration-300"
               >
                 Create First List

@@ -10,10 +10,17 @@ const socketSetup = (server) => {
       credentials: true,
     },
   });
+
+  const OnlineUsers = {};
   io.on("connection", (socket) => {
     console.log("User connected");
 
-    socket.on("joinRoom", async ({roomId, sender, reciever, provider }) => {
+    // socket.on("Online", (userId) => {
+    //   OnlineUsers[userId] = socket.id;
+    //   io.emit("UserOnline", { userId, isOnline: true });
+    // });
+
+    socket.on("joinRoom", async ({ roomId, sender, reciever, provider }) => {
       try {
         console.log(`Joining room ${roomId}`);
         let room = await Room.findOne({ roomID: roomId });
@@ -67,6 +74,13 @@ const socketSetup = (server) => {
     );
 
     socket.on("disconnect", () => {
+      const userId = Object.keys(OnlineUsers).find(
+        (key) => OnlineUsers[key] === socket.id
+      );
+      if (userId) {
+        delete OnlineUsers[userId];
+        io.emit("useOffline", { userId, isOnline: false });
+      }
       console.log("User disconnected");
     });
   });
