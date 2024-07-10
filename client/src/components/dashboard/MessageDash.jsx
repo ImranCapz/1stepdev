@@ -233,7 +233,7 @@ export default function MessageDash() {
               )}
             </div>
 
-            <div className="w-3/4 p-4 flex flex-col bg-slate-200 overflow-hidden ">
+            <div className="w-3/4 p-4 flex flex-col bg-slate-200 border-l-2 border-slate-400 overflow-hidden ">
               {selectedProvider ? (
                 <>
                   <div className="flex flex-row">

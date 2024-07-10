@@ -11,7 +11,7 @@ export default function SubmenuProvider() {
   const submenuNav = useMemo(
     () => [
       { title: "Providers" },
-      { title: "Provider Message" },
+      { title: "Message" },
       { title: "Appointment" },
     ],
     []
@@ -54,7 +54,7 @@ export default function SubmenuProvider() {
           <CreateProvider />
         </div>
       )}
-      {activeComponent === "Provider Message" && (
+      {activeComponent === "Message" && (
         <div className="w-full min-h-screen transition-all duration-500 ">
           <h1 className="flex flex-col font-bold text-2xl text-zinc-800"></h1>
           <ProviderMessageDash />

@@ -249,7 +249,7 @@ export default function ProviderMessageDash() {
                 <>no messages found</>
               )}
             </div>
-            <div className="w-3/4 p-4 flex flex-col bg-purple-100 overflow-hidden">
+            <div className="w-3/4 p-4 flex flex-col bg-purple-100 border-l-2 border-slate-400 overflow-hidden">
               {selectedUser ? (
                 <>
                   <div className="flex flex-row mb-4">
