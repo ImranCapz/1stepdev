@@ -10,16 +10,6 @@ input[type="text"]:focus {
   box-shadow: none;
 }
 
-.chat-container {
-  max-height: 300px; /* Adjust based on your layout */
-  overflow-y: auto;
-}
-
-.main-container {
-  height: 100vh;
-  overflow: hidden;
-}
-
 .blue-button {
   background-color: #a287b6;
 }
@@ -35,82 +25,63 @@ input[type="text"]:focus {
   color: #23354d;
 }
 
-.text-main{
-  color: #153F4D;
+.text-main {
+  color: #153f4d;
 }
 
 .main-color {
   /* background-color: #A8D7CD; */
   /* background-color: #FDE3B2; */
   /* background-color: #ebd2f3; */
-  background-color:#d1bee0 ;
-  color:#DCD7FE;
+  background-color: #d1bee0;
+  color: #dcd7fe;
 }
 .secondary-color {
-  background-color: #FBD783;
-  color:#FBD783;
+  background-color: #fbd783;
+  color: #fbd783;
 }
 
-.btn-color{
+.btn-color {
   /* background-color: #BFCD84; */
   /* background-color: #FF8A5B; */
   background-color: #ffc439;
   /* background-color: #F8E505; */
   /* color:white */
 }
-.btn-color:hover{
+.btn-color:hover {
   background-color: #ffd46f;
 }
 
-
-.input{
+.input {
   border-color: #cbd5e1;
 }
-.input:focus{
+.input:focus {
   border-color: #ab9eff;
 }
-.input:hover{
+.input:hover {
   border-color: #ab9eff;
 }
 
-
-.sec-btn{
-  background-color:#c3baff;
-  color:#1F2937;
+.sec-btn {
+  background-color: #c3baff;
+  color: #1f2937;
 }
 
-.bg-footer{
+.bg-footer {
   background-color: #381952;
 }
-.bg-down{
+.bg-down {
   background-color: #140020;
 }
 
-.error{
+.error {
   border-color: #e04a4a;
 }
 
-.bg-home{
-  background-color: #FAF6F4;
+.bg-home {
+  background-color: #faf6f4;
 }
 
-.bg-rec{
-  background-color: #BC9DD3;
+.bg-rec {
+  background-color: #bc9dd3;
 }
-
-/* .message-container {
-  width: 100%;
-  overflow-y: auto;
-}
-
-@media screen and (min-height: 720px) {
-  .message-container {
-    height: 300px;
-  }
-}
-
-@media screen and (min-height: 1080px) {
-  .message-container {
-    height: 200px;
-  }
-}  */

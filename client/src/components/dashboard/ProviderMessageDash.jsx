@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import toast from "react-hot-toast";
 import TopLoadingBar from "react-top-loading-bar";
-import "./Message.css";
 
 // time ago
 import ReactTimeAgo from "react-time-ago";
@@ -213,43 +212,42 @@ export default function ProviderMessageDash() {
       />
       {userDetails.length > 0 ? (
         <>
-          <div className="w-full flex max-h-[430px]">
-            <div className="w-1/4 bg-gray-100 p-4 h-full overflow-y-auto">
-              <div className="flex flex-col gap-5 items-center">
-                {userDetails.length > 0 ? (
-                  <>
-                    {userDetails.map((user) => {
-                      const isSelected =
-                        selectedUser && selectedUser._id === user._id;
-                      return (
-                        <div
-                          key={user._id}
-                          className={`w-full p-3 rounded-lg flex items-center border-b-4 border-gray-200 pb-2 cursor-pointer ${
-                            isSelected ? "bg-purple-200" : ""
-                          }`}
-                          onClick={() => handleProviderClick(user)}
-                        >
-                          <img
-                            src={user.profilePicture}
-                            alt="provider logo"
-                            className="size-12 md:size-14 rounded-full mr-4 object-cover"
-                          />
-                          <div>
-                            <p className="font-bold items-center justify-center text-gray hidden md:block">
-                              {user.username}
-                            </p>
-                            <p className="text-xs md:text-xs">
-                              {messages.message}
-                            </p>
-                          </div>
+          <div className="flex flex-grow h-screen max-h-[440px] 2xl:max-h-[745px]">
+            <div className="w-1/4 bg-gray-300 flex flex-col items-center">
+              {userDetails.length > 0 ? (
+                <>
+                  {userDetails.map((user) => {
+                    const isSelected =
+                      selectedUser && selectedUser._id === user._id;
+                    return (
+                      <div
+                        key={user._id}
+                        className={`w-full p-4 flex border-b border-purple-300 items-center cursor-pointer ${
+                          isSelected ? "bg-purple-300" : "hover:bg-purple-200"
+                        }`}
+                        onClick={() => handleProviderClick(user)}
+                      >
+                        <img
+                          src={user.profilePicture}
+                          alt="provider logo"
+                          className="size-12 md:size-14 rounded-full mr-4 object-cover"
+                        />
+                        <div className="flex-grow">
+                          <p className="font-bold items-center justify-center text-gray hidden md:block">
+                            {user.username}
+                          </p>
+                          <p className="text-xs md:text-xs">
+                            {messages.message}
+                          </p>
+                          {/* <hr className="w-full mt-6 border-purple-800 hidden md:block" /> */}
                         </div>
-                      );
-                    })}
-                  </>
-                ) : (
-                  <>no messages found</>
-                )}
-              </div>
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                <>no messages found</>
+              )}
             </div>
             <div className="w-3/4 p-4 flex flex-col bg-purple-100 overflow-hidden">
               {selectedUser ? (
@@ -267,7 +265,7 @@ export default function ProviderMessageDash() {
                   <div className="flex flex-col flex-grow overflow-y-auto">
                     <div
                       ref={messageContainerRef}
-                      style={{ overflowY: "scroll", height: "400px" }}
+                      className="overflow-y-scroll h-[320px] md:[310px] 2xl:[620px]"
                     >
                       {limitedMessages.map((message) => (
                         <div key={message._id} className={`m-2`}>
@@ -332,6 +330,24 @@ export default function ProviderMessageDash() {
                         </div>
                       ))}
                     </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        required
+                        placeholder="Type a message..."
+                        className="w-full p-3 rounded-lg"
+                        value={send}
+                        onKeyDown={handleKeyDown}
+                        onChange={(e) => setSend(e.target.value)}
+                      />
+                      <Button
+                        onClick={handleSendMessage}
+                        variant="outlined"
+                        className="bg-sky-400 border-gray-400"
+                      >
+                        <BiSend className="size-5" />
+                      </Button>
+                    </div>
                   </div>
                 </>
               ) : (
@@ -339,27 +355,6 @@ export default function ProviderMessageDash() {
                   <h2>Select a user</h2>
                 </>
               )}
-              <div className="flex-grow">
-                <h2></h2>
-              </div>
-              <div className="flex gap-2 mt-4">
-                <input
-                  type="text"
-                  required
-                  placeholder="Type a message..."
-                  className="w-full p-3 rounded-lg"
-                  value={send}
-                  onKeyDown={handleKeyDown}
-                  onChange={(e) => setSend(e.target.value)}
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  variant="outlined"
-                  className="bg-sky-400 border-gray-400"
-                >
-                  <BiSend className="size-5" />
-                </Button>
-              </div>
             </div>
           </div>
         </>

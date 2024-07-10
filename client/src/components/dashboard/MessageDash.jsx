@@ -188,7 +188,7 @@ export default function MessageDash() {
   }
 
   return (
-    <>
+    <div className="full-height flex flex-col">
       <TopLoadingBar
         color="#ff9900"
         ref={topLoadingBarRef}
@@ -197,60 +197,61 @@ export default function MessageDash() {
       />
       {providerDetails.length > 0 ? (
         <>
-          <div className="w-full flex max-h-[480px] overflow-hidden">
-            <div className="w-1/4 bg-gray-100 p-4 h-full overflow-y-auto">
-              <div className="flex flex-col gap-5 items-center overflow-y-auto">
-                {providerDetails.length > 0 ? (
-                  <>
-                    {providerDetails.map((provider) => {
-                      const isSelected =
-                        selectedProvider &&
-                        selectedProvider._id === provider._id;
-                      return (
-                        <div
-                          key={provider._id}
-                          className={`w-full p-3 rounded-lg flex items-center border-b-4 border-gray-200 pb-2 cursor-pointer ${
-                            isSelected ? "bg-purple-200" : ""
-                          }`}
-                          onClick={() => handleProviderClick(provider)}
-                        >
-                          <img
-                            src={provider.profilePicture}
-                            alt="provider logo"
-                            className="size-14 md:size-14 rounded-full mr-4 object-cover"
-                          />
-                          <div>
-                            <p className="font-bold items-center justify-center text-gray hidden md:block">
-                              {provider.fullName}
-                            </p>
-                            <p className="text-sm">{messages.message}</p>
-                          </div>
+          <div className="flex flex-grow h-screen max-h-[440px] 2xl:max-h-[745px]">
+            <div className="w-1/4 bg-gray-300 flex flex-col items-center">
+              {providerDetails.length > 0 ? (
+                <>
+                  {providerDetails.map((provider) => {
+                    const isSelected =
+                      selectedProvider && selectedProvider._id === provider._id;
+                    return (
+                      <div
+                        key={provider._id}
+                        className={`w-full p-4 flex border-b-2 border-purple-300 items-center cursor-pointer  ${
+                          isSelected ? "bg-purple-300" : "hover:bg-purple-200"
+                        }`}
+                        onClick={() => handleProviderClick(provider)}
+                      >
+                        <img
+                          src={provider.profilePicture}
+                          alt="provider logo"
+                          className="size-12 md:size-14 rounded-full mr-4 object-cover"
+                        />
+                        <div className="flex-grow">
+                          <p className="font-bold items-center justify-center text-gray hidden md:block">
+                            {provider.fullName}
+                          </p>
+                          <p className="text-sm">{messages.message}</p>
+                          {/* <hr className="w-full mt-6 border-purple-800 hidden md:block" /> */}
                         </div>
-                      );
-                    })}
-                  </>
-                ) : (
-                  <>no messages found</>
-                )}
-              </div>
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                <>no messages found</>
+              )}
             </div>
-            <div className="w-3/4 p-4 flex flex-col bg-purple-100 overflow-hidden">
+
+            <div className="w-3/4 p-4 flex flex-col bg-slate-200 overflow-hidden ">
               {selectedProvider ? (
                 <>
                   <div className="flex flex-row">
                     <img
                       src={selectedProvider.profilePicture}
                       alt="provider logo"
-                      className="size-10 rounded-full"
+                      className="w-12 h-10 md:h-12 md rounded-full object-cover "
                     />
                     <h2 className="flex ml-2 capitalize font-semibold border-b-2 pb-5 border-purple-500 w-full">
                       {selectedProvider.fullName}
                     </h2>
+                    <div className="">
+                    </div>
                   </div>
-                  <div className="flex flex-col flex-grow overflow-y-auto">
+                  <div className="flex flex-col flex-grow h-screen">
                     <div
                       ref={messageContainerRef}
-                      style={{ overflowY: "scroll", height: "400px" }}
+                      className=" overflow-y-scroll h-[320px] md:h-[310px] 2xl:h-[620px]"
                     >
                       {limitedMessages.map((message) => (
                         <div key={message._id} className={`m-2`}>
@@ -317,33 +318,30 @@ export default function MessageDash() {
                         </div>
                       ))}
                     </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Type a message..."
+                        className="w-full p-3 rounded-lg"
+                        value={send}
+                        onKeyDown={handlekeydown}
+                        onChange={(e) => setSend(e.target.value)}
+                      />
+                      <Button
+                        onClick={handleSendMessage}
+                        variant="outlined"
+                        className="bg-sky-400 border-gray-400"
+                      >
+                        <BiSend className="size-5" />
+                      </Button>
+                    </div>
                   </div>
                 </>
               ) : (
-                <>
-                  <h2>Select a Provider</h2>
-                </>
+                <div className="flex h-full">
+                  <h2 className="">Select a Provider</h2>
+                </div>
               )}
-              <div className="flex-grow">
-                <h2></h2>
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Type a message..."
-                  className="w-full p-3 rounded-lg"
-                  value={send}
-                  onKeyDown={handlekeydown}
-                  onChange={(e) => setSend(e.target.value)}
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  variant="outlined"
-                  className="bg-sky-400 border-gray-400"
-                >
-                  <BiSend className="size-5" />
-                </Button>
-              </div>
             </div>
           </div>
         </>
@@ -370,6 +368,6 @@ export default function MessageDash() {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }

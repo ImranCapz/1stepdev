@@ -7,7 +7,7 @@ import SubmenuProvider from "./SubmenuProvider";
 import { useSelector } from "react-redux";
 import { getBookingsStart, getBookingSuccess, getBookingFailure } from "../../redux/booking/bookingSlice";
 import { useDispatch } from "react-redux";
-import  MessageDash  from "./MessageDash";
+import MessageDash from "./MessageDash";
 
 
 export default function Dashboard() {
@@ -59,7 +59,7 @@ export default function Dashboard() {
     }
   }, [location.search]); 
   return (
-    <div className="min-h-screen flex flex-col mx-auto">
+    <div className="min-h-screen h-full flex flex-col mx-auto">
       <div className="w-full">
         <DashSidebar />
       </div>
