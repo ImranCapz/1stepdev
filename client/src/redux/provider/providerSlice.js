@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState={
-  currentProvider:null,
-  loading:false,
-  error:null,
-}
+const initialState = {
+  currentProvider: null,
+  loading: false,
+  error: null,
+};
 
 export const providerSlice = createSlice({
   name: "provider",
@@ -13,14 +13,24 @@ export const providerSlice = createSlice({
     selectProvider: (state, action) => {
       state.id = action.payload;
     },
-    providerData:(state,action)=>{
-      state.currentProvider = action.payload;
-      state.loading=false;
-      state.error=false;
-    }
+    providerData: (state, action) => {
+      if (action.payload) {
+        state.currentProvider = action.payload;
+      } else {
+        state.currentProvider = null;
+      }
+      state.loading = false;
+      state.error = false;
+    },
+    providerOut: (state) => {
+      state.currentProvider = null;
+      state.loading = false;
+      state.error = false;
+    },
   },
 });
 
-export const { selectProvider} = providerSlice.actions;
+export const { selectProvider, providerData, providerOut } =
+  providerSlice.actions;
 
 export default providerSlice.reducer;

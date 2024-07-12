@@ -72,6 +72,7 @@ export default function Provider() {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
+    if (currentUser === null) return;
     const newSocket = io(SOCKET_SERVER_URL, { withCredentials: true });
     setSocket(newSocket);
 
@@ -79,6 +80,7 @@ export default function Provider() {
   }, []);
 
   const handleSendMessage = () => {
+    if (currentUser === null) return;
     if (socket) {
       socket.emit("joinRoom", {
         roomId: `${currentUser._id}_${id}`,
@@ -93,7 +95,7 @@ export default function Provider() {
         reciever: provider.userRef,
         provider: id,
       });
-      navigate("/mymessages");
+      navigate("/dashboard?tab=messages");
     }
   };
 
@@ -114,10 +116,11 @@ export default function Provider() {
   //send message
   const [sendMessage, setSendMessage] = useState();
   useEffect(() => {
+    if (currentUser === null) return;
     setSendMessage(
       `Hi ${provName},\nMy name is ${currentUser.username}, and I am seeking a therapist for ${searchTerm}. I would like to start as soon as possible. Are you available? Could you contact me so we can discuss this further?\nHave a great day! Talk to you soon.\nBest regards,\n${currentUser.username}`
     );
-  }, [searchTerm, provName, currentUser.username]);
+  }, [searchTerm, provName]);
 
   useEffect(() => {
     document.title = `${provName} | ${urlsearchTerm}`;
@@ -330,7 +333,7 @@ export default function Provider() {
                   <img
                     src={provider.profilePicture}
                     alt="profile"
-                    className="h-40 w-40 rounded-full object-cover border-8 border-gray-100"
+                    className=" md:h-52 md:w-52 h-36 w-36 rounded-full object-cover border-8 border-gray-100"
                   />
                 </p>
                 <div className="flex flex-col items-center md:items-start">

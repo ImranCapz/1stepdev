@@ -368,7 +368,7 @@ export default function CreateProvider() {
               alignItems: "center",
             }}
           >
-            <BeatLoader color="#10ebd8" loading={loading} size={20} />
+            <BeatLoader color="#AFDBD8" loading={loading} size={20} />
           </div>
         </>
       ) : (

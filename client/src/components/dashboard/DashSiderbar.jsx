@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 import { RiDashboardFill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../redux/user/userSlice";
-import { MdManageAccounts , MdSupervisorAccount } from "react-icons/md";
+import { providerOut } from "../../redux/provider/providerSlice";
+import { MdManageAccounts, MdSupervisorAccount } from "react-icons/md";
 import { IoIosChatboxes } from "react-icons/io";
 
 export default function DashSidebar() {
@@ -32,6 +33,7 @@ export default function DashSidebar() {
       if (!res.ok) {
         console.log(data.message);
       } else {
+        dispatch(providerOut());
         dispatch(signOut());
       }
     } catch (error) {

@@ -3,19 +3,20 @@ import { useEffect, useMemo, useState } from "react";
 import CreateProvider from "../../pages/CreateProvider";
 import ProviderBooking from "../booking/ProviderBooking";
 import ProviderMessageDash from "./ProviderMessageDash";
+import { useSelector } from "react-redux";
 
 export default function SubmenuProvider() {
   const [activeComponent, setActiveComponent] = useState("Providers");
+  const { currentProvider } = useSelector((state) => state.provider);
   const location = useLocation();
 
-  const submenuNav = useMemo(
-    () => [
-      { title: "Providers" },
-      { title: "Message" },
-      { title: "Appointment" },
-    ],
-    []
-  );
+  const submenuNav = useMemo(() => {
+    const NavItems = [{ title: "Providers" }];
+    if (currentProvider) {
+      NavItems.push({ title: "Message" }, { title: "Appointment" });
+    }
+    return NavItems;
+  }, [currentProvider]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -54,18 +55,23 @@ export default function SubmenuProvider() {
           <CreateProvider />
         </div>
       )}
-      {activeComponent === "Message" && (
-        <div className="w-full min-h-screen transition-all duration-500 ">
-          <h1 className="flex flex-col font-bold text-2xl text-zinc-800"></h1>
-          <ProviderMessageDash />
-        </div>
+      {currentProvider && (
+        <>
+          {activeComponent === "Message" && (
+            <div className="w-full min-h-screen transition-all duration-500 ">
+              <h1 className="flex flex-col font-bold text-2xl text-zinc-800"></h1>
+              <ProviderMessageDash />
+            </div>
+          )}
+          {activeComponent === "Appointment" && (
+            <div className="w-full min-h-screen transition-all duration-500">
+              <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800"></h1>
+              <ProviderBooking />
+            </div>
+          )}
+        </>
       )}
-      {activeComponent === "Appointment" && (
-        <div className="w-full min-h-screen transition-all duration-500">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800"></h1>
-          <ProviderBooking />
-        </div>
-      )}
+
       {/* Other components... */}
     </div>
   );

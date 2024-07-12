@@ -36,6 +36,10 @@ input[type="text"]:focus {
   background-color: #d1bee0;
   color: #dcd7fe;
 }
+
+.messagebg:hover {
+  background-color: #dcd7fe;
+}
 .secondary-color {
   background-color: #fbd783;
   color: #fbd783;
@@ -44,12 +48,15 @@ input[type="text"]:focus {
 .btn-color {
   /* background-color: #BFCD84; */
   /* background-color: #FF8A5B; */
-  background-color: #ffc439;
+  /* background-color: #ffc439; */
+  background-color: #722a88;
+  color: white;
   /* background-color: #F8E505; */
   /* color:white */
 }
 .btn-color:hover {
-  background-color: #ffd46f;
+  /* background-color: #ffd46f; */
+  background-color: #634679;
 }
 
 .input {

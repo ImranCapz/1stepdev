@@ -10,6 +10,7 @@ export default {
       backgroundImage: (theme) => ({
         listbg: "url('../../client/src/components/provider/listbg.jpg')",
         nomsgbg: "url('../../client/src/assets/nomessage.jpg')",
+        provmsgbg: "url('../../client/src/assets/providermsg.jpg')",
       }),
 
       height: {

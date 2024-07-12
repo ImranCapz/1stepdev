@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { signOut } from "../redux/user/userSlice";
+import { providerOut } from "../redux/provider/providerSlice";
 import { useNavigate } from "react-router-dom";
 import TopLoadingBar from "react-top-loading-bar";
 import toast from "react-hot-toast";
@@ -31,6 +32,7 @@ const Header = ({ showSubMenu }) => {
       topLoadingBarRef.current.continuousStart(50);
       await fetch("/server/auth/signout");
       dispatch(signOut());
+      dispatch(providerOut());
       navigate("/");
     } catch (error) {
       console.log(error);
