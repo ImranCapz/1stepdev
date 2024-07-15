@@ -257,8 +257,8 @@ const Hero = () => {
           </Card>
         </div>
       </div>
-      <div className="flex flex-col px-4 py-9 mx-auto justify-center max-w-screen-2xl items-center">
-        <h2 className="text-3xl font-extrabold text-center text-main">
+      <div className="flex flex-col px-4 py-9 mx-auto justify-center items-center">
+        <h2 className="text-2xl font-extrabold text-center text-main">
           Join 1Step for free{" "}
         </h2>
         {/* <h3 className="md:w-1/2 text-center text-main mt-2">
@@ -266,11 +266,11 @@ const Hero = () => {
           Essential Resources to Foster Your Child&nbsp;s Growth for Free
         </h3> */}
         <div className="text-center flex flex-col md:flex-row gap-2 md:gap-8 p-3 mx-auto mt-8">
-          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300">
+          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
             <div>
               <p className="flex flex-col items-center">
-                <img src={search} alt="heartIcon" className="w-16 h-16 mb-4" />
-                <span className="text-2xl font-bold text-main mb-6">
+                <img src={search} alt="heartIcon" className="w-16 h-16 mb-4 transition ease-in-out duration-700 transform group-hover:-translate-y-2" />
+                <span className="text-xl font-bold text-main mb-6">
                   Search Therapist
                 </span>
               </p>
@@ -280,21 +280,21 @@ const Hero = () => {
               </p>
               <button
                 onClick={() => startSearching()}
-                className="w-48 justify-center items-center mt-10 p-2 text-sm bg-sky-100 rounded-md font-semibold text-sky-600 hover:bg-sky-200 transition duration-300"
+                className="w-48 justify-center items-center card-btn mt-10 p-2 text-sm rounded-md font-semibold transition duration-300"
               >
                 Start Searching
               </button>
             </div>
           </Card>
-          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300">
+          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
             <div>
               <p className="flex flex-col items-center">
                 <img
                   src={freescanner}
                   alt="heartIcon"
-                  className="w-16 h-16 mb-4"
+                  className="w-16 h-16 mb-4 transition ease-in-out duration-700 transform group-hover:-translate-y-2"
                 />
-                <span className="text-2xl font-bold text-main mb-6">
+                <span className="text-xl font-bold text-main mb-6">
                   Free Screeners
                 </span>
               </p>
@@ -304,22 +304,21 @@ const Hero = () => {
               </p>
               <button
                 onClick={() => navigate("/freescreeners")}
-                className="w-48 justify-center items-center mt-10 p-2 text-sm bg-sky-100 rounded-md font-semibold text-sky-600 hover:bg-sky-200 transition duration-300"
+                className="w-48 justify-center items-center card-btn mt-10 p-2 text-sm rounded-md font-semibold transition duration-300"
               >
                 Take Free Screener
               </button>
             </div>
           </Card>
-
-          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300">
+          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
             <div>
               <p className="flex flex-col items-center">
                 <img
                   src={heartIcon}
                   alt="heartIcon"
-                  className="w-16 h-16 mb-4"
+                  className="w-16 h-16 mb-4 transition duration-700 transform group-hover:-translate-y-2"
                 />
-                <span className="text-2xl font-bold text-main mb-6">
+                <span className="text-xl font-bold text-main mb-6">
                   Create a favorite list
                 </span>
               </p>
@@ -330,7 +329,7 @@ const Hero = () => {
                 onClick={() =>
                   currentUser ? navigate("/favorite-list") : setOpenModal(true)
                 }
-                className="w-48 justify-center items-center mt-10 p-2 text-sm bg-sky-100 rounded-md font-semibold text-sky-600 hover:bg-sky-200 transition duration-300"
+                className="w-48 justify-center items-center mt-10 p-2 text-sm rounded-md font-semibold card-btn transition duration-300"
               >
                 Create First List
               </button>
@@ -340,7 +339,7 @@ const Hero = () => {
         <Modal show={openModal} size="md" onClose={onCloseModal} popup>
           <Modal.Header></Modal.Header>
           <Modal.Body>
-            <ListModel />
+            <ListModel onClose={onCloseModal}/>
           </Modal.Body>
         </Modal>
       </div>

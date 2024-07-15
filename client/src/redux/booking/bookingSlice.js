@@ -4,7 +4,7 @@ const initialState = {
   bookings: [],
   loading: false,
   error: null,
-  hasApprovedBooking:false,
+  hasApprovedBooking: false,
   lastSeenBookingId: null,
 };
 
@@ -54,12 +54,17 @@ const bookingSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    setHasApprovedBooking:(state,action)=>{
+    setHasApprovedBooking: (state, action) => {
       state.hasApprovedBooking = action.payload;
     },
-    setLastSeenBookingId:(state,action)=>{
+    setLastSeenBookingId: (state, action) => {
       state.lastSeenBookingId = action.payload;
-    }
+    },
+    bookingOut: (state) => {
+      state.bookings = null;
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(approveBooking.fulfilled, (state, action) => {
@@ -84,7 +89,12 @@ const bookingSlice = createSlice({
   },
 });
 
-export const { getBookingsStart, getBookingSuccess, getBookingFailure,setHasApprovedBooking,setLastSeenBookingId } =
-  bookingSlice.actions;
+export const {
+  getBookingsStart,
+  getBookingSuccess,
+  getBookingFailure,
+  setHasApprovedBooking,
+  setLastSeenBookingId,
+} = bookingSlice.actions;
 
 export default bookingSlice.reducer;

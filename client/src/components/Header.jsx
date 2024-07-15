@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { FaRegHeart } from "react-icons/fa";
 import { Modal } from "flowbite-react";
 import ListModel from "./modal/ListModel";
+import ParentModel from "./modal/ParentModel";
 import PropTypes from "prop-types";
 
 const Header = ({ showSubMenu }) => {
@@ -22,6 +23,8 @@ const Header = ({ showSubMenu }) => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const topLoadingBarRef = useRef(null);
+
+  //modal
   const [openModal, setOpenModal] = useState(false);
   const [parentModal, setParentModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(0);
@@ -77,7 +80,31 @@ const Header = ({ showSubMenu }) => {
   };
   const navigation = [
     { title: "Home", path: "/" },
-    { title: "For Parents", path: "/dashboard?tag=Parent%20Details" },
+    {
+      title: (
+        <p>
+          {currentUser ? (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/dashboard?tag=Parent%20Details");
+              }}
+            >
+              For Parents
+            </button>
+          ) : (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setParentModal(true);
+              }}
+            >
+              For Parents
+            </button>
+          )}
+        </p>
+      ),
+    },
     {
       title: "For Providers",
       path: currentUser ? "/dashboard?tab=providers" : "/for-providers",
@@ -165,6 +192,7 @@ const Header = ({ showSubMenu }) => {
 
   function onCloseModal() {
     setOpenModal(false);
+    setParentModal(false);
   }
   return (
     <header className="text-base lg:text-sm sticky top-0 z-50 bg-white border-b">
@@ -177,7 +205,13 @@ const Header = ({ showSubMenu }) => {
       <Modal show={openModal} size="md" onClose={onCloseModal} popup>
         <Modal.Header></Modal.Header>
         <Modal.Body>
-          <ListModel />
+          <ListModel onClose={onCloseModal} />
+        </Modal.Body>
+      </Modal>
+      <Modal show={parentModal} size="md" onClose={onCloseModal} popup>
+        <Modal.Header></Modal.Header>
+        <Modal.Body>
+          <ParentModel onClose={onCloseModal} />
         </Modal.Body>
       </Modal>
       <div
@@ -329,7 +363,7 @@ const Header = ({ showSubMenu }) => {
                               Providers
                             </Link>
                             <Link
-                              to="/dashboard?tag=Message"
+                              to="/dashboard?tab=messages"
                               className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
                             >
                               Message

@@ -37,9 +37,13 @@ input[type="text"]:focus {
   color: #dcd7fe;
 }
 
+.chat-sender {
+  background-color: #4d1d5c;
+  color: white;
+}
 .messagebg:hover {
   background-color: #dcd7fe;
-}
+} 
 .secondary-color {
   background-color: #fbd783;
   color: #fbd783;
@@ -89,6 +93,15 @@ input[type="text"]:focus {
   background-color: #faf6f4;
 }
 
+.card-btn {
+  background-color: #e1dce2;
+  color: #722A88;
+}
+
+.card-btn:hover {
+  background-color: #d0bad8;
+}
+
 .bg-rec {
-  background-color: #bc9dd3;
+  background-color: #CCE6E7;
 }

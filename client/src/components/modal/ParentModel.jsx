@@ -1,34 +1,33 @@
-import OAuth from "../../components/OAuth";
-import logo from "../../assets/logo.svg";
-import heartIcon from "../../assets/listLike.png";
-import { Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+import OAuth from "../OAuth";
+import { Button } from "flowbite-react";
+import logo from "../../assets/logo.svg";
+import parentIcon from "../../assets/parentmodel.jpg";
 import PropTypes from "prop-types";
 
-export default function ListModel({ onClose }) {
+export default function ParentModel({ onClose }) {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center py-2">
         <div className="w-full flex flex-col gap-2">
           <img className="mx-auto h-10 w-auto" src={logo} alt="1step" />
-          <img
-            className="mx-auto h-20 w-auto"
-            src={heartIcon}
-            alt="heartIcon"
-          />
+          <img className="mx-auto size-24" src={parentIcon} alt="heartIcon" />
           <div className="text-center flex gap-2 flex-col">
-            <h2 className="text-3xl font-extrabold text-gray">
-              Create your first list
+            <h2 className="text-2xl font-extrabold text-gray">
+              Create your parent Profile
             </h2>
             <h4 className="text-sm">
-              Create an account to save a list of providers you&apos;re
-              interested in contacting.
+              Create an account to interact with providers and connect with the
+              right professionals for your needs.
             </h4>
           </div>
           <div className="flex flex-col gap-2 mt-4">
-            <OAuth redirect="/favorite-list" onClose={onClose} />
-            <Link to="/signup">
-              <Button variant="outlined" className="w-full" onClick={onClose}>
+            <OAuth
+              onClose={onClose}
+              redirect="/dashboard?tag=Parent%20Details"
+            />
+            <Link to="/signup" onClick={onClose}>
+              <Button variant="outlined" className="w-full">
                 Continue with Email
               </Button>
             </Link>
@@ -50,6 +49,6 @@ export default function ListModel({ onClose }) {
   );
 }
 
-ListModel.propTypes = {
+ParentModel.propTypes = {
   onClose: PropTypes.func,
 };

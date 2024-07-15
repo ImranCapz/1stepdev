@@ -3,19 +3,17 @@ import { app } from "../firebase";
 import { useDispatch } from "react-redux";
 import { signinSuccess } from "../redux/user/userSlice";
 import { useNavigate } from "react-router";
-import TopLoadingBar from 'react-top-loading-bar';
+import TopLoadingBar from "react-top-loading-bar";
 import { useRef } from "react";
+import PropTypes from "prop-types";
 
-
-export default function OAuth() {
+export default function OAuth({ onClose, redirect }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const topLoadingBarRef = useRef(null);
   const topLoadingBarRef1 = useRef(null);
 
-
   const handleGoogleClick = async () => {
-
     try {
       topLoadingBarRef.current.continuousStart(50);
       const provider = new GoogleAuthProvider();
@@ -34,11 +32,12 @@ export default function OAuth() {
       });
       const data = await res.json();
       dispatch(signinSuccess(data));
-      navigate("/");
+
+      navigate(redirect);
     } catch (error) {
       topLoadingBarRef1.current.continuousStart(50);
       console.error(error);
-    }finally {
+    } finally {
       topLoadingBarRef.current.complete(90);
     }
   };
@@ -96,8 +95,13 @@ export default function OAuth() {
             </g>
           </g>
         </svg>
-        <span>Continue with Google</span>
+        <span onClick={onClose}>Continue with Google</span>
       </button>
     </div>
   );
 }
+
+OAuth.propTypes = {
+  onClose: PropTypes.func,
+  redirect: PropTypes.string,
+};

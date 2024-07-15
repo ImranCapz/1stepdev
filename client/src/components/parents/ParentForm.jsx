@@ -185,6 +185,7 @@ export default function ParentForm() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            height: "50vh",
           }}
         >
           <BeatLoader color="#10ebd8" loading={loading} size={15} />

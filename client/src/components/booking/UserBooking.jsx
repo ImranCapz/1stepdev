@@ -58,6 +58,7 @@ export default function UserBooking() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              height: "70vh",
             }}
           >
             <BeatLoader color="#10ebd8" loading={loading} size={15} />

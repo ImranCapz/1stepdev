@@ -366,6 +366,7 @@ export default function CreateProvider() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              height: "70vh",
             }}
           >
             <BeatLoader color="#AFDBD8" loading={loading} size={20} />

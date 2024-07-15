@@ -293,7 +293,7 @@ export default function ProviderMessageDash() {
                                 <div
                                   className={`p-2 text-xs md:text-base ${
                                     message.sender === currentUser._id
-                                      ? "bg-sky-300 rounded-l-xl rounded-tr-xl"
+                                      ? "chat-sender rounded-l-xl rounded-tr-xl"
                                       : "bg-gray-300 rounded-r-xl rounded-tl-xl"
                                   }  ${
                                     message.message.length > 30
