@@ -157,6 +157,7 @@ export default function Provider() {
           return;
         }
         setprovider(data);
+        setLoading(false);
         setError(false);
       } catch (error) {
         console.error("Error:", error);
@@ -302,44 +303,81 @@ export default function Provider() {
 
   return (
     <div className="w-full mx-auto flex lg:flex-row flex-col-reverse">
-      {error && (
-        <p className="text-center my-7 text-2xl">Error fetching provider</p>
-      )}
       {loading ? (
-        <div className="md:block hidden mx-auto mb-4">
-          <ContentLoader
-            height={700}
-            width={1200}
-            viewBox="0 0 450 300"
-            backgroundColor="#f5f5f5"
-            foregroundColor="#dbdbdb"
-          >
-            (//bigbox)
-            <rect x="220" y="40" width="35" height="12" rx="4" />
-            <rect x="265" y="40" width="35" height="12" rx="4" />
-            (//sidebigbox)
-            <rect x="310" y="40" width="130" height="52" rx="3" />
-            <rect x="310" y="100" width="130" height="52" rx="3" />
-            (//subitem)
-            <rect x="130" y="40" width="80" height="12" rx="4" />
-            <rect x="140" y="65" width="160" height="10" rx="4" />
-            <rect x="140" y="80" width="88" height="6" rx="3" />
-            <rect x="140" y="92" width="120" height="6" rx="3" />
-            <rect x="140" y="102" width="100" height="6" rx="3" />
-            <rect x="140" y="112" width="140" height="6" rx="3" />
-            (//rectangle menu)
-            <rect x="0" y="146" width="300" height="2" rx="3" />
-            <rect x="0" y="168" width="300" height="2" rx="3" />
-            (menu items)
-            <rect x="0" y="151" width="45" height="14" rx="3" />
-            <rect x="50" y="151" width="45" height="14" rx="3" />
-            <rect x="100" y="151" width="45" height="14" rx="3" />
-            {/* <rect x="0" y="156" width="410" height="6" rx="3" />
+        <>
+          <div className="md:block hidden mx-auto mb-4">
+            <ContentLoader
+              height={700}
+              width={1200}
+              viewBox="0 0 450 300"
+              backgroundColor="#f5f5f5"
+              foregroundColor="#dbdbdb"
+            >
+              (//bigbox)
+              <rect x="220" y="40" width="35" height="12" rx="4" />
+              <rect x="265" y="40" width="35" height="12" rx="4" />
+              (//sidebigbox)
+              <rect x="310" y="40" width="130" height="52" rx="3" />
+              <rect x="310" y="100" width="130" height="52" rx="3" />
+              (//subitem)
+              <rect x="130" y="40" width="80" height="12" rx="4" />
+              <rect x="133" y="65" width="160" height="10" rx="4" />
+              <rect x="133" y="80" width="88" height="6" rx="3" />
+              <rect x="133" y="92" width="120" height="6" rx="3" />
+              <rect x="133" y="102" width="100" height="6" rx="3" />
+              <rect x="133" y="112" width="140" height="6" rx="3" />
+              (//rectangle menu)
+              <rect x="0" y="146" width="300" height="2" rx="3" />
+              <rect x="0" y="168" width="300" height="2" rx="3" />
+              (//menu items)
+              <rect x="0" y="151" width="45" height="14" rx="3" />
+              <rect x="50" y="151" width="45" height="14" rx="3" />
+              <rect x="100" y="151" width="45" height="14" rx="3" />
+              (//about)
+              <rect x="0" y="178" width="100" height="10" rx="3" />
+              <rect x="0" y="192" width={300} height={5} rx="3" />
+              <rect x="0" y="200" width={300} height={5} rx="3" />
+              <rect x="0" y="208" width={300} height={5} rx="3" />
+              {/* <rect x="0" y="156" width="410" height="6" rx="3" />
             <rect x="0" y="180" width="380" height="6" rx="3" />
             <rect x="0" y="170" width="178" height="6" rx="3" /> */}
-            <circle cx="75" cy="75" r="50" />
-          </ContentLoader>
-        </div>
+              <circle cx="75" cy="75" r="50" />
+            </ContentLoader>
+          </div>
+          <div className="block md:hidden mx-auto">
+            <ContentLoader
+              width={300} 
+              height={700}
+              viewBox="0 0 400 900"
+              backgroundColor="#f3f3f3"
+              foregroundColor="#ecebeb"
+            >
+              <circle cx="190" cy="100" r="80" />
+              <rect x="50" y="220" rx="3" width="280" height="20" />
+              (share)
+              <rect x="100" y="260" rx="3" width="70" height="20" />
+              <rect x="200" y="260" rx="3" width="70" height="20" />
+              (//info)
+              <rect x="85" y="300" rx="3" width="220" height="16" />
+              <rect x="72" y="330" rx="3" width="260" height="16" />
+              <rect x="85" y="360" rx="3" width="220" height="16" />
+              <rect x="60" y="390" rx="3" width="280" height="16" />
+              (//about)
+              <rect x="0" y="450" rx="3" width="900" height="6" />
+              <rect x="0" y="500" rx="3" width="900" height="6" />
+              (//options)
+              <rect x="4" y="460" rx="3" width="80" height="34" />
+              <rect x="100" y="460" rx="3" width="80" height="34" />
+              <rect x="200" y="460" rx="3" width="80" height="34" />
+              (about name)
+              <rect x="4" y="520" rx="3" width="220" height="34" />
+              <rect x="0" y="565" rx="3" width="360" height="12" />
+              <rect x="0" y="585" rx="3" width="390" height="12" />
+              <rect x="0" y="605" rx="3" width="370" height="12" />
+              <rect x="0" y="625" rx="3" width="380" height="12" />
+            </ContentLoader>
+          </div>
+        </>
       ) : (
         <>
           {provider && !loading && !error && (
