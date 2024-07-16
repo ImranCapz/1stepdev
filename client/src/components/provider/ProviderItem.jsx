@@ -166,7 +166,7 @@ export default function ProviderItem({ provider }) {
                 </div>
                 <div className="ml-4">
                   <div className="flex items-center gap-1">
-                    <IoIosStar className="h-4 w-4 text-amber-400" />
+                    <IoIosStar className="h-4 w-4 star" />
                     <p className="text-sm text-gray-600 font-bold truncate w-full">
                       {review &&
                       review.totalrating !== undefined &&
@@ -187,7 +187,7 @@ export default function ProviderItem({ provider }) {
                     }}
                     onClick={() => dispatch(selectProvider(provider._id))}
                   >
-                    <div className="flex flex-row items-center gap-2 truncate text-xl font-bold text-slate-700 hover:underline">
+                    <div className="flex flex-row items-center gap-2 truncate text-xl font-semibold provideritem-name hover:underline">
                       {provider.fullName}
                       {provider.verified === true && (
                         <>
@@ -202,7 +202,7 @@ export default function ProviderItem({ provider }) {
                       )}
                     </div>
                   </Link>
-                  <div className="text-xs md:text-sm text-gray-600 font-semibold truncate w-full">
+                  <div className="text-xs md:text-sm provideritem-service font-semibold truncate w-full">
                     {Array.isArray(provider.name)
                       ? (() => {
                           const searchTermIndex = provider.name.findIndex(
@@ -244,21 +244,21 @@ export default function ProviderItem({ provider }) {
                   </div>
                   <div className="md:inline hidden">
                     <div className="flex items-center gap-1 mt-1">
-                      <MdLocationOn className="h-4 w-4 text-gray-600" />
-                      <p className="text-sm text-gray-600 truncate w-full">
+                      <MdLocationOn className="h-4 w-4 icon-color" />
+                      <p className="text-sm provideritem-service truncate w-full">
                         {provider.address.addressLine1} {provider.address.city},{" "}
                         {provider.address.state}
                       </p>
                     </div>
                     <div className="flex items-center gap-1">
-                      <MdWorkspacePremium className="h-4 w-4 text-gray-600" />
-                      <p className="text-sm text-gray-600 truncate w-full">
+                      <MdWorkspacePremium className="h-4 w-4 icon-color" />
+                      <p className="text-sm provideritem-service truncate w-full">
                         {provider.experience} years experience overall
                       </p>
                     </div>
                     <div className="flex items-center gap-1">
-                      <PiHandHeartFill className="h-4 w-4 text-gray-600" />
-                      <p className="text-sm text-gray-600 truncate w-full">
+                      <PiHandHeartFill className="h-4 w-4 icon-color" />
+                      <p className="text-sm provideritem-service truncate w-full">
                         {Array.isArray(provider.therapytype)
                           ? `${provider.therapytype.slice(0, 4).join(", ")}`
                           : `${provider.therapytype}`}
@@ -300,7 +300,7 @@ export default function ProviderItem({ provider }) {
               >
                 <button
                   onClick={() => dispatch(selectProvider(provider._id))}
-                  className="w-full md:w-auto p-2 bg-sky-100 rounded-md font-semibold text-sky-600 hover:bg-sky-200 transition duration-300"
+                  className="card-btn w-full md:w-auto p-2 rounded-md font-semibold transition duration-300"
                 >
                   View Profile
                 </button>

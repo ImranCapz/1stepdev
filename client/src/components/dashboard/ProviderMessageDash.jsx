@@ -228,7 +228,7 @@ export default function ProviderMessageDash() {
                         return (
                           <div
                             key={user._id}
-                            className={`w-full p-4 flex border-b border-purple-300 items-center cursor-pointer ${
+                            className={`w-full p-4 flex border-b chatbox-color items-center cursor-pointer ${
                               isSelected ? "main-color" : "messagebg"
                             }`}
                             onClick={() => handleProviderClick(user)}

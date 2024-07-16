@@ -218,7 +218,7 @@ export default function MessageDash() {
                         return (
                           <div
                             key={provider._id}
-                            className={`w-full p-4 flex border-b-2 border-purple-300 items-center cursor-pointer  ${
+                            className={`w-full p-4 flex border-b-2 chatbox-color items-center cursor-pointer  ${
                               isSelected ? "main-color" : "messagebg"
                             }`}
                             onClick={() => handleProviderClick(provider)}
@@ -283,7 +283,7 @@ export default function MessageDash() {
                                 <div
                                   className={`p-2 text-xs md:text-base ${
                                     message.sender === currentUser._id
-                                      ? "bg-sky-300 rounded-l-xl rounded-tr-xl"
+                                      ? "chat-sender rounded-l-xl rounded-tr-xl"
                                       : "bg-gray-300 rounded-r-xl rounded-tl-xl"
                                   } ${
                                     countWords(message.message) > 10

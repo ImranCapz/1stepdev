@@ -157,7 +157,6 @@ export default function Provider() {
           return;
         }
         setprovider(data);
-        setLoading(false);
         setError(false);
       } catch (error) {
         console.error("Error:", error);
@@ -303,17 +302,49 @@ export default function Provider() {
 
   return (
     <div className="w-full mx-auto flex lg:flex-row flex-col-reverse">
-      {loading && (
-        <>
-          <div className="h-[200px] bg-gray-200 animate-pulse">loading</div>
-        </>
-      )}
       {error && (
         <p className="text-center my-7 text-2xl">Error fetching provider</p>
       )}
-      {provider && !loading && !error && (
-        <div>
-          {/* <Swiper navigation>
+      {loading ? (
+        <div className="md:block hidden mx-auto mb-4">
+          <ContentLoader
+            height={700}
+            width={1200}
+            viewBox="0 0 450 300"
+            backgroundColor="#f5f5f5"
+            foregroundColor="#dbdbdb"
+          >
+            (//bigbox)
+            <rect x="220" y="40" width="35" height="12" rx="4" />
+            <rect x="265" y="40" width="35" height="12" rx="4" />
+            (//sidebigbox)
+            <rect x="310" y="40" width="130" height="52" rx="3" />
+            <rect x="310" y="100" width="130" height="52" rx="3" />
+            (//subitem)
+            <rect x="130" y="40" width="80" height="12" rx="4" />
+            <rect x="140" y="65" width="160" height="10" rx="4" />
+            <rect x="140" y="80" width="88" height="6" rx="3" />
+            <rect x="140" y="92" width="120" height="6" rx="3" />
+            <rect x="140" y="102" width="100" height="6" rx="3" />
+            <rect x="140" y="112" width="140" height="6" rx="3" />
+            (//rectangle menu)
+            <rect x="0" y="146" width="300" height="2" rx="3" />
+            <rect x="0" y="168" width="300" height="2" rx="3" />
+            (menu items)
+            <rect x="0" y="151" width="45" height="14" rx="3" />
+            <rect x="50" y="151" width="45" height="14" rx="3" />
+            <rect x="100" y="151" width="45" height="14" rx="3" />
+            {/* <rect x="0" y="156" width="410" height="6" rx="3" />
+            <rect x="0" y="180" width="380" height="6" rx="3" />
+            <rect x="0" y="170" width="178" height="6" rx="3" /> */}
+            <circle cx="75" cy="75" r="50" />
+          </ContentLoader>
+        </div>
+      ) : (
+        <>
+          {provider && !loading && !error && (
+            <div>
+              {/* <Swiper navigation>
             {provider.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
@@ -326,410 +357,417 @@ export default function Provider() {
               </SwiperSlide>
             ))}
           </Swiper> */}
-          <div className="lg:flex-row flex-col mx-auto flex md:w-5/6 justify-center">
-            <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
-              <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">
-                <p className="flex flex-col items-start justify-start">
-                  <img
-                    src={provider.profilePicture}
-                    alt="profile"
-                    className=" md:h-52 md:w-52 h-36 w-36 rounded-full object-cover border-8 border-gray-100"
-                  />
-                </p>
-                <div className="flex flex-col items-center md:items-start">
-                  <div className="flex flex-row text-gray-600 font-semibold text-sm space-x-1">
-                    <Link className="capitalize" to={`/${urlsearchTerm}`}>
-                      {urlsearchTerm}
-                    </Link>
-                    {/* <p className="text-gray-400">&gt;</p>
-                    <Link className="capitalize">{provider.address.state}&nbsp;</Link> */}
-                    <p className="text-gray-400">&gt;</p>
-                    <Link
-                      className="capitalize"
-                      to={`/search?searchTerm=${searchTerm}&address=${provider.address.city}`}
-                    >
-                      {provider.address.city}
-                    </Link>
-                  </div>
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-2">
-                    <div className="flex flex-row items-center space-x-2 gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
-                      {provider.fullName}
-                      {provider.verified === true && (
-                        <div className="">
-                          <Tooltip
-                            content="Verifed Profile"
-                            animation="duration-500"
-                          >
-                            <FcApproval />
-                          </Tooltip>
-                        </div>
-                      )}
-                      {provider.verified === false && (
-                        <div className="">
-                          <Tooltip
-                            content="Profile is not claimed"
-                            animation="duration-500"
-                          >
-                            <FcInfo />
-                          </Tooltip>
-                        </div>
-                      )}
-                    </div>
-                    <p className="flex flex-row space-x-2 text-xs text-center mt-2">
-                      <Button
-                        onClick={handleFavorite}
-                        variant="outlined"
-                        className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 gap-1 items-center rounded-full"
-                      >
-                        {isFavorite ? <FcLike /> : <FaRegHeart />} Save
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => setIsShare(true)}
-                        className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 gap-1 items-center rounded-full"
-                      >
-                        <IoIosShareAlt />
-                        Share
-                      </Button>
+              <div className="lg:flex-row flex-col mx-auto flex md:w-5/6 justify-center">
+                <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
+                  <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">
+                    <p className="flex flex-col items-start justify-start">
+                      <img
+                        src={provider.profilePicture}
+                        alt="profile"
+                        className=" md:h-52 md:w-52 h-36 w-36 rounded-full object-cover border-8 border-gray-100"
+                      />
                     </p>
-                    <Modal show={otpOpen} onClose={onCloseModal} popup>
-                      <Modal.Header></Modal.Header>
-                      <Modal.Body>
-                        <div className="flex flex-col text-xl font-semibold text-gray gap-4">
-                          OTP Sended to your {provider.email}
-                          <div className="flex flex-col gap-4 p-10">
-                            <label>Enter OTP</label>
-                            <div className="flex flex-row items-center justify-center">
-                              <OtpInput
-                                value={otp}
-                                onChange={setOtp}
-                                numInputs={6}
-                                renderInput={(props) => (
-                                  <input
-                                    {...props}
-                                    style={{
-                                      width: "2.5rem",
-                                      height: "3rem",
-                                      margin: "0 0.5rem",
-                                      fontSize: "1.5rem",
-                                      borderRadius: "4px",
-                                      border: "1px solid rgba(0,0,0,0.3)",
-                                      color: "black",
-                                      backgroundColor: "white",
-                                    }}
-                                  />
-                                )}
-                              />
+                    <div className="flex flex-col items-center md:items-start">
+                      <div className="flex flex-row text-gray-600 font-semibold text-sm space-x-1">
+                        <Link className="capitalize" to={`/${urlsearchTerm}`}>
+                          {urlsearchTerm}
+                        </Link>
+                        {/* <p className="text-gray-400">&gt;</p>
+                    <Link className="capitalize">{provider.address.state}&nbsp;</Link> */}
+                        <p className="text-gray-400">&gt;</p>
+                        <Link
+                          className="capitalize"
+                          to={`/search?searchTerm=${searchTerm}&address=${provider.address.city}`}
+                        >
+                          {provider.address.city}
+                        </Link>
+                      </div>
+                      <div className="flex flex-col md:flex-row items-center justify-between gap-2">
+                        <div className="flex flex-row items-center space-x-2 gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
+                          {provider.fullName}
+                          {provider.verified === true && (
+                            <div className="">
+                              <Tooltip
+                                content="Verifed Profile"
+                                animation="duration-500"
+                              >
+                                <FcApproval />
+                              </Tooltip>
                             </div>
-                            <Button onClick={handleVerifyOtp}>
-                              Verify OTP
-                            </Button>
-                          </div>
+                          )}
+                          {provider.verified === false && (
+                            <div className="">
+                              <Tooltip
+                                content="Profile is not claimed"
+                                animation="duration-500"
+                              >
+                                <FcInfo />
+                              </Tooltip>
+                            </div>
+                          )}
                         </div>
-                      </Modal.Body>
-                    </Modal>
-                    <Modal show={isShare} onClose={onCloseModal} popup>
-                      <Modal.Header className="p-6 text-2xl">
-                        Share Provider Profile
-                      </Modal.Header>
-                      <Modal.Body>
-                        <div className="flex flex-row justify-between">
-                          <input
-                            ref={urlRef}
-                            value={window.location.href}
-                            className="w-full p-3 border-2 border-slate-800 focus:border-slate-300 rounded"
-                          />
-                          <button
-                            onClick={copyToClipboard}
-                            className="absolute right-6 top-1/2 p-2 rounded"
+                        <p className="flex flex-row space-x-2 text-xs text-center mt-2">
+                          <Button
+                            onClick={handleFavorite}
+                            variant="outlined"
+                            className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 gap-1 items-center rounded-full"
                           >
-                            {shareClicked ? (
-                              <div className="flex flex-row items-center gap-1 p-2 text-white bg-green-400 rounded-md">
-                                <FaCheck />
-                                Copied
+                            {isFavorite ? <FcLike /> : <FaRegHeart />} Save
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            onClick={() => setIsShare(true)}
+                            className="flex flex-row border-gray-400 text-gray-600 py-1 px-2 gap-1 items-center rounded-full"
+                          >
+                            <IoIosShareAlt />
+                            Share
+                          </Button>
+                        </p>
+                        <Modal show={otpOpen} onClose={onCloseModal} popup>
+                          <Modal.Header></Modal.Header>
+                          <Modal.Body>
+                            <div className="flex flex-col text-xl font-semibold text-gray gap-4">
+                              OTP Sended to your {provider.email}
+                              <div className="flex flex-col gap-4 p-10">
+                                <label>Enter OTP</label>
+                                <div className="flex flex-row items-center justify-center">
+                                  <OtpInput
+                                    value={otp}
+                                    onChange={setOtp}
+                                    numInputs={6}
+                                    renderInput={(props) => (
+                                      <input
+                                        {...props}
+                                        style={{
+                                          width: "2.5rem",
+                                          height: "3rem",
+                                          margin: "0 0.5rem",
+                                          fontSize: "1.5rem",
+                                          borderRadius: "4px",
+                                          border: "1px solid rgba(0,0,0,0.3)",
+                                          color: "black",
+                                          backgroundColor: "white",
+                                        }}
+                                      />
+                                    )}
+                                  />
+                                </div>
+                                <Button onClick={handleVerifyOtp}>
+                                  Verify OTP
+                                </Button>
                               </div>
-                            ) : (
-                              <div className="flex flex-row items-center gap-1 p-2 rounded-md bg-gray-300">
-                                <MdOutlineFileCopy />
-                                Copy
-                              </div>
-                            )}
-                          </button>
-                        </div>
-                      </Modal.Body>
-                    </Modal>
-                  </div>
-                  {/* - ₹{" "}
+                            </div>
+                          </Modal.Body>
+                        </Modal>
+                        <Modal show={isShare} onClose={onCloseModal} popup>
+                          <Modal.Header className="p-6 text-2xl">
+                            Share Provider Profile
+                          </Modal.Header>
+                          <Modal.Body>
+                            <div className="flex flex-row justify-between">
+                              <input
+                                ref={urlRef}
+                                value={window.location.href}
+                                className="w-full p-3 border-2 border-slate-800 focus:border-slate-300 rounded"
+                              />
+                              <button
+                                onClick={copyToClipboard}
+                                className="absolute right-6 top-1/2 p-2 rounded"
+                              >
+                                {shareClicked ? (
+                                  <div className="flex flex-row items-center gap-1 p-2 text-white bg-green-400 rounded-md">
+                                    <FaCheck />
+                                    Copied
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-row items-center gap-1 p-2 rounded-md bg-gray-300">
+                                    <MdOutlineFileCopy />
+                                    Copy
+                                  </div>
+                                )}
+                              </button>
+                            </div>
+                          </Modal.Body>
+                        </Modal>
+                      </div>
+                      {/* - ₹{" "}
                 {provider.regularPrice.toLocaleString("en-US")} / Appointment */}
 
-                  <p className="text-base text-center text-slate-600 font-bold mt-2">
-                    {Array.isArray(provider.name)
-                      ? (() => {
-                          const searchTermIndex = provider.name.findIndex(
-                            (name) =>
-                              searchTerm &&
-                              name.toLowerCase() === searchTerm.toLowerCase()
-                          );
-                          let filteredNames = [...provider.name];
-                          if (searchTermIndex !== -1) {
-                            filteredNames = [
-                              provider.name[searchTermIndex],
-                              ...provider.name.slice(0, searchTermIndex),
-                              ...provider.name.slice(searchTermIndex + 1),
-                            ];
-                          }
-                          return (
-                            <>
-                              {filteredNames.slice(0, 1)}
-                              {filteredNames.length > 1 ? (
+                      <p className="text-center provideritem-service font-bold mt-2">
+                        {Array.isArray(provider.name)
+                          ? (() => {
+                              const searchTermIndex = provider.name.findIndex(
+                                (name) =>
+                                  searchTerm &&
+                                  name.toLowerCase() ===
+                                    searchTerm.toLowerCase()
+                              );
+                              let filteredNames = [...provider.name];
+                              if (searchTermIndex !== -1) {
+                                filteredNames = [
+                                  provider.name[searchTermIndex],
+                                  ...provider.name.slice(0, searchTermIndex),
+                                  ...provider.name.slice(searchTermIndex + 1),
+                                ];
+                              }
+                              return (
                                 <>
-                                  ,{" "}
-                                  <Link
-                                    className="hover:underline"
-                                    to={`/search?searchTerm=${encodeURIComponent(
-                                      filteredNames[1]
-                                    )}&address=${provider.address.city}`}
-                                  >
-                                    {filteredNames[1]}
-                                  </Link>
+                                  {filteredNames.slice(0, 1)}
+                                  {filteredNames.length > 1 ? (
+                                    <>
+                                      ,{" "}
+                                      <Link
+                                        className="hover:underline"
+                                        to={`/search?searchTerm=${encodeURIComponent(
+                                          filteredNames[1]
+                                        )}&address=${provider.address.city}`}
+                                      >
+                                        {filteredNames[1]}
+                                      </Link>
+                                    </>
+                                  ) : null}
+                                  {filteredNames.length > 2
+                                    ? ` +${filteredNames.length - 2} more`
+                                    : ""}
                                 </>
-                              ) : null}
-                              {filteredNames.length > 2
-                                ? ` +${filteredNames.length - 2} more`
-                                : ""}
-                            </>
-                          );
-                        })()
-                      : provider.name}
-                  </p>
-                  <div className="flex flex-col items-start justify-start">
-                    <div className="flex items-center gap-1 mt-2">
-                      <IoIosStar className="h-4 w-4 text-slate-600" />
-                      <p className="text-sm text-gray-600">
-                        <span className="text-gray-600 font-bold">
-                          Rating:{" "}
-                        </span>
-                        {review &&
-                        (review.totalrating === "0.00" ||
-                          review.totalrating === "0")
-                          ? "No reviews"
-                          : `${parseFloat(review?.totalrating).toFixed(2)} (${
-                              review?.totalratings || 0
-                            } ${
-                              review?.totalratings === 1 ? "review" : "reviews"
-                            })`}
+                              );
+                            })()
+                          : provider.name}
                       </p>
-                    </div>
-                    <p className="flex items-center gap-1 text-slate-600 text-sm truncate">
-                      <FaMapMarkerAlt className="text-gray-600 " />
-                      <span className="text-gray-600 font-bold">Addess:</span>
-                      {provider.address.addressLine1} {provider.address.city},{" "}
-                      {provider.address.state}
-                    </p>
-                    <div className="flex items-center gap-1">
-                      <MdWorkspacePremium className="h-4 w-4 text-gray-600" />
-                      <p className="text-sm text-gray-600 truncate w-full">
-                        <span className="text-gray-600 font-bold">
-                          Experience:{" "}
-                        </span>
-                        {provider.experience} years experience overall
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <PiHandHeartFill className="h-4 w-4 text-gray-600" />
-                      <p className="text-sm text-gray-600 truncate w-full">
-                        <span className="text-gray-600 font-bold">
-                          Care Settings:{" "}
-                        </span>
-                        {Array.isArray(provider.therapytype)
-                          ? `${provider.therapytype.join(", ")}`
-                          : provider.therapytype}
-                      </p>
+                      <div className="flex flex-col items-start justify-start">
+                        <div className="flex items-center gap-1 mt-2">
+                          <IoIosStar className="h-4 w-4 icon-color" />
+                          <p className="text-sm text-gray-600">
+                            <span className="text-gray-600 font-bold">
+                              Rating:{" "}
+                            </span>
+                            {review &&
+                            (review.totalrating === "0.00" ||
+                              review.totalrating === "0")
+                              ? "No reviews"
+                              : `${parseFloat(review?.totalrating).toFixed(
+                                  2
+                                )} (${review?.totalratings || 0} ${
+                                  review?.totalratings === 1
+                                    ? "review"
+                                    : "reviews"
+                                })`}
+                          </p>
+                        </div>
+                        <p className="flex items-center gap-1 text-slate-600 text-sm truncate">
+                          <FaMapMarkerAlt className="icon-color" />
+                          <span className="text-gray-600 font-bold">
+                            Addess:
+                          </span>
+                          {provider.address.addressLine1}{" "}
+                          {provider.address.city}, {provider.address.state}
+                        </p>
+                        <div className="flex items-center gap-1">
+                          <MdWorkspacePremium className="h-4 w-4 icon-color" />
+                          <p className="text-sm text-gray-600 truncate w-full">
+                            <span className="text-gray-600 font-bold">
+                              Experience:{" "}
+                            </span>
+                            {provider.experience} years experience overall
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <PiHandHeartFill className="h-4 w-4 icon-color" />
+                          <p className="text-sm text-gray-600 truncate w-full">
+                            <span className="text-gray-600 font-bold">
+                              Care Settings:{" "}
+                            </span>
+                            {Array.isArray(provider.therapytype)
+                              ? `${provider.therapytype.join(", ")}`
+                              : provider.therapytype}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className="flex flex-row gap-4 mt-2 border-t border-b p-2 border-gray-300">
-                {subMenu.map((item, key) => {
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => handleClick(item.value, item.offset)}
-                      className="flex gap-4 text-slate-800 duration-200 font-semibold"
-                    >
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </div>
-              <span className="font-bold text-xl text-gray mt-2">
-                About {provider.fullName}
-              </span>
-              <div id="About" className="flex flex-col items-start">
-                <div className="overflow-hidden">
-                  <p
-                    className={`text-slate-800 overflow-ellipsis overflow-hidden ${
-                      description ? "" : "line-clamp-3"
-                    }`}
-                  >
-                    {provider.description}
-                  </p>
-                </div>
-                {!description && (
-                  <button
-                    className="text-sky-500 hover:text-sky-800 underline duration-200"
-                    onClick={() => setDescription(true)}
-                  >
-                    Read More
-                  </button>
-                )}
-              </div>
-              <div id="Reviews" className="flex flex-col items-start gap-2">
-                <div>
-                  <span className="w-full flex justify-center font-bold text-slate-700 text-2xl">
-                    Reviews
+                  <div className="flex flex-row gap-4 mt-2 border-t border-b p-2 border-gray-300">
+                    {subMenu.map((item, key) => {
+                      return (
+                        <button
+                          key={key}
+                          onClick={() => handleClick(item.value, item.offset)}
+                          className="flex gap-4 text-slate-800 duration-200 font-semibold"
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <span className="font-bold text-xl text-gray mt-2">
+                    About {provider.fullName}
                   </span>
-                  <div className="w-full flex justify-center">
-                    <span className="font-bold text-slate-800 text-5xl">
-                      {parseFloat(review.totalrating).toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-center">
-                    <StarRatings
-                      rating={Number(review.totalrating) || 0}
-                      starRatedColor="#56c3fc"
-                      numberOfStars={5}
-                      name="rating"
-                      starDimension="18px"
-                      starSpacing="2px"
-                    />
-                  </div>
-                  <div className="w-full flex justify-center">
-                    <span className="text-slate-800 font-semibold">
-                      {review.totalratings} Reviews
-                    </span>
-                  </div>
-                </div>
-                <div className="flex flex-row gap-4 mt-4">
-                  <Button variant="outlined">View Review</Button>
-                  <Link to={url}>
-                    <Button className="blue-button">Leave Review</Button>
-                  </Link>
-                </div>
-                <div className="p-2">
-                  <p className="text-slate-700 text-base font-semibold">
-                    MON - SAT
-                  </p>
-                  <p>
-                    {convert12Hrs(provider.availability.morningStart)}
-                    {" - "}
-                    {convert12Hrs(provider.availability.morningEnd)}
-                  </p>
-                  <p>
-                    {convert12Hrs(provider.availability.eveningStart)}
-                    {" - "}
-                    {convert12Hrs(provider.availability.eveningEnd)}
-                  </p>
-                </div>
-              </div>
-              <div>
-                {provider.verified === true && (
-                  <div className="mt-2">
-                    <h1 className="text-gray font-bold text-2xl">
-                      Accreditions
-                    </h1>
-                    <IoShieldCheckmarkOutline className="size-10 text-gray-600 mt-2" />
-                    <h2 className="text-gray font-bold text-base">
-                      Claimed Profile
-                    </h2>
-                    <p className="w-40 text-gray-500">
-                      This provider has submitted proof of credentials and has
-                      claimed their profile.
-                    </p>
-                  </div>
-                )}
-              </div>
-              <div
-                id="Service"
-                className="flex flex-col border-t border-gray-300"
-              >
-                <h1 className="text-gray text-2xl mt-4 font-bold">Services</h1>
-                <div className="flex flex-wrap justify-between">
-                  {provider.name.map((service, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="flex flex-row items-center gap-2 mt-2 w-1/2"
+                  <div id="About" className="flex flex-col items-start">
+                    <div className="overflow-hidden">
+                      <p
+                        className={`text-slate-800 overflow-ellipsis overflow-hidden ${
+                          description ? "" : "line-clamp-3"
+                        }`}
                       >
-                        <IoMdCheckmarkCircleOutline className="h-5 w-5 text-amber-400" />
-                        <p className="font-semibold text-sm md:text-lg text-gray-600">
-                          {service}
+                        {provider.description}
+                      </p>
+                    </div>
+                    {!description && (
+                      <button
+                        className="readmore underline duration-200"
+                        onClick={() => setDescription(true)}
+                      >
+                        Read More
+                      </button>
+                    )}
+                  </div>
+                  <div id="Reviews" className="flex flex-col items-start gap-2">
+                    <div>
+                      <span className="w-full flex justify-center font-bold text-slate-700 text-2xl">
+                        Reviews
+                      </span>
+                      <div className="w-full flex justify-center">
+                        <span className="font-bold text-slate-800 text-5xl">
+                          {parseFloat(review.totalrating).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="w-full flex justify-center">
+                        <StarRatings
+                          rating={Number(review.totalrating) || 0}
+                          starRatedColor="#00C9BA"
+                          numberOfStars={5}
+                          name="rating"
+                          starDimension="18px"
+                          starSpacing="2px"
+                        />
+                      </div>
+                      <div className="w-full flex justify-center">
+                        <span className="text-slate-800 font-semibold">
+                          {review.totalratings} Reviews
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-row gap-4 mt-4">
+                      <Button variant="outlined">View Review</Button>
+                      <Link to={url}>
+                        <Button className="card-btn">Leave Review</Button>
+                      </Link>
+                    </div>
+                    <div className="p-2">
+                      <p className="text-slate-700 text-base font-semibold">
+                        MON - SAT
+                      </p>
+                      <p>
+                        {convert12Hrs(provider.availability.morningStart)}
+                        {" - "}
+                        {convert12Hrs(provider.availability.morningEnd)}
+                      </p>
+                      <p>
+                        {convert12Hrs(provider.availability.eveningStart)}
+                        {" - "}
+                        {convert12Hrs(provider.availability.eveningEnd)}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    {provider.verified === true && (
+                      <div className="mt-2">
+                        <h1 className="text-gray font-bold text-2xl">
+                          Accreditions
+                        </h1>
+                        <IoShieldCheckmarkOutline className="size-10 text-gray-600 mt-2" />
+                        <h2 className="text-gray font-bold text-base">
+                          Claimed Profile
+                        </h2>
+                        <p className="w-40 text-gray-500">
+                          This provider has submitted proof of credentials and
+                          has claimed their profile.
                         </p>
                       </div>
-                    );
-                  })}
+                    )}
+                  </div>
+                  <div
+                    id="Service"
+                    className="flex flex-col border-t border-gray-300"
+                  >
+                    <h1 className="text-gray text-2xl mt-4 font-bold">
+                      Services
+                    </h1>
+                    <div className="flex flex-wrap justify-between">
+                      {provider.name.map((service, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="flex flex-row items-center gap-2 mt-2 w-1/2"
+                          >
+                            <IoMdCheckmarkCircleOutline className="h-5 w-5 icon-color" />
+                            <p className="font-semibold text-sm md:text-lg text-gray-600">
+                              {service}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <h1 className="text-gray text-2xl mt-4 font-bold">
+                      Care Settings
+                    </h1>
+                    <div className="flex mt-2 flex-warp justify-between">
+                      {provider.therapytype.map((type, index) => {
+                        return (
+                          <div
+                            className="flex flex-row items-center gap-2 mt-2 w-1/2"
+                            key={index}
+                          >
+                            {type === "Virtual" && (
+                              <>
+                                <span className="flex flex-row text-2xl icon-color items-center justify-between">
+                                  <MdOutlineVideoCameraFront />
+                                </span>
+                                <p className="text-gray-700 text-sm md:text-lg font-semibold">
+                                  Virtual
+                                </p>
+                              </>
+                            )}
+                            {type === "In-Clinic" && (
+                              <>
+                                <span className="flex flex-row text-xl icon-color items-center justify-between">
+                                  <FaClinicMedical />
+                                </span>
+                                <p className="text-gray-700 text-sm md:text-lg font-semibold">
+                                  In-Clinic
+                                </p>
+                              </>
+                            )}
+                            {type === "In-Home" && (
+                              <>
+                                <span className="flex flex-row text-2xl icon-color items-center justify-between">
+                                  <FaHome className="h-5" />
+                                </span>
+                                <p className="text-gray-700 text-sm md:text-lg font-semibold">
+                                  In-Home
+                                </p>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
-                <h1 className="text-gray text-2xl mt-4 font-bold">
-                  Care Settings
-                </h1>
-                <div className="flex mt-2 flex-warp justify-between">
-                  {provider.therapytype.map((type, index) => {
-                    return (
-                      <div
-                        className="flex flex-row items-center gap-2 mt-2 w-1/2"
-                        key={index}
-                      >
-                        {type === "Virtual" && (
-                          <>
-                            <span className="flex flex-row text-2xl text-gray-600 items-center justify-between">
-                              <MdOutlineVideoCameraFront />
-                            </span>
-                            <p className="text-gray-700 text-sm md:text-lg font-semibold">
-                              Virtual
-                            </p>
-                          </>
-                        )}
-                        {type === "In-Clinic" && (
-                          <>
-                            <span className="flex flex-row text-xl text-gray-600 items-center justify-between">
-                              <FaClinicMedical />
-                            </span>
-                            <p className="text-gray-700 text-sm md:text-lg font-semibold">
-                              In-Clinic
-                            </p>
-                          </>
-                        )}
-                        {type === "In-Home" && (
-                          <>
-                            <span className="flex flex-row text-2xl text-gray-600 items-center justify-between">
-                              <FaHome className="h-5" />
-                            </span>
-                            <p className="text-gray-700 text-sm md:text-lg font-semibold">
-                              In-Home
-                            </p>
-                          </>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-            <div
-              className="w-full flex flex-col space-y-3 p-3 mt-6 max-w-[460px]"
-              style={{
-                alignSelf: "flex-start",
-                position: "sticky",
-                top: "125px",
-              }}
-            >
-              {!message && (
-                <div className="w-full border-2 bg-sky-100 rounded-lg">
-                  <div className="p-6">
-                    <p className="font-bold text-xl text-gray ">
-                      Get in touch with {provider.fullName}
-                    </p>
-                    {/* <div className="video-responsive">
+                <div
+                  className="w-full flex flex-col space-y-3 p-3 mt-6 max-w-[460px]"
+                  style={{
+                    alignSelf: "flex-start",
+                    position: "sticky",
+                    top: "125px",
+                  }}
+                >
+                  {!message && (
+                    <div className="w-full border-2 bg-purple-100 rounded-lg">
+                      <div className="p-6">
+                        <p className="font-bold text-xl text-gray ">
+                          Get in touch with {provider.fullName}
+                        </p>
+                        {/* <div className="video-responsive">
                     <iframe
                       width="300"
                       height="150"
@@ -739,161 +777,163 @@ export default function Provider() {
                       allowfullscreen
                     ></iframe>
                   </div> */}
-                    {!currentUser && (
-                      <div className="flex flex-col mt-2 gap-4">
-                        <Button
-                          onClick={() => {
-                            setOpenModal(true);
-                          }}
-                          className="bg-amber w-full text-gray-900 rounded-lg uppercase hover:opacity-95"
-                        >
-                          Book A Appointment
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          onClick={() => {
-                            setIsListOpen(true);
-                          }}
-                          className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
-                        >
-                          <FaRegHeart /> Save to List
-                        </Button>
-                        <Modal
-                          show={openModal}
-                          size="md"
-                          onClose={onCloseModal}
-                          popup
-                        >
-                          <Modal.Header></Modal.Header>
-                          <Modal.Body>
-                            <SignupModal />
-                          </Modal.Body>
-                        </Modal>
-                        <Modal
-                          show={isListOpen}
-                          size="md"
-                          onClose={onCloseModal}
-                          popup
-                        >
-                          <Modal.Header></Modal.Header>
-                          <Modal.Body>
-                            <ListModal />
-                          </Modal.Body>
-                        </Modal>
+                        {!currentUser && (
+                          <div className="flex flex-col mt-2 gap-4">
+                            <Button
+                              onClick={() => {
+                                setOpenModal(true);
+                              }}
+                              className="w-full rounded-lg uppercase btn-color"
+                            >
+                              Book A Appointment
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              onClick={() => {
+                                setIsListOpen(true);
+                              }}
+                              className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
+                            >
+                              <FaRegHeart /> Save to List
+                            </Button>
+                            <Modal
+                              show={openModal}
+                              size="md"
+                              onClose={onCloseModal}
+                              popup
+                            >
+                              <Modal.Header></Modal.Header>
+                              <Modal.Body>
+                                <SignupModal />
+                              </Modal.Body>
+                            </Modal>
+                            <Modal
+                              show={isListOpen}
+                              size="md"
+                              onClose={onCloseModal}
+                              popup
+                            >
+                              <Modal.Header></Modal.Header>
+                              <Modal.Body>
+                                <ListModal onClose={onCloseModal} />
+                              </Modal.Body>
+                            </Modal>
+                          </div>
+                        )}
+                        {currentUser &&
+                          provider.userRef !== currentUser._id &&
+                          !contact && (
+                            <div className="flex flex-col mt-2 gap-4">
+                              <Button
+                                onClick={() => setContact(true)}
+                                className="w-full btn-color rounded-lg uppercase hover:opacity-95"
+                              >
+                                Contact FOR BOOKING
+                              </Button>
+                              <Button
+                                onClick={handleFavorite}
+                                variant="outlined"
+                                className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
+                              >
+                                {isFavorite ? (
+                                  <>
+                                    <FcLike className="h-3 w-3" />
+                                    <p>Saved </p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <FaRegHeart className="h-3 w-3" />
+                                    <p>Save to List </p>
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+                          )}
+                        {contact && <BookingContact provider={provider} />}
                       </div>
-                    )}
-                    {currentUser &&
-                      provider.userRef !== currentUser._id &&
-                      !contact && (
+                    </div>
+                  )}
+                  <div className="w-full border-2 bg-purple-100 rounded-lg">
+                    <div className="p-6">
+                      <p className="font-bold text-xl text-gray ">
+                        Get a Quick Response
+                      </p>
+                      {!currentUser && (
                         <div className="flex flex-col mt-2 gap-4">
                           <Button
-                            onClick={() => setContact(true)}
-                            className="bg-amber w-full text-gray-900 rounded-lg uppercase hover:opacity-95"
+                            onClick={() => {
+                              setOpenModal(true);
+                            }}
+                            className="card-btn w-full rounded-lg uppercase"
                           >
-                            Contact FOR BOOKING
-                          </Button>
-                          <Button
-                            onClick={handleFavorite}
-                            variant="outlined"
-                            className="flex items-center justify-center gap-3 bg-slate-100 text-gray-600 w-full rounded-lg uppercase hover:opacity-95"
-                          >
-                            {isFavorite ? (
-                              <>
-                                <FcLike className="h-3 w-3" />
-                                <p>Saved </p>
-                              </>
-                            ) : (
-                              <>
-                                <FaRegHeart className="h-3 w-3" />
-                                <p>Save to List </p>
-                              </>
-                            )}
+                            Send a Message
                           </Button>
                         </div>
                       )}
-                    {contact && <BookingContact provider={provider} />}
+                      {currentUser &&
+                        provider.userRef !== currentUser._id &&
+                        !message && (
+                          <div className="flex flex-col mt-2 gap-4">
+                            <Button
+                              onClick={() => setMessage(true)}
+                              className="w-full rounded-lg uppercase card-btn"
+                            >
+                              Send a Message
+                            </Button>
+                          </div>
+                        )}
+                      {message && (
+                        <div className="mt-2 text-sm font-semibold">
+                          <Textarea
+                            rows={8}
+                            className="text-gray-700 border-gray-400"
+                            onChange={(e) => setSendMessage(e.target.value)}
+                            value={sendMessage}
+                          />
+                          <div className="flex flex-row gap-2 mt-4">
+                            <Button
+                              onClick={() => setMessage(false)}
+                              variant="outlined"
+                              className="w-full"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleSendMessage}
+                              className="w-full btn-color"
+                            >
+                              Send a Message
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-              <div className="w-full border-2 bg-sky-100 rounded-lg">
-                <div className="p-6">
-                  <p className="font-bold text-xl text-gray ">
-                    Get a Quick Response
-                  </p>
-                  {!currentUser && (
-                    <div className="flex flex-col mt-2 gap-4">
-                      <Button
-                        onClick={() => {
-                          setOpenModal(true);
-                        }}
-                        className="bg-sky-400 w-full text-gray-900 rounded-lg uppercase hover:opacity-95"
-                      >
-                        Send a Message
-                      </Button>
-                    </div>
-                  )}
-                  {currentUser &&
-                    provider.userRef !== currentUser._id &&
-                    !message && (
-                      <div className="flex flex-col mt-2 gap-4">
-                        <Button
-                          onClick={() => setMessage(true)}
-                          className="w-full bg-sky-400 text-gray-900 rounded-lg uppercase hover:opacity-95"
-                        >
-                          Send a Message
-                        </Button>
-                      </div>
-                    )}
-                  {message && (
-                    <div className="mt-2 text-sm font-semibold">
-                      <Textarea
-                        rows={8}
-                        className="text-gray-700 border-gray-400"
-                        onChange={(e) => setSendMessage(e.target.value)}
-                        value={sendMessage}
-                      />
-                      <div className="flex flex-row gap-2 mt-4">
-                        <Button
-                          onClick={() => setMessage(false)}
-                          variant="outlined"
-                          className="w-full"
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          onClick={handleSendMessage}
-                          className="w-full bg-sky-400 text-gray-800"
-                        >
-                          Send a Message
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+                  <>
+                    {currentUser &&
+                      provider.userRef === currentUser._id &&
+                      provider.verified === false && (
+                        <div className="flex justify-center border border-slate-200 p-4 rounded-lg bg-sky-100">
+                          <button
+                            className="flex flex-row space-x-2 items-center"
+                            onClick={handleVerifyProfile}
+                          >
+                            <IoMdAlert className="text-amber-500" />
+                            <span className="text-slate-700">
+                              is this your profile
+                            </span>
+                            <p className="flex flex-row items-center underline text-gray font-semibold">
+                              Claim Your Profile
+                            </p>
+                          </button>
+                        </div>
+                      )}
+                  </>
                 </div>
               </div>
-              <>
-                {currentUser &&
-                  provider.userRef === currentUser._id &&
-                  provider.verified === false && (
-                    <div className="flex justify-center border border-slate-200 p-4 rounded-lg bg-sky-100">
-                      <button
-                        className="flex flex-row space-x-2 items-center"
-                        onClick={handleVerifyProfile}
-                      >
-                        <IoMdAlert className="text-amber-500" />
-                        <span className="text-slate-700">
-                          is this your profile
-                        </span>
-                        <p className="flex flex-row items-center underline text-gray font-semibold">
-                          Claim Your Profile
-                        </p>
-                      </button>
-                    </div>
-                  )}
-              </>
             </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
     </div>
   );

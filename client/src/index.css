@@ -41,9 +41,13 @@ input[type="text"]:focus {
   background-color: #4d1d5c;
   color: white;
 }
+.chatbox-color {
+  background-color: #AFDBD8;
+}
+
 .messagebg:hover {
   background-color: #dcd7fe;
-} 
+}
 .secondary-color {
   background-color: #fbd783;
   color: #fbd783;
@@ -55,6 +59,7 @@ input[type="text"]:focus {
   /* background-color: #ffc439; */
   background-color: #722a88;
   color: white;
+  transition: ease-in-out 0.3s;
   /* background-color: #F8E505; */
   /* color:white */
 }
@@ -94,14 +99,45 @@ input[type="text"]:focus {
 }
 
 .card-btn {
-  background-color: #e1dce2;
-  color: #722A88;
+  background-color: #d6bfdb;
+  color: #722a88;
+  transition: ease-in-out 0.3s;
 }
 
 .card-btn:hover {
-  background-color: #d0bad8;
+  background-color: #b788c0;
 }
 
 .bg-rec {
-  background-color: #CCE6E7;
+  background-color: #cce6e7;
+}
+
+.btn-sec {
+  background-color: #00c9ba;
+  color: #49817b;
+}
+
+.icon-color {
+  color: #955fa6;
+}
+
+.star {
+  color: #49817B;
+}
+
+.readmore {
+  color: #722a88;
+  transition: ease-in-out 0.3s;
+}
+
+.readmore:hover {
+  color: #49817B;
+}
+
+.provideritem-name {
+  color: #533747;
+}
+
+.provideritem-service {
+  color : #6E6362;
 }
