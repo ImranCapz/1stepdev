@@ -269,20 +269,20 @@ export default function ProviderItem({ provider }) {
               </div>
               <div className="flex flex-col md:hidden">
                 <div className="flex items-center gap-1 mt-2">
-                  <MdLocationOn className="h-4 w-4 text-gray-600" />
-                  <p className="text-sm text-gray-600 truncate w-full">
+                  <MdLocationOn className="h-4 w-4 icon-color" />
+                  <p className="text-sm provideritem-service truncate w-full">
                     {provider.address.addressLine1},{provider.address.city}
                   </p>
                 </div>
                 <div className="flex items-center gap-1">
-                  <MdWorkspacePremium className="h-4 w-4 text-gray-600" />
-                  <p className="text-sm text-gray-600 truncate w-full">
+                  <MdWorkspacePremium className="h-4 w-4 icon-color" />
+                  <p className="text-sm provideritem-service truncate w-full">
                     {provider.experience} years experience overall
                   </p>
                 </div>
                 <div className="flex items-center gap-1">
-                  <PiHandHeartFill className="h-4 w-4 text-gray-600" />
-                  <p className="text-sm text-gray-600 truncate w-full">
+                  <PiHandHeartFill className="h-4 w-4 icon-color" />
+                  <p className="text-sm provideritem-service truncate w-full">
                     {Array.isArray(provider.therapytype)
                       ? `${provider.therapytype.slice(0, 4).join(", ")}`
                       : `${provider.therapytype}`}

@@ -311,7 +311,7 @@ const Header = ({ showSubMenu }) => {
                     type="button"
                     data-dropdown-toggle="userDropdown"
                     data-dropdown-placement="bottom-start"
-                    className="w-10 h-10 rounded-full cursor-pointer"
+                    className="w-10 h-10 rounded-full cursor-pointer object-cover"
                     src={
                       currentUser.profilePicture ||
                       "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"

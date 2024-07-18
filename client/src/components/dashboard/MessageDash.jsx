@@ -8,6 +8,13 @@ import toast from "react-hot-toast";
 import SearchBar from "../SearchBar";
 import TopLoadingBar from "react-top-loading-bar";
 import BeatLoader from "react-spinners/BeatLoader";
+import { Card, Tooltip } from "flowbite-react";
+import { MdLocationOn, MdWorkspacePremium } from "react-icons/md";
+
+//icons
+import { PiInfoBold } from "react-icons/pi";
+import { RxCross2 } from "react-icons/rx";
+import { FcApproval } from "react-icons/fc";
 
 export default function MessageDash() {
   const { currentUser } = useSelector((state) => state.user);
@@ -19,7 +26,7 @@ export default function MessageDash() {
   const [loading, setLoading] = useState(false);
   const messageContainerRef = useRef(null);
   const topLoadingBarRef = useRef(null);
-  console.log(limitedMessages);
+  const [info, setInfo] = useState(false);
 
   //socket
   const SOCKET_SERVER_URL = "http://localhost:3000";
@@ -176,6 +183,10 @@ export default function MessageDash() {
     scrollToBottom();
   }, [newMessage, messages]);
 
+  const handleinfo = () => {
+    setInfo(true);
+  };
+
   return (
     <div className="full-height flex flex-col">
       <TopLoadingBar
@@ -191,7 +202,7 @@ export default function MessageDash() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              height: '70vh',
+              height: "70vh",
             }}
           >
             <BeatLoader color="#AFDBD8" loading={loading} size={20} />
@@ -207,8 +218,8 @@ export default function MessageDash() {
           />
           {providerDetails.length > 0 ? (
             <>
-              <div className="flex flex-grow h-screen max-h-[440px] 2xl:max-h-[745px]">
-                <div className="w-1/4 bg-gray-100 flex flex-col items-center">
+              <div className="flex flex-grow h-screen max-h-[460px] 2xl:max-h-[745px]">
+                <div className="w-1/4 chatbg flex flex-col items-center pt-2 pr-2 gap-2">
                   {providerDetails.length > 0 ? (
                     <>
                       {providerDetails.map((provider) => {
@@ -218,18 +229,18 @@ export default function MessageDash() {
                         return (
                           <div
                             key={provider._id}
-                            className={`w-full p-4 flex border-b-2 chatbox-color items-center cursor-pointer  ${
-                              isSelected ? "main-color" : "messagebg"
+                            className={`w-full p-4 flex chatbox-color gap-5 border-b-2 items-center cursor-pointer ${
+                              isSelected ? "chat-selected" : "messagebg"
                             }`}
                             onClick={() => handleProviderClick(provider)}
                           >
                             <img
                               src={provider.profilePicture}
                               alt="provider logo"
-                              className="size-12 md:size-14 rounded-full mr-4 object-cover"
+                              className="size-10 md:size-12 rounded-full object-cover"
                             />
                             <div className="flex-grow">
-                              <p className="font-bold items-center justify-center text-gray hidden md:block">
+                              <p className="font-semibold items-center justify-center hidden md:block">
                                 {provider.fullName}
                               </p>
                               <p className="text-sm">{messages.message}</p>
@@ -243,113 +254,226 @@ export default function MessageDash() {
                     <>no messages found</>
                   )}
                 </div>
-
-                <div className="w-3/4 p-4 flex flex-col bg-slate-200 border-l-2 border-slate-400 overflow-hidden ">
+                <div className="w-3/4 p-4 flex flex-col rightchatbox-color overflow-hidden">
                   {selectedProvider ? (
-                    <>
-                      <div className="flex flex-row">
-                        <img
-                          src={selectedProvider.profilePicture}
-                          alt="provider logo"
-                          className="w-12 h-10 md:h-12 md rounded-full object-cover "
-                        />
-                        <h2 className="flex ml-2 capitalize font-semibold border-b-2 pb-5 border-purple-500 w-full">
-                          {selectedProvider.fullName}
-                        </h2>
-                        <div className=""></div>
-                      </div>
-                      <div className="flex flex-col flex-grow h-screen">
+                    <div className="flex gap-2">
+                      <div
+                        className={`transition-all ease-in-out duration-200 ${
+                          info ? "md:w-3/4" : "w-full"
+                        }`}
+                      >
                         <div
-                          ref={messageContainerRef}
-                          className=" overflow-y-scroll h-[320px] md:h-[310px] 2xl:h-[620px]"
+                          className={`flex flex-row items-center mb-4 justify-between border-b-2 border-purple-500 ${
+                            info ? "" : "cursor-pointer"
+                          }`}
+                          onClick={handleinfo}
                         >
-                          {limitedMessages.map((message) => (
-                            <div key={message._id} className={`m-2`}>
-                              <div
-                                className={`flex items-center ${
-                                  String(message.sender) ===
-                                  String(currentUser._id)
-                                    ? "justify-end"
-                                    : ""
-                                }`}
-                              >
-                                {message.sender !== currentUser._id && (
-                                  <img
-                                    src={selectedProvider.profilePicture}
-                                    alt="provider logo"
-                                    className="size-9 rounded-full mr-2 object-cover"
-                                  />
-                                )}
+                          <div className="flex items-center mb-2">
+                            <img
+                              src={selectedProvider.profilePicture}
+                              alt="provider logo"
+                              className="w-12 h-10 md:h-12 md rounded-full object-cover"
+                            />
+                            <h2 className="flex ml-2 capitalize font-semibold pb-5">
+                              {selectedProvider.fullName}
+                            </h2>
+                          </div>
+                          <div className="flex items-center">
+                            <PiInfoBold className="size-6 " />
+                          </div>
+                        </div>
+                        <div className="flex flex-col flex-grow h-screen">
+                          <div
+                            ref={messageContainerRef}
+                            className=" overflow-y-scroll h-[320px] md:h-[290px] 2xl:h-[600px]"
+                          >
+                            {limitedMessages.map((message) => (
+                              <div key={message._id} className={`m-2`}>
                                 <div
-                                  className={`p-2 text-xs md:text-base ${
-                                    message.sender === currentUser._id
-                                      ? "chat-sender rounded-l-xl rounded-tr-xl"
-                                      : "bg-gray-300 rounded-r-xl rounded-tl-xl"
-                                  } ${
-                                    countWords(message.message) > 10
-                                      ? "w-2/3"
-                                      : "w-max"
+                                  className={`flex items-center ${
+                                    String(message.sender) ===
+                                    String(currentUser._id)
+                                      ? "justify-end"
+                                      : ""
                                   }`}
                                 >
-                                  {message.message}
-                                  <span
-                                    className="ml-2"
-                                    style={{ fontSize: "10px" }}
+                                  {message.sender !== currentUser._id && (
+                                    <img
+                                      src={selectedProvider.profilePicture}
+                                      alt="provider logo"
+                                      className="size-9 rounded-full mr-2 object-cover"
+                                    />
+                                  )}
+                                  <div
+                                    className={`p-2 text-xs md:text-base ${
+                                      message.sender === currentUser._id
+                                        ? "chat-sender rounded-l-xl rounded-tr-xl"
+                                        : "bg-gray-300 rounded-r-xl rounded-tl-xl"
+                                    } ${
+                                      countWords(message.message) > 10
+                                        ? "w-2/3"
+                                        : "w-max"
+                                    }`}
                                   >
-                                    {new Date(
-                                      message.createdAt
-                                    ).toLocaleTimeString([], {
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                    })}
-                                  </span>
+                                    {message.message}
+                                    <span
+                                      className="ml-2"
+                                      style={{ fontSize: "10px" }}
+                                    >
+                                      {new Date(
+                                        message.createdAt
+                                      ).toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      })}
+                                    </span>
+                                  </div>
+                                  {message.sender === currentUser._id && (
+                                    <img
+                                      src={currentUser.profilePicture}
+                                      alt="user logo"
+                                      className="size-9 rounded-full ml-2 object-cover"
+                                    />
+                                  )}
                                 </div>
-                                {message.sender === currentUser._id && (
-                                  <img
-                                    src={currentUser.profilePicture}
-                                    alt="user logo"
-                                    className="size-9 rounded-full ml-2 object-cover"
+                                <div
+                                  className={`${
+                                    message.sender === currentUser._id
+                                      ? "mr-10 text-right"
+                                      : "ml-10 text-left"
+                                  }`}
+                                  style={{ fontSize: "12px" }}
+                                >
+                                  <ReactTimeAgo
+                                    locale="en-US"
+                                    date={new Date(message.createdAt)}
                                   />
-                                )}
+                                </div>
                               </div>
-                              <div
-                                className={`${
-                                  message.sender === currentUser._id
-                                    ? "mr-10 text-right"
-                                    : "ml-10 text-left"
-                                }`}
-                                style={{ fontSize: "12px" }}
-                              >
-                                <ReactTimeAgo
-                                  locale="en-US"
-                                  date={new Date(message.createdAt)}
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            placeholder="Type a message..."
-                            className="w-full p-3 rounded-lg"
-                            value={send}
-                            onKeyDown={handlekeydown}
-                            onChange={(e) => setSend(e.target.value)}
-                          />
-                          <Button
-                            onClick={handleSendMessage}
-                            variant="outlined"
-                            className="btn-color border-gray-400"
-                          >
-                            <BiSend className="size-5" />
-                          </Button>
+                            ))}
+                          </div>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              placeholder="Type a message..."
+                              className="w-full p-3 rounded-lg"
+                              value={send}
+                              onKeyDown={handlekeydown}
+                              onChange={(e) => setSend(e.target.value)}
+                            />
+                            <Button
+                              onClick={handleSendMessage}
+                              variant="outlined"
+                              className="btn-color border-gray-400"
+                            >
+                              <BiSend className="size-5" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </>
+                      {info && (
+                        <div className="w-1/3 p-2 pr-2 md:block hidden border-l-2 mt-2">
+                          <div className="flex flex-row items-center space-x-2 mb-3">
+                            <RxCross2
+                              className="size-6 text-gray cursor-pointer"
+                              onClick={() => setInfo(false)}
+                            />
+                            <p className="text-base font-semibold">
+                              Contact info
+                            </p>
+                          </div>
+                          <Card>
+                            <div className="flex flex-col items-center justify-center">
+                              <img
+                                src={selectedProvider.profilePicture}
+                                alt="user logo"
+                                className="size-16 rounded-full object-cover"
+                              />
+                              <div>
+                                <div className="flex flex-row justify-center items-center gap-1">
+                                  <h2 className="capitalize font-semibold mt-2 provideritem-name">
+                                    {selectedProvider.fullName}
+                                  </h2>
+                                  {selectedProvider.verified === true && (
+                                    <>
+                                      <Tooltip
+                                        content="Verifed Profile"
+                                        animation="duration-500"
+                                      >
+                                        <FcApproval className="animate-bounce size-4 mt-2" />
+                                      </Tooltip>
+                                    </>
+                                  )}
+                                </div>
+                                <p className="text-xs text-center provideritem-service">
+                                  {Array.isArray(selectedProvider.name) ? (
+                                    <>
+                                      <p>
+                                        {selectedProvider.name
+                                          .slice(0, 2)
+                                          .join(", ")}
+                                      </p>
+                                      {selectedProvider.name.length > 2 ? (
+                                        <p>
+                                          {selectedProvider.name
+                                            .slice(2)
+                                            .join(", ")}
+                                        </p>
+                                      ) : null}
+                                      {selectedProvider.name.length > 3 ? (
+                                        <>
+                                          <p>{`+${
+                                            selectedProvider.name.length - 2
+                                          }more`}</p>
+                                        </>
+                                      ) : null}
+                                    </>
+                                  ) : (
+                                    <>{selectedProvider.name}</>
+                                  )}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-1 mt-2">
+                                <MdWorkspacePremium className="h-4 w-4 icon-color" />
+                                <p className="text-sm provideritem-service">
+                                  <span className="text-xs provideritem-service">
+                                    {selectedProvider.experience}
+                                  </span>
+                                  &nbsp;years experience
+                                </p>
+                              </div>
+                              {/* <div className="flex items-center text-center gap-1">
+                              <RiMedalLine className="h-4 w-4 text-gray-600" />
+                              <p className="text-sm">
+                                <span className="text-xs">
+                                  {selectedProvider.qualification}
+                                </span>
+                              </p>
+                            </div> */}
+
+                              <div className="flex items-center gap-1">
+                                <MdLocationOn className="h-4 w-4 icon-color" />
+                                <p className="text-sm provideritem-service truncate w-full">
+                                  {selectedProvider.address.state},
+                                  {selectedProvider.address.city}
+                                </p>
+                              </div>
+                            </div>
+                          </Card>
+                        </div>
+                      )}
+                    </div>
                   ) : (
-                    <div className="flex h-full">
-                      <h2 className="">Select a Provider</h2>
+                    <div className="flex flex-col mx-auto items-center justify-center h-full">
+                      <img
+                        src={currentUser.profilePicture}
+                        alt="user logo"
+                        className="size-20 object-cover rounded-full border-4 border-purple-300"
+                      />
+                      <h1 className="text-2xl font-bold text-gray">
+                        Hi,<span className="animate-wave">👋🏻</span>Welcome!
+                      </h1>
+                      <h2 className="text-gray">Select a provider for chat.</h2>
                     </div>
                   )}
                 </div>

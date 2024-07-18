@@ -424,14 +424,14 @@ export default function Provider() {
                         <div className="flex flex-row items-center space-x-2 gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
                           {provider.fullName}
                           {provider.verified === true && (
-                            <div className="">
+                            <>
                               <Tooltip
                                 content="Verifed Profile"
                                 animation="duration-500"
                               >
                                 <FcApproval />
                               </Tooltip>
-                            </div>
+                            </>
                           )}
                           {provider.verified === false && (
                             <div className="">

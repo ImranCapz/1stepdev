@@ -37,21 +37,35 @@ input[type="text"]:focus {
   color: #dcd7fe;
 }
 
+
+
 .chat-sender {
   background-color: #4d1d5c;
-  color: white;
+  color: rgb(235, 235, 235);
+}
+.chatbg {
+  background-color: #EDE9FC;
+}
+.rightchatbox-color {
+  background-color: #F4F4FA;
 }
 .chatbox-color {
-  background-color: #AFDBD8;
+  background-color: #ffffff;
 }
-
+.chat-selected {
+  background-color: #4D0064;
+  color: #ffffff;
+}
 .messagebg:hover {
-  background-color: #dcd7fe;
+  background-color: #D1BEE0;
 }
 .secondary-color {
   background-color: #fbd783;
   color: #fbd783;
 }
+
+
+
 
 .btn-color {
   /* background-color: #BFCD84; */
@@ -122,7 +136,7 @@ input[type="text"]:focus {
 }
 
 .star {
-  color: #49817B;
+  color: #49817b;
 }
 
 .readmore {
@@ -131,7 +145,7 @@ input[type="text"]:focus {
 }
 
 .readmore:hover {
-  color: #49817B;
+  color: #49817b;
 }
 
 .provideritem-name {
@@ -139,5 +153,18 @@ input[type="text"]:focus {
 }
 
 .provideritem-service {
-  color : #6E6362;
+  color: #6e6362;
+}
+
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(10deg); }
+  50% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+.animate-wave {
+  display: inline-block;
+  animation: wave 1s;
 }
