@@ -28,15 +28,19 @@ export default function MessageDash() {
   const topLoadingBarRef = useRef(null);
   const [info, setInfo] = useState(false);
 
+  console.log("messages", messages);
+
+  console.log("providerDetails", providerDetails);
+
   //socket
   const SOCKET_SERVER_URL = "http://localhost:3000";
   const [socket, setSocket] = useState(null);
   const [send, setSend] = useState("");
 
   useEffect(() => {
+    setLoading(true);
     const newSocket = io(SOCKET_SERVER_URL, { withCredentials: true });
     setSocket(newSocket);
-
     newSocket.on("receiveMessage", ({ sender, message }) => {
       setNewMessage((newmessage) => [
         ...newmessage,
@@ -46,6 +50,7 @@ export default function MessageDash() {
         ...newmessage,
         { sender, message, createdAt: new Date() },
       ]);
+      setLoading(false);
     });
 
     return () => newSocket.close();
@@ -97,8 +102,8 @@ export default function MessageDash() {
         }
         console.log("data", data);
         setProviderDetails(data);
-        setLoading(false);
         topLoadingBarRef.current.complete(50);
+        setLoading(false);
       } catch (error) {
         setLoading(false);
         console.log(error);
@@ -106,22 +111,6 @@ export default function MessageDash() {
     };
     fetchProvidermsg();
   }, [currentUser._id]);
-
-  const handleProviderClick = async (provider) => {
-    setSelectedProvider(provider);
-    const roomID = `${currentUser._id}_${provider._id}`;
-    try {
-      const res = await fetch(`/server/message/getmessage/${roomID}`);
-      const data = await res.json();
-      if (data.success === false) {
-        return;
-      }
-      setMessages(data);
-      setLimitedMessages(data.slice(-10));
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handlekeydown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -187,6 +176,78 @@ export default function MessageDash() {
     setInfo(true);
   };
 
+  const handleProviderClick = async (provider) => {
+    setSelectedProvider(provider);
+    setInfo(false);
+    const roomID = `${currentUser._id}_${provider._id}`;
+    try {
+      const res = await fetch(`/server/message/getmessage/${roomID}`);
+      const data = await res.json();
+      if (data.success === false) {
+        return;
+      }
+      setMessages(data);
+      setLimitedMessages(data.slice(-10));
+
+      const unreadMessages = data.filter(
+        (msg) => !msg.read && msg.sender !== currentUser._id
+      );
+      console.log("unreadMessages", unreadMessages);
+      await Promise.all(
+        unreadMessages.map(async (msg) =>
+          fetch(`/server/message/markasread/${msg._id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+        )
+      );
+      setLimitedMessages((prevMsg) =>
+        prevMsg.map((msg) =>
+          msg.sender !== currentUser._id ? { ...msg, read: true } : msg
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //fetch last message for each provider
+  useEffect(() => {
+    const fetchLastMessage = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `/server/message/getprovider/${currentUser._id}`
+        );
+        const data = await res.json();
+        if (data.success === false) {
+          return;
+        }
+        const providerLastMessage = await Promise.all(
+          data.map(async (provider) => {
+            const roomID = `${currentUser._id}_${provider._id}`;
+            const messRes = await fetch(
+              `/server/message/getlastmessage/${roomID}`
+            );
+            const messData = await messRes.json();
+            return {
+              ...provider,
+              lastMessage: messData || "No message yet",
+            };
+          })
+        );
+        setProviderDetails(providerLastMessage);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    };
+    fetchLastMessage();
+  }, [currentUser._id]);
+
   return (
     <div className="full-height flex flex-col">
       <TopLoadingBar
@@ -243,7 +304,17 @@ export default function MessageDash() {
                               <p className="font-semibold items-center justify-center hidden md:block">
                                 {provider.fullName}
                               </p>
-                              <p className="text-sm">{messages.message}</p>
+                              <p
+                                className={`text-sm line-clamp-1 ${
+                                  !provider.lastMessage?.read &&
+                                  provider.lastMessage?.sender !==
+                                    currentUser._id
+                                    ? "text-gray-700 font-bold"
+                                    : ""
+                                }`}
+                              >
+                                {provider.lastMessage?.message}
+                              </p>
                               {/* <hr className="w-full mt-6 border-purple-800 hidden md:block" /> */}
                             </div>
                           </div>

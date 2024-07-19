@@ -14,6 +14,9 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { Card } from "flowbite-react";
 import { PiInfoBold } from "react-icons/pi";
 import { RxCross2 } from "react-icons/rx";
+import { BiCheckDouble } from "react-icons/bi";
+import { FaCheck } from "react-icons/fa6";
+import { read } from "mz/fs";
 
 export default function ProviderMessageDash() {
   const { currentUser } = useSelector((state) => state.user);
@@ -49,7 +52,6 @@ export default function ProviderMessageDash() {
         { sender, message, createdAt: new Date() },
       ]);
     });
-
     return () => newSocket.close();
   }, []);
 
@@ -331,19 +333,34 @@ export default function ProviderMessageDash() {
                                         : "w-auto"
                                     }`}
                                   >
-                                    {message.message}
-                                    <span
-                                      className="ml-2"
-                                      style={{ fontSize: "10px" }}
-                                    >
-                                      {new Date(
-                                        message.createdAt
-                                      ).toLocaleTimeString([], {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                      })}
-                                    </span>
+                                    <div className="flex items-center ml-2">
+                                      {message.message}
+                                      <span
+                                        className="ml-2 mt-1"
+                                        style={{ fontSize: "10px" }}
+                                      >
+                                        {new Date(
+                                          message.createdAt
+                                        ).toLocaleTimeString([], {
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                        })}
+                                      </span>
+                                      {message.sender === currentUser._id && (
+                                        <span
+                                          className="ml-1 mt-1"
+                                          style={{ fontSize: "20px" }}
+                                        >
+                                          {message.read ? (
+                                            <BiCheckDouble className="text-green-400 justify-start" />
+                                          ) : (
+                                            <FaCheck className="text-gray-400 text-sm" />
+                                          )}
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
+
                                   {message.sender === currentUser._id && (
                                     <img
                                       src={currentUser.profilePicture}

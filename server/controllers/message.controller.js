@@ -74,3 +74,34 @@ export const getUserforProvider = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getLastMessages = async (req, res, next) => {
+  try {
+    const roomId = req.params.roomId;
+    const room = await Room.findOne({ roomID: roomId });
+    if (!room) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
+    }
+    const lastMessage = await Message.findOne({ _id: { $in: room.messages } })
+      .sort({ createdAt: -1 })
+      .exec();
+    if (!lastMessage) {
+      return res.status(404).json({ message: "No messages found" });
+    }
+    return res.status(200).json(lastMessage);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const markasRead = async (req, res, next) => {
+  const messageId = req.params.messageId;
+  try {
+    await Message.updateOne({ _id: messageId }, { read: true });
+    return res.status(200).json({ message: "Message marked as read" });
+  } catch (error) {
+    next(error);
+  }
+};
