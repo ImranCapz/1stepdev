@@ -13,8 +13,8 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { Card } from "flowbite-react";
 import { PiInfoBold } from "react-icons/pi";
 import { RxCross2 } from "react-icons/rx";
-import { BiCheckDouble } from "react-icons/bi";
-import { FaCheck } from "react-icons/fa6";
+// import { BiCheckDouble } from "react-icons/bi";
+// import { FaCheck } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
 
 //redux
@@ -350,44 +350,61 @@ export default function ProviderMessageDash() {
                 <div className="w-1/4 chatbg flex flex-col items-center pt-2 pr-2 gap-2">
                   {userDetails.length > 0 ? (
                     <>
-                      {userloading ? 
-                      <>
-                      
-                      </> : 
-                      <>
-                      {userDetails.map((user) => {
-                        const isSelected =
-                          selectedUser && selectedUser._id === user._id;
-                        return (
-                          <div
+                      {userloading ? (
+                        <>
+                        {userDetails.map((user)=> (
+                          <ContentLoader
+                            height={80}
+                            width={290}
+                            speed={2}
                             key={user._id}
-                            className={`w-full p-4 flex chatbox-color gap-5 border-b-2 items-center cursor-pointer ${
-                              isSelected ? "chat-selected" : "messagebg"
-                            }`}
-                            onClick={() => {
-                              dispatch(selectUser(user._id));
-                              handleUserClick(user);
-                            }}
+                            viewBox="0 0 250 60"
+                            backgroundColor="#f5f5f5"
+                            foregroundColor="#D1BEE0" 
+                            className="2xl:w-[900px] 2xl:h-[110px]"
                           >
-                            <div className="relative">
-                              <img
-                                src={user.profilePicture}
-                                alt="provider logo"
-                                className="w-12 h-12 md:w-12 md:h-12 rounded-full object-cover"
-                              />
-                              {onlineAllUsers[user._id] ? (
-                                <GoDotFill className="absolute text-green-400 top-0 right-0 transition-all ease-in duration-150" />
-                              ) : (
-                                <GoDotFill className="absolute text-red-400 top-0 right-0  transition-all ease-in duration-150" />
-                              )}
-                            </div>
-                            <div className="flex-grow hidden md:block">
-                              <p className="font-semibold items-center justify-center">
-                                {user.username}
-                              </p>
+                            <circle cx="127" cy="35" r="25" className="md:hidden block"/>
+                            <circle cx="30" cy="35" r="25" className="hidden md:block"/>
+                            <rect x="70" y="20" width="140" height="8" rx="4" className="hidden md:block"/>
+                            <rect x="70" y="40" width="80" height="8" rx="4" className="hidden md:block"/>
+                          </ContentLoader>
+                        ))}
+                        </>
+                      ) : (
+                        <>
+                          {userDetails.map((user) => {
+                            const isSelected =
+                              selectedUser && selectedUser._id === user._id;
+                            return (
+                              <div
+                                key={user._id}
+                                className={`w-full p-4 flex chatbox-color gap-5 border-b-2 items-center cursor-pointer ${
+                                  isSelected ? "chat-selected" : "messagebg"
+                                }`}
+                                onClick={() => {
+                                  dispatch(selectUser(user._id));
+                                  handleUserClick(user);
+                                }}
+                              >
+                                <div className="relative">
+                                  <img
+                                    src={user.profilePicture}
+                                    alt="provider logo"
+                                    className="w-12 h-12 2xl:size-20 md:w-12 md:h-12 rounded-full object-cover"
+                                  />
+                                  {onlineAllUsers[user._id] ? (
+                                    <GoDotFill className="absolute text-green-400 top-0 right-0 transition-all ease-in duration-150" />
+                                  ) : (
+                                    <GoDotFill className="absolute text-red-400 top-0 right-0  transition-all ease-in duration-150" />
+                                  )}
+                                </div>
+                                <div className="flex-grow hidden md:block">
+                                  <p className="font-semibold items-center justify-center">
+                                    {user.username}
+                                  </p>
 
-                              <div className="flex flex-row gap-1">
-                                {/* {user.lastMessage?.read ? (
+                                  <div className="flex flex-row gap-1">
+                                    {/* {user.lastMessage?.read ? (
                                   <>
                                     <div className="flex items-center">
                                       <BiCheckDouble className="text-green-400 justify-start" />
@@ -400,58 +417,59 @@ export default function ProviderMessageDash() {
                                     </div>
                                   </>
                                 )} */}
-                                <p
-                                  className={`text-xs md:text-xs line-clamp-1 ${
-                                    !user.lastMessage?.read &&
-                                    user.lastMessage?.sender !== currentUser._id
-                                      ? "text-gray-700 font-bold"
-                                      : ""
-                                  }`}
-                                >
-                                  {user.lastMessage?.message.slice(0, 30)}
-                                  {user.lastMessage?.message.length > 30
-                                    ? "....."
-                                    : ""}
-                                </p>
+                                    <p
+                                      className={`text-xs md:text-xs line-clamp-1 ${
+                                        !user.lastMessage?.read &&
+                                        user.lastMessage?.sender !==
+                                          currentUser._id
+                                          ? "text-gray-700 font-bold"
+                                          : ""
+                                      }`}
+                                    >
+                                      {user.lastMessage?.message.slice(0, 20)}
+                                      {user.lastMessage?.message.length > 20
+                                        ? "....."
+                                        : ""}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex flex-col items-center gap-1">
+                                  <div
+                                    style={{ fontSize: "9px" }}
+                                    className="hidden md:block"
+                                  >
+                                    <span
+                                      className="ml-2"
+                                      style={{ fontSize: "10px" }}
+                                    >
+                                      {new Date(
+                                        user.lastMessage?.createdAt
+                                      ).toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      })}
+                                    </span>
+                                  </div>
+                                  <div>
+                                    {!user.lastMessage?.read &&
+                                      user.lastMessage?.sender !==
+                                        currentUser._id && (
+                                        <div className="bg-purple-400 rounded-full w-4 h-4 flex justify-center items-center">
+                                          <p
+                                            className="font-bold"
+                                            style={{ fontSize: "10px" }}
+                                          >
+                                            {user.unreadCount}
+                                          </p>
+                                        </div>
+                                      )}
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                            <div className="flex flex-col items-center gap-1">
-                              <div
-                                style={{ fontSize: "9px" }}
-                                className="hidden md:block"
-                              >
-                                <span
-                                  className="ml-2"
-                                  style={{ fontSize: "10px" }}
-                                >
-                                  {new Date(
-                                    user.lastMessage?.createdAt
-                                  ).toLocaleTimeString([], {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </span>
-                              </div>
-                              <div>
-                                {!user.lastMessage?.read &&
-                                  user.lastMessage?.sender !==
-                                    currentUser._id && (
-                                    <div className="bg-purple-400 rounded-full w-4 h-4 flex justify-center items-center">
-                                      <p
-                                        className="font-bold"
-                                        style={{ fontSize: "10px" }}
-                                      >
-                                        {user.unreadCount}
-                                      </p>
-                                    </div>
-                                  )}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                      </>}
-                      
+                            );
+                          })}
+                        </>
+                      )}
                     </>
                   ) : (
                     <>no messages found</>

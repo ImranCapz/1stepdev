@@ -21,19 +21,23 @@ import { PiInfoBold } from "react-icons/pi";
 import { RxCross2 } from "react-icons/rx";
 import { FcApproval } from "react-icons/fc";
 import { GoDotFill } from "react-icons/go";
-import { set } from "mongoose";
+
+//loader
+import ContentLoader from "react-content-loader";
 
 export default function MessageDash() {
   const { currentUser } = useSelector((state) => state.user);
   const { onlineAllUsers } = useSelector((state) => state.online);
   const { id } = useSelector((state) => state.provider);
   const [providerDetails, setProviderDetails] = useState([]);
-  console.log("providerDetails", providerDetails);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState([]);
   const [limitedMessages, setLimitedMessages] = useState([]);
+
+  //loader
   const [loading, setLoading] = useState(false);
+  const [providerLoading, setProviderLoading] = useState(true);
   const messageContainerRef = useRef(null);
   const topLoadingBarRef = useRef(null);
   const [info, setInfo] = useState(false);
@@ -225,7 +229,6 @@ export default function MessageDash() {
       }
       setMessages(data);
       setLimitedMessages(data.slice(-10));
-
       const unreadMessages = data.filter(
         (msg) => !msg.read && msg.sender !== currentUser._id
       );
@@ -272,7 +275,7 @@ export default function MessageDash() {
   useEffect(() => {
     const fetchLastMessage = async () => {
       try {
-        setLoading(true);
+        setProviderLoading(true);
         const res = await fetch(
           `/server/message/getprovider/${currentUser._id}`
         );
@@ -300,7 +303,7 @@ export default function MessageDash() {
           })
         );
         setProviderDetails(providerLastMessage);
-        setLoading(false);
+        setProviderLoading(false);
       } catch (error) {
         setLoading(false);
         console.log(error);
@@ -344,89 +347,140 @@ export default function MessageDash() {
                 <div className="w-1/4 chatbg flex flex-col items-center pt-2 pr-2 gap-2">
                   {providerDetails.length > 0 ? (
                     <>
-                      {providerDetails.map((provider) => {
-                        const isSelected =
-                          selectedProvider &&
-                          selectedProvider._id === provider._id;
-                        return (
-                          <div
-                            key={provider._id}
-                            className={`w-full p-4 flex chatbox-color gap-5 border-b-2 items-center cursor-pointer ${
-                              isSelected ? "chat-selected" : "messagebg"
-                            }`}
-                            onClick={() => {
-                              dispatch(selectProvider(provider._id));
-                              handleProviderClick(provider);
-                            }}
-                          >
-                            <div className="relative">
-                              <img
-                                src={provider.profilePicture}
-                                alt="provider logo"
-                                className="size-12 md:size-12 rounded-full object-cover"
+                      {providerLoading ? (
+                        <>
+                          {providerDetails.map((provider) => (
+                            <ContentLoader
+                              height={80}
+                              width={290}
+                              speed={2}
+                              key={provider._id}
+                              viewBox="0 0 250 60"
+                              backgroundColor="#f5f5f5"
+                              foregroundColor="#D1BEE0"
+                              className="2xl:w-[900px] 2xl:h-[110px]"
+                            >
+                              <circle
+                                cx="127"
+                                cy="35"
+                                r="25"
+                                className="md:hidden block"
                               />
-                              {onlineAllUsers[provider._id] ? (
-                                <GoDotFill className="absolute top-0 right-0 text-green-400 transition-all ease-in duration-150" />
-                              ) : (
-                                <GoDotFill className="absolute top-0 right-0 text-red-400 transition-all ease-in duration-150" />
-                              )}
-                            </div>
-                            <div className="flex-grow hidden md:block">
-                              <p className="font-semibold items-center justify-center">
-                                {provider.fullName.slice(0, 15)}
-                              </p>
-                              <div className="flex flex-row gap-1">
-                                <p
-                                  className={`text-sm line-clamp-1 ${
-                                    !provider.lastMessage?.read &&
-                                    provider.lastMessage?.sender !==
-                                      currentUser._id
-                                      ? "text-gray-700 font-bold"
-                                      : ""
-                                  }`}
-                                >
-                                  {provider.lastMessage?.message.slice(0, 30)}
-                                  {provider.lastMessage?.message.length > 30
-                                    ? "...."
-                                    : ""}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex flex-col items-center gap-1">
-                              <div
-                                style={{ fontSize: "11px" }}
+                              <circle
+                                cx="30"
+                                cy="35"
+                                r="25"
                                 className="hidden md:block"
+                              />
+                              <rect
+                                x="70"
+                                y="20"
+                                width="140"
+                                height="8"
+                                rx="4"
+                                className="hidden md:block"
+                              />
+                              <rect
+                                x="70"
+                                y="40"
+                                width="80"
+                                height="8"
+                                rx="4"
+                                className="hidden md:block"
+                              />
+                            </ContentLoader>
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          {providerDetails.map((provider) => {
+                            const isSelected =
+                              selectedProvider &&
+                              selectedProvider._id === provider._id;
+                            return (
+                              <div
+                                key={provider._id}
+                                className={`w-full p-4 flex chatbox-color gap-5 border-b-2 items-center cursor-pointer ${
+                                  isSelected ? "chat-selected" : "messagebg"
+                                }`}
+                                onClick={() => {
+                                  dispatch(selectProvider(provider._id));
+                                  handleProviderClick(provider);
+                                }}
                               >
-                                <span
-                                  className="ml-2"
-                                  style={{ fontSize: "10px" }}
-                                >
-                                  {new Date(
-                                    provider.lastMessage?.createdAt
-                                  ).toLocaleTimeString([], {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </span>
-                              </div>
-                              <div>
-                                {!provider.lastMessage?.read &&
-                                  provider.lastMessage?.sender !==
-                                    currentUser._id && (
-                                    <div className="bg-purple-400 rounded-full w-4 h-4 flex justify-center items-center">
-                                      <p
-                                        className="font-bold"
-                                        style={{ fontSize: "10px" }}
-                                      >
-                                        {provider.unreadCount}
-                                      </p>
-                                    </div>
+                                <div className="relative">
+                                  <img
+                                    src={provider.profilePicture}
+                                    alt="provider logo"
+                                    className="size-12 md:size-12 2xl:size-20 rounded-full object-cover"
+                                  />
+                                  {onlineAllUsers[provider._id] ? (
+                                    <GoDotFill className="absolute top-0 right-0 text-green-400 transition-all ease-in duration-150" />
+                                  ) : (
+                                    <GoDotFill className="absolute top-0 right-0 text-red-400 transition-all ease-in duration-150" />
                                   )}
+                                </div>
+                                <div className="flex-grow hidden md:block">
+                                  <p className="font-semibold items-center justify-center">
+                                    {provider.fullName.slice(0, 15)}
+                                  </p>
+                                  <div className="flex flex-row gap-1">
+                                    <p
+                                      className={`text-sm line-clamp-1 ${
+                                        !provider.lastMessage?.read &&
+                                        provider.lastMessage?.sender !==
+                                          currentUser._id
+                                          ? "text-gray-700 font-bold"
+                                          : ""
+                                      }`}
+                                    >
+                                      {provider.lastMessage?.message.slice(
+                                        0,
+                                        20
+                                      )}
+                                      {provider.lastMessage?.message.length > 20
+                                        ? "...."
+                                        : ""}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex flex-col items-center gap-1">
+                                  <div
+                                    style={{ fontSize: "11px" }}
+                                    className="hidden md:block"
+                                  >
+                                    <span
+                                      className="ml-2"
+                                      style={{ fontSize: "10px" }}
+                                    >
+                                      {new Date(
+                                        provider.lastMessage?.createdAt
+                                      ).toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      })}
+                                    </span>
+                                  </div>
+                                  <div>
+                                    {!provider.lastMessage?.read &&
+                                      provider.lastMessage?.sender !==
+                                        currentUser._id && (
+                                        <div className="bg-purple-400 rounded-full w-4 h-4 flex justify-center items-center">
+                                          <p
+                                            className="font-bold"
+                                            style={{ fontSize: "10px" }}
+                                          >
+                                            {provider.unreadCount}
+                                          </p>
+                                        </div>
+                                      )}
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+                            );
+                          })}
+                        </>
+                      )}
                     </>
                   ) : (
                     <>no messages found</>

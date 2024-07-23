@@ -346,7 +346,7 @@ export default function Provider() {
           </div>
           <div className="block md:hidden mx-auto">
             <ContentLoader
-              width={300} 
+              width={300}
               height={700}
               viewBox="0 0 400 900"
               backgroundColor="#f3f3f3"
