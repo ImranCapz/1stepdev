@@ -12,9 +12,14 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
+        fadeIn: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
+        },
       },
       animation: {
         bounce: "bounce 0.5s ease-in-out",
+        fadeIn: "fadeIn 2s ease-in-out",
       },
       backgroundImage: (theme) => ({
         listbg: "url('../../client/src/components/provider/listbg.jpg')",

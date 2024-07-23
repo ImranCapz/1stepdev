@@ -1,7 +1,6 @@
 import { Button } from "@material-tailwind/react";
 import { BiSend } from "react-icons/bi";
 import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import toast from "react-hot-toast";
 import TopLoadingBar from "react-top-loading-bar";
@@ -16,22 +15,38 @@ import { PiInfoBold } from "react-icons/pi";
 import { RxCross2 } from "react-icons/rx";
 import { BiCheckDouble } from "react-icons/bi";
 import { FaCheck } from "react-icons/fa6";
-import { read } from "mz/fs";
+import { GoDotFill } from "react-icons/go";
+
+//redux
+import { selectUser } from "../../redux/provider/providerSlice";
+import { userOnline, userOfflines } from "../../redux/user/onlineSlice";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+
+//loader
+import ContentLoader from "react-content-loader";
 
 export default function ProviderMessageDash() {
   const { currentUser } = useSelector((state) => state.user);
+  const { currentProvider } = useSelector((state) => state.provider);
+  const { user } = useSelector((state) => state.provider);
+  const { onlineAllUsers } = useSelector((state) => state.online);
   const [userDetails, setUserDetails] = useState([]);
+  console.log("UserDetails", userDetails);
   const [providerId, setProviderId] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState([]);
   const [limitedMessages, setLimitedMessages] = useState([]);
-  // const [isOnline, setIsOnline] = useState(false);
+
   const messageContainerRef = useRef(null);
   const topLoadingBarRef = useRef(null);
+
+  //loading
   const [loading, setLoading] = useState(false);
+  const [userloading, setUserLoading] = useState(false);
   const [info, setInfo] = useState(false);
-  console.log("selectedUser", selectedUser);
+  const dispatch = useDispatch();
 
   // socket.io
   const SOCKET_SERVER_URL = "http://localhost:3000";
@@ -42,18 +57,55 @@ export default function ProviderMessageDash() {
     const newSocket = io(SOCKET_SERVER_URL, { withCredentials: true });
     setSocket(newSocket);
 
-    newSocket.on("receiveMessage", ({ sender, message }) => {
-      setNewMessage((prevMsg) => [
-        ...prevMsg,
-        { sender, message, createdAt: new Date() },
-      ]);
-      setLimitedMessages((prevMsg) => [
-        ...prevMsg,
-        { sender, message, createdAt: new Date() },
-      ]);
+    newSocket.emit("Online", currentProvider._id);
+
+    newSocket.on("UserOnline", ({ userId }) => {
+      console.log("User online", userId);
+      dispatch(userOnline(userId));
     });
-    return () => newSocket.close();
-  }, []);
+
+    newSocket.on("UserOut", ({ userId }) => {
+      console.log("User offline", userId);
+      dispatch(userOfflines(userId));
+    });
+
+    return () => {
+      newSocket.close();
+    };
+  }, [currentProvider._id, dispatch]);
+
+  useEffect(() => {
+    if (!socket) return;
+    const handleMessage = ({ sender, message, provider, userid }) => {
+      if (user !== userid) {
+        toast.success(`new message from ${sender}`);
+        return;
+      }
+      const newMessage = {
+        sender,
+        message,
+        provider,
+        userid,
+        createdAt: new Date(),
+      };
+      setNewMessage((newmessage) => [...newmessage, newMessage]);
+      setLimitedMessages((newmessage) => [...newmessage, newMessage]);
+      setUserDetails((prevDetails) => {
+        const updatedDetails = prevDetails.map((users) => {
+          if (users._id === user) {
+            return {
+              ...users,
+              lastMessage: newMessage,
+            };
+          }
+          return users;
+        });
+        return updatedDetails;
+      });
+    };
+    socket.on("receiveMessage", handleMessage);
+    return () => socket.off("receiveMessage", handleMessage);
+  }, [socket, user]);
 
   const handleSendMessage = () => {
     if (send === "") {
@@ -64,23 +116,17 @@ export default function ProviderMessageDash() {
         roomId: `${selectedUser._id}_${providerId}`,
         sender: currentUser._id,
         provider: providerId,
-        receiver: selectedUser._id,
+        reciever: selectedUser._id,
       });
       socket.emit("sendMessage", {
         roomId: `${selectedUser._id}_${providerId}`,
         message: send,
         sender: currentUser._id,
         provider: providerId,
-        receiver: selectedUser._id,
+        userid: selectedUser._id,
+        reciever: selectedUser._id,
       });
       setSend("");
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
     }
   };
 
@@ -96,20 +142,6 @@ export default function ProviderMessageDash() {
     }
   }, [selectedUser, socket, currentUser._id, providerId]);
 
-  //Online status
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.emit("Online", currentUser._id);
-
-  //     socket.on("UserOnline", ({ userId, isOnline }) => {
-  //       if (userId === selectedUser._id) {
-  //         setIsOnline(isOnline);
-  //       }
-  //     });
-  //   }
-  // }, []);
-
   // fetch user and provider details
   useEffect(() => {
     const fetchProvidermsg = async () => {
@@ -124,7 +156,6 @@ export default function ProviderMessageDash() {
           setLoading(false);
           return;
         }
-        console.log(data.users);
         setUserDetails(data.users);
         setProviderId(data.providerId);
         setLoading(false);
@@ -137,20 +168,10 @@ export default function ProviderMessageDash() {
     fetchProvidermsg();
   }, [currentUser._id]);
 
-  const handleProviderClick = async (user) => {
-    setSelectedUser(user);
-    setInfo(false);
-    const roomID = `${user._id}_${providerId}`;
-    try {
-      const res = await fetch(`/server/message/getmessage/${roomID}`);
-      const data = await res.json();
-      if (data.success === false) {
-        return;
-      }
-      setMessages(data);
-      setLimitedMessages(data.slice(-9));
-    } catch (error) {
-      console.log(error);
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
   };
 
@@ -207,6 +228,99 @@ export default function ProviderMessageDash() {
     setInfo(true);
   };
 
+  const handleUserClick = async (user) => {
+    setSelectedUser(user);
+    setInfo(false);
+    const roomID = `${user._id}_${providerId}`;
+    try {
+      const res = await fetch(`/server/message/getmessage/${roomID}`);
+      const data = await res.json();
+      if (data.success === false) {
+        return;
+      }
+      setMessages(data);
+      setLimitedMessages(data.slice(-9));
+      const unreadMessages = data.filter(
+        (msg) => !msg.read && msg.sender !== currentUser._id
+      );
+      await Promise.all(
+        unreadMessages.map(async (msg) =>
+          fetch(`/server/message/markasread/${msg._id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+        )
+      );
+      setLimitedMessages((prevMsg) =>
+        prevMsg.map((msg) =>
+          msg.sender !== currentUser._id ? { ...msg, read: true } : msg
+        )
+      );
+      setUserDetails((prevDetails) => {
+        const updatedDetails = prevDetails.map((users) => {
+          if (
+            users._id === user._id &&
+            users.lastMessage?.sender !== currentUser._id
+          ) {
+            return {
+              ...users,
+              lastMessage: {
+                ...users.lastMessage,
+                read: true,
+              },
+            };
+          }
+          return users;
+        });
+        return updatedDetails;
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //last message fetch
+  useEffect(() => {
+    const fetchLastMessage = async () => {
+      try {
+        setUserLoading(true);
+        const res = await fetch(
+          `/server/message/getuserprovider/${currentUser._id}`
+        );
+        const data = await res.json();
+        if (data.success === false) {
+          return;
+        }
+        const userLastMessage = await Promise.all(
+          data.users.map(async (user) => {
+            const roomID = `${user._id}_${data.providerId}`;
+            const [messRes, unreadRes] = await Promise.all([
+              fetch(`/server/message/getlastmessage/${roomID}`),
+              fetch(
+                `/server/message/getunreadmessagescount/${roomID}?reciever=${currentUser._id}`
+              ),
+            ]);
+            const messData = await messRes.json();
+            const unreadData = await unreadRes.json();
+            console.log("unreadData", unreadData);
+            return {
+              ...user,
+              lastMessage: messData,
+              unreadCount: unreadData.unreadCount,
+            };
+          })
+        );
+        setUserDetails(userLastMessage);
+        setUserLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchLastMessage();
+  }, [currentUser._id]);
+
   return (
     <div className="full-height flex flex-col">
       <TopLoadingBar
@@ -236,6 +350,11 @@ export default function ProviderMessageDash() {
                 <div className="w-1/4 chatbg flex flex-col items-center pt-2 pr-2 gap-2">
                   {userDetails.length > 0 ? (
                     <>
+                      {userloading ? 
+                      <>
+                      
+                      </> : 
+                      <>
                       {userDetails.map((user) => {
                         const isSelected =
                           selectedUser && selectedUser._id === user._id;
@@ -245,25 +364,94 @@ export default function ProviderMessageDash() {
                             className={`w-full p-4 flex chatbox-color gap-5 border-b-2 items-center cursor-pointer ${
                               isSelected ? "chat-selected" : "messagebg"
                             }`}
-                            onClick={() => handleProviderClick(user)}
+                            onClick={() => {
+                              dispatch(selectUser(user._id));
+                              handleUserClick(user);
+                            }}
                           >
-                            <img
-                              src={user.profilePicture}
-                              alt="provider logo"
-                              className="size-10 md:size-12 rounded-full object-cover"
-                            />
-                            <div className="flex-grow">
-                              <p className="font-semibold items-center justify-center hidden md:block">
+                            <div className="relative">
+                              <img
+                                src={user.profilePicture}
+                                alt="provider logo"
+                                className="w-12 h-12 md:w-12 md:h-12 rounded-full object-cover"
+                              />
+                              {onlineAllUsers[user._id] ? (
+                                <GoDotFill className="absolute text-green-400 top-0 right-0 transition-all ease-in duration-150" />
+                              ) : (
+                                <GoDotFill className="absolute text-red-400 top-0 right-0  transition-all ease-in duration-150" />
+                              )}
+                            </div>
+                            <div className="flex-grow hidden md:block">
+                              <p className="font-semibold items-center justify-center">
                                 {user.username}
                               </p>
-                              <p className="text-xs md:text-xs">
-                                {messages.message}
-                              </p>
-                              {/* <hr className="w-full mt-6 border-purple-800 hidden md:block" /> */}
+
+                              <div className="flex flex-row gap-1">
+                                {/* {user.lastMessage?.read ? (
+                                  <>
+                                    <div className="flex items-center">
+                                      <BiCheckDouble className="text-green-400 justify-start" />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className="flex items-center">
+                                      <FaCheck className="text-gray-400 text-xs" />
+                                    </div>
+                                  </>
+                                )} */}
+                                <p
+                                  className={`text-xs md:text-xs line-clamp-1 ${
+                                    !user.lastMessage?.read &&
+                                    user.lastMessage?.sender !== currentUser._id
+                                      ? "text-gray-700 font-bold"
+                                      : ""
+                                  }`}
+                                >
+                                  {user.lastMessage?.message.slice(0, 30)}
+                                  {user.lastMessage?.message.length > 30
+                                    ? "....."
+                                    : ""}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <div
+                                style={{ fontSize: "9px" }}
+                                className="hidden md:block"
+                              >
+                                <span
+                                  className="ml-2"
+                                  style={{ fontSize: "10px" }}
+                                >
+                                  {new Date(
+                                    user.lastMessage?.createdAt
+                                  ).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </span>
+                              </div>
+                              <div>
+                                {!user.lastMessage?.read &&
+                                  user.lastMessage?.sender !==
+                                    currentUser._id && (
+                                    <div className="bg-purple-400 rounded-full w-4 h-4 flex justify-center items-center">
+                                      <p
+                                        className="font-bold"
+                                        style={{ fontSize: "10px" }}
+                                      >
+                                        {user.unreadCount}
+                                      </p>
+                                    </div>
+                                  )}
+                              </div>
                             </div>
                           </div>
                         );
                       })}
+                      </>}
+                      
                     </>
                   ) : (
                     <>no messages found</>
@@ -289,9 +477,22 @@ export default function ProviderMessageDash() {
                               alt="provider logo"
                               className="size-10 rounded-full object-cover"
                             />
-                            <h2 className="flex ml-2 capitalize font-semibold pb-">
-                              {selectedUser.username}
-                            </h2>
+                            <div className="flex flex-row items-center text-start">
+                              <div className="items-center">
+                                <h2 className="flex flex-row ml-2 capitalize font-semibold">
+                                  {selectedUser.username}
+                                </h2>
+                                {onlineAllUsers[selectedUser._id] ? (
+                                  <div className="text-xs text-start ml-2 transition-all ease-in duration-150">
+                                    Online
+                                  </div>
+                                ) : (
+                                  <div className="text-xs text-start ml-2 transition-all ease-in duration-150">
+                                    Offline
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                           </div>
                           <div className="flex items-center">
                             <PiInfoBold
@@ -303,7 +504,7 @@ export default function ProviderMessageDash() {
                         <div className="flex flex-col flex-grow h-screen">
                           <div
                             ref={messageContainerRef}
-                            className="overflow-y-scroll h-[255px] md:h-[240px] 2xl:h-[550px]"
+                            className="overflow-y-scroll h-[245px] md:h-[240px] 2xl:h-[550px]"
                           >
                             {limitedMessages.map((message) => (
                               <div key={message._id} className={`m-2`}>
@@ -346,7 +547,7 @@ export default function ProviderMessageDash() {
                                           minute: "2-digit",
                                         })}
                                       </span>
-                                      {message.sender === currentUser._id && (
+                                      {/* {message.sender === currentUser._id && (
                                         <span
                                           className="ml-1 mt-1"
                                           style={{ fontSize: "20px" }}
@@ -357,7 +558,7 @@ export default function ProviderMessageDash() {
                                             <FaCheck className="text-gray-400 text-sm" />
                                           )}
                                         </span>
-                                      )}
+                                      )} */}
                                     </div>
                                   </div>
 

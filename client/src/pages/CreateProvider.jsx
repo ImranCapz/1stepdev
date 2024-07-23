@@ -21,6 +21,7 @@ import { IoMdAlert } from "react-icons/io";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
+  const { currentProvider } = useSelector((state) => state.provider);
   const [files, setFiles] = useState([]);
   const [imageUploadError, setImageUploadError] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -66,7 +67,7 @@ export default function CreateProvider() {
     profilePicture: false,
   });
 
-  console.log("Formdata", formData);
+  // console.log("Formdata", formData);
   const handleRemoveImage = (index) => {
     setFormData({
       ...formData,
@@ -299,7 +300,7 @@ export default function CreateProvider() {
         }
       );
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       setProviderData(data);
       setLoading(false);
       if (data.status === true) {
@@ -333,7 +334,7 @@ export default function CreateProvider() {
       if (formData.imageUrls.length < 1)
         return toast.error("You must upload at least one image");
       setError(false);
-      console.log("Provider", providerData);
+      // console.log("Provider", providerData);
       const res = await fetch(
         `/server/provider/update/${providerData.fetchprovider._id}`,
         {

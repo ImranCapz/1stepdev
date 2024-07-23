@@ -1,7 +1,6 @@
 import { Button } from "@material-tailwind/react";
 import { BiSend } from "react-icons/bi";
 import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
 import ReactTimeAgo from "react-time-ago";
 import io from "socket.io-client";
 import toast from "react-hot-toast";
@@ -11,14 +10,25 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { Card, Tooltip } from "flowbite-react";
 import { MdLocationOn, MdWorkspacePremium } from "react-icons/md";
 
+//redux
+import { useDispatch, useSelector } from "react-redux";
+import { userOnline } from "../../redux/user/onlineSlice";
+import { userOfflines } from "../../redux/user/onlineSlice";
+import { selectProvider } from "../../redux/provider/providerSlice";
+
 //icons
 import { PiInfoBold } from "react-icons/pi";
 import { RxCross2 } from "react-icons/rx";
 import { FcApproval } from "react-icons/fc";
+import { GoDotFill } from "react-icons/go";
+import { set } from "mongoose";
 
 export default function MessageDash() {
   const { currentUser } = useSelector((state) => state.user);
+  const { onlineAllUsers } = useSelector((state) => state.online);
+  const { id } = useSelector((state) => state.provider);
   const [providerDetails, setProviderDetails] = useState([]);
+  console.log("providerDetails", providerDetails);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState([]);
@@ -27,10 +37,7 @@ export default function MessageDash() {
   const messageContainerRef = useRef(null);
   const topLoadingBarRef = useRef(null);
   const [info, setInfo] = useState(false);
-
-  console.log("messages", messages);
-
-  console.log("providerDetails", providerDetails);
+  const dispatch = useDispatch();
 
   //socket
   const SOCKET_SERVER_URL = "http://localhost:3000";
@@ -38,23 +45,48 @@ export default function MessageDash() {
   const [send, setSend] = useState("");
 
   useEffect(() => {
-    setLoading(true);
     const newSocket = io(SOCKET_SERVER_URL, { withCredentials: true });
     setSocket(newSocket);
-    newSocket.on("receiveMessage", ({ sender, message }) => {
-      setNewMessage((newmessage) => [
-        ...newmessage,
-        { sender, message, createdAt: new Date() },
-      ]);
-      setLimitedMessages((newmessage) => [
-        ...newmessage,
-        { sender, message, createdAt: new Date() },
-      ]);
-      setLoading(false);
+
+    newSocket.emit("Online", currentUser._id);
+
+    newSocket.on("UserOnline", ({ userId }) => {
+      dispatch(userOnline(userId));
+    });
+
+    newSocket.on("UserOut", ({ userId }) => {
+      dispatch(userOfflines(userId));
     });
 
     return () => newSocket.close();
-  }, []);
+  }, [currentUser._id, dispatch]);
+
+  useEffect(() => {
+    if (!socket) return;
+    const handleMessage = ({ sender, message, provider }) => {
+      if (provider !== id) {
+        toast.success("New message received");
+        return;
+      }
+      const newMessage = { sender, message, provider, createdAt: new Date() };
+      setNewMessage((newmessage) => [...newmessage, newMessage]);
+      setLimitedMessages((newmessage) => [...newmessage, newMessage]);
+      setProviderDetails((prevDetails) => {
+        const updatedDetails = prevDetails.map((providers) => {
+          if (providers._id === id) {
+            return {
+              ...providers,
+              lastMessage: newMessage,
+            };
+          }
+          return providers;
+        });
+        return updatedDetails;
+      });
+    };
+    socket.on("receiveMessage", handleMessage);
+    return () => socket.off("receiveMessage", handleMessage);
+  }, [socket, id]);
 
   const handleSendMessage = () => {
     if (send === "") return toast.error("Message cannot be empty");
@@ -70,6 +102,7 @@ export default function MessageDash() {
         message: send,
         sender: currentUser._id,
         provider: selectedProvider._id,
+        userid: currentUser._id,
         reciever: selectedProvider.userRef,
       });
       setSend("");
@@ -85,6 +118,16 @@ export default function MessageDash() {
         provider: selectedProvider._id,
         reciever: selectedProvider.userRef,
       });
+      socket.on("messageRead", (messageId) => {
+        setLimitedMessages((prevMsg) =>
+          prevMsg.map((msg) =>
+            msg._id === messageId ? { ...msg, read: true } : msg
+          )
+        );
+      });
+      return () => {
+        socket.off("messageRead");
+      };
     }
   }, [selectedProvider, socket, currentUser._id]);
 
@@ -100,7 +143,7 @@ export default function MessageDash() {
         if (data.success === false) {
           return;
         }
-        console.log("data", data);
+        // console.log("data", data);
         setProviderDetails(data);
         topLoadingBarRef.current.complete(50);
         setLoading(false);
@@ -119,12 +162,7 @@ export default function MessageDash() {
     }
   };
 
-  const countWords = (message) => {
-    return message.split(" ").length;
-  };
-
   //scroll up load message
-
   useEffect(() => {
     const handleScroll = () => {
       const theshold = 10;
@@ -158,7 +196,6 @@ export default function MessageDash() {
   };
 
   //scroll to bottom
-
   const scrollToBottom = () => {
     if (messageContainerRef.current) {
       const { scrollHeight, clientHeight } = messageContainerRef.current;
@@ -208,6 +245,24 @@ export default function MessageDash() {
           msg.sender !== currentUser._id ? { ...msg, read: true } : msg
         )
       );
+      setProviderDetails((prevDetails) => {
+        const updateDetails = prevDetails.map((providers) => {
+          if (
+            providers._id === provider._id &&
+            providers.lastMessage?.sender !== currentUser._id
+          ) {
+            return {
+              ...providers,
+              lastMessage: {
+                ...providers.lastMessage,
+                read: true,
+              },
+            };
+          }
+          return providers;
+        });
+        return updateDetails;
+      });
     } catch (error) {
       console.log(error);
     }
@@ -228,13 +283,19 @@ export default function MessageDash() {
         const providerLastMessage = await Promise.all(
           data.map(async (provider) => {
             const roomID = `${currentUser._id}_${provider._id}`;
-            const messRes = await fetch(
-              `/server/message/getlastmessage/${roomID}`
-            );
+            const [messRes, unreadRes] = await Promise.all([
+              fetch(`/server/message/getlastmessage/${roomID}`),
+              fetch(
+                `/server/message/getunreadmessagescount/${roomID}?reciever=${currentUser._id}`
+              ),
+            ]);
             const messData = await messRes.json();
+            const unreadData = await unreadRes.json();
+            console.log("unreadData", unreadData);
             return {
               ...provider,
               lastMessage: messData || "No message yet",
+              unreadCount: unreadData.unreadCount,
             };
           })
         );
@@ -293,29 +354,75 @@ export default function MessageDash() {
                             className={`w-full p-4 flex chatbox-color gap-5 border-b-2 items-center cursor-pointer ${
                               isSelected ? "chat-selected" : "messagebg"
                             }`}
-                            onClick={() => handleProviderClick(provider)}
+                            onClick={() => {
+                              dispatch(selectProvider(provider._id));
+                              handleProviderClick(provider);
+                            }}
                           >
-                            <img
-                              src={provider.profilePicture}
-                              alt="provider logo"
-                              className="size-10 md:size-12 rounded-full object-cover"
-                            />
-                            <div className="flex-grow">
-                              <p className="font-semibold items-center justify-center hidden md:block">
-                                {provider.fullName}
+                            <div className="relative">
+                              <img
+                                src={provider.profilePicture}
+                                alt="provider logo"
+                                className="size-12 md:size-12 rounded-full object-cover"
+                              />
+                              {onlineAllUsers[provider._id] ? (
+                                <GoDotFill className="absolute top-0 right-0 text-green-400 transition-all ease-in duration-150" />
+                              ) : (
+                                <GoDotFill className="absolute top-0 right-0 text-red-400 transition-all ease-in duration-150" />
+                              )}
+                            </div>
+                            <div className="flex-grow hidden md:block">
+                              <p className="font-semibold items-center justify-center">
+                                {provider.fullName.slice(0, 15)}
                               </p>
-                              <p
-                                className={`text-sm line-clamp-1 ${
-                                  !provider.lastMessage?.read &&
-                                  provider.lastMessage?.sender !==
-                                    currentUser._id
-                                    ? "text-gray-700 font-bold"
-                                    : ""
-                                }`}
+                              <div className="flex flex-row gap-1">
+                                <p
+                                  className={`text-sm line-clamp-1 ${
+                                    !provider.lastMessage?.read &&
+                                    provider.lastMessage?.sender !==
+                                      currentUser._id
+                                      ? "text-gray-700 font-bold"
+                                      : ""
+                                  }`}
+                                >
+                                  {provider.lastMessage?.message.slice(0, 30)}
+                                  {provider.lastMessage?.message.length > 30
+                                    ? "...."
+                                    : ""}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <div
+                                style={{ fontSize: "11px" }}
+                                className="hidden md:block"
                               >
-                                {provider.lastMessage?.message}
-                              </p>
-                              {/* <hr className="w-full mt-6 border-purple-800 hidden md:block" /> */}
+                                <span
+                                  className="ml-2"
+                                  style={{ fontSize: "10px" }}
+                                >
+                                  {new Date(
+                                    provider.lastMessage?.createdAt
+                                  ).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </span>
+                              </div>
+                              <div>
+                                {!provider.lastMessage?.read &&
+                                  provider.lastMessage?.sender !==
+                                    currentUser._id && (
+                                    <div className="bg-purple-400 rounded-full w-4 h-4 flex justify-center items-center">
+                                      <p
+                                        className="font-bold"
+                                        style={{ fontSize: "10px" }}
+                                      >
+                                        {provider.unreadCount}
+                                      </p>
+                                    </div>
+                                  )}
+                              </div>
                             </div>
                           </div>
                         );
@@ -345,12 +452,25 @@ export default function MessageDash() {
                               alt="provider logo"
                               className="w-12 h-10 md:h-12 md rounded-full object-cover"
                             />
-                            <h2 className="flex ml-2 capitalize font-semibold pb-5">
-                              {selectedProvider.fullName}
-                            </h2>
+                            <div className="flex flex-row items-center text-start">
+                              <div className="items-center">
+                                <h2 className="flex flex-row ml-2 capitalize font-semibold">
+                                  {selectedProvider.fullName}
+                                </h2>
+                                {onlineAllUsers[selectedProvider._id] ? (
+                                  <div className="text-xs text-start ml-2 fadeIn">
+                                    Online
+                                  </div>
+                                ) : (
+                                  <div className="text-xs text-start  ml-2">
+                                    Offline
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                           </div>
                           <div className="flex items-center">
-                            <PiInfoBold className="size-6 " />
+                            <PiInfoBold className="size-6" />
                           </div>
                         </div>
                         <div className="flex flex-col flex-grow h-screen">
@@ -381,7 +501,7 @@ export default function MessageDash() {
                                         ? "chat-sender rounded-l-xl rounded-tr-xl"
                                         : "bg-gray-300 rounded-r-xl rounded-tl-xl"
                                     } ${
-                                      countWords(message.message) > 10
+                                      message.message.length > 30
                                         ? "w-2/3"
                                         : "w-max"
                                     }`}

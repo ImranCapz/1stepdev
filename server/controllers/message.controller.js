@@ -96,6 +96,25 @@ export const getLastMessages = async (req, res, next) => {
   }
 };
 
+export const getUnreadMessagesCount = async (req, res, next) => {
+  try {
+    const roomId = req.params.roomId;
+    const recieverId = req.query.reciever;
+    const room = await Room.findOne({ roomID: roomId });
+    if (!room) {
+      return res.status(404).json({ message: "Room not found " });
+    }
+    const unreadCount = await Message.countDocuments({
+      _id: { $in: room.messages },
+      read: false,
+      reciever: recieverId,
+    });
+    return res.status(200).json({ unreadCount });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const markasRead = async (req, res, next) => {
   const messageId = req.params.messageId;
   try {

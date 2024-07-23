@@ -12,17 +12,18 @@ const socketSetup = (server) => {
   });
 
   const OnlineUsers = {};
+  console.log(OnlineUsers);
+
   io.on("connection", (socket) => {
     console.log("User connected");
 
-    // socket.on("Online", (userId) => {
-    //   OnlineUsers[userId] = socket.id;
-    //   io.emit("UserOnline", { userId, isOnline: true });
-    // });
+    socket.on("Online", (userId) => {
+      OnlineUsers[userId] = socket.id;
+      io.emit("UserOnline", { userId });
+    });
 
     socket.on("joinRoom", async ({ roomId, sender, reciever, provider }) => {
       try {
-        console.log(`Joining room ${roomId}`);
         let room = await Room.findOne({ roomID: roomId });
         if (!room) {
           room = new Room({
@@ -36,11 +37,8 @@ const socketSetup = (server) => {
             .save()
             .then((room) => console.log("Room created", room))
             .catch((error) => console.error("Error creating room:", error));
-
-          console.log(`Room created, ${roomId}`);
         }
         socket.join(roomId);
-        console.log(`User ${sender} joined room ${roomId}`);
         socket.emit("roomJoined", { roomId: roomId, success: true });
       } catch (error) {
         console.log("Error joining room:", error);
@@ -50,28 +48,41 @@ const socketSetup = (server) => {
 
     socket.on(
       "sendMessage",
-      async ({ roomId, message, sender, reciever, provider }) => {
+      async ({ roomId, message, sender, reciever, provider, userid }) => {
         const newMessage = new Message({
           sender,
           reciever,
           provider,
           message,
+          userid,
         });
         await newMessage
           .save()
-          .then((savedMessage) =>
-            console.log("Message saved successfully", savedMessage)
-          )
+          .then(() => console.log("Message saved successfully"))
           .catch((error) => console.error("Error saving message:", error));
         await Room.findOneAndUpdate(
           { roomID: roomId },
           { $push: { messages: newMessage._id } }
         );
-        io.to(roomId).emit("receiveMessage", { sender, message });
-        console.log(`Message sent in room ${roomId}: ${message}`);
+        io.to(roomId).emit("receiveMessage", {
+          sender,
+          message,
+          provider,
+          userid,
+          reciever,
+        });
         socket.emit("messageSent", { roomId: roomId, success: true });
       }
     );
+
+    socket.on("messageRead", (messageId, roomId) => {
+      Message.findByIdAndUpdate(messageId, { read: true }, (err, message) => {
+        if (err) {
+          console.log("Error updating message read status", err);
+        }
+        io.to(roomId).emit("messageRead", { message, read: true });
+      });
+    });
 
     socket.on("disconnect", () => {
       const userId = Object.keys(OnlineUsers).find(
@@ -79,7 +90,7 @@ const socketSetup = (server) => {
       );
       if (userId) {
         delete OnlineUsers[userId];
-        io.emit("useOffline", { userId, isOnline: false });
+        io.emit("UserOut", { userId });
       }
       console.log("User disconnected");
     });

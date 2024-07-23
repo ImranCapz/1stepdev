@@ -9,6 +9,10 @@ const messageSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  userid: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   provider: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "provider",

@@ -13,6 +13,9 @@ export const providerSlice = createSlice({
     selectProvider: (state, action) => {
       state.id = action.payload;
     },
+    selectUser: (state, action) => {
+      state.user = action.payload;
+    },
     providerData: (state, action) => {
       if (action.payload) {
         state.currentProvider = action.payload;
@@ -30,7 +33,7 @@ export const providerSlice = createSlice({
   },
 });
 
-export const { selectProvider, providerData, providerOut } =
+export const { selectProvider, providerData, providerOut, selectUser } =
   providerSlice.actions;
 
 export default providerSlice.reducer;
