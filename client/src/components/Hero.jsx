@@ -15,6 +15,7 @@ import search from "../assets/search.png";
 import { RiMusic2Fill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { providerData } from "../redux/provider/providerSlice";
+import HowItWorks from "../pages/HowItWorks";
 
 const Hero = () => {
   const { searchTerm } = useParams();
@@ -51,7 +52,7 @@ const Hero = () => {
       }
     };
     fetchProviders();
-  }, []);
+  }, [currentUser, dispatch]);
 
   const startSearching = () => {
     window.scrollTo(0, 0);
@@ -210,6 +211,9 @@ const Hero = () => {
           </div>
         </div>
       </div>
+      <div className="p-10 mb-20">
+          <HowItWorks />
+        </div>
       <div className="w-full flex flex-col px-4 py-9 mx-auto justify-center bg-home">
         <h2 className="text-3xl font-extrabold text-center text-main">
           Latest Articles
@@ -269,7 +273,11 @@ const Hero = () => {
           <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
             <div>
               <p className="flex flex-col items-center">
-                <img src={search} alt="heartIcon" className="w-16 h-16 mb-4 transition ease-in-out duration-700 transform group-hover:-translate-y-2" />
+                <img
+                  src={search}
+                  alt="heartIcon"
+                  className="w-16 h-16 mb-4 transition ease-in-out duration-700 transform group-hover:-translate-y-2"
+                />
                 <span className="text-xl font-bold text-main mb-6">
                   Search Therapist
                 </span>
@@ -339,7 +347,7 @@ const Hero = () => {
         <Modal show={openModal} size="md" onClose={onCloseModal} popup>
           <Modal.Header></Modal.Header>
           <Modal.Body>
-            <ListModel onClose={onCloseModal}/>
+            <ListModel onClose={onCloseModal} />
           </Modal.Body>
         </Modal>
       </div>
