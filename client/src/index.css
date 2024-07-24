@@ -6,9 +6,12 @@ html {
   scroll-behavior: smooth;
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
   box-shadow: none;
 }
+
 
 .blue-button {
   background-color: #a287b6;
@@ -37,35 +40,30 @@ input[type="text"]:focus {
   color: #dcd7fe;
 }
 
-
-
 .chat-sender {
   background-color: #4d1d5c;
   color: rgb(235, 235, 235);
 }
 .chatbg {
-  background-color: #EDE9FC;
+  background-color: #ede9fc;
 }
 .rightchatbox-color {
-  background-color: #F4F4FA;
+  background-color: #f4f4fa;
 }
 .chatbox-color {
   background-color: #ffffff;
 }
 .chat-selected {
-  background-color: #4D0064;
+  background-color: #4d0064;
   color: #ffffff;
 }
 .messagebg:hover {
-  background-color: #D1BEE0;
+  background-color: #d1bee0;
 }
 .secondary-color {
   background-color: #fbd783;
   color: #fbd783;
 }
-
-
-
 
 .btn-color {
   /* background-color: #BFCD84; */
@@ -156,12 +154,20 @@ input[type="text"]:focus {
   color: #6e6362;
 }
 
-
 @keyframes wave {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(10deg); }
-  50% { transform: rotate(-10deg); }
-  75% { transform: rotate(10deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
 }
 
 .animate-wave {

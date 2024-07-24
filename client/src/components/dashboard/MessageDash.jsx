@@ -412,7 +412,7 @@ export default function MessageDash() {
                                   <img
                                     src={provider.profilePicture}
                                     alt="provider logo"
-                                    className="size-12 md:size-12 2xl:size-20 rounded-full object-cover"
+                                    className="w-9 h-9 2xl:size-20 md:w-12 md:h-12 rounded-full object-cover"
                                   />
                                   {onlineAllUsers[provider._id] ? (
                                     <GoDotFill className="absolute top-0 right-0 text-green-400 transition-all ease-in duration-150" />

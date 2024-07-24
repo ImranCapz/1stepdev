@@ -390,7 +390,7 @@ export default function ProviderMessageDash() {
                                   <img
                                     src={user.profilePicture}
                                     alt="provider logo"
-                                    className="w-12 h-12 2xl:size-20 md:w-12 md:h-12 rounded-full object-cover"
+                                    className="w-9 h-9 2xl:size-20 md:w-12 md:h-12 rounded-full object-cover"
                                   />
                                   {onlineAllUsers[user._id] ? (
                                     <GoDotFill className="absolute text-green-400 top-0 right-0 transition-all ease-in duration-150" />

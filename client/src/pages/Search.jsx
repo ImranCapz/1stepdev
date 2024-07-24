@@ -163,17 +163,8 @@ export default function Search() {
     }
   });
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setProviderLoading(false);
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <div className="p-4 md:p-8 md:pl-32 overflow-visible">
+    <div className="w-full h-full p-4 md:p-8 md:pl-32 overflow-visible">
       <TopLoadingBar
         ref={topLoadingBarRef}
         color="#ff9900"
