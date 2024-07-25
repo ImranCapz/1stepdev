@@ -302,7 +302,7 @@ export default function Provider() {
   };
 
   return (
-    <div className="w-full mx-auto flex lg:flex-row flex-col-reverse">
+    <div className="w-full min-h-screen mx-auto flex lg:flex-row flex-col-reverse">
       {loading ? (
         <>
           <div className="md:block hidden mx-auto mb-4">
@@ -344,18 +344,18 @@ export default function Provider() {
               <circle cx="75" cy="75" r="50" />
             </ContentLoader>
           </div>
-          <div className="block md:hidden mx-auto">
+          <div className="block md:hidden mx-auto mb-80">
             <ContentLoader
-              width={300}
-              height={700}
-              viewBox="0 0 400 900"
+              width={360}
+              height={730}
+              viewBox="0 0 400 800"
               backgroundColor="#f3f3f3"
               foregroundColor="#ecebeb"
             >
-              <circle cx="190" cy="100" r="80" />
-              <rect x="50" y="220" rx="3" width="280" height="20" />
+              <circle cx="200" cy="100" r="80" />
+              <rect x="64" y="220" rx="3" width="270" height="20" />
               (share)
-              <rect x="100" y="260" rx="3" width="70" height="20" />
+              <rect x="120" y="260" rx="3" width="70" height="20" />
               <rect x="200" y="260" rx="3" width="70" height="20" />
               (//info)
               <rect x="85" y="300" rx="3" width="220" height="16" />
@@ -395,7 +395,7 @@ export default function Provider() {
               </SwiperSlide>
             ))}
           </Swiper> */}
-              <div className="lg:flex-row flex-col mx-auto flex md:w-5/6 justify-center">
+              <div className="lg:flex-row flex-col mx-auto flex md:w-5/6 justify-center mt-4">
                 <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
                   <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">
                     <p className="flex flex-col items-start justify-start">
@@ -407,14 +407,14 @@ export default function Provider() {
                     </p>
                     <div className="flex flex-col items-center md:items-start">
                       <div className="flex flex-row text-gray-600 font-semibold text-sm space-x-1">
-                        <Link className="capitalize" to={`/${urlsearchTerm}`}>
+                        <Link className="capitalize hover:underline hover:text-purple-400" to={`/${urlsearchTerm}`}>
                           {urlsearchTerm}
                         </Link>
                         {/* <p className="text-gray-400">&gt;</p>
                     <Link className="capitalize">{provider.address.state}&nbsp;</Link> */}
                         <p className="text-gray-400">&gt;</p>
                         <Link
-                          className="capitalize"
+                          className="capitalize hover:underline hover:text-purple-400"
                           to={`/search?searchTerm=${searchTerm}&address=${provider.address.city}`}
                         >
                           {provider.address.city}

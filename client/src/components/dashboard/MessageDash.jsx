@@ -36,7 +36,7 @@ export default function MessageDash() {
   const [limitedMessages, setLimitedMessages] = useState([]);
 
   //loader
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [providerLoading, setProviderLoading] = useState(true);
   const messageContainerRef = useRef(null);
   const topLoadingBarRef = useRef(null);
@@ -145,9 +145,10 @@ export default function MessageDash() {
         );
         const data = await res.json();
         if (data.success === false) {
+          setLoading(false);
+          setProviderLoading(false);
           return;
         }
-        // console.log("data", data);
         setProviderDetails(data);
         topLoadingBarRef.current.complete(50);
         setLoading(false);
@@ -275,12 +276,15 @@ export default function MessageDash() {
   useEffect(() => {
     const fetchLastMessage = async () => {
       try {
+        setLoading(true);
         setProviderLoading(true);
         const res = await fetch(
           `/server/message/getprovider/${currentUser._id}`
         );
         const data = await res.json();
         if (data.success === false) {
+          setLoading(false);
+          setProviderLoading(false);
           return;
         }
         const providerLastMessage = await Promise.all(
@@ -304,6 +308,7 @@ export default function MessageDash() {
         );
         setProviderDetails(providerLastMessage);
         setProviderLoading(false);
+        setLoading(false);
       } catch (error) {
         setLoading(false);
         console.log(error);
@@ -347,7 +352,7 @@ export default function MessageDash() {
                 <div className="w-1/4 chatbg flex flex-col items-center pt-2 pr-2 gap-2">
                   {providerDetails.length > 0 ? (
                     <>
-                      {providerLoading ? (
+                      {providerLoading && !loading ? (
                         <>
                           {providerDetails.map((provider) => (
                             <ContentLoader

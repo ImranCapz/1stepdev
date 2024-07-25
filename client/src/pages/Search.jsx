@@ -14,11 +14,7 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import { Pagination } from "flowbite-react";
-import {
-  Drawer,
-  Typography,
-  IconButton,
-} from "@material-tailwind/react";
+import { Drawer, Typography, IconButton } from "@material-tailwind/react";
 import { Checkbox } from "flowbite-react";
 
 export default function Search() {
@@ -33,10 +29,10 @@ export default function Search() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   //checkbox
-  const [checkbox, setCheckbox] = useState('');
+  const [checkbox, setCheckbox] = useState("");
   const handlecheckbox = (e) => {
     setCheckbox(e.target.id);
-  }
+  };
 
   //pageination
   const [currentPage, setCurrentPage] = useState(1);
@@ -103,6 +99,7 @@ export default function Search() {
     const fetchProvider = async (address) => {
       console.log("fetchProvider called", address);
       setLoading(true);
+      setProviderLoading(true);
       const urlParams = new URLSearchParams(location.search);
       urlParams.set("searchTerm", searchTerm);
       urlParams.set("address", address.city);
@@ -110,6 +107,7 @@ export default function Search() {
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
       setProviders(data.providers);
+      setProviderLoading(false);
       setLoading(false);
     };
     let addressFromUrl = urlParams.get("address");
@@ -164,7 +162,7 @@ export default function Search() {
   });
 
   return (
-    <div className="w-full h-full p-4 md:p-8 md:pl-32 overflow-visible">
+    <div className="w-full p-4 md:p-8 md:pl-32 overflow-visible min-h-screen">
       <TopLoadingBar
         ref={topLoadingBarRef}
         color="#ff9900"
@@ -204,21 +202,39 @@ export default function Search() {
               </IconButton>
             </div>
             <div className="mb-4">
-                <h1 className="mb-4">Care Settings</h1>
-                <div className="flex flex-col items-start border p-3 border-slate-300 rounded-lg">
-                  <div className="">
+              <h1 className="mb-4">Care Settings</h1>
+              <div className="flex flex-col items-start border p-3 border-slate-300 rounded-lg">
+                <div className="">
                   <div>
-                  <Checkbox id="virtual" color="blue" checked={checkbox === "virtual"} className="mr-2" onChange={handlecheckbox}/>
-                  <label>Virtual</label>
+                    <Checkbox
+                      id="virtual"
+                      color="blue"
+                      checked={checkbox === "virtual"}
+                      className="mr-2"
+                      onChange={handlecheckbox}
+                    />
+                    <label>Virtual</label>
                   </div>
-                  <Checkbox id="clinic" color="blue"className="mr-2"checked={checkbox === "clinic"} onChange={handlecheckbox}/ >
+                  <Checkbox
+                    id="clinic"
+                    color="blue"
+                    className="mr-2"
+                    checked={checkbox === "clinic"}
+                    onChange={handlecheckbox}
+                  />
                   <label>In-Clinic</label>
-                  </div>
-                  <div>
-                  <Checkbox id="home" color="blue" className="mr-2" checked={checkbox === "home"} onChange={handlecheckbox}/>
+                </div>
+                <div>
+                  <Checkbox
+                    id="home"
+                    color="blue"
+                    className="mr-2"
+                    checked={checkbox === "home"}
+                    onChange={handlecheckbox}
+                  />
                   <label>In-Home</label>
-                  </div>
-                  </div>
+                </div>
+              </div>
             </div>
             <div className="flex gap-2 text-center">
               <Button
@@ -382,8 +398,8 @@ export default function Search() {
           </div>
 
           <div className="breadcrumbs flex flex-row font-semibold text-sm mt-2 text-gray-700">
-            <Link to={"/"}>Home</Link>&nbsp;&gt;
-            <Link to={`/${searchTerm}`}>
+            <Link to={"/"} className="hover:underline hover:text-purple-500">Home</Link>&nbsp;&gt;
+            <Link to={`/${searchTerm}`} className="hover:underline hover:text-purple-500">
               &nbsp;{new URLSearchParams(location.search).get("searchTerm")}
             </Link>{" "}
             &nbsp;&gt;
@@ -402,39 +418,79 @@ export default function Search() {
         <div className="flex flex-col gap-4">
           {providerloading ? (
             providers.length > 0 ? (
-              <p className="text-center text-xl text-slate-700 w-full">
-                <ContentLoader viewBox="0 0 500 475" height={475} width={500}>
-                  {Array.from({ length: providers.length }).map((_, index) => (
-                    <React.Fragment key={index}>
-                      <circle cx="70.2" cy={`${73.2 + index * 170}`} r="41.3" />
+              <div className="text-center text-xl text-slate-700 w-full mt-10">
+                {providers.map((provider) => (
+                  <div key={provider._id} className="md:hidden block">
+                    <ContentLoader
+                      viewBox="0 0 320 220"
+                      speed={2}
+                      height={240}
+                      width={370}
+                      backgroundColor="#f5f5f5"
+                      foregroundColor="#D1BEE0"
+                    >
+                      <circle cx="40" cy="60" r="36" />
                       <rect
-                        x="129.9"
-                        y={`${29.5 + index * 170}`}
-                        width="125.5"
-                        height="10"
+                        x="90"
+                        y="34"
+                        rx="4"
+                        ry="4"
+                        width="100"
+                        height="9"
                       />
                       <rect
-                        x="129.9"
-                        y={`${64.7 + index * 170}`}
-                        width="296.5"
-                        height="10"
+                        x="90"
+                        y="56"
+                        rx="4"
+                        ry="4"
+                        width="140"
+                        height="13"
                       />
                       <rect
-                        x="129.9"
-                        y={`${97.8 + index * 170}`}
-                        width="253.5"
-                        height="10"
+                        x="90"
+                        y="80"
+                        rx="4"
+                        ry="4"
+                        width="290"
+                        height="9"
                       />
                       <rect
-                        x="129.9"
-                        y={`${132.3 + index * 170}`}
-                        width="212.5"
-                        height="10"
+                        x="20"
+                        y="110"
+                        rx="4"
+                        ry="4"
+                        width="150"
+                        height="9"
                       />
-                    </React.Fragment>
-                  ))}
-                </ContentLoader>
-              </p>
+                      <rect
+                        x="20"
+                        y="130"
+                        rx="4"
+                        ry="4"
+                        width="190"
+                        height="9"
+                      />
+                      <rect
+                        x="20"
+                        y="150"
+                        rx="4"
+                        ry="4"
+                        width="100"
+                        height="9"
+                      />
+                      (button)
+                      <rect
+                        x="20"
+                        y="180"
+                        rx="4"
+                        ry="4"
+                        width="290"
+                        height="34"
+                      />
+                    </ContentLoader>
+                  </div>
+                ))}
+              </div>
             ) : null
           ) : (
             <>
@@ -455,23 +511,22 @@ export default function Search() {
                   We couldn&apos;t find any doctors for you
                 </p>
               )}
+              {providers.length > 0 &&
+                totalCount > itemsPerPage &&
+                !providerloading && (
+                  <div>
+                    <Pagination
+                      totalPages={Math.ceil(totalCount / itemsPerPage)}
+                      currentPage={currentPage}
+                      onPageChange={onPageChange}
+                      showIcons
+                    />
+                  </div>
+                )}
             </>
           )}
-          {providers.length > 0 &&
-            totalCount > itemsPerPage &&
-            !providerloading && (
-              <div>
-                <Pagination
-                  totalPages={Math.ceil(totalCount / itemsPerPage)}
-                  currentPage={currentPage}
-                  onPageChange={onPageChange}
-                  showIcons
-                />
-              </div>
-            )}
         </div>
       </div>
     </div>
   );
 }
-

@@ -177,7 +177,7 @@ const Hero = () => {
         </div>
         <div className="flex-1 max-w-xl mx-auto mt-14 xl:mt-0">
           <div className="relative">
-            <img src={imagehome} alt="hero" className="rounded-lg size-120" />
+            <img src={imagehome} alt="hero" className="rounded-lg size-70 md:block hidden" />
             {/* <div className="max-w-screen-xl mx-auto px-4 md:text-center md:px-8">
               <div className="max-w-xl space-y-3 md:mx-auto">
                 <h1 className="text-gray-800 text-xl font-extrabold sm:text-2xl">Screening Tool</h1>

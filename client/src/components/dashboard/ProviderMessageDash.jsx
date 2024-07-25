@@ -43,8 +43,8 @@ export default function ProviderMessageDash() {
   const topLoadingBarRef = useRef(null);
 
   //loading
-  const [loading, setLoading] = useState(false);
-  const [userloading, setUserLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [userloading, setUserLoading] = useState(true);
   const [info, setInfo] = useState(false);
   const dispatch = useDispatch();
 

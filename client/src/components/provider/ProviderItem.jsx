@@ -113,24 +113,31 @@ export default function ProviderItem({ provider }) {
     <>
       {loading ? (
         <>
-          <ContentLoader
-            speed={2}
-            width={400}
-            height={160}
-            viewBox="0 0 400 160"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
-          >
-            <rect x="48" y="8" rx="3" ry="3" width="88" height="6" />
-            <rect x="48" y="26" rx="3" ry="3" width="52" height="6" />
-            <rect x="0" y="56" rx="3" ry="3" width="410" height="6" />
-            <rect x="0" y="72" rx="3" ry="3" width="380" height="6" />
-            <rect x="0" y="88" rx="3" ry="3" width="178" height="6" />
-            <circle cx="20" cy="20" r="20" />
-          </ContentLoader>
+          <div className="text-center text-xl text-slate-700 w-full mt-10">
+            <div key={provider._id} className="md:hidden block">
+              <ContentLoader
+                viewBox="0 0 320 220"
+                speed={2}
+                height={240}
+                width={370}
+                backgroundColor="#f5f5f5"
+                foregroundColor="#D1BEE0"
+              >
+                <circle cx="40" cy="60" r="36" />
+                <rect x="90" y="34" rx="4" ry="4" width="100" height="9" />
+                <rect x="90" y="56" rx="4" ry="4" width="140" height="13" />
+                <rect x="90" y="80" rx="4" ry="4" width="290" height="9" />
+                <rect x="20" y="110" rx="4" ry="4" width="150" height="9" />
+                <rect x="20" y="130" rx="4" ry="4" width="190" height="9" />
+                <rect x="20" y="150" rx="4" ry="4" width="100" height="9" />
+                (button)
+                <rect x="20" y="180" rx="4" ry="4" width="290" height="34" />
+              </ContentLoader>
+            </div>
+          </div>
         </>
       ) : (
-        <div className="w-full relative border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg sm:w-[750px]">
+        <div className="w-full relative border bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg sm:w-[750px]">
           <button
             onClick={toggleFavoriteStatus}
             className="p-2 absolute top-2 right-2 z-10"
