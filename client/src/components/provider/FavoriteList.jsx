@@ -22,7 +22,7 @@ export default function FavoriteList() {
   }, [currentUser, dispatch]);
 
   return (
-    <>
+    <div className="min-h-screen">
       <div className="h-52vh md:h-72vh bg-listbg bg-cover bg-center flex flex-col justify-center items-center text-white">
         <div className="">
           <h1 className="flex flex-col items-center text-2xl font-semibold text-zinc-600">
@@ -33,19 +33,20 @@ export default function FavoriteList() {
           </h1>
         </div>
       </div>
-      <div className="p-4 flex flex-col gap-4">
+      <div className="p-4 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {favorites === undefined || favorites === null ? (
           <div>Loading...</div>
         ) : favorites.filter(Boolean).length > 0 ? (
-          favorites
-            .filter(Boolean)
-            .map((provider) => (
-              <ProviderItem
-                key={provider._id}
-                provider={provider}
-                isFavorite={true}
-              />
-            ))
+          favorites.filter(Boolean).map((provider) => (
+            <ProviderItem
+              key={provider._id}
+              provider={{
+                ...provider,
+                totalBookings: null,
+              }}
+              isFavorite={true}
+            />
+          ))
         ) : (
           <div className="flex flex-col mt-4">
             <div className="flex flex-col items-center text-2xl font-semibold mb-6 text-zinc-600">
@@ -57,6 +58,6 @@ export default function FavoriteList() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

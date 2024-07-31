@@ -34,7 +34,6 @@ import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import { Tooltip } from "flowbite-react";
 import ContentLoader from "react-content-loader";
-import { AiFillThunderbolt } from "react-icons/ai";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 
@@ -302,7 +301,7 @@ export default function Provider() {
   };
 
   return (
-    <div className="w-full min-h-screen mx-auto flex lg:flex-row flex-col-reverse">
+    <div className="w-full min-h-screen mx-auto flex lg:flex-row flex-col-reverse bg-providerItem">
       {loading ? (
         <>
           <div className="md:block hidden mx-auto mb-4">
@@ -421,7 +420,7 @@ export default function Provider() {
                         </Link>
                       </div>
                       <div className="flex flex-col md:flex-row items-center justify-between gap-2">
-                        <div className="flex flex-row items-center space-x-2 gap-2 text-2xl md:text-start text-center text-gray font-bold mt-2">
+                        <div className="flex flex-row items-center space-x-2 gap-2 text-xl md:text-start text-center text-gray font-bold mt-2">
                           {provider.fullName}
                           {provider.verified === true && (
                             <>
@@ -531,7 +530,7 @@ export default function Provider() {
                       {/* - ₹{" "}
                 {provider.regularPrice.toLocaleString("en-US")} / Appointment */}
 
-                      <p className="text-center provideritem-service font-bold mt-2">
+                      <p className="text-center provideritem-service font-bold mt-2 text-sm">
                         {Array.isArray(provider.name)
                           ? (() => {
                               const searchTermIndex = provider.name.findIndex(
@@ -792,15 +791,15 @@ export default function Provider() {
                   </div>
                 </div>
                 <div
-                  className="w-full flex flex-col space-y-3 p-3 mt-6 max-w-[460px]"
+                  className="w-full flex flex-col space-y-3 p-3 mt-6 md:w-[490px] 2xl:w-[840px]"
                   style={{
                     alignSelf: "flex-start",
                     position: "sticky",
-                    top: "125px",
+                    top: "135px",
                   }}
                 >
                   {!message && (
-                    <div className="w-full border-2 bg-purple-100 rounded-lg">
+                    <div className="border-2 bg-purple-100 rounded-lg md:w-[390px] 2xl:w-[540px]">
                       <div className="p-6">
                         <p className="font-bold text-xl text-gray ">
                           Get in touch with {provider.fullName}

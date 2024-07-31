@@ -76,6 +76,16 @@ export default function BookingContact({ provider }) {
     setNameOption(option);
   };
 
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hour = String(now.getHours()).padStart(2, "0");
+    const minute = String(now.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hour}:${minute}`;
+  };
+
   return (
     <>
       {booking && (
@@ -85,7 +95,9 @@ export default function BookingContact({ provider }) {
               <button
                 onClick={(e) => handleToggle(e, "you")}
                 className={`p-2 w-20 rounded-lg font-bold hover:text-slate-700 transition duration-300 ease-in-out  ${
-                  nameOption === "you" ? "p-3 bg-emerald-400 text-slate-700" : "bg-slate-300 text-slate-500 hover:text-slate-700"
+                  nameOption === "you"
+                    ? "p-3 bg-emerald-400 text-slate-700"
+                    : "bg-slate-300 text-slate-500 hover:text-slate-700"
                 }`}
               >
                 You
@@ -93,7 +105,9 @@ export default function BookingContact({ provider }) {
               <button
                 onClick={(e) => handleToggle(e, "someone else")}
                 className={`p-2 w-30 rounded-lg font-bold transition duration-300 ease-in-out ${
-                  nameOption === "someone else" ? "p-3 bg-emerald-400 text-slate-700" : "bg-slate-300 text-slate-500 hover:text-slate-700"
+                  nameOption === "someone else"
+                    ? "p-3 bg-emerald-400 text-slate-700"
+                    : "bg-slate-300 text-slate-500 hover:text-slate-700"
                 }`}
               >
                 Someone Else
@@ -109,7 +123,7 @@ export default function BookingContact({ provider }) {
                   value={formData.patientName}
                   onChange={handleChange}
                   placeholder="Full Name"
-                  className="w-full p-3 border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
+                  className="w-full border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
                   required
                 />
               </>
@@ -123,7 +137,7 @@ export default function BookingContact({ provider }) {
                   id="patientName"
                   onChange={handleChange}
                   placeholder="Someone else"
-                  className="w-full p-3 border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
+                  className="w-full border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
                   required
                 />
               </>
@@ -140,7 +154,7 @@ export default function BookingContact({ provider }) {
               required
               placeholder="What service do you need?"
               touchUi={false}
-              className="border-2 p-2 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
+              className="border-2 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
               onChange={(selectedOptions) => {
                 setFormData((preState) => ({
                   ...preState,
@@ -166,7 +180,7 @@ export default function BookingContact({ provider }) {
               name="email"
               id="email"
               onChange={handleChange}
-              className="w-full p-3 border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
+              className="w-full border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
               required
             />
             <h2 className="text-gray-600 mt-2">Note* </h2>
@@ -176,7 +190,7 @@ export default function BookingContact({ provider }) {
               id="note"
               rows="2"
               onChange={handleChange}
-              className="w-full border-2 p-3 rounded-lg mb-1 border-transparent focus:outline-none focus:ring-0 focus:ring-amber-500 focus:border-amber-500 hover:border-amber-500"
+              className="w-full border-2 rounded-lg mb-1 border-transparent focus:outline-none focus:ring-0 focus:ring-amber-500 focus:border-amber-500 hover:border-amber-500"
               placeholder="Enter you Message here..."
               required
             ></textarea>
@@ -188,7 +202,8 @@ export default function BookingContact({ provider }) {
                 name="scheduledTime"
                 id="scheduledTime"
                 onChange={handleChange}
-                className="w-full border-2 p-3 rounded-lg border-transparent focus:outline-none focus:ring-0 focus:ring-amber-500 focus:border-amber-500 hover:border-amber-500"
+                min={getCurrentDateTime()}
+                className="w-[130px] md:w-[170px] border-2 rounded-lg border-transparent focus:outline-none focus:ring-0 focus:ring-amber-500 focus:border-amber-500 hover:border-amber-500"
                 required
               />
 
@@ -203,7 +218,7 @@ export default function BookingContact({ provider }) {
                 required
                 placeholder="Session Type"
                 touchUi={false}
-                className="w-full border-2 p-2 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
+                className="w-full border-2 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
                 onChange={(selectedOptions) => {
                   setFormData((prevState) => ({
                     ...prevState,

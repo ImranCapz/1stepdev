@@ -26,7 +26,6 @@ export default {
         nomsgbg: "url('../../client/src/assets/nomessage.jpg')",
         provmsgbg: "url('../../client/src/assets/providermsg.jpg')",
       }),
-
       height: {
         "52vh": "20vh",
         "72vh": "30vh",

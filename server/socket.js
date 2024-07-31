@@ -12,7 +12,6 @@ const socketSetup = (server) => {
   });
 
   const OnlineUsers = {};
-  console.log(OnlineUsers);
 
   io.on("connection", (socket) => {
     console.log("User connected");

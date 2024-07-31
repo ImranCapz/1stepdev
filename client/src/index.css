@@ -154,6 +154,13 @@ input[type="email"]:focus {
   color: #6e6362;
 }
 
+.bg-providerItem{
+  background-color: #F5F6FA;
+}
+.pr-card {
+  background-color: #ffffff;
+}
+
 @keyframes wave {
   0%,
   100% {
@@ -173,4 +180,12 @@ input[type="email"]:focus {
 .animate-wave {
   display: inline-block;
   animation: wave 1s;
+}
+
+.chatbgimage {
+  background-image: url('../../client/src/assets/chatbg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  object-fit: cover;
 }

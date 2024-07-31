@@ -5,12 +5,12 @@ import img2 from "../assets/howitsworks/online.png";
 function HowItWorks() {
   return (
     <div>
-      <h2 className="text-3xl text-center md:text-left mb- text-teal-500 font-semibold">
+     <h2 className="text-3xl text-center md:text-left text-teal-500 font-semibold">
         How does it work?
       </h2>
 
-      <div className="p-16 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mx-auto">
-        <div className="group border h-[430px] bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
+      <div className="md:p-16 p-5 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mx-auto">
+        <div className="group border bg-white shadow-lg rounded-lg p-2 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
           <h3 className="text-xl font-semibold mb-4 mt-4 text-main ">
             1. We will find you an online therapist
           </h3>
@@ -31,7 +31,7 @@ function HowItWorks() {
           />
         </div>
 
-        <div className="group border bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all duration-300 ease-in-out">
+        <div className="group border bg-white shadow-lg rounded-lg p-2 text-center flex-1 hover:-translate-y-2 transition-all duration-300 ease-in-out">
           <h3 className="text-xl font-semibold mb-4 mt-4 text-main">
             2. Schedule your first appointment
           </h3>
@@ -46,7 +46,7 @@ function HowItWorks() {
           />
         </div>
 
-        <div className="group border bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
+        <div className="group border bg-white shadow-lg rounded-lg p-2 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
           <h3 className="text-xl font-semibold text-main mt-4 mb-4">
             3. Start your recovery journey
           </h3>

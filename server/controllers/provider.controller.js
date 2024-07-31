@@ -1,5 +1,5 @@
-import status from "statuses";
 import Provider from "../models/provider.model.js";
+import Booking from "../models/booking.model.js";
 import { errorHandler } from "../utils/error.js";
 import nodemailer from "nodemailer";
 
@@ -65,11 +65,13 @@ export const fetchProvider = async (req, res, next) => {
   try {
     const fetchprovider = await Provider.findOne({ userRef: req.params.id });
     if (!fetchprovider) {
-      return res.status(404).json({ message: "Provider not found", status: false});
+      return res
+        .status(404)
+        .json({ message: "Provider not found", status: false });
     } else {
-      return res.status(200).json({ status:true , fetchprovider});
+      return res.status(200).json({ status: true, fetchprovider });
     }
-  } catch (error) { 
+  } catch (error) {
     next(error);
   }
 };
@@ -125,7 +127,26 @@ export const getProviders = async (req, res, next) => {
         { "address.pincode": pincode ? pincode : { $exists: true } },
       ],
     });
-    return res.status(200).json({ providers, totalCount });
+
+    const providersWithBooking = await Promise.all(
+      providers.map(async (provider) => {
+        const last48hrs = new Date(Date.now() - 48 * 60 * 60 * 1000);
+
+        const bookings = await Booking.find({
+          provider: provider._id,
+          createdAt: { $gte: last48hrs },
+        }).sort({ createdAt: -1 });
+
+        return {
+          ...provider.toObject(),
+          totalBookings: bookings.length || null,
+        };
+      })
+    );
+
+    return res
+      .status(200)
+      .json({ providers: providersWithBooking, totalCount });
   } catch (error) {
     next(error);
   }

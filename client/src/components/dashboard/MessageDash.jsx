@@ -349,7 +349,7 @@ export default function MessageDash() {
           {providerDetails.length > 0 ? (
             <>
               <div className="flex flex-grow h-screen max-h-[460px] 2xl:max-h-[745px]">
-                <div className="w-1/4 chatbg flex flex-col items-center pt-2 pr-2 gap-2">
+                <div className="w-1/4 flex flex-col items-center pt-2 pr-2 gap-2">
                   {providerDetails.length > 0 ? (
                     <>
                       {providerLoading && !loading ? (

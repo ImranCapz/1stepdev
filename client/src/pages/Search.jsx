@@ -107,6 +107,7 @@ export default function Search() {
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
       setProviders(data.providers);
+      console.log("data", data);
       setProviderLoading(false);
       setLoading(false);
     };
@@ -162,7 +163,7 @@ export default function Search() {
   });
 
   return (
-    <div className="w-full p-4 md:p-8 md:pl-32 overflow-visible min-h-screen">
+    <div className="w-full p-4 md:p-8 sm:mx-auto overflow-visible min-h-screen chatbgimage">
       <TopLoadingBar
         ref={topLoadingBarRef}
         color="#ff9900"
@@ -257,7 +258,7 @@ export default function Search() {
         onSubmit={handlesubmit}
       >
         <div className="flex flex-row md:flex-row space-x-3 items-center overflow-visible">
-          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 z-10">
+          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 z-20">
             <label
               htmlFor="what"
               className="font-sans py-1 px-2 block text-base text-gray-700 font-bold"
@@ -304,7 +305,7 @@ export default function Search() {
               }}
             />
           </div>
-          <div className="transform border-b-2 md:mb-1 bg-transparent text-lg duration-300 focus-within:border-amber-500  ">
+          <div className="transform border-b-2 md:mb-1 bg-transparent text-lg duration-300 focus-within:border-amber-500">
             <label
               htmlFor="where"
               className="block py-1 px-2 text-base font-bold text-gray-700"
@@ -396,10 +397,15 @@ export default function Search() {
               Filter
             </Button>
           </div>
-
           <div className="breadcrumbs flex flex-row font-semibold text-sm mt-2 text-gray-700">
-            <Link to={"/"} className="hover:underline hover:text-purple-500">Home</Link>&nbsp;&gt;
-            <Link to={`/${searchTerm}`} className="hover:underline hover:text-purple-500">
+            <Link to={"/"} className="hover:underline hover:text-purple-500">
+              Home
+            </Link>
+            &nbsp;&gt;
+            <Link
+              to={`/${searchTerm}`}
+              className="hover:underline hover:text-purple-500"
+            >
               &nbsp;{new URLSearchParams(location.search).get("searchTerm")}
             </Link>{" "}
             &nbsp;&gt;
@@ -415,117 +421,191 @@ export default function Search() {
             </div>
           </>
         )}
-        <div className="flex flex-col gap-4">
-          {providerloading ? (
-            providers.length > 0 ? (
-              <div className="text-center text-xl text-slate-700 w-full mt-10">
-                {providers.map((provider) => (
-                  <div key={provider._id} className="md:hidden block">
-                    <ContentLoader
-                      viewBox="0 0 320 220"
-                      speed={2}
-                      height={240}
-                      width={370}
-                      backgroundColor="#f5f5f5"
-                      foregroundColor="#D1BEE0"
-                    >
-                      <circle cx="40" cy="60" r="36" />
-                      <rect
-                        x="90"
-                        y="34"
-                        rx="4"
-                        ry="4"
-                        width="100"
-                        height="9"
+        <div className="md:px-3 2xl:px-40 space-y-2 2xl:mx-auto">
+          <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-10 mt-8">
+            {providerloading ? (
+              providers.length > 0 ? (
+                <div className="mx-auto grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 text-center text-xl text-slate-700 w-full">
+                  {providers.map((provider) => (
+                    <>
+                      <div key={provider._id} className="md:hidden block mt-4">
+                        <ContentLoader
+                          viewBox="0 0 320 220"
+                          speed={2}
+                          height={250}
+                          width={360}
+                          backgroundColor="#e2e2e2"
+                          foregroundColor="#D1BEE0"
+                        >
+                          <circle cx="40" cy="60" r="36" />
+                          <rect
+                            x="90"
+                            y="34"
+                            rx="4"
+                            ry="4"
+                            width="100"
+                            height="9"
+                          />
+                          <rect
+                            x="90"
+                            y="56"
+                            rx="4"
+                            ry="4"
+                            width="140"
+                            height="13"
+                          />
+                          <rect
+                            x="90"
+                            y="80"
+                            rx="4"
+                            ry="4"
+                            width="290"
+                            height="9"
+                          />
+                          <rect
+                            x="20"
+                            y="110"
+                            rx="4"
+                            ry="4"
+                            width="150"
+                            height="9"
+                          />
+                          <rect
+                            x="20"
+                            y="130"
+                            rx="4"
+                            ry="4"
+                            width="190"
+                            height="9"
+                          />
+                          <rect
+                            x="20"
+                            y="150"
+                            rx="4"
+                            ry="4"
+                            width="100"
+                            height="9"
+                          />
+                          (button)
+                          <rect
+                            x="20"
+                            y="180"
+                            rx="4"
+                            ry="4"
+                            width="290"
+                            height="34"
+                          />
+                        </ContentLoader>
+                      </div>
+                      {/* <div key={provider._id} className="md:hidden lg:block gap-4">
+                      <ContentLoader
+                        viewBox="0 0 320 320"
+                        speed={2}
+                        height={200}
+                        width={300}
+                        backgroundColor="#e2e2e2"
+                        foregroundColor="#D1BEE0"
+                      >
+                        <circle cx="40" cy="60" r="36" />
+                        <rect
+                          x="90"
+                          y="34"
+                          rx="4"
+                          ry="4"
+                          width="100"
+                          height="9"
+                        />
+                        <rect
+                          x="90"
+                          y="56"
+                          rx="4"
+                          ry="4"
+                          width="140"
+                          height="13"
+                        />
+                        <rect
+                          x="90"
+                          y="80"
+                          rx="4"
+                          ry="4"
+                          width="290"
+                          height="9"
+                        />
+                        <rect
+                          x="20"
+                          y="110"
+                          rx="4"
+                          ry="4"
+                          width="150"
+                          height="9"
+                        />
+                        <rect
+                          x="20"
+                          y="130"
+                          rx="4"
+                          ry="4"
+                          width="190"
+                          height="9"
+                        />
+                        <rect
+                          x="20"
+                          y="150"
+                          rx="4"
+                          ry="4"
+                          width="100"
+                          height="9"
+                        />
+                        (button)
+                        <rect
+                          x="20"
+                          y="180"
+                          rx="4"
+                          ry="4"
+                          width="290"
+                          height="34"
+                        />
+                      </ContentLoader>
+                    </div> */}
+                    </>
+                  ))}
+                </div>
+              ) : null
+            ) : (
+              <>
+                {providers.length > 0 ? (
+                  providers.map((provider) => {
+                    return (
+                      <ProviderItem
+                        key={provider._id}
+                        provider={{
+                          ...provider,
+                          totalrating: parseFloat(provider.totalrating),
+                        }}
                       />
-                      <rect
-                        x="90"
-                        y="56"
-                        rx="4"
-                        ry="4"
-                        width="140"
-                        height="13"
-                      />
-                      <rect
-                        x="90"
-                        y="80"
-                        rx="4"
-                        ry="4"
-                        width="290"
-                        height="9"
-                      />
-                      <rect
-                        x="20"
-                        y="110"
-                        rx="4"
-                        ry="4"
-                        width="150"
-                        height="9"
-                      />
-                      <rect
-                        x="20"
-                        y="130"
-                        rx="4"
-                        ry="4"
-                        width="190"
-                        height="9"
-                      />
-                      <rect
-                        x="20"
-                        y="150"
-                        rx="4"
-                        ry="4"
-                        width="100"
-                        height="9"
-                      />
-                      (button)
-                      <rect
-                        x="20"
-                        y="180"
-                        rx="4"
-                        ry="4"
-                        width="290"
-                        height="34"
-                      />
-                    </ContentLoader>
-                  </div>
-                ))}
-              </div>
-            ) : null
-          ) : (
-            <>
-              {providers.length > 0 ? (
-                providers.map((provider) => {
-                  return (
-                    <ProviderItem
-                      key={provider._id}
-                      provider={{
-                        ...provider,
-                        totalrating: parseFloat(provider.totalrating),
-                      }}
-                    />
-                  );
-                })
-              ) : (
-                <p className="text-center text-xl text-slate-700">
-                  We couldn&apos;t find any doctors for you
-                </p>
-              )}
-              {providers.length > 0 &&
-                totalCount > itemsPerPage &&
-                !providerloading && (
-                  <div>
-                    <Pagination
-                      totalPages={Math.ceil(totalCount / itemsPerPage)}
-                      currentPage={currentPage}
-                      onPageChange={onPageChange}
-                      showIcons
-                    />
-                  </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-center text-xl text-slate-700">
+                    We couldn&apos;t find any doctors for you
+                  </p>
                 )}
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
+        {providers.length > 0 &&
+          totalCount > itemsPerPage &&
+          !providerloading &&
+          !loading && (
+            <div>
+              <Pagination
+                totalPages={Math.ceil(totalCount / itemsPerPage)}
+                currentPage={currentPage}
+                onPageChange={onPageChange}
+                showIcons
+              />
+            </div>
+          )}
       </div>
     </div>
   );

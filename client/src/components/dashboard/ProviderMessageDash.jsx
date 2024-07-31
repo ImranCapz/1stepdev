@@ -25,6 +25,7 @@ import { useSelector } from "react-redux";
 
 //loader
 import ContentLoader from "react-content-loader";
+import { set } from "mongoose";
 
 export default function ProviderMessageDash() {
   const { currentUser } = useSelector((state) => state.user);
@@ -60,12 +61,12 @@ export default function ProviderMessageDash() {
     newSocket.emit("Online", currentProvider._id);
 
     newSocket.on("UserOnline", ({ userId }) => {
-      console.log("User online", userId);
+      // console.log("User online", userId);
       dispatch(userOnline(userId));
     });
 
     newSocket.on("UserOut", ({ userId }) => {
-      console.log("User offline", userId);
+      // console.log("User offline", userId);
       dispatch(userOfflines(userId));
     });
 
@@ -304,7 +305,7 @@ export default function ProviderMessageDash() {
             ]);
             const messData = await messRes.json();
             const unreadData = await unreadRes.json();
-            console.log("unreadData", unreadData);
+            // console.log("unreadData", unreadData);
             return {
               ...user,
               lastMessage: messData,
@@ -352,23 +353,47 @@ export default function ProviderMessageDash() {
                     <>
                       {userloading ? (
                         <>
-                        {userDetails.map((user)=> (
-                          <ContentLoader
-                            height={80}
-                            width={290}
-                            speed={2}
-                            key={user._id}
-                            viewBox="0 0 250 60"
-                            backgroundColor="#f5f5f5"
-                            foregroundColor="#D1BEE0" 
-                            className="2xl:w-[900px] 2xl:h-[110px]"
-                          >
-                            <circle cx="127" cy="35" r="25" className="md:hidden block"/>
-                            <circle cx="30" cy="35" r="25" className="hidden md:block"/>
-                            <rect x="70" y="20" width="140" height="8" rx="4" className="hidden md:block"/>
-                            <rect x="70" y="40" width="80" height="8" rx="4" className="hidden md:block"/>
-                          </ContentLoader>
-                        ))}
+                          {userDetails.map((user) => (
+                            <ContentLoader
+                              height={80}
+                              width={290}
+                              speed={2}
+                              key={user._id}
+                              viewBox="0 0 250 60"
+                              backgroundColor="#f5f5f5"
+                              foregroundColor="#D1BEE0"
+                              className="2xl:w-[900px] 2xl:h-[110px]"
+                            >
+                              <circle
+                                cx="127"
+                                cy="35"
+                                r="25"
+                                className="md:hidden block"
+                              />
+                              <circle
+                                cx="30"
+                                cy="35"
+                                r="25"
+                                className="hidden md:block"
+                              />
+                              <rect
+                                x="70"
+                                y="20"
+                                width="140"
+                                height="8"
+                                rx="4"
+                                className="hidden md:block"
+                              />
+                              <rect
+                                x="70"
+                                y="40"
+                                width="80"
+                                height="8"
+                                rx="4"
+                                className="hidden md:block"
+                              />
+                            </ContentLoader>
+                          ))}
                         </>
                       ) : (
                         <>

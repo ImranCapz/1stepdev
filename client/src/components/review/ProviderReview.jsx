@@ -125,17 +125,17 @@ export default function ProviderReview() {
   ];
 
   return (
-    <div className="">
+    <div className="min-h-screen">
       {loading ? (
         <></>
       ) : (
         <>
           <div className="h-52vh md:h-72vh bg-listbg bg-cover bg-center flex flex-col justify-center items-center text-white">
             <div className="">
-              <h1 className="flex flex-col items-center text-xl font-semibold text-zinc-600">
+              <h1 className="flex flex-col items-center text-base md:text-xl font-semibold text-zinc-600">
                 YOUR REVIEW FOR
               </h1>
-              <h1 className="flex flex-col items-center text-5xl font-bold mt-6  text-gray-700">
+              <h1 className="flex flex-col items-center text-3xl md:text-5xl font-bold md:mt-6  text-gray-700">
                 {provider.fullName}
               </h1>
             </div>
