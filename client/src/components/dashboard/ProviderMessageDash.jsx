@@ -313,7 +313,12 @@ export default function ProviderMessageDash() {
             };
           })
         );
-        setUserDetails(userLastMessage);
+        const sortedUser = userLastMessage.sort((a, b) => {
+          const DateA = new Date(a.lastMessage.createdAt);
+          const DateB = new Date(b.lastMessage.createdAt);
+          return DateB - DateA;
+        });
+        setUserDetails(sortedUser);
         setUserLoading(false);
       } catch (error) {
         console.log(error);
@@ -465,14 +470,58 @@ export default function ProviderMessageDash() {
                                   >
                                     <span
                                       className="ml-2"
-                                      style={{ fontSize: "10px" }}
+                                      style={{ fontSize: "12px" }}
                                     >
-                                      {new Date(
-                                        user.lastMessage?.createdAt
-                                      ).toLocaleTimeString([], {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                      })}
+                                      {(() => {
+                                        const messageDate = new Date(
+                                          user.lastMessage?.createdAt
+                                        );
+                                        const now = new Date();
+                                        const timeDiff = now - messageDate;
+                                        const oneDay = 24 * 60 * 60 * 1000;
+                                        const oneWeek = 7 * oneDay;
+
+                                        const isYesterday = (date) => {
+                                          const yesterday = new Date(now);
+                                          yesterday.setDate(now.getDate() - 1);
+                                          return (
+                                            date.getDate() ===
+                                              yesterday.getDate() &&
+                                            date.getMonth() ===
+                                              yesterday.getMonth() &&
+                                            date.getFullYear() ===
+                                              yesterday.getFullYear()
+                                          );
+                                        };
+
+                                        if (timeDiff < oneDay) {
+                                          return messageDate.toLocaleTimeString(
+                                            [],
+                                            {
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                            }
+                                          );
+                                        } else if (isYesterday(messageDate)) {
+                                          return "Yesterday";
+                                        } else if (timeDiff < oneWeek) {
+                                          return messageDate.toLocaleDateString(
+                                            [],
+                                            {
+                                              weekday: "long",
+                                            }
+                                          );
+                                        } else {
+                                          return messageDate.toLocaleDateString(
+                                            [],
+                                            {
+                                              day: "2-digit",
+                                              month: "2-digit",
+                                              year: "numeric",
+                                            }
+                                          );
+                                        }
+                                      })()}
                                     </span>
                                   </div>
                                   <div>

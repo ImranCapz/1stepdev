@@ -890,7 +890,7 @@ export default function Provider() {
                       </div>
                     </div>
                   )}
-                  <div className="w-full border-2 bg-purple-100 rounded-lg">
+                  <div className="md:w-[390px] 2xl:w-[540px] border-2 bg-purple-100 rounded-lg">
                     <div className="p-6">
                       <p className="font-bold text-xl text-gray ">
                         Get a Quick Response

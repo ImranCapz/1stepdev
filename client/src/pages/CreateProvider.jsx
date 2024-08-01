@@ -31,7 +31,7 @@ export default function CreateProvider() {
   const navigate = useNavigate();
   const fileRef = useRef(null);
   const dispatch = useDispatch();
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -435,524 +435,534 @@ export default function CreateProvider() {
               </p>
             )}
           </div>
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-10 mt-6 bg-white md:p-20 p-6 rounded-lg"
-          >
-            <div className="flex flex-col gap-3 flex-1">
-              <label className="font-semibold text-main">Select service*</label>
-              <Select
-                id="name"
-                key={formData.name}
-                options={service}
-                isMulti
-                required
-                placeholder="What service do you provide?"
-                touchUi={false}
-                className="border-2 p-1 rounded-lg border-slate-300 input hover:border-purple-400"
-                defaultValue={
-                  Array.isArray(formData.name)
-                    ? formData.name.map((name) =>
-                        service.find((option) => option.value === name)
-                      )
-                    : []
-                }
-                onChange={(selectedOptions) => {
-                  setFormData((preState) => ({
-                    ...preState,
-                    name: selectedOptions.map((option) => option.value),
-                  }));
-                }}
-                styles={{
-                  control: (provided) => ({
-                    ...provided,
-                    backgroundColor: "transparent",
-                    minWidth: "160px",
-                    border: "none",
-                    outline: "none",
-                    boxShadow: "none",
-                    transition: "all 0.3s ease",
-                  }),
-                }}
-              />
-              <label className="font-semibold text-main">Full Name*</label>
-              <input
-                type="text"
-                placeholder="Full Name"
-                className="border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0"
-                id="fullName"
-                required
-                onChange={handleChange}
-                value={formData.fullName}
-              />
-              <label className="font-semibold text-main">
-                <p className="flex flex-row items-center">
-                  {Errors.email && (
-                    <IoMdAlert className="text-red-700 text-sm" />
-                  )}
-                  Email*{" "}
-                </p>
-              </label>
-              <input
-                placeholder="Email"
-                className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
-                  Errors.email ? "error" : ""
-                }`}
-                id="email"
-                required
-                onChange={handleChange}
-                value={formData.email}
-              />
-              {Errors.email && (
-                <p className="text-sm text-red-500 font-semibold">
-                  Please enter a valid email address.
-                </p>
-              )}
-              <label className="font-semibold text-main">Qualification*</label>
-              <input
-                type="text"
-                placeholder="(e.g.,Psychologist, Counselor)"
-                className="border-2 p-2 rounded-lg input focus:ring-0 border-slate-300"
-                id="qualification"
-                required
-                onChange={handleChange}
-                value={formData.qualification}
-              />
-              <label className="font-semibold text-main">Address*</label>
-              <input
-                placeholder="Address"
-                className="border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
-                id="addressLine1"
-                required
-                onChange={handleChange}
-                value={formData.address.addressLine1}
-              />
-              <label className="font-semibold text-main">Street</label>
-              <input
-                placeholder="Street"
-                className="w-full border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
-                id="street"
-                onChange={handleChange}
-                value={formData.address.street}
-              />
-              <div className="flex flex-row gap-2 items-center">
-                <div className="w-full flex flex-col gap-2">
-                  <label className="font-semibold text-main">Country*</label>
-                  <Select
-                    id="country"
-                    placeholder="Country"
-                    key={formData.address.country}
-                    defaultValue={
-                      formData.address.country
-                        ? {
-                            value: formData.address.country,
-                            label: formData.address.country,
-                          }
-                        : undefined
-                    }
-                    options={Country.getAllCountries().map((country) => {
-                      return { value: country.name, label: country.name };
-                    })}
-                    className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
-                    onChange={(selectedOption) => {
-                      const selectedCountry = Country.getAllCountries().find(
-                        (country) => country.name === selectedOption.value
-                      );
-                      setSelectedCountry(selectedCountry);
-                      setFormData({
-                        ...formData,
-                        address: {
-                          ...formData.address,
-                          country: selectedOption.label,
-                        },
-                      });
-                    }}
-                    styles={{
-                      control: (provided) => ({
-                        ...provided,
-                        backgroundColor: "transparent",
-                        minWidth: "160px",
-                        border: "none",
-                        outline: "none",
-                        boxShadow: "none",
-                        transition: "all 0.3s ease",
-                      }),
-                    }}
-                  />
-                </div>
-                <div className="w-full flex flex-col gap-2">
-                  <label className="font-semibold text-main">State*</label>
-                  <Select
-                    id="state"
-                    key={`state-${formData.address.state}`}
-                    defaultValue={
-                      formData.address.state
-                        ? {
-                            value: formData.address.state,
-                            label: formData.address.state,
-                          }
-                        : undefined
-                    }
-                    options={state.map((state) => {
-                      return { value: state.isoCode, label: state.name };
-                    })}
-                    placeholder="State"
-                    className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
-                    onChange={(selectedOption) => {
-                      setSelectedState(selectedOption.value);
-                      setFormData({
-                        ...formData,
-                        address: {
-                          ...formData.address,
-                          state: selectedOption.label,
-                        },
-                      });
-                    }}
-                    styles={{
-                      control: (provided) => ({
-                        ...provided,
-                        backgroundColor: "transparent",
-                        minWidth: "100px",
-                        border: "none",
-                        outline: "none",
-                        boxShadow: "none",
-                        transition: "all 0.3s ease",
-                      }),
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-row gap-2">
-                <div className="w-full flex flex-col gap-2">
-                  <label className="font-semibold text-main">City*</label>
-                  <Select
-                    id="city"
-                    key={formData.address.city}
-                    defaultValue={
-                      formData.address.city
-                        ? {
-                            value: formData.address.city,
-                            label: formData.address.city,
-                          }
-                        : undefined
-                    }
-                    options={cities.map((city) => {
-                      return { value: city.name, label: city.name };
-                    })}
-                    className="w-full border-2 rounded-lg border-slate-300 hover:border-purple-400"
-                    placeholder="Select City"
-                    onChange={(selectedOption) => {
-                      setFormData({
-                        ...formData,
-                        address: {
-                          ...formData.address,
-                          city: selectedOption.label,
-                        },
-                      });
-                    }}
-                    styles={{
-                      control: (provided) => ({
-                        ...provided,
-                        backgroundColor: "transparent",
-                        minWidth: "160px",
-                        border: "none",
-                        outline: "none",
-                        boxShadow: "none",
-                        transition: "all 0.3s ease",
-                      }),
-                    }}
-                  />
-                </div>
-                <div className="w-full flex flex-col gap-2">
-                  <label className="font-semibold text-main">Pincode*</label>
-                  <input
-                    placeholder="Pincode"
-                    className="w-full border-2 p-1.5 border-slate-300 rounded-lg input focus:outline-none focus:ring-0"
-                    id="pincode"
-                    required
-                    onChange={handleChange}
-                    value={formData.address.pincode}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <div className="flex items-center gap-2">
-                  <label className="font-semibold text-main md:text-base text-sm">
-                    fee per Appoinment*
-                  </label>
-                  <input
-                    type="number"
-                    id="regularPrice"
-                    min="50"
-                    max="100000"
-                    required
-                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                    onChange={handleChange}
-                    value={formData.regularPrice}
-                  />
-
-                  <div className="flex flex-col items-center">
-                    <p className="text-main md:text-sm text-xs font-semibold">
-                      Regular Fees
-                    </p>
-                    <span className="text-main font-semibold text-xs">
-                      ( ₹ Appointment )
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="font-semibold text-main md:text-base text-sm">
-                    Years of Experience* &nbsp;
-                  </label>
-                  <input
-                    type="number"
-                    id="experience"
-                    min="0"
-                    max="100000"
-                    required
-                    className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                    onChange={handleChange}
-                    value={formData.experience}
-                  />
-
-                  <div className="flex flex-col items-center ">
-                    <p className="text-main md:text-sm text-xs font-semibold">
-                      Service
-                    </p>
-                    <span className="text-main font-semibold text-xs">
-                      ( no. of Experience )
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col flex-1 gap-3">
-              <p className="font-semibold text-main">
-                Explain About your therapy section*
-                <span className="text-sm">&nbsp;&nbsp;(40 minimum words)</span>
-              </p>
-              <textarea
-                type="text"
-                placeholder="Now is the chance to show your future clients that your approach to therapy will make a real difference!"
-                rows={5}
-                className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
-                  Errors.description ? "error" : ""
-                }`}
-                id="description"
-                required
-                onChange={handleChange}
-                value={formData.description}
-              />
-              {Errors.description && (
-                <p className="text-sm text-red-500 font-semibold">
-                  Please write a 40-word description in the field.
-                </p>
-              )}
-              <label className="font-semibold text-main">
-                Select your therapy type*
-              </label>
-              <Select
-                key={formData.therapytype}
-                id="therapytype"
-                options={therapyType}
-                isMulti
-                required
-                placeholder="Type of Therapy"
-                touchUi={false}
-                defaultValue={
-                  Array.isArray(formData.therapytype)
-                    ? formData.therapytype.map((name) =>
-                        therapyType.find((option) => option.value === name)
-                      )
-                    : []
-                }
-                className="border-2 p-1 rounded-lg border-slate-300 bg-white input hover:border-purple-400"
-                onChange={(selectedOptions) => {
-                  setFormData((prevState) => ({
-                    ...prevState,
-                    therapytype: selectedOptions.map((option) => option.value),
-                  }));
-                }}
-                styles={{
-                  control: (provided) => ({
-                    ...provided,
-                    backgroundColor: "transparent",
-                    minWidth: "160px",
-                    border: "none",
-                    boxShadow: "none",
-                    transition: "all 0.3s ease",
-                  }),
-                }}
-              />
-              <label className="font-semibold text-main">Licensing*</label>
-              <input
-                type="text"
-                placeholder="(License number, issuing authority)"
-                className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                id="license"
-                required
-                onChange={handleChange}
-                value={formData.license}
-              />
-              <div className="flex flex-col gap-2">
+          <div className="bg-white">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col sm:flex-row gap-10 mt-6 md:p-20 p-6 rounded-lg mx-auto"
+            >
+              <div className="flex flex-col gap-3 flex-1">
+                <label className="font-semibold text-main">
+                  Select service*
+                </label>
+                <Select
+                  id="name"
+                  key={formData.name}
+                  options={service}
+                  isMulti
+                  required
+                  placeholder="What service do you provide?"
+                  touchUi={false}
+                  className="border-2 p-1 rounded-lg border-slate-300 input hover:border-purple-400"
+                  defaultValue={
+                    Array.isArray(formData.name)
+                      ? formData.name.map((name) =>
+                          service.find((option) => option.value === name)
+                        )
+                      : []
+                  }
+                  onChange={(selectedOptions) => {
+                    setFormData((preState) => ({
+                      ...preState,
+                      name: selectedOptions.map((option) => option.value),
+                    }));
+                  }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "transparent",
+                      minWidth: "160px",
+                      border: "none",
+                      outline: "none",
+                      boxShadow: "none",
+                      transition: "all 0.3s ease",
+                    }),
+                  }}
+                />
+                <label className="font-semibold text-main">Full Name*</label>
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  className="border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0"
+                  id="fullName"
+                  required
+                  onChange={handleChange}
+                  value={formData.fullName}
+                />
                 <label className="font-semibold text-main">
                   <p className="flex flex-row items-center">
-                    {Errors.phone && (
+                    {Errors.email && (
                       <IoMdAlert className="text-red-700 text-sm" />
                     )}
-                    Phone*
+                    Email*{" "}
                   </p>
                 </label>
-                <Input
-                  placeholder="Phone number"
+                <input
+                  placeholder="Email"
                   className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
-                    Errors.phone ? "error" : ""
+                    Errors.email ? "error" : ""
                   }`}
-                  id="phone"
+                  id="email"
                   required
-                  onChange={(value) => {
-                    setValue(value);
-                    setFormData({
-                      ...formData,
-                      phone: value,
-                    });
-                  }}
-                  value={formData.phone}
+                  onChange={handleChange}
+                  value={formData.email}
                 />
-                {Errors.phone && (
+                {Errors.email && (
                   <p className="text-sm text-red-500 font-semibold">
-                    Please enter a 10-digit number.
+                    Please enter a valid email address.
                   </p>
                 )}
-                <p className="font-semibold text-main">Availability:</p>
-                <div className="flex flex-row gap-4">
-                  <p className="font-semibold text-main">Morning:</p>
-                  <input
-                    type="time"
-                    id="morningStart"
-                    className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                    required
-                    value={formData.availability.morningStart}
-                    onChange={handleChange}
-                  />
-                  <input
-                    type="time"
-                    id="morningEnd"
-                    className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                    required
-                    value={formData.availability.morningEnd}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="flex flex-row gap-4 pl-1">
-                  <p className="font-semibold text-main">Evening:</p>
-                  <input
-                    type="time"
-                    id="eveningStart"
-                    className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                    required
-                    value={formData.availability.eveningStart}
-                    onChange={handleChange}
-                  />
-                  <input
-                    type="time"
-                    id="eveningEnd"
-                    className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                    required
-                    value={formData.availability.eveningEnd}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <p className="font-semibold text-main">
-                Images:
-                <span className="font-normal text-gray-600 ml-2">
-                  The first image will be the cover. pick image for showcase
-                  (max 6)
-                </span>
-              </p>
-
-              <div className="flex flex-row items-center gap-4">
-                <FileInput
-                  onChange={(e) => setFiles(e.target.files)}
-                  className="p-3 rounded w-full"
-                  type="file"
-                  id="images"
-                  accept="image/*"
-                  multiple
+                <label className="font-semibold text-main">
+                  Qualification*
+                </label>
+                <input
+                  type="text"
+                  placeholder="(e.g.,Psychologist, Counselor)"
+                  className="border-2 p-2 rounded-lg input focus:ring-0 border-slate-300"
+                  id="qualification"
+                  required
+                  onChange={handleChange}
+                  value={formData.qualification}
                 />
-                <button
-                  type="button"
-                  disabled={uploading}
-                  onClick={handleImageSubmit}
-                  className={`p-2 max-h-10 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85 ${
-                    Errors.imageUrls && "error"
-                  }`}
-                >
-                  {uploading ? "uploading..." : "upload"}
-                </button>
-              </div>
-              <div className="">
-                {Errors.imageUrls && (
-                  <p className="text-sm text-red-500 font-semibold">
-                    {" "}
-                    Please upload at least one image.
-                  </p>
-                )}
-              </div>
-              <p className="text-red-700 text-xs">
-                {imageUploadError && imageUploadError}
-              </p>
-              {formData.imageUrls.length > 0 &&
-                formData.imageUrls.map((url, index) => (
-                  <div
-                    key={index}
-                    className="flex justify-between p-3 border items-center"
-                  >
-                    <img
-                      src={url}
-                      alt="image"
-                      className="w-20 h-20 object-contain rounded-lg"
+                <label className="font-semibold text-main">Address*</label>
+                <input
+                  placeholder="Address"
+                  className="border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
+                  id="addressLine1"
+                  required
+                  onChange={handleChange}
+                  value={formData.address.addressLine1}
+                />
+                <label className="font-semibold text-main">Street</label>
+                <input
+                  placeholder="Street"
+                  className="w-full border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
+                  id="street"
+                  onChange={handleChange}
+                  value={formData.address.street}
+                />
+                <div className="flex flex-row gap-2 items-center">
+                  <div className="w-full flex flex-col gap-2">
+                    <label className="font-semibold text-main">Country*</label>
+                    <Select
+                      id="country"
+                      placeholder="Country"
+                      key={formData.address.country}
+                      defaultValue={
+                        formData.address.country
+                          ? {
+                              value: formData.address.country,
+                              label: formData.address.country,
+                            }
+                          : undefined
+                      }
+                      options={Country.getAllCountries().map((country) => {
+                        return { value: country.name, label: country.name };
+                      })}
+                      className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
+                      onChange={(selectedOption) => {
+                        const selectedCountry = Country.getAllCountries().find(
+                          (country) => country.name === selectedOption.value
+                        );
+                        setSelectedCountry(selectedCountry);
+                        setFormData({
+                          ...formData,
+                          address: {
+                            ...formData.address,
+                            country: selectedOption.label,
+                          },
+                        });
+                      }}
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          backgroundColor: "transparent",
+                          minWidth: "160px",
+                          border: "none",
+                          outline: "none",
+                          boxShadow: "none",
+                          transition: "all 0.3s ease",
+                        }),
+                      }}
                     />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(index)}
-                      className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75"
-                    >
-                      Delete
-                    </button>
                   </div>
-                ))}
-              {currentUser._id ===
-              (providerData &&
-                providerData.fetchprovider &&
-                providerData.fetchprovider.userRef) ? (
-                <>
+                  <div className="w-full flex flex-col gap-2">
+                    <label className="font-semibold text-main">State*</label>
+                    <Select
+                      id="state"
+                      key={`state-${formData.address.state}`}
+                      defaultValue={
+                        formData.address.state
+                          ? {
+                              value: formData.address.state,
+                              label: formData.address.state,
+                            }
+                          : undefined
+                      }
+                      options={state.map((state) => {
+                        return { value: state.isoCode, label: state.name };
+                      })}
+                      placeholder="State"
+                      className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
+                      onChange={(selectedOption) => {
+                        setSelectedState(selectedOption.value);
+                        setFormData({
+                          ...formData,
+                          address: {
+                            ...formData.address,
+                            state: selectedOption.label,
+                          },
+                        });
+                      }}
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          backgroundColor: "transparent",
+                          minWidth: "100px",
+                          border: "none",
+                          outline: "none",
+                          boxShadow: "none",
+                          transition: "all 0.3s ease",
+                        }),
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-row gap-2">
+                  <div className="w-full flex flex-col gap-2">
+                    <label className="font-semibold text-main">City*</label>
+                    <Select
+                      id="city"
+                      key={formData.address.city}
+                      defaultValue={
+                        formData.address.city
+                          ? {
+                              value: formData.address.city,
+                              label: formData.address.city,
+                            }
+                          : undefined
+                      }
+                      options={cities.map((city) => {
+                        return { value: city.name, label: city.name };
+                      })}
+                      className="w-full border-2 rounded-lg border-slate-300 hover:border-purple-400"
+                      placeholder="Select City"
+                      onChange={(selectedOption) => {
+                        setFormData({
+                          ...formData,
+                          address: {
+                            ...formData.address,
+                            city: selectedOption.label,
+                          },
+                        });
+                      }}
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          backgroundColor: "transparent",
+                          minWidth: "160px",
+                          border: "none",
+                          outline: "none",
+                          boxShadow: "none",
+                          transition: "all 0.3s ease",
+                        }),
+                      }}
+                    />
+                  </div>
+                  <div className="w-full flex flex-col gap-2">
+                    <label className="font-semibold text-main">Pincode*</label>
+                    <input
+                      placeholder="Pincode"
+                      className="w-full border-2 p-1.5 border-slate-300 rounded-lg input focus:outline-none focus:ring-0"
+                      id="pincode"
+                      required
+                      onChange={handleChange}
+                      value={formData.address.pincode}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <label className="font-semibold text-main md:text-base text-sm">
+                      fee per Appoinment*
+                    </label>
+                    <input
+                      type="number"
+                      id="regularPrice"
+                      min="50"
+                      max="100000"
+                      required
+                      className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                      onChange={handleChange}
+                      value={formData.regularPrice}
+                    />
+
+                    <div className="flex flex-col items-center">
+                      <p className="text-main md:text-sm text-xs font-semibold">
+                        Regular Fees
+                      </p>
+                      <span className="text-main font-semibold text-xs">
+                        ( ₹ Appointment )
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="font-semibold text-main md:text-base text-sm">
+                      Years of Experience* &nbsp;
+                    </label>
+                    <input
+                      type="number"
+                      id="experience"
+                      min="0"
+                      max="100000"
+                      required
+                      className="border-2 p-3 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                      onChange={handleChange}
+                      value={formData.experience}
+                    />
+
+                    <div className="flex flex-col items-center ">
+                      <p className="text-main md:text-sm text-xs font-semibold">
+                        Service
+                      </p>
+                      <span className="text-main font-semibold text-xs">
+                        ( no. of Experience )
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col flex-1 gap-3">
+                <p className="font-semibold text-main">
+                  Explain About your therapy section*
+                  <span className="text-sm">
+                    &nbsp;&nbsp;(40 minimum words)
+                  </span>
+                </p>
+                <textarea
+                  type="text"
+                  placeholder="Now is the chance to show your future clients that your approach to therapy will make a real difference!"
+                  rows={5}
+                  className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
+                    Errors.description ? "error" : ""
+                  }`}
+                  id="description"
+                  required
+                  onChange={handleChange}
+                  value={formData.description}
+                />
+                {Errors.description && (
+                  <p className="text-sm text-red-500 font-semibold">
+                    Please write a 40-word description in the field.
+                  </p>
+                )}
+                <label className="font-semibold text-main">
+                  Select your therapy type*
+                </label>
+                <Select
+                  key={formData.therapytype}
+                  id="therapytype"
+                  options={therapyType}
+                  isMulti
+                  required
+                  placeholder="Type of Therapy"
+                  touchUi={false}
+                  defaultValue={
+                    Array.isArray(formData.therapytype)
+                      ? formData.therapytype.map((name) =>
+                          therapyType.find((option) => option.value === name)
+                        )
+                      : []
+                  }
+                  className="border-2 p-1 rounded-lg border-slate-300 bg-white input hover:border-purple-400"
+                  onChange={(selectedOptions) => {
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      therapytype: selectedOptions.map(
+                        (option) => option.value
+                      ),
+                    }));
+                  }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "transparent",
+                      minWidth: "160px",
+                      border: "none",
+                      boxShadow: "none",
+                      transition: "all 0.3s ease",
+                    }),
+                  }}
+                />
+                <label className="font-semibold text-main">Licensing*</label>
+                <input
+                  type="text"
+                  placeholder="(License number, issuing authority)"
+                  className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                  id="license"
+                  required
+                  onChange={handleChange}
+                  value={formData.license}
+                />
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-main">
+                    <p className="flex flex-row items-center">
+                      {Errors.phone && (
+                        <IoMdAlert className="text-red-700 text-sm" />
+                      )}
+                      Phone*
+                    </p>
+                  </label>
+                  <Input
+                    placeholder="Phone number"
+                    className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 ${
+                      Errors.phone ? "error" : ""
+                    }`}
+                    id="phone"
+                    required
+                    onChange={(value) => {
+                      setValue(value);
+                      setFormData({
+                        ...formData,
+                        phone: value,
+                      });
+                    }}
+                    value={formData.phone}
+                  />
+                  {Errors.phone && (
+                    <p className="text-sm text-red-500 font-semibold">
+                      Please enter a 10-digit number.
+                    </p>
+                  )}
+                  <p className="font-semibold text-main">Availability:</p>
+                  <div className="flex flex-row gap-4">
+                    <p className="font-semibold text-main">Morning:</p>
+                    <input
+                      type="time"
+                      id="morningStart"
+                      className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                      required
+                      value={formData.availability.morningStart}
+                      onChange={handleChange}
+                    />
+                    <input
+                      type="time"
+                      id="morningEnd"
+                      className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                      required
+                      value={formData.availability.morningEnd}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="flex flex-row gap-4 pl-1">
+                    <p className="font-semibold text-main">Evening:</p>
+                    <input
+                      type="time"
+                      id="eveningStart"
+                      className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                      required
+                      value={formData.availability.eveningStart}
+                      onChange={handleChange}
+                    />
+                    <input
+                      type="time"
+                      id="eveningEnd"
+                      className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                      required
+                      value={formData.availability.eveningEnd}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                <p className="font-semibold text-main">
+                  Images:
+                  <span className="font-normal text-gray-600 ml-2">
+                    The first image will be the cover. pick image for showcase
+                    (max 6)
+                  </span>
+                </p>
+
+                <div className="flex flex-row items-center gap-4">
+                  <FileInput
+                    onChange={(e) => setFiles(e.target.files)}
+                    className="p-3 rounded w-full"
+                    type="file"
+                    id="images"
+                    accept="image/*"
+                    multiple
+                  />
                   <button
-                    type="submit"
-                    onClick={handleUpdate}
-                    disabled={loading || uploading}
-                    className="p-3 bg-blue-600 text-white rounded=lg rounded-lg Captialize hover:opacity-95 disabled:opacity-80 transition-all duration-300 ease-in-out"
+                    type="button"
+                    disabled={uploading}
+                    onClick={handleImageSubmit}
+                    className={`p-2 max-h-10 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-85 ${
+                      Errors.imageUrls && "error"
+                    }`}
                   >
-                    {loading ? "Saving..." : "Save Changes"}
+                    {uploading ? "uploading..." : "upload"}
                   </button>
-                  {error && <p className="text-red-700 text-xs">{error}</p>}
-                </>
-              ) : (
-                <>
-                  <button
-                    type="submit"
-                    disabled={loading || uploading}
-                    className="p-3 btn-color rounded-lg font-semibold  rounded=lg hover:opacity-85 disabled:opacity-80 transition-all duration-300 ease-in-out"
-                  >
-                    {loading ? "Creating Provider" : "Create Provider"}
-                  </button>
-                  {error && <p className="text-red-700 text-xs">{error}</p>}
-                </>
-              )}
-            </div>
-          </form>
+                </div>
+                <div className="">
+                  {Errors.imageUrls && (
+                    <p className="text-sm text-red-500 font-semibold">
+                      {" "}
+                      Please upload at least one image.
+                    </p>
+                  )}
+                </div>
+                <p className="text-red-700 text-xs">
+                  {imageUploadError && imageUploadError}
+                </p>
+                {formData.imageUrls.length > 0 &&
+                  formData.imageUrls.map((url, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between p-3 border items-center"
+                    >
+                      <img
+                        src={url}
+                        alt="image"
+                        className="w-20 h-20 object-contain rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                {currentUser._id ===
+                (providerData &&
+                  providerData.fetchprovider &&
+                  providerData.fetchprovider.userRef) ? (
+                  <>
+                    <button
+                      type="submit"
+                      onClick={handleUpdate}
+                      disabled={loading || uploading}
+                      className="p-3 bg-blue-600 text-white rounded=lg rounded-lg Captialize hover:opacity-95 disabled:opacity-80 transition-all duration-300 ease-in-out"
+                    >
+                      {loading ? "Saving..." : "Save Changes"}
+                    </button>
+                    {error && <p className="text-red-700 text-xs">{error}</p>}
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="submit"
+                      disabled={loading || uploading}
+                      className="p-3 btn-color rounded-lg font-semibold  rounded=lg hover:opacity-85 disabled:opacity-80 transition-all duration-300 ease-in-out"
+                    >
+                      {loading ? "Creating Provider" : "Create Provider"}
+                    </button>
+                    {error && <p className="text-red-700 text-xs">{error}</p>}
+                  </>
+                )}
+              </div>
+            </form>
+          </div>
         </>
       )}
     </div>

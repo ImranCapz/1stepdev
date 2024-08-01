@@ -154,7 +154,7 @@ export default function BookingContact({ provider }) {
               required
               placeholder="What service do you need?"
               touchUi={false}
-              className="border-2 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
+              className="border-2 p-0.5 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
               onChange={(selectedOptions) => {
                 setFormData((preState) => ({
                   ...preState,
