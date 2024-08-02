@@ -32,7 +32,7 @@ export default {
       },
       colors: {
         primary: {
-          50: "#eff6ff",
+          50: "#D1BEE0",
           100: "#dbeafe",
           200: "#bfdbfe",
           300: "#93c5fd",

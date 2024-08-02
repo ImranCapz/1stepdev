@@ -109,19 +109,21 @@ export const SearchBar = ({ defaultSearchTerm }) => {
             isSearchable
             className="capitalize trauncate text-xs md:text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
             styles={{
-              control: (provided) => ({
+              control: (provided, state) => ({
                 ...provided,
-                backgroundColor: "transparent !important",
-                minWidth: windowwidth < 786 ? 150 : 260,
+                backgroundColor: "transparent",
+                minWidth: windowwidth > 786 ? 210 : 140,
                 width: "auto",
-                border: "none",
-                outline: "none",
-                boxShadow: "none",
-                transition: "all 0.3s ease",
+                margin: 0,
+                border: "0px solid black",
+                boxShadow: state.isFocused ? 0 : 0,
+                "&:hover": {
+                  border: "0px solid black",
+                },
               }),
               singleValue: (provided) => ({
                 ...provided,
-                maxWidth: 160, 
+                maxWidth: 160,
                 position: "absolute",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -133,6 +135,11 @@ export const SearchBar = ({ defaultSearchTerm }) => {
                   ? "#F9CB5E"
                   : provided.backgroundColor,
                 color: state.isSelected ? "#4D4A45" : provided.color,
+              }),
+              indicatorSeparator: () => ({}),
+              menu: (provided) => ({
+                ...provided,
+                width: windowwidth > 786 ? 240 : 250,
               }),
             }}
           />

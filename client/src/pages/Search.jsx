@@ -16,6 +16,8 @@ import ContentLoader from "react-content-loader";
 import { Pagination } from "flowbite-react";
 import { Drawer, Typography, IconButton } from "@material-tailwind/react";
 import { Checkbox } from "flowbite-react";
+import { Spinner } from "flowbite-react";
+
 
 export default function Search() {
   const navigate = useNavigate();
@@ -163,7 +165,7 @@ export default function Search() {
   });
 
   return (
-    <div className="w-full p-4 md:p-8 sm:mx-auto overflow-visible min-h-screen chatbgimage">
+    <div className="w-full md:p-8 sm:mx-auto overflow-visible min-h-screen chatbgimage">
       <TopLoadingBar
         ref={topLoadingBarRef}
         color="#ff9900"
@@ -254,14 +256,14 @@ export default function Search() {
         </React.Fragment>
       </div>
       <form
-        className="p-4 flex sm:w-[600px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg shadow-lg"
+        className="p-4 flex sm:w-[600px] justify-center md:outline outline-offset-2 outline-1 outline-gray-300 md:bg-white rounded-lg md:shadow-lg"
         onSubmit={handlesubmit}
       >
         <div className="flex flex-row md:flex-row space-x-3 items-center overflow-visible">
           <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 z-20">
             <label
               htmlFor="what"
-              className="font-sans py-1 px-2 block text-base text-gray-700 font-bold"
+              className="font-sans px-2 block text-base text-gray-700 font-bold"
             >
               What
             </label>
@@ -272,7 +274,7 @@ export default function Search() {
               options={whatoptions}
               placeholder="Service or provider"
               isSearchable
-              className=" md:w-full capitalize trauncate md:text-base text-sm border-slate-800 text-gray-900 py-1 px-2 leading-tight"
+              className="md:w-full capitalize trauncate md:text-base text-sm border-slate-800 text-gray-900 px-2 leading-tight"
               styles={{
                 control: (provided, state) => ({
                   ...provided,
@@ -302,13 +304,17 @@ export default function Search() {
                   color: state.isSelected ? "#4D4A45" : provided.color,
                 }),
                 indicatorSeparator: () => ({}),
+                menu: (provided) => ({
+                  ...provided,
+                  width: windowWidth > 786 ? 240 : 250,
+                }),
               }}
             />
           </div>
-          <div className="transform border-b-2 md:mb-1 bg-transparent text-lg duration-300 focus-within:border-amber-500">
+          <div className="transform border-b-2 md:mb-0.5 mt-1 md:mt-0 bg-transparent text-lg duration-300 focus-within:border-amber-500">
             <label
               htmlFor="where"
-              className="block py-1 px-2 text-base font-bold text-gray-700"
+              className="block px-2 text-base font-bold text-gray-700"
             >
               Where
             </label>
@@ -328,7 +334,7 @@ export default function Search() {
                     {...getInputProps({
                       placeholder: "City or Zip Code",
                       className:
-                        "w-28 md:w-full appearance-none bg-transparent capitalize md:text-base text-sm border-none text-gray-700 py-3 px-3 leading-tight focus:outline-none location-search-input focus:outline-none focus:border-transparent focus:ring-0",
+                        "w-28 md:w-full appearance-none bg-transparent capitalize md:text-base text-sm border-none text-gray-700 px-3 leading-tight focus:outline-none location-search-input focus:outline-none focus:border-transparent focus:ring-0",
                     })}
                   />
                   <div
@@ -377,17 +383,27 @@ export default function Search() {
           </div> */}
           <button
             type="submit"
-            className="py-3 px-4 font-medium btn-color text-indigo-950 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0"
+            className={`p-3 h-12 w-12 font-medium text-indigo-950 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0 flex items-center justify-center ${
+              loading ? "bg-primary-50" : "btn-color"
+            }`}
           >
-            <span className="lg:inline hidden">Search</span>
-            <FaSearch className="lg:hidden inline" />
+            {loading ? (
+              <Spinner
+                color="purple"
+                size="md"
+                className="flex items-center justify-center"
+              />
+            ) : (
+              <FaSearch className="h-4 w-6" />
+            )}
           </button>
         </div>
       </form>
-      <div className="space-y-3">
+      <hr className="border-gray-300 flex md:hidden"/>
+      <div className="space-y-3 p-">
         <div className="sm:flex-col lg:flex-row lg:w-1/2"> </div>
         <div>
-          <div className="py-2 flex items-center">
+          <div className="md:py-2 pl-2 md:pl-0 flex items-center">
             <Button
               variant="outlined"
               className="flex flex-row text-gray-800 items-center gap-2 font-bold"
@@ -397,7 +413,7 @@ export default function Search() {
               Filter
             </Button>
           </div>
-          <div className="breadcrumbs flex flex-row font-semibold text-sm mt-2 text-gray-700">
+          <div className="breadcrumbs flex flex-row font-semibold text-sm mt-2 text-gray-700 md:justify-start justify-center">
             <Link to={"/"} className="hover:underline hover:text-purple-500">
               Home
             </Link>
@@ -414,15 +430,15 @@ export default function Search() {
         </div>
         {providers.length !== 0 && !providerloading && (
           <>
-            <div className="font-bold text-xl md:text-3xl text-gray">
+            <div className="font-bold text-xl md:text-3xl text-gray justify-center md:text-start text-center">
               {providers.length} Best{" "}
               {new URLSearchParams(location.search).get("searchTerm")} near{" "}
               {new URLSearchParams(location.search).get("address")}
             </div>
           </>
         )}
-        <div className="md:px-3 2xl:px-40 space-y-2 2xl:mx-auto">
-          <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-10 mt-8">
+        <div className="md:px-3 2xl:px-40  2xl:mx-auto">
+          <div className="p-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-4 md:gap-8 md:mt-8 sm:p-3">
             {providerloading ? (
               providers.length > 0 ? (
                 <div className="mx-auto grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 text-center text-xl text-slate-700 w-full">
@@ -585,7 +601,7 @@ export default function Search() {
                     );
                   })
                 ) : (
-                  <p className="text-center text-xl text-slate-700">
+                  <p className="text-xl text-slate-700">
                     We couldn&apos;t find any doctors for you
                   </p>
                 )}
