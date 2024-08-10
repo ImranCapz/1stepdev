@@ -17,7 +17,7 @@ import { Pagination } from "flowbite-react";
 import { Drawer, Typography, IconButton } from "@material-tailwind/react";
 import { Checkbox } from "flowbite-react";
 import { Spinner } from "flowbite-react";
-
+import { suggestions } from "../components/suggestions";
 
 export default function Search() {
   const navigate = useNavigate();
@@ -51,19 +51,6 @@ export default function Search() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const suggestions = [
-    { value: "Popular Search", label: "Popular Services", isDisabled: true },
-    { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
-    { value: "Speech Therapy", label: "Speech Therapy" },
-    { value: "ABA Therapy", label: "ABA Therapy" },
-    { value: "Occupational Therapy", label: "Occupational Therapy" },
-    { value: "School-Based Service", label: "School-Based Service" },
-    { value: "A-Z Services", label: "Popular Services", isDisabled: true },
-    { value: "Dance Movement", label: "Dance Movement" },
-    { value: "Art as Therapy", label: "Art as Therapy" },
-    { value: "Counselling", label: "Counselling" },
-  ];
 
   const whatoptions = suggestions.map((suggestion) => ({
     value: suggestion.value,
@@ -255,119 +242,122 @@ export default function Search() {
           </Drawer>
         </React.Fragment>
       </div>
-      <form
-        className="p-4 flex sm:w-[600px] justify-center md:outline outline-offset-2 outline-1 outline-gray-300 md:bg-white rounded-lg md:shadow-lg"
-        onSubmit={handlesubmit}
-      >
-        <div className="flex flex-row md:flex-row space-x-3 items-center overflow-visible">
-          <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 z-20">
-            <label
-              htmlFor="what"
-              className="font-sans px-2 block text-base text-gray-700 font-bold"
-            >
-              What
-            </label>
-            <Select
-              id="what"
-              value={whatoptions.find((option) => option.value === searchTerm)}
-              onChange={(option) => setsearchTerm(option ? option.value : "")}
-              options={whatoptions}
-              placeholder="Service or provider"
-              isSearchable
-              className="md:w-full capitalize trauncate md:text-base text-sm border-slate-800 text-gray-900 px-2 leading-tight"
-              styles={{
-                control: (provided, state) => ({
-                  ...provided,
-                  backgroundColor: "transparent",
-                  minWidth: windowWidth > 786 ? 210 : 140,
-                  width: "auto",
-                  margin: 0,
-                  border: "0px solid black",
-                  boxShadow: state.isFocused ? 0 : 0,
-                  "&:hover": {
+      <div className="flex items-center justify-center">
+        <form
+          className="p-4 flex sm:w-[600px] justify-center md:outline outline-offset-2 outline-1 outline-gray-300 md:bg-white rounded-lg md:shadow-lg"
+          onSubmit={handlesubmit}
+        >
+          <div className="flex flex-row md:flex-row space-x-3 items-center overflow-visible">
+            <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 z-20">
+              <label
+                htmlFor="what"
+                className="font-sans px-2 block text-base text-gray-700 font-bold"
+              >
+                What
+              </label>
+              <Select
+                id="what"
+                value={whatoptions.find(
+                  (option) => option.value === searchTerm
+                )}
+                onChange={(option) => setsearchTerm(option ? option.value : "")}
+                options={whatoptions}
+                placeholder="Service or provider"
+                isSearchable
+                className="md:w-full capitalize trauncate md:text-base text-sm border-slate-800 text-gray-900 px-2 leading-tight"
+                styles={{
+                  control: (provided, state) => ({
+                    ...provided,
+                    backgroundColor: "transparent",
+                    minWidth: windowWidth > 786 ? 210 : 140,
+                    width: "auto",
+                    margin: 0,
                     border: "0px solid black",
-                  },
-                }),
-                singleValue: (provided) => ({
-                  ...provided,
-                  maxWidth: 160,
-                  position: "absolute",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }),
-                option: (provided, state) => ({
-                  ...provided,
-                  backgroundColor: state.isSelected
-                    ? "#F9CB5E"
-                    : provided.backgroundColor,
-                  color: state.isSelected ? "#4D4A45" : provided.color,
-                }),
-                indicatorSeparator: () => ({}),
-                menu: (provided) => ({
-                  ...provided,
-                  width: windowWidth > 786 ? 240 : 250,
-                }),
-              }}
-            />
-          </div>
-          <div className="transform border-b-2 md:mb-0.5 mt-1 md:mt-0 bg-transparent text-lg duration-300 focus-within:border-amber-500">
-            <label
-              htmlFor="where"
-              className="block px-2 text-base font-bold text-gray-700"
-            >
-              Where
-            </label>
-            <PlacesAutocomplete
-              value={address.city || ""}
-              onChange={(value) => setAddress({ city: value })}
-              onSelect={handleSelect}
-            >
-              {({
-                getInputProps,
-                suggestions,
-                getSuggestionItemProps,
-                loading,
-              }) => (
-                <div style={{ position: "relative" }}>
-                  <input
-                    {...getInputProps({
-                      placeholder: "City or Zip Code",
-                      className:
-                        "w-28 md:w-full appearance-none bg-transparent capitalize md:text-base text-sm border-none text-gray-700 px-3 leading-tight focus:outline-none location-search-input focus:outline-none focus:border-transparent focus:ring-0",
-                    })}
-                  />
-                  <div
-                    className="text-base autocomplete-dropdown-container overflow-hidden"
-                    style={{ position: "absolute", zIndex: 1000 }}
-                  >
-                    {loading && <div>Loading...</div>}
-                    {suggestions.map((suggestion) => {
-                      const className = suggestion.active
-                        ? "suggestion-item--active"
-                        : "suggestion-item";
-                      // inline style for demonstration purpose
-                      const style = suggestion.active
-                        ? { backgroundColor: "#fafafa", cursor: "pointer" }
-                        : { backgroundColor: "#ffffff", cursor: "pointer" };
-                      return (
-                        <div
-                          {...getSuggestionItemProps(suggestion, {
-                            className,
-                            style,
-                          })}
-                          key={suggestion.placeId}
-                        >
-                          <span>{suggestion.description}</span>
-                        </div>
-                      );
-                    })}
+                    boxShadow: state.isFocused ? 0 : 0,
+                    "&:hover": {
+                      border: "0px solid black",
+                    },
+                  }),
+                  singleValue: (provided) => ({
+                    ...provided,
+                    maxWidth: 160,
+                    position: "absolute",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }),
+                  option: (provided, state) => ({
+                    ...provided,
+                    backgroundColor: state.isSelected
+                      ? "#F9CB5E"
+                      : provided.backgroundColor,
+                    color: state.isSelected ? "#4D4A45" : provided.color,
+                  }),
+                  indicatorSeparator: () => ({}),
+                  menu: (provided) => ({
+                    ...provided,
+                    width: windowWidth > 786 ? 240 : 250,
+                  }),
+                }}
+              />
+            </div>
+            <div className="transform border-b-2 md:mb-0.5 mt-1 md:mt-0 bg-transparent text-lg duration-300 focus-within:border-amber-500">
+              <label
+                htmlFor="where"
+                className="block px-2 text-base font-bold text-gray-700"
+              >
+                Where
+              </label>
+              <PlacesAutocomplete
+                value={address.city || ""}
+                onChange={(value) => setAddress({ city: value })}
+                onSelect={handleSelect}
+              >
+                {({
+                  getInputProps,
+                  suggestions,
+                  getSuggestionItemProps,
+                  loading,
+                }) => (
+                  <div style={{ position: "relative" }}>
+                    <input
+                      {...getInputProps({
+                        placeholder: "City or Zip Code",
+                        className:
+                          "w-28 md:w-full appearance-none bg-transparent capitalize md:text-base text-sm border-none text-gray-700 px-3 leading-tight focus:outline-none location-search-input focus:outline-none focus:border-transparent focus:ring-0",
+                      })}
+                    />
+                    <div
+                      className="text-base autocomplete-dropdown-container overflow-hidden"
+                      style={{ position: "absolute", zIndex: 1000 }}
+                    >
+                      {loading && <div>Loading...</div>}
+                      {suggestions.map((suggestion) => {
+                        const className = suggestion.active
+                          ? "suggestion-item--active"
+                          : "suggestion-item";
+                        // inline style for demonstration purpose
+                        const style = suggestion.active
+                          ? { backgroundColor: "#fafafa", cursor: "pointer" }
+                          : { backgroundColor: "#ffffff", cursor: "pointer" };
+                        return (
+                          <div
+                            {...getSuggestionItemProps(suggestion, {
+                              className,
+                              style,
+                            })}
+                            key={suggestion.placeId}
+                          >
+                            <span>{suggestion.description}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
-            </PlacesAutocomplete>
-          </div>
-          {/* <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 sm:block hidden">
+                )}
+              </PlacesAutocomplete>
+            </div>
+            {/* <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 sm:block hidden">
             <label
               htmlFor="insurance"
               className="block py-1 px-2 text-base font-bold text-gray-700"
@@ -381,25 +371,26 @@ export default function Search() {
               className="bg-transparent text-base border-none w-full text-gray-700  py-3 px-4 leading-tight focus:outline-none focus:border-transparent focus:ring-0"
             />
           </div> */}
-          <button
-            type="submit"
-            className={`p-3 h-12 w-12 font-medium text-indigo-950 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0 flex items-center justify-center ${
-              loading ? "bg-primary-50" : "btn-color"
-            }`}
-          >
-            {loading ? (
-              <Spinner
-                color="purple"
-                size="md"
-                className="flex items-center justify-center"
-              />
-            ) : (
-              <FaSearch className="h-4 w-6" />
-            )}
-          </button>
-        </div>
-      </form>
-      <hr className="border-gray-300 flex md:hidden"/>
+            <button
+              type="submit"
+              className={`p-3 h-12 w-12 font-medium text-indigo-950 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0 flex items-center justify-center ${
+                loading ? "bg-primary-50" : "btn-color"
+              }`}
+            >
+              {loading ? (
+                <Spinner
+                  color="purple"
+                  size="md"
+                  className="flex items-center justify-center"
+                />
+              ) : (
+                <FaSearch className="h-4 w-6" />
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+      <hr className="border-gray-300 flex md:hidden" />
       <div className="space-y-3 p-">
         <div className="sm:flex-col lg:flex-row lg:w-1/2"> </div>
         <div>
@@ -438,7 +429,7 @@ export default function Search() {
           </>
         )}
         <div className="md:px-3 2xl:px-40  2xl:mx-auto">
-          <div className="p-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-4 md:gap-8 md:mt-8 sm:p-3">
+          <div className="p-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-4 md:gap-8 sm:p-3">
             {providerloading ? (
               providers.length > 0 ? (
                 <div className="mx-auto grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 text-center text-xl text-slate-700 w-full">

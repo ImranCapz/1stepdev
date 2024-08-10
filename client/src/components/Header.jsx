@@ -14,22 +14,29 @@ import { Modal } from "flowbite-react";
 import ListModel from "./modal/ListModel";
 import ParentModel from "./modal/ParentModel";
 import PropTypes from "prop-types";
+import { SearchBar } from "./SearchBar";
 
 const Header = ({ showSubMenu }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [state, setState] = useState(false);
   const [address, setAddress] = useState("");
-  const dispatch = useDispatch();
+
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
+  const drawerRef = useRef(null);
   const topLoadingBarRef = useRef(null);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
 
   //modal
   const [openModal, setOpenModal] = useState(false);
   const [parentModal, setParentModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(0);
-  const location = useLocation();
+  const [isDrawer, setDrawer] = useState(false);
+  const [isMoreVisible, setMoreVisible] = useState(false);
+  const [searchWhat, setSearchWhat] = useState("");
 
   const handleSignout = async () => {
     try {
@@ -49,19 +56,32 @@ const Header = ({ showSubMenu }) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        // Click outside of the dropdown, close it
         setDropdownVisible(false);
+      }
+      if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+        setDrawer(false);
       }
     };
 
     // Attach the event listener to the document body
     document.body.addEventListener("click", handleClickOutside);
-
     return () => {
       // Remove the event listener when the component is unmounted
       document.body.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  const handleSubmenuItemClick = (submenu) => {
+    setSearchWhat(submenu.title);
+    setMoreVisible(false);
+    setTimeout(() => {
+      setDrawer(true);
+    }, 0);
+  };
+
+  const toggleMore = () => {
+    setMoreVisible(!isMoreVisible);
+  };
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
@@ -80,6 +100,7 @@ const Header = ({ showSubMenu }) => {
     }
     topLoadingBarRef.current.complete(50);
   };
+
   const navigation = [
     { title: "Home", path: "/" },
     {
@@ -176,14 +197,20 @@ const Header = ({ showSubMenu }) => {
       title: "School-Based Service",
       path: `/search?searchTerm=School-Based+Service&address=${address}`,
     },
-    // {
-    //   title: "Arts as Therapy",
-    //   path: `/search?searchTerm=Arts+as+Therapy&address=${address}`,
-    // },
-    // {
-    //   title: "Music Therapy",
-    //   path: `/search?searchTerm=Music+Therapy&address=${address}`,
-    // },
+    {
+      title: "more",
+      submenu: [
+        {
+          title: "Art As Therapy",
+          path: `/search?searchTerm=Art+As+Therapy&address=${address}`,
+        },
+        {
+          title: "Music Therapy",
+          path: `/search?searchTerm=Music+Therapy&address=${address}`,
+        },
+      ],
+    },
+
     { title: "|" },
     { title: "Learn:" },
     { title: "Early Concerns: Start Here", path: "/early-concerns" },
@@ -196,8 +223,17 @@ const Header = ({ showSubMenu }) => {
     setOpenModal(false);
     setParentModal(false);
   }
+
+  useEffect(() => {
+    setDrawer(false);
+  }, [location]);
+
   return (
-    <header className="text-base lg:text-sm sticky top-0 z-50 bg-white border-b">
+    <header
+      className={`text-base lg:text-sm sticky top-0 z-50 bg-white border-b ${
+        isDrawer ? "blur-drawer" : ""
+      }`}
+    >
       <TopLoadingBar
         ref={topLoadingBarRef}
         color="#ff9900"
@@ -276,7 +312,7 @@ const Header = ({ showSubMenu }) => {
                   className="w-6 h-6 text-stone-900"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="black"
+                  stroke="white"
                 >
                   <path
                     strokeLinecap="round"
@@ -288,7 +324,7 @@ const Header = ({ showSubMenu }) => {
                 <input
                   type="text"
                   placeholder="Find a therapist"
-                  className="w-full px-2 py-2 text-black bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
+                  className="w-full px-2 py-2 placeholder:text-gray-300 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
                 />
               </div>
             </form>
@@ -297,7 +333,7 @@ const Header = ({ showSubMenu }) => {
                 <Link
                   key={idx}
                   to={item.path}
-                  className="block text-gray-700 hover:text-gray-900"
+                  className="block text-gray-100"
                   onClick={() => setState(false)}
                 >
                   {item.title}
@@ -319,7 +355,10 @@ const Header = ({ showSubMenu }) => {
                       "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
                     }
                     alt="User dropdown"
-                    onClick={toggleDropdown}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDropdown();
+                    }}
                     ref={dropdownRef}
                   />
                   <div
@@ -406,7 +445,7 @@ const Header = ({ showSubMenu }) => {
                   <Link
                     to="/signin"
                     onClick={() => setState(false)}
-                    className=" block py-3 text-center text-slate-900 hover:text-purple-400 border rounded-lg md:border-none transition-all duration-300 ease-in-out"
+                    className=" block py-3 text-center text-slate-100 hover:text-purple-400 border rounded-lg md:border-none transition-all duration-300 ease-in-out"
                   >
                     Sign in
                   </Link>
@@ -424,9 +463,23 @@ const Header = ({ showSubMenu }) => {
           </ul>
         </div>
       </div>
+      {isDrawer && (
+        <div
+          className={`bg-slate-100 absolute w-full pr-10 p-20 z-10 hidden md:flex transition-all duration-300 ease-in-out transform ${
+            isDrawer ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"
+          }`}
+          ref={drawerRef}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <SearchBar
+            defaultSearchTerm={searchWhat}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
       {showSubMenu && (
         <nav className="border-b">
-          <ul className="hidden md:flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8">
+          <ul className="hidden md:flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 lg:px-8">
             {submenuNav.map((item, idx) => {
               if (item.title === "Learn:" || item.title === "|") {
                 return (
@@ -437,7 +490,39 @@ const Header = ({ showSubMenu }) => {
                   </li>
                 );
               }
-
+              if (item.title === "more") {
+                return (
+                  <li key={idx} className="relative py-1">
+                    <span
+                      className="block py-2 px-3 rounded-lg cursor-pointer text-slate-700"
+                      ref={dropdownRef}
+                      onClick={toggleMore}
+                    >
+                      {item.title}
+                    </span>
+                    {isMoreVisible && (
+                      <ul className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg max-h-60 z-20">
+                        {item.submenu.map((submenu, subIdx) => (
+                          <li
+                            key={subIdx}
+                            className="block py-2 px-3 hover:bg-purple-100"
+                          >
+                            <p
+                              className="block py-2 px-1 cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSubmenuItemClick(submenu, e);
+                              }}
+                            >
+                              {submenu.title}
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              }
               if (item.title === "For Providers") {
                 return (
                   <li
@@ -466,7 +551,6 @@ const Header = ({ showSubMenu }) => {
                   </li>
                 );
               }
-
               return (
                 <li
                   key={idx}

@@ -14,8 +14,6 @@ const socketSetup = (server) => {
   const OnlineUsers = {};
 
   io.on("connection", (socket) => {
-    console.log("User connected");
-
     socket.on("Online", (userId) => {
       OnlineUsers[userId] = socket.id;
       io.emit("UserOnline", { userId });
@@ -91,7 +89,6 @@ const socketSetup = (server) => {
         delete OnlineUsers[userId];
         io.emit("UserOut", { userId });
       }
-      console.log("User disconnected");
     });
   });
 };

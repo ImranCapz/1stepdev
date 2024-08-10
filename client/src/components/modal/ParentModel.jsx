@@ -27,9 +27,9 @@ export default function ParentModel({ onClose }) {
               redirect="/dashboard?tag=Parent%20Details"
             />
             <Link to="/signup" onClick={onClose}>
-              <Button variant="outlined" className="w-full">
+              <button className="p-2 w-full btn-color rounded-lg">
                 Continue with Email
-              </Button>
+              </button>
             </Link>
           </div>
           <div className="mt-4 text-center text-xs p-4">

@@ -87,7 +87,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
   }, []);
 
   return (
-    <div className="flex max-w-[750px] max-h-[300px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
+    <div className="pl-5 pr-5 flex max-w-[750px] max-h-[300px] justify-center outline outline-offset-2 outline-1 outline-gray-300 bg-white rounded-lg">
       <form
         className="flex flex-row space-x-3 items-center"
         onSubmit={handlesubmit}

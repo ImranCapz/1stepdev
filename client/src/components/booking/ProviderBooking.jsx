@@ -23,9 +23,10 @@ export default function ProviderBooking() {
     if (bookingData.success === false) {
       return;
     }
-    const sortedBookings = bookingData.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+    const sortedBookings = bookingData.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
     setAppointment(sortedBookings);
-    console.log("Appointment data:", sortedBookings);
   }, []);
 
   useEffect(() => {
@@ -36,8 +37,6 @@ export default function ProviderBooking() {
         return;
       }
       setProvider(data);
-      console.log("Provider data:", data);
-
       if (data[0]) {
         fetchBooking(data[0]._id);
       }
@@ -67,16 +66,16 @@ export default function ProviderBooking() {
           providerName: provider[0].fullName,
           service: booking.service.join(", "),
           name: currentUser.username,
-          providerProfile:provider[0].profilePicture,
+          providerProfile: provider[0].profilePicture,
           time: booking.scheduledTime,
         }),
       });
       const data = await res.json();
-      if(data.success === false){
-        console.log("Email not sent")
+      if (data.success === false) {
+        console.log("Email not sent");
         return;
       }
-      if(data.success === true){
+      if (data.success === true) {
         console.log("Email sent");
       }
     });

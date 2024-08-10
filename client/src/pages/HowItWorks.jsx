@@ -5,24 +5,19 @@ import img2 from "../assets/howitsworks/online.png";
 function HowItWorks() {
   return (
     <div>
-     <h2 className="text-3xl text-center md:text-left text-teal-500 font-semibold">
+      <h2 className="text-xl text-center md:text-left text-gray font-semibold">
         How does it work?
       </h2>
 
-      <div className="md:p-16 p-5 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mx-auto">
-        <div className="group border bg-white shadow-lg rounded-lg p-2 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
+      <div className="md:p-6 p-5 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mx-auto">
+        <div className="group border bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
           <h3 className="text-xl font-semibold mb-4 mt-4 text-main ">
-            1. We will find you an online therapist
+            1. Browse a Best Therapist Profiles
           </h3>
+          <p className="mb-2">Explore the list of available therapists.</p>
           <p className="mb-2">
-            Fill out our quick registration
-            <a href="#" className="text-teal-400">
-              form
-            </a>
-          </p>
-          <p className="mb-2">
-            We will send recommendations of the best therapists for you to
-            choose from.
+            Click on profiles to view detailed information about their
+            qualifications, experience, rates, and reviews from other clients.
           </p>
           <img
             src={img}
@@ -31,13 +26,14 @@ function HowItWorks() {
           />
         </div>
 
-        <div className="group border bg-white shadow-lg rounded-lg p-2 text-center flex-1 hover:-translate-y-2 transition-all duration-300 ease-in-out">
+        <div className="group border bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all duration-300 ease-in-out">
           <h3 className="text-xl font-semibold mb-4 mt-4 text-main">
-            2. Schedule your first appointment
+            2. Complete the short questionnaire
           </h3>
           <p className="mb-2">Your first consultation is FREE</p>
           <p className="mb-4">
-            Fit therapy sessions around your work, home & family life.
+            The questionnaire should only take 3 minutes of your time, and will
+            help us match you to the right therapists for you. Signup or Login.
           </p>
           <img
             src={img1}
@@ -46,13 +42,16 @@ function HowItWorks() {
           />
         </div>
 
-        <div className="group border bg-white shadow-lg rounded-lg p-2 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
+        <div className="group border bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
           <h3 className="text-xl font-semibold text-main mt-4 mb-4">
-            3. Start your recovery journey
+            3. Book an Appointment with the therapist
           </h3>
-          <p className="mb-2">Access Therapy. Anytime. Anywhere.</p>
           <p className="mb-2">
-            Meet with one of our therapists by video such as Skype or Zoom.
+            Discuss and agree on the session schedule, location (if in-person),
+            and payment terms .
+          </p>
+          <p className="mb-2">
+            Once everything is agreed upon, you can start the therapy sessions.
           </p>
 
           <img
