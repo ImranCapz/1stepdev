@@ -15,8 +15,8 @@ import { Modal, Textarea } from "flowbite-react";
 import SignupModal from "../components/SignupModal";
 import ListModal from "../components/modal/ListModel";
 import { useDispatch } from "react-redux";
-import { toggleFavorite } from "../redux/favorite/FavoriteSlice";
-import { fetchFavoriteStatus } from "../redux/favorite/FavoriteSlice";
+import { toggleFavorite } from "../redux/favorite/favoriteSlice";
+import { fetchFavoriteStatus } from "../redux/favorite/favoriteSlice";
 import { FcLike } from "react-icons/fc";
 import { IoIosShareAlt, IoMdAlert } from "react-icons/io";
 import { useRef } from "react";
@@ -406,7 +406,10 @@ export default function Provider() {
                     </p>
                     <div className="flex flex-col items-center md:items-start">
                       <div className="flex flex-row text-gray-600 font-semibold text-sm space-x-1">
-                        <Link className="capitalize hover:underline hover:text-purple-400" to={`/${urlsearchTerm}`}>
+                        <Link
+                          className="capitalize hover:underline hover:text-purple-400"
+                          to={`/${urlsearchTerm}`}
+                        >
                           {urlsearchTerm}
                         </Link>
                         {/* <p className="text-gray-400">&gt;</p>
