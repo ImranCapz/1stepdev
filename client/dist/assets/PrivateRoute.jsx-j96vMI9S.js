@@ -1,0 +1,1 @@
+import{j as r}from"./react-DiIsFRGf.js";import{u as o}from"./react-redux-Cmcgb_ry.js";import{O as s,N as u}from"./react-router-Ck6p_Z-K.js";function n(){const{currentUser:t}=o(e=>e.user);return t&&t._id?r.jsx(s,{}):r.jsx(u,{to:"/"})}export{n as P};
