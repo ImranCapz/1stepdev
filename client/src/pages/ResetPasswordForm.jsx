@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TopLoadingBar from "react-top-loading-bar";
 import logo from "../assets/logo.svg";
 
-export function ResetPasswordForm() {
+const ResetPasswordForm = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
@@ -116,4 +116,6 @@ export function ResetPasswordForm() {
       </section>
     </form>
   );
-}
+};
+
+export default ResetPasswordForm;

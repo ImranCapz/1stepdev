@@ -9,7 +9,7 @@ import { FaEye } from "react-icons/fa";
 import { IoIosEyeOff } from "react-icons/io";
 import logo from "../assets/logo.svg";
 
-export const Signup = () => {
+const Signup = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);

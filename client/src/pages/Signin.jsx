@@ -15,7 +15,7 @@ import { FaEye } from "react-icons/fa";
 import { IoIosEyeOff } from "react-icons/io";
 import logo from "../assets/logo.svg";
 
-export const Signin = () => {
+const Signin = () => {
   const [formData, setFormData] = useState({});
   const [showpassword, setShowPassword] = useState(false);
   const { loading, error } = useSelector((state) => state.user);
@@ -117,9 +117,9 @@ export const Signin = () => {
               <div className="absolute right-0 inset-y-2 pr-3 leading-2 items-center flex">
                 <button type="button" onClick={handlePasswordVisibility}>
                   {showpassword ? (
-                    <FaEye className="text-gray-700"/>
+                    <FaEye className="text-gray-700" />
                   ) : (
-                    <IoIosEyeOff  className="text-gray-500" />
+                    <IoIosEyeOff className="text-gray-500" />
                   )}
                 </button>
               </div>
@@ -160,3 +160,5 @@ export const Signin = () => {
     </div>
   );
 };
+
+export default Signin;

@@ -8,7 +8,8 @@ export default defineConfig({
     proxy: {
       '/server': {
         target: 'http://localhost:3000',
-        secure: false,
+        secure: true,
+        open: true,
       }
     }
   }
