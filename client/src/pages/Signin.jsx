@@ -141,7 +141,7 @@ const Signin = () => {
               {loading ? "Loading..." : "Sign in"}
             </button>
           </div>
-          <OAuth />
+          <OAuth redirect="/" />
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">

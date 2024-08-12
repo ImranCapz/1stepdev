@@ -176,7 +176,7 @@ const Signup = () => {
               {loading ? "Loading..." : "Create Account"}
             </button>
           </div>
-          <OAuth />
+          <OAuth redirect="/" />
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">
