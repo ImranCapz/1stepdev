@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import ProviderItem from "./ProviderItem";
 import SearchBar from "../SearchBar";
-import { favoriteList } from "../../redux/favorite/FavoriteSlice";
+import { favoriteList } from "../../redux/favorite/favoriteSlice";
 import { useDispatch } from "react-redux";
 
 export default function FavoriteList() {
