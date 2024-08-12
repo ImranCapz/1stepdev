@@ -25,7 +25,6 @@ import { useSelector } from "react-redux";
 
 //loader
 import ContentLoader from "react-content-loader";
-import { set } from "mongoose";
 
 export default function ProviderMessageDash() {
   const { currentUser } = useSelector((state) => state.user);
