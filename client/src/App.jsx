@@ -20,7 +20,7 @@ import CreateProfile from "./pages/providerscreen/CreateProfile";
 import DashPrivateRoute from "./components/dashboard/DashPrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 import FavoriteList from "./components/provider/FavoriteList";
-import ScrolltoTop from "./components/ScrolltoTop";
+import ScrolltoTop from "./components/ScrollToTop";
 import ProviderReview from "./components/review/ProviderReview";
 // import { useDispatch } from "react-redux";
 // import { useEffect } from "react";
