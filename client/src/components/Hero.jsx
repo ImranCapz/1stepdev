@@ -177,7 +177,11 @@ const Hero = () => {
         </div>
         <div className="flex-1 max-w-xl mx-auto mt-14 xl:mt-0">
           <div className="relative">
-            <img src={imagehome} alt="hero" className="rounded-lg size-70 md:block hidden" />
+            <img
+              src={imagehome}
+              alt="hero"
+              className="rounded-lg size-70 md:block hidden"
+            />
             {/* <div className="max-w-screen-xl mx-auto px-4 md:text-center md:px-8">
               <div className="max-w-xl space-y-3 md:mx-auto">
                 <h1 className="text-gray-800 text-xl font-extrabold sm:text-2xl">Screening Tool</h1>
@@ -212,8 +216,8 @@ const Hero = () => {
         </div>
       </div>
       <div className="md:p-10">
-          <HowItWorks />
-        </div>
+        <HowItWorks />
+      </div>
       <div className="w-full flex flex-col px-4 py-9 mx-auto justify-center bg-home">
         <h2 className="text-3xl font-extrabold text-center text-main">
           Latest Articles
@@ -269,8 +273,8 @@ const Hero = () => {
           Empower Your Parenting with Free Child Development Tools Access
           Essential Resources to Foster Your Child&nbsp;s Growth for Free
         </h3> */}
-        <div className="text-center flex flex-col md:flex-row gap-2 md:gap-8 p-3 mx-auto mt-8">
-          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
+        <div className="lg:px-32 px-5 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 text-center gap-2 md:gap-8 mx-auto mt-8">
+          <Card className="hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
             <div>
               <p className="flex flex-col items-center">
                 <img
@@ -294,7 +298,7 @@ const Hero = () => {
               </button>
             </div>
           </Card>
-          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
+          <Card className="hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
             <div>
               <p className="flex flex-col items-center">
                 <img
@@ -318,7 +322,7 @@ const Hero = () => {
               </button>
             </div>
           </Card>
-          <Card className="w-80 h-72 hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
+          <Card className="hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
             <div>
               <p className="flex flex-col items-center">
                 <img
