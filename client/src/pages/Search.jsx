@@ -317,7 +317,7 @@ export default function Search() {
                   getInputProps,
                   suggestions,
                   getSuggestionItemProps,
-                  loading,
+                  // loading,
                 }) => (
                   <div style={{ position: "relative" }}>
                     <input
@@ -331,7 +331,7 @@ export default function Search() {
                       className="text-base autocomplete-dropdown-container overflow-hidden"
                       style={{ position: "absolute", zIndex: 1000 }}
                     >
-                      {loading && <div>Loading...</div>}
+                      {/* {loading && <div>Loading...</div>} */}
                       {suggestions.map((suggestion) => {
                         const className = suggestion.active
                           ? "suggestion-item--active"
