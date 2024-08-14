@@ -64,10 +64,10 @@ const Header = ({ showSubMenu }) => {
     };
 
     // Attach the event listener to the document body
-    document.body.addEventListener("click", handleClickOutside);
+    window.addEventListener("click", handleClickOutside);
     return () => {
       // Remove the event listener when the component is unmounted
-      document.body.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
@@ -297,7 +297,7 @@ const Header = ({ showSubMenu }) => {
           </div>
         </div>
         <div
-          className={`nav-menu flex-1 pb-28 mt-8 overflow-y-auto max-h-screen lg:block lg:overflow-visible lg:pb-0 lg:mt-0 ${
+          className={`nav-menu flex-1 pb-2 mt-8 overflow-y-auto max-h-screen lg:block lg:overflow-visible lg:pb-0 lg:mt-0 ${
             state ? "" : "hidden"
           }`}
         >
@@ -340,108 +340,149 @@ const Header = ({ showSubMenu }) => {
                 </Link>
               );
             })}
-
             <div className="space-y-3 items-center gap-x-6 md:flex md:space-y-0">
               {currentUser ? (
-                <div>
-                  <img
-                    id="avatarButton"
-                    type="button"
-                    data-dropdown-toggle="userDropdown"
-                    data-dropdown-placement="bottom-start"
-                    className="w-10 h-10 rounded-full cursor-pointer object-cover"
-                    src={
-                      currentUser.profilePicture ||
-                      "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
-                    }
-                    alt="User dropdown"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleDropdown();
-                    }}
-                    ref={dropdownRef}
-                  />
-                  <div
-                    id="userDropdown"
-                    className={`z-10 ${
-                      isDropdownVisible ? "" : "hidden"
-                    } bg-gray-800 divide-y divide-gray-500 rounded-lg shadow w-44 dark:bg-gray-100 dark:divide-gray-600`}
-                    style={{ position: "absolute", top: "80px", right: "10px" }}
-                  >
-                    <div className="px-4 py-3 text-sm text-gray-100 dark:text-white">
-                      <div>Hi, {currentUser.username}</div>
-                      <div className="font-medium truncate">
-                        {currentUser.email}
-                      </div>
-                    </div>
+                <>
+                  <div className="hidden md:flex">
+                    <img
+                      id="avatarButton"
+                      type="button"
+                      data-dropdown-toggle="userDropdown"
+                      data-dropdown-placement="bottom-start"
+                      className="w-10 h-10 rounded-full cursor-pointer object-cover"
+                      src={
+                        currentUser.profilePicture ||
+                        "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                      }
+                      alt="User dropdown"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDropdown();
+                      }}
+                      ref={dropdownRef}
+                    />
                     <div
-                      className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                      aria-labelledby="avatarButton"
+                      id="userDropdown"
+                      onClick={() => setState(false)}
+                      className={`z-10 ${
+                        isDropdownVisible ? "" : "hidden"
+                      } bg-gray-800 divide-y divide-gray-500 rounded-lg shadow w-44 dark:bg-gray-100 dark:divide-gray-600`}
+                      style={{
+                        position: "absolute",
+                        top: "80px",
+                        right: "10px",
+                      }}
                     >
-                      {currentUser.isAdmin && (
-                        <li>
-                          <Link
-                            to="/admin-dashboard?tab=dashboard"
-                            className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            Admin Dashboard
-                          </Link>
-                        </li>
-                      )}
-                      {currentUser && (
-                        <div>
-                          <li>
+                      <div className="px-4 py-3 text-sm text-gray-100 dark:text-white">
+                        <div>Hi, {currentUser.username}</div>
+                        <div className="font-medium truncate">
+                          {currentUser.email}
+                        </div>
+                      </div>
+                      <div
+                        className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                        aria-labelledby="avatarButton"
+                      >
+                        {currentUser.isAdmin && (
+                          <li onClick={() => setDropdownVisible(false)}>
                             <Link
-                              to="/dashboard?tab=dashboard"
-                              className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
+                              to="/admin-dashboard?tab=dashboard"
+                              className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
                             >
-                              My Dashboard
-                            </Link>
-                            <Link
-                              to="/dashboard?tab=providers"
-                              className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
-                            >
-                              Providers
-                            </Link>
-                            <Link
-                              to="/dashboard?tab=messages"
-                              className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
-                            >
-                              Message
-                            </Link>
-                            <Link
-                              to="/dashboard?tab=profile"
-                              className="block px-4 py-2 text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
-                            >
-                              Profile
+                              Admin Dashboard
                             </Link>
                           </li>
-                        </div>
-                      )}
-
-                      {/* <li>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        )}
+                        {currentUser && (
+                          <div>
+                            <li onClick={() => setDropdownVisible(false)}>
+                              <Link
+                                to="/dashboard?tab=dashboard"
+                                className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
+                              >
+                                My Dashboard
+                              </Link>
+                              <Link
+                                to="/dashboard?tab=providers"
+                                className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
+                              >
+                                Providers
+                              </Link>
+                              <Link
+                                to="/dashboard?tab=messages"
+                                className="block px-4 py-2  text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-600"
+                              >
+                                Message
+                              </Link>
+                              <Link
+                                to="/dashboard?tab=profile"
+                                className="block px-4 py-2 text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-white"
+                              >
+                                Profile
+                              </Link>
+                            </li>
+                          </div>
+                        )}
+                      </div>
+                      <div className="py-1">
+                        <Link
+                          to="/"
+                          onClick={handleSignout}
+                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                         >
-                          Earnings
-                        </a>
-                      </li> */}
-                    </div>
-                    <div className="py-1">
-                      <Link
-                        to="/"
-                        onClick={handleSignout}
-                        className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                      >
-                        Sign out
-                      </Link>
+                          Sign out
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
+                  <div className="md:hidden flex flex-col fixed bottom-0 left-0 right-0 bg-gray-700 py-4 px-">
+                    <div className="flex flex-row gap-2 items-center px-2">
+                      <img
+                        src={currentUser.profilePicture}
+                        alt="user profile"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                      <div className="flex flex-col">
+                        <p className="text-base text-white">
+                          {currentUser.username}
+                        </p>
+                        <p className="text-sm text-gray-300">
+                          {currentUser.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <li onClick={() => setState(false)}>
+                        <Link
+                          to="/dashboard?tab=dashboard"
+                          className="block px-4 py-2  text-gray-200"
+                        >
+                          My Dashboard
+                        </Link>
+                        <Link
+                          to="/dashboard?tab=providers"
+                          className="block px-4 py-2  text-gray-200"
+                        >
+                          Providers
+                        </Link>
+                        <Link
+                          to="/dashboard?tab=messages"
+                          className="block px-4 py-2  text-gray-200"
+                        >
+                          Message
+                        </Link>
+                        <Link
+                          to="/dashboard?tab=profile"
+                          className="block px-4 py-2 text-gray-200"
+                        >
+                          Profile
+                        </Link>
+                      </li>
+                    </div>
+                  </div>
+                </>
               ) : (
-                // <img src={currentUser.profilePicture} alt='profile' className="h-8 w-8 rounded-full object-cover"/>
-                <div className="flex md:flex-row flex-col gap-4 ">
+                <div className="flex md:flex-row flex-col gap-4">
                   <Link
                     to="/signin"
                     onClick={() => setState(false)}
@@ -576,7 +617,6 @@ const Header = ({ showSubMenu }) => {
     </header>
   );
 };
-
 export default Header;
 
 Header.propTypes = {

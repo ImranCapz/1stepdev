@@ -18,6 +18,7 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { FileInput } from "flowbite-react";
 import Input from "react-phone-number-input/input";
 import { IoMdAlert } from "react-icons/io";
+import { suggestions } from "../components/suggestions";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -251,17 +252,6 @@ export default function CreateProvider() {
     }
   };
 
-  const service = [
-    { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
-    { value: "Speech Therapy", label: "Speech Therapy" },
-    { value: "ABA Therapy", label: "ABA Therapy" },
-    { value: "Occupational Therapy", label: "Occupational Therapy" },
-    { value: "School-Based Service", label: "School-Based Service" },
-    { value: "Dance Movement", label: "Dance Movement" },
-    { value: "Art as Therapy", label: "Art as Therapy" },
-    { value: "Counselling", label: "Counselling" },
-  ];
-
   const therapyType = [
     { value: "Virtual", label: "Virtual" },
     { value: "In-Clinic", label: "In-Clinic" },
@@ -308,7 +298,7 @@ export default function CreateProvider() {
           ...formData,
           ...data.fetchprovider,
           name: data.fetchprovider.name.map(
-            (name) => service.find((option) => option.value === name).value
+            (name) => suggestions.find((option) => option.value === name).value
           ),
           therapytype: data.fetchprovider.therapytype.map(
             (name) => therapyType.find((option) => option.value === name).value
@@ -435,7 +425,7 @@ export default function CreateProvider() {
               </p>
             )}
           </div>
-          <div className="bg-white">
+          <div className="bg-white lg:w-[1300px] mx-auto items-center">
             <form
               onSubmit={handleSubmit}
               className="flex flex-col sm:flex-row gap-10 mt-6 md:p-20 p-6 rounded-lg mx-auto"
@@ -447,7 +437,7 @@ export default function CreateProvider() {
                 <Select
                   id="name"
                   key={formData.name}
-                  options={service}
+                  options={suggestions}
                   isMulti
                   required
                   placeholder="What service do you provide?"
@@ -456,7 +446,7 @@ export default function CreateProvider() {
                   defaultValue={
                     Array.isArray(formData.name)
                       ? formData.name.map((name) =>
-                          service.find((option) => option.value === name)
+                          suggestions.find((option) => option.value === name)
                         )
                       : []
                   }
@@ -558,7 +548,7 @@ export default function CreateProvider() {
                       options={Country.getAllCountries().map((country) => {
                         return { value: country.name, label: country.name };
                       })}
-                      className="w-full rounded-lg border-2 border-slate-300 hover:border-purple-400"
+                      className="rounded-lg border-2 border-slate-300 hover:border-purple-400"
                       onChange={(selectedOption) => {
                         const selectedCountry = Country.getAllCountries().find(
                           (country) => country.name === selectedOption.value
@@ -576,7 +566,7 @@ export default function CreateProvider() {
                         control: (provided) => ({
                           ...provided,
                           backgroundColor: "transparent",
-                          minWidth: "160px",
+                          minWidth: "130px",
                           border: "none",
                           outline: "none",
                           boxShadow: "none",
@@ -659,7 +649,7 @@ export default function CreateProvider() {
                         control: (provided) => ({
                           ...provided,
                           backgroundColor: "transparent",
-                          minWidth: "160px",
+                          minWidth: "130px",
                           border: "none",
                           outline: "none",
                           boxShadow: "none",
@@ -731,7 +721,7 @@ export default function CreateProvider() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col flex-1 gap-3">
+              <div className="flex flex-col flex-1 gap-3 md:w-[300px]">
                 <p className="font-semibold text-main">
                   Explain About your therapy section*
                   <span className="text-sm">
@@ -834,43 +824,47 @@ export default function CreateProvider() {
                     </p>
                   )}
                   <p className="font-semibold text-main">Availability:</p>
-                  <div className="flex flex-row gap-4">
+                  <div className="flex md:flex-row flex-col gap-4">
                     <p className="font-semibold text-main">Morning:</p>
-                    <input
-                      type="time"
-                      id="morningStart"
-                      className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                      required
-                      value={formData.availability.morningStart}
-                      onChange={handleChange}
-                    />
-                    <input
-                      type="time"
-                      id="morningEnd"
-                      className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                      required
-                      value={formData.availability.morningEnd}
-                      onChange={handleChange}
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="time"
+                        id="morningStart"
+                        className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                        required
+                        value={formData.availability.morningStart}
+                        onChange={handleChange}
+                      />
+                      <input
+                        type="time"
+                        id="morningEnd"
+                        className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                        required
+                        value={formData.availability.morningEnd}
+                        onChange={handleChange}
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-row gap-4 pl-1">
+                  <div className="flex md:flex-row flex-col gap-4 pl-1">
                     <p className="font-semibold text-main">Evening:</p>
-                    <input
-                      type="time"
-                      id="eveningStart"
-                      className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                      required
-                      value={formData.availability.eveningStart}
-                      onChange={handleChange}
-                    />
-                    <input
-                      type="time"
-                      id="eveningEnd"
-                      className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                      required
-                      value={formData.availability.eveningEnd}
-                      onChange={handleChange}
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="time"
+                        id="eveningStart"
+                        className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                        required
+                        value={formData.availability.eveningStart}
+                        onChange={handleChange}
+                      />
+                      <input
+                        type="time"
+                        id="eveningEnd"
+                        className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
+                        required
+                        value={formData.availability.eveningEnd}
+                        onChange={handleChange}
+                      />
+                    </div>
                   </div>
                 </div>
 

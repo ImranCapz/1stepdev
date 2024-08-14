@@ -32,7 +32,7 @@ export default function ProviderMessageDash() {
   const { user } = useSelector((state) => state.provider);
   const { onlineAllUsers } = useSelector((state) => state.online);
   const [userDetails, setUserDetails] = useState([]);
-  console.log("UserDetails", userDetails);
+  // console.log("UserDetails", userDetails);
   const [providerId, setProviderId] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);

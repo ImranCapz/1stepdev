@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import Select from "react-select";
 import { FaSearch } from "react-icons/fa";
 import { City } from "country-state-city";
-import CreatableSelect from "react-select/creatable";
 import { suggestions } from "./suggestions";
 
 import PropTypes from "prop-types";

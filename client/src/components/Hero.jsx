@@ -215,7 +215,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      <div className="md:p-10">
+      <div className="flex flex-rows mx-auto md:p-10">
         <HowItWorks />
       </div>
       <div className="w-full flex flex-col px-4 py-9 mx-auto justify-center bg-home">
@@ -273,7 +273,7 @@ const Hero = () => {
           Empower Your Parenting with Free Child Development Tools Access
           Essential Resources to Foster Your Child&nbsp;s Growth for Free
         </h3> */}
-        <div className="lg:px-32 px-5 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 text-center gap-2 md:gap-8 mx-auto mt-8">
+        <div className="mx-auto lg:px-32 2xl:w-[1400px] grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 text-center gap-2 md:gap-8 mt-8">
           <Card className="hover:shadow-xl transition ease-in-out duration-300 hover:-translate-y-2 group">
             <div>
               <p className="flex flex-col items-center">

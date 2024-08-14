@@ -18,10 +18,11 @@ import { Drawer, Typography, IconButton } from "@material-tailwind/react";
 import { Checkbox } from "flowbite-react";
 import { Spinner } from "flowbite-react";
 import { suggestions } from "../components/suggestions";
+import PropTypes from "prop-types";
 
-export default function Search() {
+export default function Search({ searchTermFromHeader }) {
   const navigate = useNavigate();
-  const [searchTerm, setsearchTerm] = useState("");
+  const [searchTerm, setsearchTerm] = useState(searchTermFromHeader || "");
   const [address, setAddress] = useState({});
   const [providerloading, setProviderLoading] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -80,13 +81,11 @@ export default function Search() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    console.log("useEffect triggered", location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
     if (searchTermFromUrl && searchTermFromUrl !== searchTerm) {
       setsearchTerm(searchTermFromUrl);
     }
     const fetchProvider = async (address) => {
-      console.log("fetchProvider called", address);
       setLoading(true);
       setProviderLoading(true);
       const urlParams = new URLSearchParams(location.search);
@@ -96,7 +95,6 @@ export default function Search() {
       const res = await fetch(`/server/provider/get?${searchQuery}`);
       const data = await res.json();
       setProviders(data.providers);
-      console.log("data", data);
       setProviderLoading(false);
       setLoading(false);
     };
@@ -121,7 +119,7 @@ export default function Search() {
       }
     }
     topLoadingBarRef.current.complete();
-  }, [location.search]);
+  }, [location.search, searchTerm]);
 
   const onPageChange = async (page) => {
     setCurrentPage(page);
@@ -617,3 +615,7 @@ export default function Search() {
     </div>
   );
 }
+
+Search.propTypes = {
+  searchTermFromHeader: PropTypes.string,
+};
