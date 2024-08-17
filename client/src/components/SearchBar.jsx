@@ -34,7 +34,6 @@ export const SearchBar = ({ defaultSearchTerm }) => {
     e.preventDefault();
     const urlParams = new URLSearchParams();
     urlParams.set("searchTerm", searchTerm);
-
     if (!address) {
       fetch("https://ipapi.co/json/")
         .then((res) => res.json())
@@ -77,7 +76,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
           setAddress(location.city);
         });
     }
-  }, []);
+  }, [location.search]);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -163,7 +162,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
               control: (provided) => ({
                 ...provided,
                 backgroundColor: "transparent !important",
-                minWidth:  windowwidth < 786 ? 110 : 260,
+                minWidth: windowwidth < 786 ? 110 : 260,
                 width: "auto",
                 border: "none",
                 outline: "none",

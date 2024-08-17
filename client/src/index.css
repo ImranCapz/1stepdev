@@ -197,6 +197,14 @@ input[type="email"]:focus {
   object-fit: cover;
 }
 
+.bg-drawer {
+  background-image: url("../../client/src/assets/bgdrawer.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  object-fit: cover;
+}
+
 .blur-drawer {
   position: fixed;
   top: 0;
@@ -204,7 +212,7 @@ input[type="email"]:focus {
   width: 100%;
   height: 100%;
   background-color: rgba(226, 226, 226, 0.5);
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(3px);
 
   transition: backdrop-filter 0.3s ease;
 }

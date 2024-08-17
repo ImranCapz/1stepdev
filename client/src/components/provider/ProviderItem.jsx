@@ -137,6 +137,26 @@ export default function ProviderItem({ provider }) {
                 <rect x="20" y="180" rx="4" ry="4" width="290" height="34" />
               </ContentLoader>
             </div>
+            <div key={provider._id} className="lg:block hidden">
+              <ContentLoader
+                viewBox="0 0 300 300"
+                speed={2}
+                height={500}
+                width={400}
+                backgroundColor="#e2e2e2"
+                foregroundColor="#D1BEE0"
+              >
+                <circle cx="150" cy="60" r="56" />
+                <rect x="100" y="125" rx="4" ry="4" width="100" height="9" />
+                <rect x="75" y="146" rx="4" ry="4" width="140" height="13" />
+                <rect x="50" y="170" rx="4" ry="4" width="190" height="9" />
+                <rect x="50" y="190" rx="4" ry="4" width="150" height="9" />
+                <rect x="50" y="210" rx="4" ry="4" width="220" height="9" />
+                <rect x="50" y="253" rx="4" ry="4" width="60" height="9" />
+                (button)
+                <rect x="165" y="240" rx="4" ry="4" width="110" height="34" />
+              </ContentLoader>
+            </div>
           </div>
         </>
       ) : (

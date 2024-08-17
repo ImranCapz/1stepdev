@@ -16,6 +16,7 @@ import ParentModel from "./modal/ParentModel";
 import PropTypes from "prop-types";
 import { SearchBar } from "./SearchBar";
 
+
 const Header = ({ showSubMenu }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -63,11 +64,17 @@ const Header = ({ showSubMenu }) => {
       }
     };
 
-    // Attach the event listener to the document body
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setDrawer(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
     window.addEventListener("click", handleClickOutside);
     return () => {
-      // Remove the event listener when the component is unmounted
       window.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -506,7 +513,7 @@ const Header = ({ showSubMenu }) => {
       </div>
       {isDrawer && (
         <div
-          className={`bg-slate-100 absolute w-full pr-10 p-20 z-10 hidden md:flex transition-all duration-300 ease-in-out transform ${
+          className={`bg-drawer w-full absolute 2xl:w-full justify-center 2xl:p-20 p-10 z-10 hidden md:flex transition-all duration-300 ease-in-out transform ${
             isDrawer ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"
           }`}
           ref={drawerRef}
