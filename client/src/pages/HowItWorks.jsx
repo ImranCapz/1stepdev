@@ -5,7 +5,7 @@ import img2 from "../assets/howitsworks/online.png";
 function HowItWorks() {
   return (
     <div className="flex flex-col mx-auto 2xl:px-40">
-      <h2 className="text-xl text-start text-gray font-semibold">
+      <h2 className=" ml-2 text-xl text-start text-gray font-semibold">
         How does it work?
       </h2>
       <div className="md:p-6 p-5 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mx-auto">

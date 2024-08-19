@@ -36,7 +36,7 @@ function App() {
   // const dispatch = useDispatch();
   const location = useLocation();
 
-  const pathWithoutSubMenu = ["/dashboard", "/mymessages"];
+  const pathWithoutSubMenu = ["/dashboard", "/mymessages","/search"];
 
   // useEffect(() => {
   //   const checkToken = () => {

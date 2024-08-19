@@ -117,12 +117,12 @@ export default function ProviderItem({ provider }) {
       {loading ? (
         <>
           <div className="text-center text-xl text-slate-700 w-full">
-            <div key={provider._id} className="md:hidden block mb-2">
+            <div className="md:hidden block mb-2">
               <ContentLoader
                 viewBox="0 0 320 220"
                 speed={2}
-                height={240}
-                width={370}
+                height={250}
+                width={360}
                 backgroundColor="#f5f5f5"
                 foregroundColor="#D1BEE0"
               >
@@ -137,7 +137,7 @@ export default function ProviderItem({ provider }) {
                 <rect x="20" y="180" rx="4" ry="4" width="290" height="34" />
               </ContentLoader>
             </div>
-            <div key={provider._id} className="lg:block hidden">
+            <div className="lg:block hidden">
               <ContentLoader
                 viewBox="0 0 300 300"
                 speed={2}

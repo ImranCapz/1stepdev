@@ -159,6 +159,9 @@ input[type="email"]:focus {
 .pr-card {
   background-color: #ffffff;
 }
+.setting-bg {
+  background-color: #f1f5f9;
+}
 
 @keyframes wave {
   0%,

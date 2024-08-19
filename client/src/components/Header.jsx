@@ -15,7 +15,7 @@ import ListModel from "./modal/ListModel";
 import ParentModel from "./modal/ParentModel";
 import PropTypes from "prop-types";
 import { SearchBar } from "./SearchBar";
-
+import Search from "../pages/Search";
 
 const Header = ({ showSubMenu }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -102,8 +102,6 @@ const Header = ({ showSubMenu }) => {
       navigate("/early-concerns");
     } else if (itemTitle === "Read Expert Guides") {
       navigate("/expert-guides");
-    } else {
-      navigate(`/search?searchTerm=${itemTitle}`);
     }
     topLoadingBarRef.current.complete(50);
   };
@@ -624,6 +622,7 @@ const Header = ({ showSubMenu }) => {
     </header>
   );
 };
+
 export default Header;
 
 Header.propTypes = {

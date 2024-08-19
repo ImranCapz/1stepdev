@@ -55,9 +55,6 @@ export const SearchBar = ({ defaultSearchTerm }) => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
     let addressFromUrl = urlParams.get("address");
-    if (searchTermFromUrl) {
-      setsearchTerm(searchTermFromUrl);
-    }
     if (addressFromUrl) {
       setAddress(addressFromUrl);
       fetchProvider(addressFromUrl);
@@ -144,7 +141,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
         </div>
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
           <label
-            htmlFor="where"
+            htmlFor="address"
             className="block py-1 px-2 text-base font-bold text-gray-700 mt-8"
           >
             Where

@@ -50,8 +50,12 @@ export default function UserBooking() {
   }, [currentUser._id, dispatch]);
 
   return (
-    <> 
-      <div className={`table-auto md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 max-h-screen ${booking && booking.length > 0 ? 'overflow-x-scroll' : ''}`}>
+    <>
+      <div
+        className={`table-auto md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 max-h-screen ${
+          booking && booking.length > 0 ? "overflow-x-scroll" : ""
+        }`}
+      >
         {loading ? (
           <div
             style={{
@@ -65,7 +69,7 @@ export default function UserBooking() {
           </div>
         ) : booking && booking.length > 0 ? (
           <>
-            <h1 className="text-2xl text-gray font-bold mb-5">
+            <h1 className="px-2 text-2xl text-gray font-bold mb-4">
               Your Bookings :
             </h1>
             <Table hoverable className="shadow-md w-full">

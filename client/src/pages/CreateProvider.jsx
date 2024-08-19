@@ -425,7 +425,7 @@ export default function CreateProvider() {
               </p>
             )}
           </div>
-          <div className="bg-white lg:w-[1300px] mx-auto items-center">
+          <div className="bg-white lg:w-[1300px] mx-auto items-center rounded-xl">
             <form
               onSubmit={handleSubmit}
               className="flex flex-col sm:flex-row gap-10 mt-6 md:p-20 p-6 rounded-lg mx-auto"

@@ -11,6 +11,7 @@ import TopLoadingBar from "react-top-loading-bar";
 import Select from "react-select";
 import Input from "react-phone-number-input/input";
 import { IoMdAlert } from "react-icons/io";
+import { suggestions } from "../suggestions";
 
 export default function ParentForm() {
   const { currentUser, error } = useSelector((state) => state.user);
@@ -42,17 +43,6 @@ export default function ParentForm() {
       phoneNumber: value,
     },
   });
-
-  const service = [
-    { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
-    { value: "Speech Therapy", label: "Speech Therapy" },
-    { value: "ABA Therapy", label: "ABA Therapy" },
-    { value: "Occupational Therapy", label: "Occupational Therapy" },
-    { value: "School-Based Service", label: "School-Based Service" },
-    { value: "Dance Movement", label: "Dance Movement" },
-    { value: "Art as Therapy", label: "Art as Therapy" },
-    { value: "Counselling", label: "Counselling" },
-  ];
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -177,7 +167,7 @@ export default function ParentForm() {
   }, [currentUser._id, dispatch]);
 
   return (
-    <div className="p-7 flex-col items-center rounded-lg">
+    <div className="p-3 flex-col items-center rounded-lg">
       <TopLoadingBar ref={TopLoadingBarRef} color="#ff9900" height={3} />
       {loading ? (
         <div
@@ -193,7 +183,7 @@ export default function ParentForm() {
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row md:gap-4 gap-4"
+          className="p-4 flex flex-col sm:flex-row md:gap-4 gap-4 w-[1200px] mx-auto justify-center"
         >
           <div className="flex flex-col flex-1 gap-2">
             <label
@@ -357,7 +347,7 @@ export default function ParentForm() {
             <Select
               id="name"
               key={formData.parentDetails?.lookingFor}
-              options={service}
+              options={suggestions}
               isMulti
               required
               placeholder="looking for?"
@@ -366,7 +356,7 @@ export default function ParentForm() {
               defaultValue={
                 Array.isArray(formData.parentDetails?.lookingFor)
                   ? formData.parentDetails?.lookingFor.map((name) =>
-                      service.find((option) => option.value === name)
+                      suggestions.find((option) => option.value === name)
                     )
                   : []
               }

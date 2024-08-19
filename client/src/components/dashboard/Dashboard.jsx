@@ -5,17 +5,20 @@ import Overview from "./Overview";
 import SubmenuProfile from "./SubmenuProfile";
 import SubmenuProvider from "./SubmenuProvider";
 import { useSelector } from "react-redux";
-import { getBookingsStart, getBookingSuccess, getBookingFailure } from "../../redux/booking/bookingSlice";
+import {
+  getBookingsStart,
+  getBookingSuccess,
+  getBookingFailure,
+} from "../../redux/booking/bookingSlice";
 import { useDispatch } from "react-redux";
 import MessageDash from "./MessageDash";
-
 
 export default function Dashboard() {
   const location = useLocation();
   const [tab, setTab] = useState("Dashboard");
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
- 
+
   useEffect(() => {
     const fetchBooking = async () => {
       const url = `/server/booking/getuserbookings/${currentUser._id}`;
@@ -40,33 +43,55 @@ export default function Dashboard() {
     };
 
     fetchBooking();
-  }, [currentUser._id,dispatch]);
+  }, [currentUser._id, dispatch]);
 
-  
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
-    if (["dashboard", "providers", "profile", "Profile Setting", "Parent Details", "Bookings","messages"].includes(tabFromUrl)) {
+    if (
+      [
+        "dashboard",
+        "providers",
+        "profile",
+        "Profile Setting",
+        "Parent Details",
+        "Bookings",
+        "messages",
+      ].includes(tabFromUrl)
+    ) {
       setTab(tabFromUrl);
     }
-  }, [location.search]); 
-  
+  }, [location.search]);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tagFromUrl = urlParams.get("tag");
-    if (["dashboard", "providers", "profile", "Profile Setting", "Parent Details", "Bookings","messages"].includes(tagFromUrl)) {
+    if (
+      [
+        "dashboard",
+        "providers",
+        "profile",
+        "Profile Setting",
+        "Parent Details",
+        "Bookings",
+        "messages",
+      ].includes(tagFromUrl)
+    ) {
       setTab(tagFromUrl);
     }
-  }, [location.search]); 
+  }, [location.search]);
   return (
-    <div className="min-h-screen h-full flex flex-col mx-auto">
-      <div className="w-full">
+    <div className="min-h-screen flex flex-col mx-auto">
+      <div className="">
         <DashSidebar />
       </div>
-        {tab === "dashboard" && <Overview /> }
-        {tab === "providers" && <SubmenuProvider />}
-        {(tab === "profile" || tab === "Profile Setting" || tab === "Parent Details" || tab === "Bookings" ) && < SubmenuProfile/>}
-        {tab === "messages" && <MessageDash/>}
+      {tab === "dashboard" && <Overview />}
+      {tab === "providers" && <SubmenuProvider />}
+      {(tab === "profile" ||
+        tab === "Profile Setting" ||
+        tab === "Parent Details" ||
+        tab === "Bookings") && <SubmenuProfile />}
+      {tab === "messages" && <MessageDash />}
     </div>
   );
 }

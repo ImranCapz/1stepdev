@@ -136,7 +136,7 @@ export default function Profile() {
   return (
     <div className="bg-slate-100 p-3 mx-auto">
       <TopLoadingBar ref={TopLoadingBarRef} color="#ff9900" height={3} />
-      <h1 className="flex flex-col p-2 mb-4 font-bold text-2xl text-zinc-800">
+      <h1 className="flex flex-col p-2 mb-4 font-bold text-2xl text-gray">
         Account Settings :{" "}
       </h1>
       <div className="p-10 bg-white rounded-lg border">
@@ -269,7 +269,8 @@ export default function Profile() {
                     className="h-16 w-16 object-contain"
                   />
                 </Link>
-                <Link onClick={()=> dispatch(selectProvider(provider._id))}
+                <Link
+                  onClick={() => dispatch(selectProvider(provider._id))}
                   className="flex-1 font-semibold hover:underline truncate"
                   to={`/provider/${provider._id}`}
                 >
@@ -282,7 +283,7 @@ export default function Profile() {
                   >
                     Delete
                   </button>
-                  <Link to='/dashboard?tab=providers'>
+                  <Link to="/dashboard?tab=providers">
                     <button className="text-green-700 uppercase">EDIT</button>
                   </Link>
                 </div>

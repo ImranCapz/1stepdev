@@ -87,7 +87,6 @@ export default function DashSidebar() {
                 Dashboard
               </Sidebar.Item>
             </Link>
-
             <Link to="/dashboard?tab=providers">
               <Sidebar.Item
                 active={tab === "providers"}
@@ -133,7 +132,7 @@ export default function DashSidebar() {
           {bottomNav.map((item, index) => (
             <div key={index}>
               <Link to={item.link}>
-                <p
+                <div
                   className={`text-2xl ${
                     active === item.name
                       ? "provideritem-name -translate-y-2 transition-all duration-500"
@@ -145,7 +144,7 @@ export default function DashSidebar() {
                     <p>{item.icon()}</p>
                     <p className="text-xs">{item.name}</p>
                   </div>
-                </p>
+                </div>
               </Link>
             </div>
           ))}

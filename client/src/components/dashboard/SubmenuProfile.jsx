@@ -2,7 +2,6 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import Profile from "../Profile";
 import ParentForm from "../parents/ParentForm";
-import MessageDash from "./MessageDash";
 import { useSelector } from "react-redux";
 import UserBooking from "../booking/UserBooking";
 import { MdNotificationsActive } from "react-icons/md";
@@ -91,10 +90,11 @@ export default function SubmenuProfile() {
                   }
                 }}
               >
-                <span className="flex flex-row items-center gap-1">{item.title}
-                {item.title === "Bookings" && hasApprovedBooking && (
-                  <MdNotificationsActive />
-                )}
+                <span className="flex flex-row items-center gap-1">
+                  {item.title}
+                  {item.title === "Bookings" && hasApprovedBooking && (
+                    <MdNotificationsActive />
+                  )}
                 </span>
               </Link>
             </li>
@@ -104,27 +104,23 @@ export default function SubmenuProfile() {
 
       {activeComponent === "Profile setting" && (
         <div className="w-full min-h-screen transition-all duration-500">
-          {/* <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 ">
-            {" "}
-            Profile :
-          </h1> */}
           <Profile />
         </div>
       )}
       {activeComponent === "Parent Details" && (
-        <div className="items-center bg-gray-100">
-          {/* <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold md:text-2xl text-xl text-zinc-800">
+        <div className="p-2 items-center setting-bg">
+          <h1 className="flex flex-col p-3 font-bold md:text-2xl text-xl text-gray">
             {" "}
             {currentUser.isParent
               ? "Your Parent Details :"
               : "Fill the form for Parent Profile :"}
-          </h1> */}
+          </h1>
           <ParentForm />
         </div>
       )}
       {activeComponent === "Bookings" && (
-        <div className="w-full">
-          <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800 "></h1>
+        <div className="w-full p-2 setting-bg">
+          <h1 className="flex flex-col font-bold text-2xl"></h1>
           <UserBooking />
         </div>
       )}
