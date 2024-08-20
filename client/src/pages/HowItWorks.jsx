@@ -13,7 +13,9 @@ function HowItWorks() {
           <h3 className="text-xl font-semibold mb-4 mt-4 text-main ">
             1. Browse a Best Therapist Profiles
           </h3>
-          <p className="mb-2 text-sm">Explore the list of available therapists.</p>
+          <p className="mb-2 text-sm">
+            Explore the list of available therapists.
+          </p>
           <p className="mb-2 text-sm">
             Click on profiles to view detailed information about their
             qualifications, experience, rates, and reviews from other clients.
@@ -21,7 +23,7 @@ function HowItWorks() {
           <img
             src={img}
             alt="Therapist 1"
-            className="w-64 rounded-md mx-auto transition-all ease-in-out duration-700 group-hover:-translate-y-2"
+            className="w-52 rounded-md mx-auto transition-all ease-in-out duration-700 group-hover:-translate-y-2"
           />
         </div>
         <div className="group border bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all duration-300 ease-in-out">
@@ -36,7 +38,7 @@ function HowItWorks() {
           <img
             src={img1}
             alt="Therapist 2"
-            className="w-64 rounded-md mx-auto transition-all ease-in-out duration-700 group-hover:-translate-y-2"
+            className="w-52 rounded-md mx-auto transition-all ease-in-out duration-700 group-hover:-translate-y-2"
           />
         </div>
 
@@ -55,7 +57,7 @@ function HowItWorks() {
           <img
             src={img2}
             alt="Therapist 3"
-            className="w-64 rounded-md mx-auto transition ease-in-out duration-700 transform group-hover:-translate-y-2"
+            className="w-52 rounded-md mx-auto transition ease-in-out duration-700 transform group-hover:-translate-y-2"
           />
         </div>
       </div>

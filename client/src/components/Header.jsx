@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import logo from "../assets/oneStepLogo.png";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "../redux/user/userSlice";
 import { providerOut } from "../redux/provider/providerSlice";
 import { onlineStatusRemove } from "../redux/user/onlineSlice";
@@ -15,7 +14,8 @@ import ListModel from "./modal/ListModel";
 import ParentModel from "./modal/ParentModel";
 import PropTypes from "prop-types";
 import { SearchBar } from "./SearchBar";
-import Search from "../pages/Search";
+import { searchService } from "../redux/user/userSlice";
+
 
 const Header = ({ showSubMenu }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -235,7 +235,7 @@ const Header = ({ showSubMenu }) => {
 
   return (
     <header
-      className={`text-base lg:text-sm sticky top-0 z-50 bg-white border-b ${
+      className={`text-base lg:text-sm sticky top-0 z-50 bg-white ${
         isDrawer ? "blur-drawer" : ""
       }`}
     >
@@ -557,6 +557,7 @@ const Header = ({ showSubMenu }) => {
                               className="block py-2 px-1 cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
+                                dispatch(searchService(submenu.title));
                                 handleSubmenuItemClick(submenu, e);
                               }}
                             >
@@ -608,7 +609,8 @@ const Header = ({ showSubMenu }) => {
                 >
                   <Link
                     to={item.path}
-                    onClick={() => handleSubmenuClick(item.title)}
+                    // onClick={() => handleSubmenuClick(item.title)}
+                    onClick={() => dispatch(searchService(item.title))}
                     className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150 cursor-pointer"
                   >
                     {Array.isArray(item.title) ? item.title : item.title}

@@ -36,6 +36,7 @@ import { Tooltip } from "flowbite-react";
 import ContentLoader from "react-content-loader";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
+import { IoIosSend } from "react-icons/io";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -61,10 +62,12 @@ export default function Provider() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [description, setDescription] = useState(false);
   const [otpOpen, setOtpOpen] = useState(false);
-  const dispatch = useDispatch();
-  const urlRef = useRef(null);
   const [otp, setOtp] = useState(0);
+  const [topNavbar, setTopNavbar] = useState(false);
+
+  const urlRef = useRef(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   //socket
   const SOCKET_SERVER_URL = "http://localhost:3000";
@@ -76,7 +79,7 @@ export default function Provider() {
     setSocket(newSocket);
 
     return () => newSocket.close();
-  }, []);
+  }, [currentUser]);
 
   const handleSendMessage = () => {
     if (currentUser === null) return;
@@ -300,6 +303,20 @@ export default function Provider() {
     }
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) {
+        setTopNavbar(true);
+      } else {
+        setTopNavbar(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
     <div className="w-full min-h-screen mx-auto flex lg:flex-row flex-col-reverse bg-providerItem">
       {loading ? (
@@ -309,8 +326,8 @@ export default function Provider() {
               height={700}
               width={1200}
               viewBox="0 0 450 300"
-              backgroundColor="#f5f5f5"
-              foregroundColor="#dbdbdb"
+              backgroundColor="#e2e2e2"
+              foregroundColor="#D1BEE0"
             >
               (//bigbox)
               <rect x="220" y="40" width="35" height="12" rx="4" />
@@ -348,8 +365,8 @@ export default function Provider() {
               width={360}
               height={730}
               viewBox="0 0 400 800"
-              backgroundColor="#f3f3f3"
-              foregroundColor="#ecebeb"
+              backgroundColor="#e2e2e2"
+              foregroundColor="#D1BEE0"
             >
               <circle cx="200" cy="100" r="80" />
               <rect x="64" y="220" rx="3" width="270" height="20" />
@@ -394,6 +411,44 @@ export default function Provider() {
               </SwiperSlide>
             ))}
           </Swiper> */}
+              <div
+                className={`${
+                  topNavbar
+                    ? "opacity-100 visible py-3 md:hidden sticky top-16 z-40 transition-opacity duration-300 ease-in-out"
+                    : "opacity-0 invisible h-0 md:hidden transition-opacity duration-200"
+                }`}
+              >
+                <div className="p-4 flex flex-row bg-slate-200 justify-around">
+                  <div className="flex flex-row items-center gap-2">
+                    <img
+                      src={provider.profilePicture}
+                      alt="provider profile"
+                      className="w-10 h-10 object-cover rounded-full"
+                    />
+                    <p className="text-gray text-lg font-semibold">
+                      {provider.fullName}
+                    </p>
+                  </div>
+                  <div className="p-1 flex flex-row items-center gap-2">
+                    <div>
+                      <Button
+                        onClick={handleFavorite}
+                        variant="outlined"
+                        className="flex flex-row border-gray-400 text-gray-600 py-1 px-1 gap-1 items-center rounded-full"
+                      >
+                        {isFavorite ? <FcLike /> : <FaRegHeart />}
+                      </Button>
+                    </div>
+                    <div className="icon-bg rounded-full p-1">
+                      <IoIosSend className="icon-color w-4 h-4 rounded-full" />
+                    </div>
+                    <Button className="p-2 w-full rounded-lg uppercase card-btn">
+                      Book Now
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
               <div className="lg:flex-row flex-col mx-auto flex md:w-5/6 justify-center mt-4">
                 <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
                   <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">

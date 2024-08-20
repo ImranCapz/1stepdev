@@ -1,36 +1,35 @@
 import Select from "react-select";
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
-import ProviderItem from "../components/provider/ProviderItem";
+import PropTypes from "prop-types";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
-import TopLoadingBar from "react-top-loading-bar";
 import { FaSearch } from "react-icons/fa";
-import { Button } from "@material-tailwind/react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { HiOutlineFilter } from "react-icons/hi";
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
 import ContentLoader from "react-content-loader";
-import { Pagination } from "flowbite-react";
-import { Drawer, Typography, IconButton } from "@material-tailwind/react";
-import { Checkbox } from "flowbite-react";
-import { Spinner } from "flowbite-react";
+import { Button } from "@material-tailwind/react";
+import TopLoadingBar from "react-top-loading-bar";
+import { Link, useLocation } from "react-router-dom";
 import { suggestions } from "../components/suggestions";
-import PropTypes from "prop-types";
+import React, { useEffect, useRef, useState } from "react";
+import ProviderItem from "../components/provider/ProviderItem";
+import { Checkbox, Spinner, Pagination } from "flowbite-react";
+import { Drawer, Typography, IconButton } from "@material-tailwind/react";
 
 export default function Search() {
-  const navigate = useNavigate();
-  const [searchTerm, setsearchTerm] = useState("");
+  const searchTermFromHeader = useSelector((state) => state.user.searchService);
+  const [searchTerm, setsearchTerm] = useState(searchTermFromHeader || "");
   const [address, setAddress] = useState("");
   const [providerloading, setProviderLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [providers, setProviders] = useState([]);
-  const topLoadingBarRef = useRef(null);
-  const location = useLocation();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  const topLoadingBarRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
   //checkbox
   const [checkbox, setCheckbox] = useState("");
   const handlecheckbox = (e) => {
@@ -229,7 +228,7 @@ export default function Search() {
                     }}
                     className="block text-sm py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150 cursor-pointer"
                   >
-                    <p>{Array.isArray(item.title) ? item.title : item.title}</p>
+                    {Array.isArray(item.title) ? item.title : item.title}
                   </Link>
                 </li>
               );
@@ -327,7 +326,7 @@ export default function Search() {
             </Drawer>
           </React.Fragment>
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center mt-10">
           <form
             className="p-4 flex sm:w-[600px] justify-center md:outline outline-offset-2 outline-1 outline-gray-300 md:bg-white rounded-lg md:shadow-lg"
             onSubmit={handlesubmit}
@@ -383,7 +382,7 @@ export default function Search() {
                     indicatorSeparator: () => ({}),
                     menu: (provided) => ({
                       ...provided,
-                      width: windowWidth > 786 ? 240 : 250,
+                      width: windowWidth > 786 ? 290 : 250,
                     }),
                   }}
                 />

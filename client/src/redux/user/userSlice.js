@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currentUser: null,
+  searchService: "",
   loading: false,
   error: null,
 };
@@ -38,6 +39,9 @@ const userSlice = createSlice({
       (state.currentUser = null), (state.loading = false);
       state.error = false;
     },
+    searchService: (state, action) => {
+      state.searchService = action.payload;
+    },
   },
 });
 
@@ -52,6 +56,7 @@ export const {
   forgetSuccess,
   forgetFailure,
   signOut,
+  searchService,
 } = userSlice.actions;
 
 export default userSlice.reducer;

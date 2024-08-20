@@ -129,7 +129,10 @@ input[type="email"]:focus {
 }
 
 .icon-color {
-  color: #955fa6;
+  color: #9453a8;
+}
+.icon-bg {
+  background-color: #d6bfdb;
 }
 
 .star {

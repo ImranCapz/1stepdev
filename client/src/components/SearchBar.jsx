@@ -53,7 +53,6 @@ export const SearchBar = ({ defaultSearchTerm }) => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get("searchTerm");
     let addressFromUrl = urlParams.get("address");
     if (addressFromUrl) {
       setAddress(addressFromUrl);
