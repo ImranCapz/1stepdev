@@ -37,6 +37,7 @@ import ContentLoader from "react-content-loader";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { IoIosSend } from "react-icons/io";
+import { current } from "@reduxjs/toolkit";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -426,7 +427,9 @@ export default function Provider() {
                       className="w-10 h-10 object-cover rounded-full"
                     />
                     <p className="text-gray text-lg font-semibold">
-                      {provider.fullName}
+                      {provider.fullName.length > 10
+                        ? `${provider.fullName.slice(0, 10)}${"..."}`
+                        : `${provider.fullName}`}
                     </p>
                   </div>
                   <div className="p-1 flex flex-row items-center gap-2">
@@ -442,15 +445,24 @@ export default function Provider() {
                     <div className="icon-bg rounded-full p-1">
                       <IoIosSend className="icon-color w-4 h-4 rounded-full" />
                     </div>
-                    <Button className="p-2 w-full rounded-lg uppercase card-btn">
+                    <Button
+                      onClick={() => {
+                        if (currentUser) {
+                          setContact(true);
+                        } else {
+                          setOpenModal(true);
+                        }
+                      }}
+                      className="p-2 w-full rounded-lg uppercase card-btn"
+                    >
                       Book Now
                     </Button>
                   </div>
                 </div>
               </div>
 
-              <div className="lg:flex-row flex-col mx-auto flex md:w-5/6 justify-center mt-4">
-                <div className="flex flex-col w-full p-2 md:p-10 mx-auto gap-4 overflow-auto">
+              <div className="lg:flex-row flex-col flex md:w-5/6 2xl:w-4/6 mx-auto mt-4">
+                <div className="flex flex-col w-full p-2 md:p-10 gap-4 overflow-auto">
                   <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">
                     <p className="flex flex-col items-start justify-start">
                       <img
@@ -857,7 +869,7 @@ export default function Provider() {
                   }}
                 >
                   {!message && (
-                    <div className="border-2 bg-purple-100 rounded-lg md:w-[390px] 2xl:w-[540px]">
+                    <div className="border-2 bg-purple-100 rounded-lg md:w-[390px] 2xl:w-[440px]">
                       <div className="p-6">
                         <p className="font-bold text-xl text-gray ">
                           Get in touch with {provider.fullName}
@@ -948,7 +960,7 @@ export default function Provider() {
                       </div>
                     </div>
                   )}
-                  <div className="md:w-[390px] 2xl:w-[540px] border-2 bg-purple-100 rounded-lg">
+                  <div className="md:w-[390px] 2xl:w-[440px] border-2 bg-purple-100 rounded-lg">
                     <div className="p-6">
                       <p className="font-bold text-xl text-gray ">
                         Get a Quick Response

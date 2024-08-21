@@ -11,6 +11,5 @@ export const suggestions = [
   { value: "Dance Movement", label: "Dance Movement" },
   { value: "Art as Therapy", label: "Art as Therapy" },
   { value: "Counselling", label: "Counselling" },
-  { value: "Music Therapy", label: "Music Therapy" },
   { value: "Social Skills Group", label: "Social Skills Group" },
 ];

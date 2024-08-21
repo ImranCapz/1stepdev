@@ -326,7 +326,7 @@ export default function Search() {
             </Drawer>
           </React.Fragment>
         </div>
-        <div className="flex items-center justify-center mt-10">
+        <div className="flex items-center justify-center md:mt-10">
           <form
             className="p-4 flex sm:w-[600px] justify-center md:outline outline-offset-2 outline-1 outline-gray-300 md:bg-white rounded-lg md:shadow-lg"
             onSubmit={handlesubmit}
@@ -690,7 +690,7 @@ export default function Search() {
             totalCount > itemsPerPage &&
             !providerloading &&
             !loading && (
-              <div>
+              <div className="p-4">
                 <Pagination
                   totalPages={Math.ceil(totalCount / itemsPerPage)}
                   currentPage={currentPage}

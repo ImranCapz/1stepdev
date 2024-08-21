@@ -20,7 +20,7 @@ export default function BookingContact({ provider }) {
     sessionType: "",
     status: "pending",
   });
-  console.log(formData);
+  // console.log(formData);
 
   useEffect(() => {
     const fetchbooking = async () => {
@@ -28,7 +28,7 @@ export default function BookingContact({ provider }) {
         const res = await fetch(`/server/user/${provider.userRef}`);
         const data = await res.json();
         setBooking(data);
-        console.log(data);
+        // console.log(data);
         setFormData((preState) => ({
           ...preState,
           email: currentUser.email,

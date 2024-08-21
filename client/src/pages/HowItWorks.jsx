@@ -9,7 +9,7 @@ function HowItWorks() {
         How does it work?
       </h2>
       <div className="md:p-6 p-5 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mx-auto">
-        <div className="group border bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
+        <div className="group border home-cardbg shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
           <h3 className="text-xl font-semibold mb-4 mt-4 text-main ">
             1. Browse a Best Therapist Profiles
           </h3>
@@ -26,7 +26,7 @@ function HowItWorks() {
             className="w-52 rounded-md mx-auto transition-all ease-in-out duration-700 group-hover:-translate-y-2"
           />
         </div>
-        <div className="group border bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all duration-300 ease-in-out">
+        <div className="group border home-cardbg shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all duration-300 ease-in-out">
           <h3 className="text-xl font-semibold mb-4 mt-4 text-main">
             2. Complete the short questionnaire
           </h3>
@@ -41,8 +41,7 @@ function HowItWorks() {
             className="w-52 rounded-md mx-auto transition-all ease-in-out duration-700 group-hover:-translate-y-2"
           />
         </div>
-
-        <div className="group border bg-white shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
+        <div className="group border home-cardbg shadow-lg rounded-lg p-6 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
           <h3 className="text-xl font-semibold text-main mt-4 mb-4">
             3. Book an Appointment with the therapist
           </h3>

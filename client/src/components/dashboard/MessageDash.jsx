@@ -561,7 +561,7 @@ export default function MessageDash() {
                             <img
                               src={selectedProvider.profilePicture}
                               alt="provider logo"
-                              className="w-10 h-10 md:h-12 md rounded-full object-cover"
+                              className="w-10 h-10 md:h-10 md rounded-full object-cover"
                             />
                             <div className="flex flex-row items-center text-start">
                               <div className="items-center">

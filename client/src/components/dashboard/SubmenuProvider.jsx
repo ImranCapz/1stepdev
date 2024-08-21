@@ -65,7 +65,7 @@ export default function SubmenuProvider() {
           )}
           {activeComponent === "Appointment" && (
             <div className="w-full min-h-screen transition-all duration-500">
-              <h1 className="flex flex-col mt-6 p-2 pl-6 font-bold text-2xl text-zinc-800"></h1>
+              <h1 className="flex flex-col p-2 font-bold text-2xl text-zinc-800"></h1>
               <ProviderBooking />
             </div>
           )}

@@ -133,7 +133,8 @@ export const SearchBar = ({ defaultSearchTerm }) => {
               indicatorSeparator: () => ({}),
               menu: (provided) => ({
                 ...provided,
-                width: windowwidth > 786 ? 240 : 250,
+                width: windowwidth > 786 ? 280 : 200,
+                textAlign: "left",
               }),
             }}
           />
@@ -179,6 +180,11 @@ export const SearchBar = ({ defaultSearchTerm }) => {
                   ? "#F9CB5E"
                   : provided.backgroundColor,
                 color: state.isSelected ? "#4D4A45" : provided.color,
+              }),
+              menu: (provided) => ({
+                ...provided,
+                width: windowwidth < 768 ? 189 : 290,
+                textAlign: "left",
               }),
             }}
           />

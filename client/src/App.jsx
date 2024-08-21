@@ -37,6 +37,7 @@ function App() {
   const location = useLocation();
 
   const pathWithoutSubMenu = ["/dashboard", "/mymessages", "/search"];
+  const pathWithOutFooter = ["/dashboard"];
 
   // useEffect(() => {
   //   const checkToken = () => {
@@ -81,7 +82,7 @@ function App() {
           </Route>
         </Routes>
       </Suspense>
-      <Footer />
+      {!pathWithOutFooter.includes(location.pathname) && <Footer />}
     </>
   );
 }
