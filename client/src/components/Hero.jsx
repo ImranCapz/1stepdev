@@ -215,7 +215,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-rows mx-auto md:p-10">
+      <div className="flex flex-rows mx-auto md:p-10 chatbgimage">
         <HowItWorks />
       </div>
       <div className="w-full flex flex-col px-4 py-9 mx-auto justify-center bg-home">

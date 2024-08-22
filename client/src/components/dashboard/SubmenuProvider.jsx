@@ -51,14 +51,14 @@ export default function SubmenuProvider() {
       </nav>
 
       {activeComponent === "Providers" && (
-        <div className="w-full min-h-screen transition-all duration-500">
+        <div className="w-full transition-all duration-500">
           <CreateProvider />
         </div>
       )}
       {currentProvider && (
         <>
           {activeComponent === "Message" && (
-            <div className="w-full min-h-screen transition-all duration-500 h-screen">
+            <div className="w-full transition-all duration-500 h-screen">
               <h1 className="flex flex-col font-bold text-2xl text-zinc-800"></h1>
               <ProviderMessageDash />
             </div>

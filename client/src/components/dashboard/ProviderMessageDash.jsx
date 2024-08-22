@@ -327,7 +327,7 @@ export default function ProviderMessageDash() {
   }, [currentUser._id]);
 
   return (
-    <div className="full-height flex flex-col">
+    <div className="flex flex-col">
       <TopLoadingBar
         color="#722a88"
         ref={topLoadingBarRef}
@@ -341,7 +341,7 @@ export default function ProviderMessageDash() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              height: "80vh",
+              height: "70vh",
             }}
           >
             <BeatLoader color="#AFDBD8" loading={loading} size={20} />

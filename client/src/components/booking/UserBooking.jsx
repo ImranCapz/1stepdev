@@ -53,7 +53,9 @@ export default function UserBooking() {
     <>
       <div
         className={`table-auto md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 max-h-screen ${
-          booking && booking.length > 0 ? "overflow-x-scroll" : ""
+          booking && booking.length > 0
+            ? "overflow-x-scroll md:overflow-x-auto"
+            : ""
         }`}
       >
         {loading ? (

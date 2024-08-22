@@ -119,7 +119,7 @@ export default function SubmenuProfile() {
         </div>
       )}
       {activeComponent === "Bookings" && (
-        <div className="w-full p-2 setting-bg">
+        <div className="w-full p-2 ">
           <h1 className="flex flex-col font-bold text-2xl"></h1>
           <UserBooking />
         </div>

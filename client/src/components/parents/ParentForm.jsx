@@ -183,7 +183,7 @@ export default function ParentForm() {
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="p-4 flex flex-col sm:flex-row md:gap-4 gap-4 w-[1200px] mx-auto justify-center"
+          className="p-4 flex flex-col sm:flex-row md:gap-4 gap-4 md:w-[1200px] mx-auto justify-center"
         >
           <div className="flex flex-col flex-1 gap-2">
             <label

@@ -94,7 +94,9 @@ export default function ProviderBooking() {
 
   return (
     <>
-      <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300">
+      <div
+        className={`table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 `}
+      >
         {appointment && appointment.length > 0 ? (
           <>
             <h1 className="text-2xl text-gray font-bold mb-5">
