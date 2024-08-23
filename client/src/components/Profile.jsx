@@ -142,7 +142,7 @@ export default function Profile() {
       <div className="p-10 bg-white rounded-lg border">
         <div className="">
           <form
-            className="flex flex-col items-start gap-7"
+            className="flex flex-col items-start gap-7 md:w-[900px]"
             onSubmit={handleSubmit}
           >
             <div className="flex flex-col items-center">

@@ -12,11 +12,13 @@ import {
 } from "../../redux/booking/bookingSlice";
 import { useDispatch } from "react-redux";
 import MessageDash from "./MessageDash";
+import CreateMenuProvider from "../provider/CreateMenuProvider";
 
 export default function Dashboard() {
   const location = useLocation();
   const [tab, setTab] = useState("Dashboard");
   const { currentUser } = useSelector((state) => state.user);
+  const { currentProvider } = useSelector((state) => state.provider);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -81,12 +83,13 @@ export default function Dashboard() {
     }
   }, [location.search]);
   return (
-    <div className="flex flex-col mx-auto">
-      <div className="">
+    <div className="flex flex-col mx-auto w-full">
+      <>
         <DashSidebar />
-      </div>
+      </>
       {tab === "dashboard" && <Overview />}
-      {tab === "providers" && <SubmenuProvider />}
+      {tab === "providers" &&
+        (currentProvider ? <SubmenuProvider /> : <CreateMenuProvider />)}
       {(tab === "profile" ||
         tab === "Profile Setting" ||
         tab === "Parent Details" ||

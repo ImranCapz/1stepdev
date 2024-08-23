@@ -71,16 +71,15 @@ export default function DashSidebar() {
   ];
 
   return (
-    <div>
+    <>
       <Sidebar className="w-full hidden md:flex">
         <Sidebar.Items>
-          <Sidebar.ItemGroup className="flex flex-row gap-2 items-center">
+          <Sidebar.ItemGroup className="w-screen flex flex-row gap-2 items-center">
             <Link to="/dashboard?tab=dashboard">
               <Sidebar.Item
                 active={tab === "dashboard"}
                 className="mt-2"
                 icon={RiDashboardFill}
-                // label={currentUser.isParent ? "Patient" : "User"}
                 labelColor="light"
                 as="div"
               >
@@ -150,6 +149,6 @@ export default function DashSidebar() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
