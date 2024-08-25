@@ -116,7 +116,8 @@ export default function SubmenuProfile() {
               ? "Your Parent Details :"
               : "Fill the form for Parent Profile :"}
           </h1>
-          {currentUser.isParent ? <ParentForm /> : <CreateMenuParent />}
+          <ParentForm />
+          {/* {currentUser.isParent ? <ParentForm /> : <CreateMenuParent />} */}
         </div>
       )}
       {activeComponent === "Bookings" && (

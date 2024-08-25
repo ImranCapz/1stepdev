@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FaRegSmileBeam } from "react-icons/fa";
+import { suggestions } from "../suggestions";
 
 export default function CreateMenuParent() {
   const [parent, setParent] = useState({
@@ -138,7 +140,7 @@ export default function CreateMenuParent() {
       .filter((rule) => rule.trim() !== "");
 
     return (
-      <ul className="text-purple-700 mt-2 text-lg">
+      <ul className="menu-subTextColor mt-2 text-lg">
         {rulesArray.map((rule, index) => (
           <li key={index} className="mb-2">
             {rule.trim()}.
@@ -147,60 +149,60 @@ export default function CreateMenuParent() {
       </ul>
     );
   };
+
   const ServiceButtons = (options, name) => {
     return options.map((option) => (
       <button
-        key={option}
+        key={option.value}
         type="button"
+        disabled={option.isDisabled}
         className={`p-3 m-1 rounded-lg border ${
-          parent.parentDetails[name]?.includes(option)
-            ? "bg-purple-500 text-white"
-            : "bg-blue-100"
+          parent.parentDetails[name]?.includes(option.value)
+            ? "menu-Button text-white"
+            : `bg-blue-100 ${
+                option.isDisabled ? "text-gray-400" : "text-gray-700"
+              }`
         }`}
-        onClick={() => handleButtonclick(name, option)}
+        onClick={() => handleButtonclick(name, option.value)}
       >
-        {option}
+        {option.value}
       </button>
     ));
   };
   return (
     <div>
-      <div className="container mx-auto">
-        <h1 className="text-purple-700 font-bold text-3xl my-4">Onestep</h1>
-
-        <div className="bg-blue-200 w-full h-2 rounded">
-          <div
-            className="bg-purple-500 h-full rounded"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-
-        <div className="flex flex-col md:flex-row justify-between min-h-screen bg-purple-100 md:p-20 rounded-lg justify-items-center">
-          <div className="flex-wrap bg-blue-100 p-4 md:p-6 lg:p-8 border-l-4 border-purple-600 rounded-lg max-w-lg mb-4 text-left h-auto  justify-center">
-            <h2 className="text-purple-700 text-2xl font-bold">
-              {"\u{1F60A}"}Good To Know
-            </h2>
-            <p className="text-purple-700 mt-2 text-lg justify-between">
-              {getGoodToKnowText(step)}
-            </p>
-            {/* <p className='text-purple-700 mt-2 text-lg justify-between'>{getGoodToKnowRules(step)}</p> */}
-            <li className="text-purple-700 mt-2 text-lg justify-between">
-              {renderRules(step)}
-            </li>
+      <div className="bg-white w-full h-1 mt-6">
+        <div
+          className="progress-bg rounded"
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+      <div className="container flex mx-auto justify-center">
+        <div className="flex flex-col md:flex-row md:gap-10 rounded-lg justify-items-center">
+          <div className="flex-col h-auto p-2 max-w-lg mb-4 text-left">
+            <div className="border-l-4 menu-borderColor md:p-6 lg:p-8 p-4 secondary-bg rounded-3xl ">
+              <h2 className="flex flex-row  items-center gap-2 menu-textColor text-2xl font-bold">
+                <FaRegSmileBeam /> Good To Know
+              </h2>
+              <p className="menu-subTextColor mt-2 text-lg justify-between">
+                {getGoodToKnowText(step)}
+              </p>
+              {/* <p className='menu-headTextColor mt-2 text-lg justify-between'>{getGoodToKnowRules(step)}</p> */}
+              <p className="menu-subTextColor mt-2 text-lg justify-between">
+                {renderRules(step)}
+              </p>
+            </div>
           </div>
-          <form onSubmit={submitfn} className="w-full">
+          <form onSubmit={submitfn} className="md:w-[500px]">
             {step === 0 && (
-              <div className="p-6 rounded-lg text-center ml-2">
-                <p className="text-2xl font-bold text-purple-700 mb-5">
-                  Personal Information
-                </p>
-                <label className="mb-5 text-purple-700 font-bold">
-                  Parent Name
+              <div className="flex flex-col p-6 rounded-lg ml-2">
+                <label className="p-1 menu-headTextColor font-bold">
+                  Parent Name :
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter your fullname"
+                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  placeholder="full name"
                   onChange={func1}
                   value={parent.parentDetails.fullName}
                   name="parentDetails.fullName"
@@ -211,34 +213,27 @@ export default function CreateMenuParent() {
                     {errors.fullName}
                   </p>
                 )}
-                <p className="font-bold text-purple-700 mt-5">
-                  Select the service you need
+                <p className="font-bold menu-headTextColor mt-5 mb-4">
+                  What service are you looking for ?
                 </p>
-                <br></br>
-                <br></br>
-
-                <div className="flex flex-col justify-center">
-                  {ServiceButtons(
-                    [
-                      "Speech Therapist",
-                      "Occupational Therapist",
-                      "School Based-Service",
-                      "Dance Movement",
-                      "Counselling",
-                      "Diagnostic Evaluation",
-                      "ABA Therapy",
-                    ],
-                    "lookingFor"
-                  )}
-                </div>
+                <p className="flex flex-col max-h-64 overflow-y-auto">
+                  {ServiceButtons(suggestions, "lookingFor")}
+                </p>
                 {errors.lookingFor && (
                   <p className="text-red-500 font-serif text-sm mt-1">
                     {errors.lookingFor}
                   </p>
                 )}
-                <div className="mt-10 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
+                    disabled
+                  >
+                    Back
+                  </button>
+                  <button
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -248,10 +243,10 @@ export default function CreateMenuParent() {
             )}
             {step === 1 && (
               <div className="p-6 rounded-lg text-center">
-                <p className="text-2xl font-bold text-purple-700 mb-10">
+                <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Child Information
                 </p>
-                <label className="mb-2 text-purple-700 font-bold">
+                <label className="mb-2 menu-headTextColor font-bold">
                   Child Name
                 </label>
                 <input
@@ -269,7 +264,7 @@ export default function CreateMenuParent() {
                   </p>
                 )}
 
-                <label className="text-purple-700 font-bold mt-5">
+                <label className="menu-headTextColor font-bold mt-5">
                   Date of Birth
                 </label>
                 <input
@@ -285,7 +280,7 @@ export default function CreateMenuParent() {
                 <div className="mb-4 mt-5">
                   <label
                     htmlFor="gender"
-                    className="block text-purple-700 font-bold mb-2"
+                    className="block menu-headTextColor font-bold mb-2"
                   >
                     Gender
                   </label>
@@ -301,6 +296,21 @@ export default function CreateMenuParent() {
                     <option value="female">Female</option>
                     <option value="other">Other</option>
                   </select>
+                </div>
+                <div className="flex justify-center mt-4 gap-4">
+                  <button
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
+                    type="button"
+                    onClick={handleBack}
+                  >
+                    Back
+                  </button>
+                  <button
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
+                    type="submit"
+                  >
+                    Next
+                  </button>
                 </div>
                 <div className="mt-10 flex justify-between">
                   <button
@@ -321,10 +331,12 @@ export default function CreateMenuParent() {
             )}
             {step === 2 && (
               <div className="p-6 rounded-lg text-center">
-                <p className="text-2xl font-bold text-purple-700 mb-10">
+                <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Physical Information
                 </p>
-                <label className="mb-5 text-purple-700 font-bold">Height</label>
+                <label className="mb-5 menu-headTextColor font-bold">
+                  Height
+                </label>
                 <input
                   type="text"
                   className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 focus:ring-2 focus:ring-purple-500"
@@ -334,7 +346,9 @@ export default function CreateMenuParent() {
                   name="parentDetails.height"
                   required
                 ></input>
-                <label className="mt-5 text-purple-700 font-bold">Weight</label>
+                <label className="mt-5 menu-headTextColor font-bold">
+                  Weight
+                </label>
                 <input
                   type="text"
                   className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 focus:ring-2 focus:ring-purple-500"
@@ -344,7 +358,7 @@ export default function CreateMenuParent() {
                   name="parentDetails.weight"
                   required
                 ></input>
-                <label className="mb-5 text-purple-700 font-bold">
+                <label className="mb-5 menu-headTextColor font-bold">
                   Blood Group
                 </label>
                 <input
@@ -356,16 +370,16 @@ export default function CreateMenuParent() {
                   name="parentDetails.bloodGroup"
                   required
                 ></input>
-                <div className="mt-10 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
                     type="button"
                     onClick={handleBack}
                   >
                     Back
                   </button>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -375,10 +389,10 @@ export default function CreateMenuParent() {
             )}
             {step === 3 && (
               <div className="p-6 rounded-lg text-center">
-                <p className="text-2xl font-bold text-purple-700 mb-10">
+                <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Medical Information
                 </p>
-                <label className="mt-5 text-purple-700 font-bold">
+                <label className="mt-5 menu-headTextColor font-bold">
                   Medical History
                 </label>
                 <input
@@ -390,7 +404,7 @@ export default function CreateMenuParent() {
                   name="parentDetails.medicalHistory"
                   required
                 ></input>
-                <label className="mt-5 text-purple-700 font-bold">
+                <label className="mt-5 menu-headTextColor font-bold">
                   Allergies
                 </label>
                 <input
@@ -402,7 +416,7 @@ export default function CreateMenuParent() {
                   name="parentDetails.allergies"
                   required
                 ></input>
-                <label className="mt-5 text-purple-700 font-bold">
+                <label className="mt-5 menu-headTextColor font-bold">
                   Emergency Contact
                 </label>
                 <input
@@ -414,7 +428,7 @@ export default function CreateMenuParent() {
                   name="parentDetails.emergencyContact"
                   required
                 ></input>
-                <label className="mb-5 text-purple-700 font-bold">
+                <label className="mb-5 menu-headTextColor font-bold">
                   Insurance
                 </label>
                 <input
@@ -426,16 +440,16 @@ export default function CreateMenuParent() {
                   name="parentDetails.insurance"
                   required
                 ></input>
-                <div className="mt-10 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
                     type="button"
                     onClick={handleBack}
                   >
                     Back
                   </button>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -445,10 +459,10 @@ export default function CreateMenuParent() {
             )}
             {step === 4 && (
               <div className="p-6 rounded-lg text-center">
-                <p className="text-2xl font-bold text-purple-700 mb-10">
+                <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Contact Information
                 </p>
-                <label className="mb-5 text-purple-700 font-bold">
+                <label className="mb-5 menu-headTextColor font-bold">
                   Address
                 </label>
                 <input
@@ -460,7 +474,7 @@ export default function CreateMenuParent() {
                   name="parentDetails.address"
                   required
                 ></input>
-                <label className="mb-5 text-purple-700 font-bold">
+                <label className="mb-5 menu-headTextColor font-bold">
                   Phone Number
                 </label>
 
@@ -479,16 +493,16 @@ export default function CreateMenuParent() {
                   </p>
                 )}
 
-                <div className="mt-10 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
                     type="button"
                     onClick={handleBack}
                   >
                     Back
                   </button>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next

@@ -126,7 +126,7 @@ export default function DashSidebar() {
           </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>
-      <div className="flex h-20 w-full fixed bottom-0 bg-slate-200 md:hidden z-10">
+      <div className=" h-20 w-full fixed bottom-0 bg-slate-200 hidden z-10">
         <div className="flex flex-row items-center justify-around w-full">
           {bottomNav.map((item, index) => (
             <div key={index}>

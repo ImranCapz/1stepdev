@@ -88,8 +88,9 @@ export default function Dashboard() {
         <DashSidebar />
       </>
       {tab === "dashboard" && <Overview />}
-      {tab === "providers" &&
-        (currentProvider ? <SubmenuProvider /> : <CreateMenuProvider />)}
+      {tab === "providers" && <SubmenuProvider />}
+      {/* // (currentProvider ? <SubmenuProvider /> : <CreateMenuProvider />
+      )} */}
       {(tab === "profile" ||
         tab === "Profile Setting" ||
         tab === "Parent Details" ||

@@ -155,7 +155,7 @@ const Hero = () => {
           <div className="items-center justify-center gap-x-3 space-y-3 sm:flex sm:space-y-0 xl:justify-start">
             <Link
               to={"/question"}
-              className="flex items-center justify-center gap-x-2 py-2 px-4 text-indigo-950 btn-color active:bg-amber-400 active:shadow-none rounded-lg shadow md:inline-flex transistion-all duration-300 ease-in-out"
+              className="flex items-center justify-center gap-x-2 py-2 px-4 btn-color rounded-lg shadow md:inline-flex transistion-all duration-300 ease-in-out"
             >
               Get Free Screeners
               <svg

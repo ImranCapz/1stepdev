@@ -225,3 +225,36 @@ input[type="email"]:focus {
 
   transition: backdrop-filter 0.3s ease;
 }
+
+.primary-bg {
+  background-color: #f8f8f8;
+}
+
+.secondary-bg {
+  background-color: #efe4f1;
+}
+
+.progress-bg {
+  background-color: #e3acf0;
+}
+
+.menu-textColor {
+  color: #533747;
+}
+.menu-subTextColor {
+  color: #363636;
+}
+.menu-borderColor {
+  border-color: #352930;
+}
+.menu-Button {
+  background-color: #d6bfdb;
+  color: #722a88;
+  transition: ease-in-out 0.3s;
+}
+.menu-Button:hover {
+  background-color: #b788c0;
+}
+.menu-headTextColor {
+  color: #5f4855;
+}
