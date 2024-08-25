@@ -34,7 +34,7 @@ export default function FavoriteList() {
         </div>
       </div>
       <div>
-        {favorites.filter(Boolean).length > 0 ? (
+        {favorites && favorites.filter(Boolean).length > 0 ? (
           <div className="p-4 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {favorites.filter(Boolean).map((provider) => (
               <ProviderItem
