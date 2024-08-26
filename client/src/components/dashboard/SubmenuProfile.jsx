@@ -109,15 +109,8 @@ export default function SubmenuProfile() {
         </div>
       )}
       {activeComponent === "Parent Details" && (
-        <div className="p-2 items-center">
-          <h1 className="flex flex-col p-3 font-bold md:text-2xl text-xl text-gray">
-            {" "}
-            {currentUser.isParent
-              ? "Your Parent Details :"
-              : "Fill the form for Parent Profile :"}
-          </h1>
-          <ParentForm />
-          {/* {currentUser.isParent ? <ParentForm /> : <CreateMenuParent />} */}
+        <div className="items-start">
+          {currentUser.isParent ? <ParentForm /> : <CreateMenuParent />}
         </div>
       )}
       {activeComponent === "Bookings" && (

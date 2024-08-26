@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { FaRegSmileBeam } from "react-icons/fa";
 import { suggestions } from "../suggestions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updateUserStart,
+  updateUserFailure,
+  updateUserSuccess,
+} from "../../redux/user/userSlice";
+import toast from "react-hot-toast";
 
 export default function CreateMenuParent() {
+  const { currentUser } = useSelector((state) => state.user);
   const [parent, setParent] = useState({
+    isParent: true,
     parentDetails: {
       fullName: "",
       lookingFor: [],
@@ -21,8 +30,12 @@ export default function CreateMenuParent() {
       phoneNumber: "",
     },
   });
+  console.log(parent);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
+  const [successScreen, setSuccessScreen] = useState(false);
+  const [count, setCount] = useState(5);
+  const dispatch = useDispatch();
 
   const handleBack = () => {
     setStep(step - 1);
@@ -47,6 +60,30 @@ export default function CreateMenuParent() {
         ...prevData,
         [name]: value,
       }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(updateUserStart());
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`server/parent/updateparent/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parent),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data));
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+      toast.success("Parent saved successfully");
+    } catch (error) {
+      dispatch(updateUserFailure(error));
     }
   };
 
@@ -140,7 +177,7 @@ export default function CreateMenuParent() {
       .filter((rule) => rule.trim() !== "");
 
     return (
-      <ul className="menu-subTextColor mt-2 text-lg">
+      <ul className="menu-subTextColor mt-2 text-base md:text-lg">
         {rulesArray.map((rule, index) => (
           <li key={index} className="mb-2">
             {rule.trim()}.
@@ -169,39 +206,56 @@ export default function CreateMenuParent() {
       </button>
     ));
   };
+
+  if (successScreen) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h1 className="text-3xl font-bold text-center text-green-600">
+          Data saved successfully
+        </h1>
+        <h1 className="text-3xl font-bold text-center text-green-600">
+          Redirecting to dashboard in {count}
+        </h1>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <div className="bg-white w-full h-1 mt-6">
+      <div className="bg-blue-100 w-full h-1">
         <div
-          className="progress-bg rounded"
+          className="progress-bg h-full rounded transition-width duration-500 ease-in-out"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
-      <div className="container flex mx-auto justify-center">
-        <div className="flex flex-col md:flex-row md:gap-10 rounded-lg justify-items-center">
-          <div className="flex-col h-auto p-2 max-w-lg mb-4 text-left">
+      <div className="container flex flex-col mx-auto">
+        <h1 className="text-lg md:text-2xl m-10 text-left font-bold text-gray">
+          Fill the form for Parent Profile :
+        </h1>
+        <div className="flex flex-col md:flex-row md:gap-10 rounded-lg justify-center items-center">
+          <div className="flex-col h-auto p-2 max-w-lg text-left">
             <div className="border-l-4 menu-borderColor md:p-6 lg:p-8 p-4 secondary-bg rounded-3xl ">
               <h2 className="flex flex-row  items-center gap-2 menu-textColor text-2xl font-bold">
                 <FaRegSmileBeam /> Good To Know
               </h2>
-              <p className="menu-subTextColor mt-2 text-lg justify-between">
+              <p className="menu-subTextColor mt-2 text-base md:text-lg justify-between">
                 {getGoodToKnowText(step)}
               </p>
               {/* <p className='menu-headTextColor mt-2 text-lg justify-between'>{getGoodToKnowRules(step)}</p> */}
-              <p className="menu-subTextColor mt-2 text-lg justify-between">
+              <p className="menu-subTextColor mt-2 text-base md:text-lg justify-between">
                 {renderRules(step)}
               </p>
             </div>
           </div>
-          <form onSubmit={submitfn} className="md:w-[500px]">
+          <form onSubmit={submitfn} className="w-full md:w-[500px]">
             {step === 0 && (
-              <div className="flex flex-col p-6 rounded-lg ml-2">
-                <label className="p-1 menu-headTextColor font-bold">
+              <div className="flex flex-col p-6 rounded-lg">
+                <label className="p-1 menu-headTextColor font-bold mb-2">
                   Parent Name :
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="full name"
                   onChange={func1}
                   value={parent.parentDetails.fullName}
@@ -242,7 +296,7 @@ export default function CreateMenuParent() {
               </div>
             )}
             {step === 1 && (
-              <div className="p-6 rounded-lg text-center">
+              <div className="p-6 rounded-lg">
                 <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Child Information
                 </p>
@@ -251,7 +305,7 @@ export default function CreateMenuParent() {
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5  mb-5 focus:ring-2 focus:ring-purple-500"
+                  className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter child fullname"
                   onChange={func1}
                   value={parent.parentDetails.childName}
@@ -270,7 +324,7 @@ export default function CreateMenuParent() {
                 <input
                   type="date"
                   placeholder="select date"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 focus:ring-2 focus:ring-purple-500"
+                  className="w-full p-3 rounded-lg border-gray-300 mt-5 input border-2 focus:outline-none focus:ring-0"
                   value={parent.parentDetails.dob}
                   onChange={func1}
                   name="parentDetails.dob"
@@ -280,7 +334,7 @@ export default function CreateMenuParent() {
                 <div className="mb-4 mt-5">
                   <label
                     htmlFor="gender"
-                    className="block menu-headTextColor font-bold mb-2"
+                    className="block menu-headTextColor font-bold mb-5 "
                   >
                     Gender
                   </label>
@@ -290,7 +344,7 @@ export default function CreateMenuParent() {
                     onChange={func1}
                     value={parent.parentDetails.gender}
                     placeholder="select gender"
-                    className="w-full px-3 py-2 border rounded shadow-sm bg-white text-black focus:outline-none focus:ring focus:border-blue-300"
+                    className="w-full p-3 rounded-lg border-gray-300 mb-5 input border-2 focus:outline-none focus:ring-0"
                   >
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -312,25 +366,10 @@ export default function CreateMenuParent() {
                     Next
                   </button>
                 </div>
-                <div className="mt-10 flex justify-between">
-                  <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
-                    type="button"
-                    onClick={handleBack}
-                  >
-                    Back
-                  </button>
-                  <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
-                    type="submit"
-                  >
-                    Next
-                  </button>
-                </div>
               </div>
             )}
             {step === 2 && (
-              <div className="p-6 rounded-lg text-center">
+              <div className="p-6 rounded-lg">
                 <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Physical Information
                 </p>
@@ -339,7 +378,7 @@ export default function CreateMenuParent() {
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 focus:ring-2 focus:ring-purple-500"
+                  className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter height in cm"
                   onChange={func1}
                   value={parent.parentDetails.height}
@@ -351,7 +390,7 @@ export default function CreateMenuParent() {
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 focus:ring-2 focus:ring-purple-500"
+                  className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter weight in kg"
                   onChange={func1}
                   value={parent.parentDetails.weight}
@@ -363,7 +402,7 @@ export default function CreateMenuParent() {
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 focus:ring-2 focus:ring-purple-500"
+                  className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter blood group (e.g., A+, B-, O+)"
                   onChange={func1}
                   value={parent.parentDetails.bloodGroup}
@@ -388,7 +427,7 @@ export default function CreateMenuParent() {
               </div>
             )}
             {step === 3 && (
-              <div className="p-6 rounded-lg text-center">
+              <div className="p-6 rounded-lg">
                 <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Medical Information
                 </p>
@@ -397,7 +436,7 @@ export default function CreateMenuParent() {
                 </label>
                 <input
                   type="textarea"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 focus:ring-2 focus:ring-purple-500"
+                  className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter Medical History"
                   onChange={func1}
                   value={parent.parentDetails.medicalHistory}
@@ -409,7 +448,7 @@ export default function CreateMenuParent() {
                 </label>
                 <input
                   type="textarea"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 focus:ring-2 focus:ring-purple-500"
+                  className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter any allergies"
                   onChange={func1}
                   value={parent.parentDetails.allergies}
@@ -421,7 +460,7 @@ export default function CreateMenuParent() {
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 focus:ring-2 focus:ring-purple-500"
+                  className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter emergency contact number"
                   onChange={func1}
                   value={parent.parentDetails.emergencyContact}
@@ -433,7 +472,7 @@ export default function CreateMenuParent() {
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 focus:ring-2 focus:ring-purple-500"
+                  className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter insurance details"
                   onChange={func1}
                   value={parent.parentDetails.insurance}
@@ -458,56 +497,59 @@ export default function CreateMenuParent() {
               </div>
             )}
             {step === 4 && (
-              <div className="p-6 rounded-lg text-center">
-                <p className="text-2xl font-bold menu-headTextColor mb-10">
-                  Contact Information
-                </p>
-                <label className="mb-5 menu-headTextColor font-bold">
-                  Address
-                </label>
-                <input
-                  type="textarea"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter your full address"
-                  onChange={func1}
-                  value={parent.parentDetails.address}
-                  name="parentDetails.address"
-                  required
-                ></input>
-                <label className="mb-5 menu-headTextColor font-bold">
-                  Phone Number
-                </label>
-
-                <input
-                  type="textarea"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter your phone number"
-                  onChange={func1}
-                  value={parent.parentDetails.phoneNumber}
-                  name="parentDetails.phoneNumber"
-                  required
-                ></input>
-                {errors.phoneNumber && (
-                  <p className="text-red-500 font-serif text-sm mt-1">
-                    {errors.phoneNumber}
+              <div className="p-6 rounded-lg">
+                <form>
+                  <p className="text-2xl font-bold menu-headTextColor mb-10">
+                    Contact Information
                   </p>
-                )}
+                  <label className="mb-5 menu-headTextColor font-bold">
+                    Address
+                  </label>
+                  <input
+                    type="textarea"
+                    className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
+                    placeholder="Enter your full address"
+                    onChange={func1}
+                    value={parent.parentDetails.address}
+                    name="parentDetails.address"
+                    required
+                  ></input>
+                  <label className="mb-5 menu-headTextColor font-bold">
+                    Phone Number
+                  </label>
 
-                <div className="flex justify-center mt-4 gap-4">
-                  <button
-                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
-                    type="button"
-                    onClick={handleBack}
-                  >
-                    Back
-                  </button>
-                  <button
-                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
-                    type="submit"
-                  >
-                    Next
-                  </button>
-                </div>
+                  <input
+                    type="textarea"
+                    className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
+                    placeholder="Enter your phone number"
+                    onChange={func1}
+                    value={parent.parentDetails.phoneNumber}
+                    name="parentDetails.phoneNumber"
+                    required
+                  ></input>
+                  {errors.phoneNumber && (
+                    <p className="text-red-500 font-serif text-sm mt-1">
+                      {errors.phoneNumber}
+                    </p>
+                  )}
+
+                  <div className="flex justify-center mt-4 gap-4">
+                    <button
+                      className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
+                      type="button"
+                      onClick={handleBack}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
+                      type="button"
+                      onClick={handleSubmit}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </form>
               </div>
             )}
           </form>
