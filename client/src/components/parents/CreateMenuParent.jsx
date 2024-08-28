@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegSmileBeam } from "react-icons/fa";
 import { suggestions } from "../suggestions";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +30,6 @@ export default function CreateMenuParent() {
       phoneNumber: "",
     },
   });
-  console.log(parent);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
   const [successScreen, setSuccessScreen] = useState(false);
@@ -110,12 +109,11 @@ export default function CreateMenuParent() {
     e.preventDefault();
     try {
       if (validate()) {
-        console.log(parent);
-        console.log("save");
+        const width = window.innerWidth <= 768 ? 140 : 240;
+        window.scrollTo({ top: width, behavior: "smooth" });
         setStep(step + 1);
       }
     } catch (err) {
-      console.log(err);
       console.log("Failed to save data.");
     }
   };
@@ -177,7 +175,7 @@ export default function CreateMenuParent() {
       .filter((rule) => rule.trim() !== "");
 
     return (
-      <ul className="menu-subTextColor mt-2 text-base md:text-lg">
+      <ul className="menu-subTextColor mt-2 text-xs md:text-lg">
         {rulesArray.map((rule, index) => (
           <li key={index} className="mb-2">
             {rule.trim()}.
@@ -222,9 +220,9 @@ export default function CreateMenuParent() {
 
   return (
     <div>
-      <div className="bg-blue-100 w-full h-1">
+      <div className="fixed progress-bg w-full h-1.5 top-0 z-50">
         <div
-          className="progress-bg h-full rounded transition-width duration-500 ease-in-out"
+          className="progress-bgs h-full transition-width duration-500 ease-in-out"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
@@ -238,11 +236,11 @@ export default function CreateMenuParent() {
               <h2 className="flex flex-row  items-center gap-2 menu-textColor text-2xl font-bold">
                 <FaRegSmileBeam /> Good To Know
               </h2>
-              <p className="menu-subTextColor mt-2 text-base md:text-lg justify-between">
+              <p className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
                 {getGoodToKnowText(step)}
               </p>
               {/* <p className='menu-headTextColor mt-2 text-lg justify-between'>{getGoodToKnowRules(step)}</p> */}
-              <p className="menu-subTextColor mt-2 text-base md:text-lg justify-between">
+              <p className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
                 {renderRules(step)}
               </p>
             </div>

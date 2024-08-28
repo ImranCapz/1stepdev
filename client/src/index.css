@@ -235,7 +235,10 @@ input[type="email"]:focus {
 }
 
 .progress-bg {
-  background-color: #e3acf0;
+  background-color: #efe4f1;
+}
+.progress-bgs {
+  background-color: #d28adf;
 }
 
 .menu-textColor {
@@ -257,4 +260,16 @@ input[type="email"]:focus {
 }
 .menu-headTextColor {
   color: #5f4855;
+}
+
+.header-Search {
+  background-color: #fcfcfc;
+}
+
+.header-Search:hover {
+  background-color: #f1e8f3;
+}
+
+.header-selectOptionbg{
+  background-color: #d6bfdb;
 }

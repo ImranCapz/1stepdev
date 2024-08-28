@@ -15,7 +15,7 @@ import ParentModel from "./modal/ParentModel";
 import PropTypes from "prop-types";
 import { SearchBar } from "./SearchBar";
 import { searchService } from "../redux/user/userSlice";
-
+import HeaderSearch from "./HeaderSearch";
 
 const Header = ({ showSubMenu }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -307,32 +307,9 @@ const Header = ({ showSubMenu }) => {
           }`}
         >
           <ul className="items-center space-y-6 lg:flex lg:space-x-6 lg:space-y-0">
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="flex-1 items-center justify-start pb-4 lg:flex lg:pb-0"
-            >
-              <div className="flex items-center gap-1 px-2 border rounded-lg border-gray-400">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6 text-stone-900"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="white"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Find a therapist"
-                  className="w-full px-2 py-2 placeholder:text-gray-300 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
-                />
-              </div>
-            </form>
+            <li className="flex-1 items-center justify-start pb-4 lg:flex lg:pb-0">
+              <HeaderSearch />
+            </li>
             {navigation.map((item, idx) => {
               return (
                 <Link

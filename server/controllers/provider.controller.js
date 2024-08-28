@@ -103,6 +103,7 @@ export const getProviders = async (req, res, next) => {
 
     const providers = await Provider.find({
       name: { $regex: searchTerm, $options: "i" },
+      fullName: { $regex: searchTerm, $options: "i" },
       $and: [
         {
           "address.city": city
@@ -118,6 +119,7 @@ export const getProviders = async (req, res, next) => {
 
     const totalCount = await Provider.countDocuments({
       name: { $regex: searchTerm, $options: "i" },
+      fullName: { $regex: searchTerm, $options: "i" },
       $and: [
         {
           "address.city": city

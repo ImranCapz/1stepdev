@@ -1,5 +1,7 @@
 import { useState } from "react";
 import TimePicker from "react-time-picker";
+import { suggestions } from "../suggestions";
+import { FaRegSmileBeam } from "react-icons/fa";
 
 export default function CreateMenuProvider() {
   const [data, setData] = useState({
@@ -166,12 +168,34 @@ export default function CreateMenuProvider() {
   const ServiceButtons = (options, name) => {
     return options.map((option) => (
       <button
+        key={option.value}
+        type="button"
+        disabled={option.isDisabled}
+        className={`p-3 m-1 rounded-lg border ${
+          data[name]?.includes(option.value)
+            ? "menu-Button text-white"
+            : `bg-blue-100 ${
+                option.isDisabled ? "text-gray-400" : "text-gray-700"
+              }`
+        }`}
+        onClick={() => handleButtonClick(name, option.value)}
+      >
+        {option.value}
+      </button>
+    ));
+  };
+
+  const ServiceTypeButtons = (options, name) => {
+    return options.map((option) => (
+      <button
         key={option}
         type="button"
         className={`p-3 m-1 rounded-lg border ${
           data[name]?.includes(option)
-            ? "bg-purple-500 text-white"
-            : "bg-blue-100"
+            ? "menu-Button text-white"
+            : `bg-blue-100 ${
+                option.isDisabled ? "text-gray-400" : "text-gray-700"
+              }`
         }`}
         onClick={() => handleButtonClick(name, option)}
       >
@@ -182,61 +206,55 @@ export default function CreateMenuProvider() {
 
   return (
     <div>
-      <div className="container mx-auto p-4">
-        <h1 className="text-center text-purple-700 text-4xl font-bold my-4">
-          Onestep
+      <div className="fixed progress-bg mt w-full top-0 h-1.5 z-50">
+        <div
+          className="progress-bgs h-full transition-width duration-500 ease-in-out"
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+      <div className="container flex flex-col mx-auto">
+        <h1 className="text-lg md:text-2xl m-10 text-left font-bold text-gray">
+          Fill the form for Parent Profile :
         </h1>
-        <br></br>
-        <div className="w-full bg-blue-200 h-2 rounded">
-          <div
-            className="bg-purple-500 h-full rounded"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-        <section className="flex flex-col md:flex-row bg-purple-100 justify-between min-h-screen md:p-20 rounded-lg">
-          <div className="flex-wrap bg-blue-100 p-4 md:p-6 lg:p-8 border-l-4 border-purple-600 rounded-lg max-w-lg mb-4 text-left h-auto lg:h-48 xl:h-64 justify-center">
-            <h2 className="text-purple-700 text-2xl font-bold">
-              {"\u{1F60A}"} Good To Know
-            </h2>
-            <p className="text-purple-700 mt-2 text-lg justify-between">
-              {getGoodToKnowText(step)}
-            </p>
-            <p className="text-purple-700 mt-2 text-lg justify-between">
-              {goodtoknowrules(step)}
-            </p>
+        <div className="flex flex-col md:flex-row md:gap-10 rounded-lg justify-center items-center">
+          <div className="flex-col h-auto p-2 max-w-lg text-left">
+            <div className="border-l-4 menu-borderColor md:p-6 lg:p-8 p-4 secondary-bg rounded-3xl">
+              <h2 className="flex flex-row  items-center gap-2 menu-textColor text-2xl font-bold">
+                <FaRegSmileBeam /> Good To Know
+              </h2>
+              <p className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
+                {getGoodToKnowText(step)}
+              </p>
+              <p className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
+                {goodtoknowrules(step)}
+              </p>
+            </div>
           </div>
-          <form onSubmit={submitfn} className="w-full md:w-2/3 space-y-6">
+          <form onSubmit={submitfn} className="w-full md:w-[500px]">
             {/* <div class=" p-5 rounded-lg shadow-xl"> */}
             {step === 0 && (
-              <div className="p-6  rounded-lg shadow-md text-center ml-5">
+              <div className="p-6 text-center ml-5">
                 <p className="text-2xl font-bold text-purple-700 mb-5">
                   Please Select your Service
                 </p>
-                <br></br>
-                <br></br>
-
-                <div className="flex flex-col justify-center">
-                  {ServiceButtons(
-                    [
-                      "Speech Therapist",
-                      "Occupational Therapist",
-                      "School Based-Service",
-                      "Dance Movement",
-                      "Counselling",
-                      "Diagnostic Evaluation",
-                      "ABA Therapy",
-                    ],
-                    "name"
-                  )}
+                <div className="flex flex-col h-64 overflow-y-auto">
+                  {ServiceButtons(suggestions, "name")}
                 </div>
                 {error.name && (
                   <p className="text-red-500 font-serif text-sm mt-1">
                     {error.name}
                   </p>
                 )}
-                <div className="mt-10 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="mt-5 bg-purple-500 w-full text-white p-3 rounded-3xl hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
+                    disabled
+                  >
+                    Back
+                  </button>
+                  <button
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -246,14 +264,14 @@ export default function CreateMenuProvider() {
             )}
 
             {step === 1 && (
-              <div className="p-6  rounded-lg shadow-md text-center ml-5">
+              <div className="p-6 text-center ml-5">
                 <p className="text-2xl font-bold text-purple-700 mb-5">
                   Please Select your Service Type
                 </p>
                 <br></br>
                 <br></br>
-                <div className="flex flex-col justify-center">
-                  {ServiceButtons(
+                <div className="flex flex-col ">
+                  {ServiceTypeButtons(
                     ["Virtual", "In-Home", "In-Clinic"],
                     "therapytype"
                   )}
@@ -265,16 +283,16 @@ export default function CreateMenuProvider() {
                 )}
                 <br></br>
                 <br></br>
-                <div className="mt-5 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
-                    type="button"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
                     onClick={handleBack}
                   >
                     Back
                   </button>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -283,7 +301,7 @@ export default function CreateMenuProvider() {
               </div>
             )}
             {step === 2 && (
-              <div className="p-6  rounded-lg shadow-md text-center ml-5">
+              <div className="p-6 text-center ml-5">
                 <h2 className="text-2xl font-bold text-purple-700 mb-5">
                   Basic Information
                 </h2>
@@ -328,16 +346,16 @@ export default function CreateMenuProvider() {
                   name="qualification"
                   required
                 ></input>
-                <div className="mt-10 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
-                    type="button"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
                     onClick={handleBack}
                   >
                     Back
                   </button>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -346,7 +364,7 @@ export default function CreateMenuProvider() {
               </div>
             )}
             {step === 3 && (
-              <div className="p-6  rounded-lg shadow-md text-center ml-5">
+              <div className="p-6 text-center ml-5">
                 <h2 className="text-2xl font-bold text-purple-700 mb-5">
                   Location Details
                 </h2>
@@ -425,16 +443,16 @@ export default function CreateMenuProvider() {
                     {error.pincode}
                   </p>
                 )}
-                <div className="mt-5 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
-                    type="button"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
                     onClick={handleBack}
                   >
                     Back
                   </button>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -443,11 +461,8 @@ export default function CreateMenuProvider() {
               </div>
             )}
             {step === 4 && (
-              <div className="p-6  rounded-lg shadow-md text-center ml-5">
-                <p
-                  className="
-text-2xl font-bold text-purple-700 mb-5    "
-                >
+              <div className="p-6 text-center ml-5">
+                <p className="text-2xl font-bold text-purple-700 mb-5">
                   Fee per Appoinment
                 </p>
                 <br></br>
@@ -468,16 +483,16 @@ text-2xl font-bold text-purple-700 mb-5    "
                 )}
                 <br></br>
                 <br></br>
-                <div className="mt-5 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2 "
-                    type="button"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
                     onClick={handleBack}
                   >
                     Back
                   </button>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -486,7 +501,7 @@ text-2xl font-bold text-purple-700 mb-5    "
               </div>
             )}
             {step === 5 && (
-              <div className="p-6  rounded-lg shadow-md text-center ml-5">
+              <div className="p-6 text-center ml-5">
                 <p className="text-2xl font-bold text-purple-700 mb-5">
                   Years of Experience
                 </p>
@@ -508,16 +523,16 @@ text-2xl font-bold text-purple-700 mb-5    "
                 )}
                 <br></br>
                 <br></br>
-                <div className="mt-5 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
-                    type="button"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
                     onClick={handleBack}
                   >
                     Back
                   </button>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -526,7 +541,7 @@ text-2xl font-bold text-purple-700 mb-5    "
               </div>
             )}
             {step === 6 && (
-              <div className="p-6  rounded-lg shadow-md text-center ml-5">
+              <div className="p-6 text-center ml-5">
                 <h2 className="text-2xl font-bold text-purple-700 mb-5 ">
                   Authentication
                 </h2>
@@ -563,17 +578,16 @@ text-2xl font-bold text-purple-700 mb-5    "
                 )}
                 <br></br>
                 <br></br>
-                <div className="mt-5 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
-                    type="button"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
                     onClick={handleBack}
                   >
                     Back
                   </button>
-                  <br></br>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -583,7 +597,7 @@ text-2xl font-bold text-purple-700 mb-5    "
             )}
 
             {step === 7 && (
-              <div className="p-6  rounded-lg shadow-md text-center ml-5">
+              <div className="p-6 text-center ml-5">
                 <h2 className="text-2xl font-bold text-purple-700 mb-5">
                   Availability
                 </h2>
@@ -644,17 +658,16 @@ text-2xl font-bold text-purple-700 mb-5    "
                 ></TimePicker>
                 <br></br>
                 <br></br>
-                <div className="mt-5 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
-                    type="button"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
                     onClick={handleBack}
                   >
                     Back
                   </button>
-                  <br></br>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-purple-700"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
                     Next
@@ -663,7 +676,7 @@ text-2xl font-bold text-purple-700 mb-5    "
               </div>
             )}
             {step === 8 && (
-              <div className="p-6  rounded-lg shadow-md text-center ml-5">
+              <div className="p-6 text-center ml-5">
                 <h2 className="text-2xl font-bold text-purple-700 mb-5">
                   About
                 </h2>
@@ -704,28 +717,25 @@ text-2xl font-bold text-purple-700 mb-5    "
                 )}
                 <br></br>
                 <br></br>
-                <div className="mt-5 flex justify-between">
+                <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="rounded-3xl bg-blue-500 w-full text-white p-3 mr-2"
-                    type="button"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    type="submit"
                     onClick={handleBack}
                   >
                     Back
                   </button>
-                  <br></br>
                   <button
-                    className="rounded-3xl bg-purple-500 w-full text-white p-3 mr-2 hover:bg-green-500"
+                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
-                    Save
+                    Next
                   </button>
                 </div>
               </div>
             )}
-
-            {/* </div> */}
           </form>
-        </section>
+        </div>
       </div>
     </div>
   );

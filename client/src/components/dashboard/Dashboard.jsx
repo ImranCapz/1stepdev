@@ -24,11 +24,9 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchBooking = async () => {
       const url = `/server/booking/getuserbookings/${currentUser._id}`;
-      console.log("Fetching bookings from URL:", url);
       try {
         dispatch(getBookingsStart());
         const response = await fetch(url);
-        console.log("Response status:", response.status);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -88,9 +86,8 @@ export default function Dashboard() {
         <DashSidebar />
       </>
       {tab === "dashboard" && <Overview />}
-      {tab === "providers" && <SubmenuProvider />}
-      {/* // (currentProvider ? <SubmenuProvider /> : <CreateMenuProvider />
-      )} */}
+      {tab === "providers" &&
+        (currentProvider ? <SubmenuProvider /> : <CreateMenuProvider />)}
       {(tab === "profile" ||
         tab === "Profile Setting" ||
         tab === "Parent Details" ||
