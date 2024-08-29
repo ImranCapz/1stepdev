@@ -1,15 +1,15 @@
-import Select from "react-select";
+import CreateSelect from "react-select/creatable";
 import PropTypes from "prop-types";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
 import { FaSearch } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { HiOutlineFilter } from "react-icons/hi";
 import ContentLoader from "react-content-loader";
-import { Button } from "@material-tailwind/react";
+import { Button, input } from "@material-tailwind/react";
 import TopLoadingBar from "react-top-loading-bar";
 import { Link, useLocation } from "react-router-dom";
 import { suggestions } from "../components/suggestions";
@@ -17,10 +17,12 @@ import React, { useEffect, useRef, useState } from "react";
 import ProviderItem from "../components/provider/ProviderItem";
 import { Checkbox, Spinner, Pagination } from "flowbite-react";
 import { Drawer, Typography, IconButton } from "@material-tailwind/react";
+import { searchService } from "../redux/user/userSlice";
 
 export default function Search() {
   const searchTermFromHeader = useSelector((state) => state.user.searchService);
-  const [searchTerm, setsearchTerm] = useState(searchTermFromHeader || "");
+  const [searchTerm, setsearchTerm] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [address, setAddress] = useState("");
   const [providerloading, setProviderLoading] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -30,6 +32,7 @@ export default function Search() {
   const topLoadingBarRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   //checkbox
   const [checkbox, setCheckbox] = useState("");
   const handlecheckbox = (e) => {
@@ -139,7 +142,7 @@ export default function Search() {
   }, []);
 
   useEffect(() => {
-    if (providers.length !== 0) {
+    if (providers && providers.length !== 0) {
       document.title = `${providers.length} BEST ${new URLSearchParams(
         location.search
       ).get("searchTerm")} near ${address.city}`;
@@ -187,6 +190,27 @@ export default function Search() {
   ];
 
   const submenuNav = getSubmenuNav(address);
+
+  const getQueryParams = (query) => {
+    return query
+      ? (/^[?#]/.test(query) ? query.slice(1) : query)
+          .split("&")
+          .reduce((params, param) => {
+            let [key, value] = param.split("=");
+            params[key] = value
+              ? decodeURIComponent(value.replace(/\+/g, " "))
+              : "";
+            return params;
+          }, {})
+      : {};
+  };
+
+  useEffect(() => {
+    const queryParams = getQueryParams(location.search);
+    if (queryParams.searchTerm) {
+      setsearchTerm(queryParams.searchTerm);
+    }
+  }, [location.search]);
 
   return (
     <>
@@ -339,7 +363,7 @@ export default function Search() {
                 >
                   What
                 </label>
-                <Select
+                <CreateSelect
                   id="what"
                   value={whatoptions.find(
                     (option) => option.value === searchTerm
@@ -348,6 +372,13 @@ export default function Search() {
                     setsearchTerm(option ? option.value : "")
                   }
                   options={whatoptions}
+                  onInputChange={(inputValue, { action }) => {
+                    if (action === "input-change") {
+                      setInputValue(inputValue);
+                      dispatch(searchService(inputValue));
+                      setsearchTerm(inputValue);
+                    }
+                  }}
                   placeholder="Service or provider"
                   isSearchable
                   className="md:w-full capitalize trauncate md:text-base text-sm border-slate-800 text-gray-900 px-2 leading-tight"
@@ -385,6 +416,12 @@ export default function Search() {
                       width: windowWidth > 786 ? 290 : 250,
                     }),
                   }}
+                  formatCreateLabel={(inputValue) => (
+                    <div className="flex flex-row items-center">
+                      <FaSearch className="mr-2 text-slate-500" />
+                      <span>{inputValue}</span>
+                    </div>
+                  )}
                 />
               </div>
               <div className="transform border-b-2 md:mb-0.5 mt-1 md:mt-0 bg-transparent text-lg duration-300 focus-within:border-amber-500">
@@ -505,7 +542,7 @@ export default function Search() {
               <p>&nbsp;{new URLSearchParams(location.search).get("address")}</p>
             </div>
           </div>
-          {providers.length !== 0 && !providerloading && (
+          {providers && providers.length !== 0 && !providerloading && (
             <>
               <div className="font-bold text-xl md:text-3xl text-gray justify-center md:text-start text-center">
                 {providers.length} Best{" "}
@@ -665,7 +702,7 @@ export default function Search() {
                 ) : null
               ) : (
                 <div className="p-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-4 md:gap-8 sm:p-3">
-                  {providers.length > 0 ? (
+                  {providers && providers.length > 0 ? (
                     providers.map((provider) => {
                       return (
                         <ProviderItem
@@ -686,7 +723,8 @@ export default function Search() {
               )}
             </div>
           </div>
-          {providers.length > 0 &&
+          {providers &&
+            providers.length > 0 &&
             totalCount > itemsPerPage &&
             !providerloading &&
             !loading && (

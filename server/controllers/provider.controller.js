@@ -102,8 +102,14 @@ export const getProviders = async (req, res, next) => {
     const order = req.query.order || "desc";
 
     const providers = await Provider.find({
-      name: { $regex: searchTerm, $options: "i" },
-      fullName: { $regex: searchTerm, $options: "i" },
+      $or: [
+        {
+          name: { $regex: searchTerm, $options: "i" },
+        },
+        {
+          fullName: { $regex: searchTerm, $options: "i" },
+        },
+      ],
       $and: [
         {
           "address.city": city
@@ -118,8 +124,14 @@ export const getProviders = async (req, res, next) => {
       .skip(startIndex);
 
     const totalCount = await Provider.countDocuments({
-      name: { $regex: searchTerm, $options: "i" },
-      fullName: { $regex: searchTerm, $options: "i" },
+      $or: [
+        {
+          name: { $regex: searchTerm, $options: "i" },
+        },
+        {
+          fullName: { $regex: searchTerm, $options: "i" },
+        },
+      ],
       $and: [
         {
           "address.city": city

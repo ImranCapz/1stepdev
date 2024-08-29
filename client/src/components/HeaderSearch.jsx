@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { suggestions } from "./suggestions";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { searchService } from "../redux/user/userSlice";
 
 function HeaderSearch() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -9,6 +11,7 @@ function HeaderSearch() {
 
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -26,9 +29,11 @@ function HeaderSearch() {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    setDropDown(false);
+    dispatch(searchService(searchTerm));
     const urlParams = new URLSearchParams();
     urlParams.set("searchTerm", searchTerm);
-    urlParams.set("address", "chennai");
+    urlParams.set("address", "Chennai");
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
@@ -52,26 +57,16 @@ function HeaderSearch() {
         <div className="flex items-center gap-1 px-2 border rounded-lg border-gray-400">
           <input
             type="text"
+            name="searchInput"
             value={searchTerm}
             placeholder="Find a therapist"
             onChange={handleInputChange}
             onFocus={() => setDropDown(true)}
+            required
             className="w-full px-2 py-2 placeholder:text-gray-300 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
           />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 text-stone-900"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="white"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
+
+          <button>search</button>
         </div>
         {isDropdown && (
           <ul className="p-3 absolute top-12 right-18 w-56 bg-white rounded-lg">

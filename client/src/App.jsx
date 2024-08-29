@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Route, Routes, useLocation } from "react-router-dom";
+import LoginPrivateRoute from "./components/LoginPrivateRoute";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminPrivateRoute from "./components/admin/AdminPrivateRoute";
 import DashPrivateRoute from "./components/dashboard/DashPrivateRoute";
@@ -60,8 +61,10 @@ function App() {
           <Route path="/*" element={<Hero />} />
           <Route path="/freescreeners" element={<Features />} />
           <Route path="/question" element={<Question />} />
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route element={<LoginPrivateRoute />}>
+            <Route path="/signin" element={<Signin />} />
+            <Route path="/signup" element={<Signup />} />
+          </Route>
           <Route path="/forgetpassword" element={<ResetPasswordForm />} />
           <Route path="/verifyotp" element={<VerifyOtp />} />
           <Route path="/search" element={<Search />} />
