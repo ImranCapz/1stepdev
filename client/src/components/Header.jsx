@@ -94,18 +94,6 @@ const Header = ({ showSubMenu }) => {
     setDropdownVisible(!isDropdownVisible);
   };
 
-  const handleSubmenuClick = (itemTitle) => {
-    topLoadingBarRef.current.continuousStart(50);
-    if (itemTitle === "Overview") {
-      navigate("/");
-    } else if (itemTitle === "Early Concerns: Start Here") {
-      navigate("/early-concerns");
-    } else if (itemTitle === "Read Expert Guides") {
-      navigate("/expert-guides");
-    }
-    topLoadingBarRef.current.complete(50);
-  };
-
   const navigation = [
     { title: "Home", path: "/" },
     {
@@ -309,6 +297,7 @@ const Header = ({ showSubMenu }) => {
           <ul className="items-center space-y-6 lg:flex lg:space-x-6 lg:space-y-0">
             <li className="flex-1 items-center justify-start pb-4 lg:flex lg:pb-0">
               <HeaderSearch />
+              {/* {location.pathname === "/" && <HeaderSearch />} */}
             </li>
             {navigation.map((item, idx) => {
               return (

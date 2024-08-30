@@ -21,7 +21,7 @@ import { searchService } from "../redux/user/userSlice";
 
 export default function Search() {
   const searchTermFromHeader = useSelector((state) => state.user.searchService);
-  const [searchTerm, setsearchTerm] = useState("");
+  const [searchTerm, setsearchTerm] = useState("" || searchTermFromHeader);
   const [inputValue, setInputValue] = useState("");
   const [address, setAddress] = useState("");
   const [providerloading, setProviderLoading] = useState(true);
@@ -375,18 +375,19 @@ export default function Search() {
                   onInputChange={(inputValue, { action }) => {
                     if (action === "input-change") {
                       setInputValue(inputValue);
+                      console.log(inputValue);
                       dispatch(searchService(inputValue));
                       setsearchTerm(inputValue);
                     }
                   }}
                   placeholder="Service or provider"
                   isSearchable
-                  className="md:w-full capitalize trauncate md:text-base text-sm border-slate-800 text-gray-900 px-2 leading-tight"
+                  className="md:w-full capitalize trauncate md:text-base text-xs border-slate-800 text-gray-900 px-2 leading-tight"
                   styles={{
                     control: (provided, state) => ({
                       ...provided,
                       backgroundColor: "transparent",
-                      minWidth: windowWidth > 786 ? 210 : 140,
+                      minWidth: windowWidth > 786 ? 210 : 160,
                       width: "auto",
                       margin: 0,
                       border: "0px solid black",

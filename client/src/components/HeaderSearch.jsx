@@ -7,7 +7,9 @@ import { searchService } from "../redux/user/userSlice";
 function HeaderSearch() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdown, setDropDown] = useState(false);
-  const [suggestionsList, setSuggestionsList] = useState(suggestions);
+  const [suggestionsList, setSuggestionsList] = useState(
+    suggestions.slice(0, 5)
+  );
 
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -31,11 +33,12 @@ function HeaderSearch() {
     e.preventDefault();
     setDropDown(false);
     dispatch(searchService(searchTerm));
-    const urlParams = new URLSearchParams();
+    const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("searchTerm", searchTerm);
     urlParams.set("address", "Chennai");
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
+    setSearchTerm("");
   };
 
   useEffect(() => {
@@ -87,6 +90,7 @@ function HeaderSearch() {
                 onClick={() => {
                   if (!suggestions.isDisabled) {
                     setSearchTerm(suggestions.label);
+                    dispatch(searchService(suggestions.label));
                     setDropDown(false);
                   }
                 }}
