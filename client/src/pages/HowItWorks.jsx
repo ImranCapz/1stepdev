@@ -5,7 +5,9 @@ import img2 from "../assets/howitsworks/online.png";
 function HowItWorks() {
   return (
     <div className="flex flex-col mx-auto 2xl:px-40">
-      <h1 className="flex justify-center text-4xl font-semibold font-sans text-gray">Steps to Start Your Therapy Journey</h1>
+      <h1 className="flex justify-center text-center mt-6 text-xl md:text-4xl font-semibold font-sans text-gray">
+        Steps to Start Your Therapy Journey
+      </h1>
       <div className="md:p-6 p-5 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mx-auto">
         <div className="group p-6 text-center flex-1 hover:-translate-y-2 transition-all ease-in-out duration-300">
           {" "}

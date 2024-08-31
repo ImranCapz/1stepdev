@@ -16,6 +16,7 @@ import { IoHeartSharp } from "react-icons/io5";
 import { PiHandHeartFill } from "react-icons/pi";
 import { Tooltip } from "flowbite-react";
 import ContentLoader from "react-content-loader";
+import { searchService } from "../../redux/user/userSlice";
 
 //icon
 import { MdCurrencyRupee } from "react-icons/md";
@@ -277,6 +278,9 @@ export default function ProviderItem({ provider }) {
                                   to={`/search?searchTerm=${encodeURIComponent(
                                     filteredNames[1]
                                   )}&address=${provider.address.city}`}
+                                  onClick={() =>
+                                    dispatch(searchService(filteredNames[1]))
+                                  }
                                 >
                                   {filteredNames[1].slice(0, 14)}
                                   {filteredNames[1].slice(14) ? "..." : ""}
