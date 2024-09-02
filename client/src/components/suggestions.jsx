@@ -1,5 +1,5 @@
 export const suggestions = [
-  { value: "Popular Search", label: "Popular Services", isDisabled: true },
+  { value: "Popular Search", label: "Popular Search", isDisabled: true },
   { value: "Diagnostic Evaluation", label: "Diagnostic Evaluation" },
   { value: "Occupational Therapy", label: "Occupational Therapy" },
   { value: "Speech Therapy", label: "Speech Therapy" },
@@ -7,7 +7,7 @@ export const suggestions = [
   { value: "Music Therapy", label: "Music Therapy" },
   { value: "Art As Therapy", label: "Art As Therapy" },
   { value: "ABA Therapy", label: "ABA Therapy" },
-  { value: "A-Z Services", label: "Popular Services", isDisabled: true },
+  { value: "A-Z Services", label: "A-Z Services", isDisabled: true },
   { value: "Dance Movement", label: "Dance Movement" },
   { value: "Art as Therapy", label: "Art as Therapy" },
   { value: "Counselling", label: "Counselling" },

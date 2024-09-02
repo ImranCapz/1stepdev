@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import Select from "react-select";
+import CreateSelect from "react-select/creatable";
 import { FaSearch } from "react-icons/fa";
 import { City } from "country-state-city";
 import { suggestions } from "./suggestions";
+import { useDispatch } from "react-redux";
+import { searchService } from "../redux/user/userSlice";
 
 import PropTypes from "prop-types";
 
@@ -15,11 +17,39 @@ export const SearchBar = ({ defaultSearchTerm }) => {
   const [providers, setProviders] = useState([]);
   const [windowwidth, setWindowWidth] = useState(window.innerWidth);
 
-  const whatoptions = suggestions.map((suggestion) => ({
-    value: suggestion.value,
-    label: suggestion.value,
-    isDisabled: suggestion.isDisabled,
-  }));
+  const [isDropdown, setDropDown] = useState(false);
+  const [suggestionsList, setSuggestionsList] = useState(suggestions);
+
+  const dispatch = useDispatch();
+  const dropdownRef = useRef(null);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setsearchTerm(value);
+    dispatch(searchService(value));
+    setDropDown(true);
+    const filteredSuggestion = suggestions.filter((suggestion) =>
+      suggestion.value.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    if (filteredSuggestion.length === 0 && value) {
+      setSuggestionsList([{ label: value, value, isDisabled: false }]);
+    } else {
+      setSuggestionsList(filteredSuggestion);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropDown(false);
+      }
+    };
+    window.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const fetchProvider = async (address) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -89,69 +119,71 @@ export const SearchBar = ({ defaultSearchTerm }) => {
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
           <label
             htmlFor="what"
-            className="font-sans py-1 px-2 block text-base text-gray-700 font-bold mt-8"
+            className="font-sans mb-1.5 md:mb-0 py-1 px-2 block text-base text-gray-700 font-bold mt-8"
           >
             What
           </label>
-          <Select
-            id="what"
-            value={whatoptions.find((option) => option.value === searchTerm)}
-            onChange={(option) => setsearchTerm(option.value)}
-            options={whatoptions}
-            placeholder="search provider"
-            required
-            isSearchable
-            className="capitalize trauncate text-xs md:text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
-            styles={{
-              control: (provided, state) => ({
-                ...provided,
-                backgroundColor: "transparent",
-                minWidth: windowwidth > 786 ? 210 : 140,
-                width: "auto",
-                margin: 0,
-                border: "0px solid black",
-                boxShadow: state.isFocused ? 0 : 0,
-                "&:hover": {
-                  border: "0px solid black",
-                },
-              }),
-              singleValue: (provided) => ({
-                ...provided,
-                maxWidth: 160,
-                position: "absolute",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }),
-              option: (provided, state) => ({
-                ...provided,
-                backgroundColor: state.isSelected
-                  ? "#F9CB5E"
-                  : provided.backgroundColor,
-                color: state.isSelected ? "#4D4A45" : provided.color,
-              }),
-              indicatorSeparator: () => ({}),
-              menu: (provided) => ({
-                ...provided,
-                width: windowwidth > 786 ? 280 : 200,
-                textAlign: "left",
-              }),
-            }}
-          />
+          <div ref={dropdownRef}>
+            <div className="flex items-center gap-1 px-2 rounded-lg">
+              <input
+                type="text"
+                name="searchInput"
+                value={searchTerm}
+                placeholder="Service or Provider"
+                onChange={handleInputChange}
+                onFocus={() => setDropDown(true)}
+                required
+                className="w-full text-xs md:text-base text-gray placeholder:text-gray-500 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
+              />
+            </div>
+            {isDropdown && (
+              <ul className="p-3 absolute top-[110px] right-18 w-72 border border-slate-300 bg-white rounded-lg max-h-72 overflow-y-auto">
+                {suggestionsList.map((suggestions, index) => (
+                  <li
+                    key={index}
+                    className={`px-4 py-2 text-base text-gray-800 ${
+                      suggestions.isDisabled
+                        ? "opacity-50"
+                        : "cursor-pointer rounded-lg text-gray transition duration-300 ease-in-out"
+                    } ${
+                      searchTerm === suggestions.label
+                        ? "header-selectOptionbg"
+                        : suggestions.isDisabled
+                        ? ""
+                        : "header-Search"
+                    }`}
+                    onClick={() => {
+                      if (!suggestions.isDisabled) {
+                        setsearchTerm(suggestions.label);
+                        setDropDown(false);
+                      }
+                    }}
+                  >
+                    {suggestions.label}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
           <label
             htmlFor="address"
-            className="block py-1 px-2 text-base font-bold text-gray-700 mt-8"
+            className="block py-1 px-2 md:mb-0.5 text-base font-bold text-gray-700 mt-8"
           >
             Where
           </label>
-          <Select
+          <CreateSelect
             type="address"
             id="address"
             placeholder="City, Pin Code"
             value={cityOptions.find((option) => option.value === address)}
             onChange={(option) => setAddress(option.value)}
+            onInputChange={(inputValue, { action }) => {
+              if (action === "input-change") {
+                setAddress(inputValue);
+              }
+            }}
             options={cityOptions}
             isSearchable
             className="capitalize trauncate text-xs md:text-sm border-slate-800 w-full text-gray-900 leading-tight focus:outline-none overflow-visible"
@@ -187,6 +219,12 @@ export const SearchBar = ({ defaultSearchTerm }) => {
                 textAlign: "left",
               }),
             }}
+            formatCreateLabel={(inputValue) => (
+              <div className="flex flex-row items-center">
+                <FaSearch className="mr-2 text-slate-500" />
+                <span>{inputValue}</span>
+              </div>
+            )}
           />
         </div>
         {/* <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8">

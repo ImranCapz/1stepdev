@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { HiOutlineFilter } from "react-icons/hi";
 import ContentLoader from "react-content-loader";
-import { Button, input } from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 import TopLoadingBar from "react-top-loading-bar";
 import { Link, useLocation } from "react-router-dom";
 import { suggestions } from "../components/suggestions";
@@ -21,8 +21,7 @@ import { searchService } from "../redux/user/userSlice";
 
 export default function Search() {
   const searchTermFromHeader = useSelector((state) => state.user.searchService);
-  const [searchTerm, setsearchTerm] = useState("" || searchTermFromHeader);
-  const [inputValue, setInputValue] = useState("");
+  const [searchTerm, setsearchTerm] = useState(searchTermFromHeader || "");
   const [address, setAddress] = useState("");
   const [providerloading, setProviderLoading] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -45,7 +44,7 @@ export default function Search() {
   const [totalCount, setTotalCount] = useState(0);
 
   //drawer
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const openDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
 
@@ -55,11 +54,11 @@ export default function Search() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const whatoptions = suggestions.map((suggestion) => ({
-    value: suggestion.value,
-    label: suggestion.value,
-    isDisabled: suggestion.isDisabled,
-  }));
+  // const whatoptions = suggestions.map((suggestion) => ({
+  //   value: suggestion.value,
+  //   label: suggestion.value,
+  //   isDisabled: suggestion.isDisabled,
+  // }));
 
   const handleSelect = async (value) => {
     try {
@@ -70,6 +69,38 @@ export default function Search() {
       console.error("Error occurred in handleSelect:", error);
     }
   };
+
+  const [isDropdown, setDropDown] = useState(false);
+  const [suggestionsList, setSuggestionsList] = useState(suggestions);
+
+  const dropdownRef = useRef(null);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setsearchTerm(value);
+    setDropDown(true);
+    const filteredSuggestion = suggestions.filter((suggestion) =>
+      suggestion.value.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    if (filteredSuggestion.length === 0 && value) {
+      setSuggestionsList([{ label: value, value, isDisabled: false }]);
+    } else {
+      setSuggestionsList(filteredSuggestion);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropDown(false);
+      }
+    };
+    window.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handlesubmit = (e) => {
     e.preventDefault();
@@ -190,27 +221,6 @@ export default function Search() {
   ];
 
   const submenuNav = getSubmenuNav(address);
-
-  const getQueryParams = (query) => {
-    return query
-      ? (/^[?#]/.test(query) ? query.slice(1) : query)
-          .split("&")
-          .reduce((params, param) => {
-            let [key, value] = param.split("=");
-            params[key] = value
-              ? decodeURIComponent(value.replace(/\+/g, " "))
-              : "";
-            return params;
-          }, {})
-      : {};
-  };
-
-  useEffect(() => {
-    const queryParams = getQueryParams(location.search);
-    if (queryParams.searchTerm) {
-      setsearchTerm(queryParams.searchTerm);
-    }
-  }, [location.search]);
 
   return (
     <>
@@ -359,18 +369,25 @@ export default function Search() {
               <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 z-20">
                 <label
                   htmlFor="what"
-                  className="font-sans px-2 block text-base text-gray-700 font-bold"
+                  className="font-sans px-2 block mt-1 md:mt-0 text-base text-gray-700 font-bold"
                 >
                   What
                 </label>
-                <CreateSelect
+                {/* <CreateSelect
                   id="what"
-                  value={whatoptions.find(
-                    (option) => option.value === searchTerm
-                  )}
-                  onChange={(option) =>
-                    setsearchTerm(option ? option.value : "")
+                  value={
+                    whatoptions.find(
+                      (option) => option.value === searchTerm
+                    ) || {
+                      value: searchTerm,
+                      label: searchTerm,
+                      isDisabled: false,
+                    }
                   }
+                  onChange={(option) => {
+                    setsearchTerm(option ? option.value : "");
+                    // Optionally, update other state or perform actions here
+                  }}
                   options={whatoptions}
                   onInputChange={(inputValue, { action }) => {
                     if (action === "input-change") {
@@ -417,15 +434,59 @@ export default function Search() {
                       width: windowWidth > 786 ? 290 : 250,
                     }),
                   }}
+                  noOptionsMessage={() => null}
                   formatCreateLabel={(inputValue) => (
                     <div className="flex flex-row items-center">
                       <FaSearch className="mr-2 text-slate-500" />
                       <span>{inputValue}</span>
                     </div>
                   )}
-                />
+                /> */}
+                <div ref={dropdownRef}>
+                  <div className="flex items-center gap-1 px-2 rounded-lg">
+                    <input
+                      type="text"
+                      name="searchInput"
+                      value={searchTerm}
+                      placeholder="Service or Provider"
+                      onChange={handleInputChange}
+                      onFocus={() => setDropDown(true)}
+                      required
+                      className="w-full text-sm md:text-base py-1.5 text-gray placeholder:text-gray-500 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
+                    />
+                  </div>
+                  {isDropdown && (
+                    <ul className="p-3 absolute top-[70px] right-18 w-72 border border-slate-300 bg-white rounded-lg max-h-72 overflow-y-auto">
+                      {suggestionsList.map((suggestions, index) => (
+                        <li
+                          key={index}
+                          className={`px-4 py-2 text-base text-gray-800 ${
+                            suggestions.isDisabled
+                              ? "opacity-50"
+                              : "cursor-pointer rounded-lg text-gray transition duration-300 ease-in-out"
+                          } ${
+                            searchTerm === suggestions.label
+                              ? "header-selectOptionbg"
+                              : suggestions.isDisabled
+                              ? ""
+                              : "header-Search"
+                          }`}
+                          onClick={() => {
+                            if (!suggestions.isDisabled) {
+                              setsearchTerm(suggestions.label);
+                              dispatch(searchService(suggestions.label));
+                              setDropDown(false);
+                            }
+                          }}
+                        >
+                          {suggestions.label}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
-              <div className="transform border-b-2 md:mb-0.5 mt-1 md:mt-0 bg-transparent text-lg duration-300 focus-within:border-amber-500">
+              <div className="transform border-b-2 md:mb-1 mt-0.5 md:mt-0 bg-transparent text-lg duration-300 focus-within:border-amber-500">
                 <label
                   htmlFor="where"
                   className="block px-2 text-base font-bold text-gray-700"
