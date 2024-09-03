@@ -133,7 +133,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
                 onChange={handleInputChange}
                 onFocus={() => setDropDown(true)}
                 required
-                className="w-full text-xs md:text-base text-gray placeholder:text-gray-500 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
+                className="w-full capitalize text-xs md:text-base text-gray placeholder:text-gray-500 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
               />
             </div>
             {isDropdown && (

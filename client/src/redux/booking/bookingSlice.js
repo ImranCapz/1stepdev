@@ -93,6 +93,7 @@ export const {
   getBookingsStart,
   getBookingSuccess,
   getBookingFailure,
+  bookingOut,
   setHasApprovedBooking,
   setLastSeenBookingId,
 } = bookingSlice.actions;

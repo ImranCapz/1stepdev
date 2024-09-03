@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import logo from "../assets/oneStepLogo.png";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { signOut } from "../redux/user/userSlice";
-import { providerOut } from "../redux/provider/providerSlice";
-import { onlineStatusRemove } from "../redux/user/onlineSlice";
+
 import { useNavigate } from "react-router-dom";
 import TopLoadingBar from "react-top-loading-bar";
 import toast from "react-hot-toast";
@@ -14,8 +11,16 @@ import ListModel from "./modal/ListModel";
 import ParentModel from "./modal/ParentModel";
 import PropTypes from "prop-types";
 import { SearchBar } from "./SearchBar";
-import { searchService } from "../redux/user/userSlice";
 import HeaderSearch from "./HeaderSearch";
+
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { signOut } from "../redux/user/userSlice";
+import { searchService } from "../redux/user/userSlice";
+import { bookingOut } from "../redux/booking/bookingSlice";
+import { providerOut } from "../redux/provider/providerSlice";
+import { onlineStatusRemove } from "../redux/user/onlineSlice";
+import { favoriteOut } from "../redux/favorite/favoriteSlice";
 
 const Header = ({ showSubMenu }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -45,7 +50,9 @@ const Header = ({ showSubMenu }) => {
       await fetch("/server/auth/signout");
       dispatch(signOut());
       dispatch(providerOut());
+      dispatch(bookingOut());
       dispatch(onlineStatusRemove());
+      dispatch(favoriteOut());
       navigate("/");
     } catch (error) {
       console.log(error);

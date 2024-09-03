@@ -5,10 +5,13 @@ import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { RiDashboardFill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
+import { bookingOut } from "../../redux/booking/bookingSlice";
 import { signOut } from "../../redux/user/userSlice";
 import { providerOut } from "../../redux/provider/providerSlice";
 import { MdManageAccounts, MdSupervisorAccount } from "react-icons/md";
 import { IoIosChatboxes } from "react-icons/io";
+import { favoriteOut } from "../../redux/favorite/favoriteSlice";
+import { onlineStatusRemove } from "../../redux/user/onlineSlice";
 
 export default function DashSidebar() {
   const location = useLocation();
@@ -34,8 +37,11 @@ export default function DashSidebar() {
       if (!res.ok) {
         console.log(data.message);
       } else {
+        dispatch(bookingOut());
         dispatch(providerOut());
         dispatch(signOut());
+        dispatch(favoriteOut());
+        dispatch(onlineStatusRemove());
       }
     } catch (error) {
       console.log(error.message);

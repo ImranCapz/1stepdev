@@ -40,11 +40,10 @@ export const toggleFavorite = createAsyncThunk(
         throw new Error(data.message || "Failed to update favorite status");
       }
       return data;
-    
     } catch (error) {
       console.error(error);
     }
-    }
+  }
 );
 
 export const fetchFavoriteStatus = createAsyncThunk(
@@ -77,6 +76,9 @@ const favoriteSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    favoriteOut: (state) => {
+      (state.favorites = null), (state.loading = false), (state.error = null);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -98,19 +100,22 @@ const favoriteSlice = createSlice({
       .addCase(favoriteList.pending, (state) => {
         state.loading = true;
       })
-      .addCase(favoriteList.fulfilled,(state,action)=>{
+      .addCase(favoriteList.fulfilled, (state, action) => {
         state.favorites = action.payload;
         state.loading = false;
       })
       .addCase(favoriteList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-      })
-      
+      });
   },
 });
 
-export const { getFavoritesStart, getFavoritesSuccess, getFavoritesFailure } =
-  favoriteSlice.actions;
+export const {
+  getFavoritesStart,
+  getFavoritesSuccess,
+  getFavoritesFailure,
+  favoriteOut,
+} = favoriteSlice.actions;
 
 export default favoriteSlice.reducer;

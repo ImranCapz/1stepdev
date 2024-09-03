@@ -108,7 +108,7 @@ export default function UserBooking() {
                         ""
                       )}
                       {bookingDetails.status === "approved" ? (
-                        <p className="">
+                        <p>
                           <FcOk />
                         </p>
                       ) : (

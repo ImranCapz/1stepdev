@@ -35,21 +35,24 @@ function NewComponent() {
                 <label className="flex items-center gap-2 mb-2">
                   <input
                     type="checkbox"
-                    className="focus:outline-none focus:ring-0" defaultChecked
+                    className="focus:outline-none focus:ring-0"
+                    defaultChecked
                   />
                   <h1>Your Clinic&apos;s NPI number</h1>
                 </label>
                 <label className="flex items-center gap-2 mb-2">
                   <input
                     type="checkbox"
-                    className="focus:outline-none focus:ring-0" defaultChecked
+                    className="focus:outline-none focus:ring-0"
+                    defaultChecked
                   />
                   <h1>Your lead clinician&apos;s name</h1>
                 </label>
                 <label className="flex items-center gap-2 ">
                   <input
                     type="checkbox"
-                    className="focus:outline-none focus:ring-0" defaultChecked
+                    className="focus:outline-none focus:ring-0"
+                    defaultChecked
                   />
                   <h1>Your lead clinician&apos;s NPI number</h1>
                 </label>
@@ -73,7 +76,8 @@ function NewComponent() {
               >
                 <input
                   type="checkbox"
-                  className="focus:outline-none focus:ring-0" defaultChecked
+                  className="focus:outline-none focus:ring-0"
+                  defaultChecked
                 />
                 <h1>Proof of Ownership</h1>
               </label>
@@ -113,7 +117,7 @@ export default function CreateProfile() {
     <div className="md:p-1 p-4 flex flex-col items-center min-h-screen w-full">
       {!showComponent && (
         <div className="flex flex-col justify-center mt-60 outline outline-offset-2 outline-1 outline-gray-300 bg-sky-100 rounded-lg ">
-          <div className="">
+          <div>
             <div className="flex flex-col sm:flex-row items-center p-4">
               <img
                 src={profileImage}
@@ -126,7 +130,6 @@ export default function CreateProfile() {
                 </p>
                 <h4 className="text-sm font-semibold text-gray-600">
                   we might not have a profile for you yet. The good news - you{" "}
-                  
                   can create a profile for free!
                 </h4>
               </div>

@@ -452,7 +452,7 @@ export default function Search() {
                       onChange={handleInputChange}
                       onFocus={() => setDropDown(true)}
                       required
-                      className="w-full text-sm md:text-base py-1.5 text-gray placeholder:text-gray-500 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
+                      className="w-full capitalize text-sm md:text-base py-1.5 text-gray placeholder:text-gray-500 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
                     />
                   </div>
                   {isDropdown && (
