@@ -37,7 +37,6 @@ import ContentLoader from "react-content-loader";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { IoIosSend } from "react-icons/io";
-import { current } from "@reduxjs/toolkit";
 
 function convert12Hrs(time) {
   const [hours, minutes] = time.split(":");
@@ -460,7 +459,6 @@ export default function Provider() {
                   </div>
                 </div>
               </div>
-
               <div className="lg:flex-row flex-col flex md:w-5/6 2xl:w-4/6 mx-auto mt-4">
                 <div className="flex flex-col w-full p-2 md:p-10 gap-4 overflow-auto">
                   <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">

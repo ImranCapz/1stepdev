@@ -45,7 +45,7 @@ export default function ProviderItem({ provider }) {
   const pincode = encodeURIComponent(provider.address.pincode);
 
   const pathName = `/provider/${providerName}`;
-  const search = `?city=${providerCity}?state=${providerState}&service=${searchTerm}&pincode=${pincode}`;
+  const search = `?id=${provider._id}&city=${providerCity}?state=${providerState}&service=${searchTerm}&pincode=${pincode}`;
 
   useEffect(() => {
     setSearchTerm(urlsearchTerm);

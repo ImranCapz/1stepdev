@@ -31,8 +31,10 @@ export default function Dashboard() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        dispatch(getBookingSuccess(data));
-        console.log("Booking data:", data);
+        const sortedData = data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        dispatch(getBookingSuccess(sortedData));
       } catch (error) {
         dispatch(getBookingFailure(error));
         console.error(
