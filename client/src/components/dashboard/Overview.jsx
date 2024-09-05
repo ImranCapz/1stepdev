@@ -9,6 +9,7 @@ import { IoMdAlert } from "react-icons/io";
 import OtpInput from "react-otp-input";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import ProgressBar from "../../components/dashboard/ProgressBar";
 
 export default function Overview() {
   const { currentUser } = useSelector((state) => state.user);
@@ -76,7 +77,7 @@ export default function Overview() {
       <div className="p-4 flex flex-row gap-4">
         <div className="flex flex-col gap-2">
           <div className="border border-slate-200 rounded-md bg-white">
-            <h1 className="text-gray font-semibold text-xl p-3 border-b">
+            <h1 className="text-gray font-semibold text-xl p-2.5 border-b">
               Profile
             </h1>
             <div className="relative flex flex-col items-center">
@@ -106,14 +107,16 @@ export default function Overview() {
           {currentProvider ? (
             <>
               <div className="relative flex flex-col border border-slate-200 bg-white p-1 rounded-md">
-                <h1 className="p-3 border-b text-gray font-semibold text-xl">
+                <h1 className="p-2 border-b text-gray font-semibold text-xl">
                   Provider Status
                 </h1>
                 <Link to={"/dashboard?tab=providers"}>
                   <CiEdit className="size-6 right-3 top-3 absolute cursor-pointer text-gray hover:text-slate-400 transition-all duration-200 ease-in" />
                 </Link>
-                <div className="p-2">
+                <div className="w-full px-20 mt-2">
                   <div>
+                    <ProgressBar currentStep={2} />
+                    {}
                     {currentProvider.verified === false && (
                       <div className="flex justify-center border border-slate-200 p-4 rounded-lg bg-sky-100">
                         <button
@@ -200,7 +203,7 @@ export default function Overview() {
           <div className="flex flex-col border border-slate-200 bg-white p-2 rounded-md">
             <div className="flex flex-row w-full justify-between border-b mb-4">
               <h1 className="p-3 font-semibold text-xl text-gray">
-                Your Recents Booking
+                {bookings && bookings.length === 0 ? "No Bookings" : "Your Recent Bookings"}
               </h1>
               <button className="p-3 text-sm font-bold text-gray hover:text-gray-500 transition-all duration-200 ease-in-out">
                 <Link to={"/dashboard?tag=Bookings"}>View All</Link>
