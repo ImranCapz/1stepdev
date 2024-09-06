@@ -1,6 +1,5 @@
 import { useState } from "react";
-import TimePicker from "react-time-picker";
-import { suggestions } from "../suggestions";
+import { suggestions, suggestion } from "../suggestions";
 import { FaRegSmileBeam } from "react-icons/fa";
 
 export default function CreateMenuProvider() {
@@ -79,8 +78,8 @@ export default function CreateMenuProvider() {
     if (step === 4 && data.regularPrice <= 100) {
       newErrors.regularPrice = "Fee must be greater than 100";
     }
-    if (step === 5 && data.experience <= 0) {
-      newErrors.experience = "Experience must be greater than 0";
+    if (step === 5 && data.experience < 0) {
+      newErrors.experience = "Experience must be greater than or equal to 0";
     }
     if (step === 6 && !/^[0-9]{10}$/.test(data.phone)) {
       newErrors.phone = "Phone number must be 10 digits";
@@ -102,6 +101,8 @@ export default function CreateMenuProvider() {
     e.preventDefault();
     try {
       if (validate()) {
+        const width = window.innerWidth <= 768 ? 140 : 240;
+        window.scrollTo({ top: width, behavior: "smooth" });
         console.log(data);
         console.log("save");
         setStep(step + 1);
@@ -165,13 +166,30 @@ export default function CreateMenuProvider() {
         return "";
     }
   };
+
+  const renderRules = (step) => {
+    const rulesString = goodtoknowrules(step);
+    const rulesArray = rulesString
+      .split(".")
+      .filter((rule) => rule.trim() !== "");
+
+    return (
+      <ul className="menu-subTextColor mt-2 text-xs md:text-lg">
+        {rulesArray.map((rule, index) => (
+          <li key={index} className="mb-2">
+            {rule.trim()}.
+          </li>
+        ))}
+      </ul>
+    );
+  };
   const ServiceButtons = (options, name) => {
     return options.map((option) => (
       <button
         key={option.value}
         type="button"
         disabled={option.isDisabled}
-        className={`p-3 m-1 rounded-lg border ${
+        className={`w-full h-12 p-3 m-1 rounded-lg border ${
           data[name]?.includes(option.value)
             ? "menu-Button text-white"
             : `bg-blue-100 ${
@@ -185,69 +203,52 @@ export default function CreateMenuProvider() {
     ));
   };
 
-  const ServiceTypeButtons = (options, name) => {
-    return options.map((option) => (
-      <button
-        key={option}
-        type="button"
-        className={`p-3 m-1 rounded-lg border ${
-          data[name]?.includes(option)
-            ? "menu-Button text-white"
-            : `bg-blue-100 ${
-                option.isDisabled ? "text-gray-400" : "text-gray-700"
-              }`
-        }`}
-        onClick={() => handleButtonClick(name, option)}
-      >
-        {option}
-      </button>
-    ));
-  };
-
   return (
     <div>
-      <div className="fixed progress-bg mt w-full top-0 h-1.5 z-50">
+      <div className="fixed progress-bg w-full md:h-1.5 h-1 top-0 z-50 right-0 left-0">
         <div
-          className="progress-bgs h-full transition-width duration-500 ease-in-out"
+          className="progress-bgs h-full transition-width duration-500"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
-      <div className="container flex flex-col mx-auto">
-        <h1 className="text-lg md:text-2xl m-10 text-left font-bold text-gray">
-          Fill the form for Parent Profile :
-        </h1>
-        <div className="flex flex-col md:flex-row md:gap-10 rounded-lg justify-center items-center">
+      <div className="container flex flex-col mx-auto mt-4 mb-16 md:mb-0">
+        <div className="flex flex-col md:flex-row md:gap-10 justify-center item-center rounded-lg">
           <div className="flex-col h-auto p-2 max-w-lg text-left">
             <div className="border-l-4 menu-borderColor md:p-6 lg:p-8 p-4 secondary-bg rounded-3xl">
-              <h2 className="flex flex-row  items-center gap-2 menu-textColor text-2xl font-bold">
+              <h2 className="flex flex-row items-center gap-2 menu-textColor text-2xl font-bold">
                 <FaRegSmileBeam /> Good To Know
               </h2>
               <p className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
                 {getGoodToKnowText(step)}
               </p>
+
               <p className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
-                {goodtoknowrules(step)}
+                {renderRules(step)}
               </p>
             </div>
           </div>
           <form onSubmit={submitfn} className="w-full md:w-[500px]">
             {/* <div class=" p-5 rounded-lg shadow-xl"> */}
             {step === 0 && (
-              <div className="p-6 text-center ml-5">
-                <p className="text-2xl font-bold text-purple-700 mb-5">
+              <div className="flex flex-col p-6 rounded-lg">
+                <label className="font-bold menu-headTextColor mb-5 mt- text-left">
                   Please Select your Service
-                </p>
-                <div className="flex flex-col h-64 overflow-y-auto">
+                </label>
+
+                {/* <div className="w-64 h-48 rounded-lg overflow-y-scroll p-4 mx-auto"> */}
+                <div className="flex flex-col max-h-64 overflow-y-auto">
                   {ServiceButtons(suggestions, "name")}
                 </div>
+                {/* </div> */}
+
                 {error.name && (
                   <p className="text-red-500 font-serif text-sm mt-1">
                     {error.name}
                   </p>
                 )}
-                <div className="flex justify-center mt-4 gap-4">
+                <div className="flex mt-4 gap-4 justify-center">
                   <button
-                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    className="bg-slate-200 p-3 px-8 rounded-xl text-slate-400"
                     type="submit"
                     disabled
                   >
@@ -262,30 +263,23 @@ export default function CreateMenuProvider() {
                 </div>
               </div>
             )}
-
             {step === 1 && (
-              <div className="p-6 text-center ml-5">
-                <p className="text-2xl font-bold text-purple-700 mb-5">
+              <div className="flex flex-col p-6 rounded-lg">
+                <p className="p-1 menu-headTextColor font-bold mb-4 text-left">
                   Please Select your Service Type
                 </p>
-                <br></br>
-                <br></br>
-                <div className="flex flex-col ">
-                  {ServiceTypeButtons(
-                    ["Virtual", "In-Home", "In-Clinic"],
-                    "therapytype"
-                  )}
+                <div className="flex flex-col justify-center">
+                  {ServiceButtons(suggestion, "therapytype")}
                 </div>
                 {error.therapytype && (
                   <p className="text-red-500 font-serif text-sm mt-1">
                     {error.therapytype}
                   </p>
                 )}
-                <br></br>
-                <br></br>
+
                 <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
+                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-700"
                     type="submit"
                     onClick={handleBack}
                   >
@@ -301,28 +295,29 @@ export default function CreateMenuProvider() {
               </div>
             )}
             {step === 2 && (
-              <div className="p-6 text-center ml-5">
-                <h2 className="text-2xl font-bold text-purple-700 mb-5">
+              <div className="flex flex-col p-6 rounded-lg">
+                <p className="text-2xl font-bold menu-headTextColor mb-5">
                   Basic Information
-                </h2>
-                <br></br>
-                <br></br>
-                <label className="mb-5">Full Name</label>
+                </p>
+                {/* <div className="mb-10 flex items-center"> */}
+                <label className="ml-3 menu-headTextColor font-bold text-left mb-2">
+                  Full Name
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your fullname"
                   onChange={func1}
                   value={data.fullName}
                   name="fullName"
                   required
                 ></input>
-                <br></br>
-                <br></br>
-                <label>Email</label>
+                <label className="ml-3 menu-headTextColor font-bold text-left mb-2 mt-2">
+                  Email
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your Email"
                   onChange={func1}
                   value={data.email}
@@ -334,22 +329,22 @@ export default function CreateMenuProvider() {
                     {error.email}
                   </p>
                 )}
-                <br></br>
-                <br></br>
-                <label>Qualification</label>
+                <label className="ml-3 menu-headTextColor font-bold text-left mb-2 mt-2">
+                  Qualification
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mt-5 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your Qualification"
                   onChange={func1}
                   value={data.qualification}
                   name="qualification"
                   required
                 ></input>
-                <div className="flex justify-center mt-4 gap-4">
+                <div className="mt-4 flex justify-center gap-4">
                   <button
-                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
-                    type="submit"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-700"
+                    type="button"
                     onClick={handleBack}
                   >
                     Back
@@ -364,74 +359,81 @@ export default function CreateMenuProvider() {
               </div>
             )}
             {step === 3 && (
-              <div className="p-6 text-center ml-5">
-                <h2 className="text-2xl font-bold text-purple-700 mb-5">
+              <div className="flex flex-col p-6 rounded-lg">
+                <p className="text-2xl font-bold menu-headTextColor">
                   Location Details
-                </h2>
-                <p>Address</p>
+                </p>
+                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
+                  Address
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter Address"
                   onChange={func1}
                   value={data.address.addressLine1}
                   name="address.addressLine1"
                   required
                 ></input>
-                <br></br>
-                <br></br>
-                <p>Street</p>
+
+                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
+                  Street
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your Street"
                   onChange={func1}
                   value={data.address.street}
                   name="address.street"
                   required
                 ></input>
-                <br></br>
-                <br></br>
-                <p>Country</p>
+
+                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
+                  Country
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your Country"
                   onChange={func1}
                   value={data.address.country}
                   name="address.country"
                   required
                 ></input>
-                <br></br>
-                <br></br>
-                <p>State</p>
+
+                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
+                  State
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your State"
                   onChange={func1}
                   value={data.address.state}
                   name="address.state"
                   required
                 ></input>
-                <br></br>
-                <br></br>
-                <p>City</p>
+
+                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
+                  City
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your City"
                   onChange={func1}
                   value={data.address.city}
                   name="address.city"
                   required
                 ></input>
-                <br></br>
-                <br></br>
-                <p>Pincode</p>
+
+                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
+                  Pincode
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your Pincode"
                   onChange={func1}
                   value={data.address.pincode}
@@ -443,10 +445,10 @@ export default function CreateMenuProvider() {
                     {error.pincode}
                   </p>
                 )}
-                <div className="flex justify-center mt-4 gap-4">
+                <div className="mt-4 flex justify-center gap-4">
                   <button
-                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
-                    type="submit"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-700"
+                    type="button"
                     onClick={handleBack}
                   >
                     Back
@@ -461,15 +463,13 @@ export default function CreateMenuProvider() {
               </div>
             )}
             {step === 4 && (
-              <div className="p-6 text-center ml-5">
-                <p className="text-2xl font-bold text-purple-700 mb-5">
+              <div className="flex flex-col p-6 rounded-lg">
+                <label className="mb-5 menu-headTextColor font-bold ml-3 text-left">
                   Fee per Appoinment
-                </p>
-                <br></br>
-                <br></br>
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your fee"
                   onChange={func1}
                   value={data.regularPrice}
@@ -481,12 +481,10 @@ export default function CreateMenuProvider() {
                     {error.regularPrice}
                   </p>
                 )}
-                <br></br>
-                <br></br>
                 <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
-                    type="submit"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-700"
+                    type="button"
                     onClick={handleBack}
                   >
                     Back
@@ -501,15 +499,13 @@ export default function CreateMenuProvider() {
               </div>
             )}
             {step === 5 && (
-              <div className="p-6 text-center ml-5">
-                <p className="text-2xl font-bold text-purple-700 mb-5">
+              <div className="flex flex-col p-6  rounded-lg">
+                <label className="mb-5 menu-headTextColor font-bold ml-3 text-left">
                   Years of Experience
-                </p>
-                <br></br>
-                <br></br>
+                </label>
                 <input
                   type="number"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your experience"
                   onChange={func1}
                   value={data.experience}
@@ -521,12 +517,11 @@ export default function CreateMenuProvider() {
                     {error.experience}
                   </p>
                 )}
-                <br></br>
-                <br></br>
+
                 <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
-                    type="submit"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
+                    type="button"
                     onClick={handleBack}
                   >
                     Back
@@ -541,30 +536,29 @@ export default function CreateMenuProvider() {
               </div>
             )}
             {step === 6 && (
-              <div className="p-6 text-center ml-5">
-                <h2 className="text-2xl font-bold text-purple-700 mb-5 ">
+              <div className="flex flex-col p-6  rounded-lg">
+                <p className="text-2xl font-bold menu-headTextColor mb-5">
                   Authentication
-                </h2>
-                <label>Licensing</label>
-                <br></br>
-                <br></br>
+                </p>
+                <label className="menu-headTextColor font-bold ml-3 text-left mb-2">
+                  Licensing
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Eg. License Number, Issuing authority"
                   onChange={func1}
                   value={data.license}
                   name="license"
                   required
                 ></input>
-                <br></br>
-                <br></br>
-                <p>Phone Number</p>
-                <br></br>
-                <br></br>
+
+                <label className="mb-2 menu-headTextColor font-bold text-left ml-3 mt-2">
+                  Phone Number
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your Phone no"
                   onChange={func1}
                   value={data.phone}
@@ -576,12 +570,11 @@ export default function CreateMenuProvider() {
                     {error.phone}
                   </p>
                 )}
-                <br></br>
-                <br></br>
+
                 <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
-                    type="submit"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
+                    type="button"
                     onClick={handleBack}
                   >
                     Back
@@ -597,71 +590,90 @@ export default function CreateMenuProvider() {
             )}
 
             {step === 7 && (
-              <div className="p-6 text-center ml-5">
-                <h2 className="text-2xl font-bold text-purple-700 mb-5">
+              <div className="p-6  rounded-lg">
+                <p className="text-2xl font-bold menu-headTextColor mb-10 mt-10">
                   Availability
-                </h2>
-                <label>Morning</label>
-                <br></br>
-                <br></br>
-                <TimePicker
+                </p>
+                <label className="mb-5 menu-headTextColor font-bold text-left">
+                  Morning
+                </label>
+                <label className="menu-headTextColor ml-5">From:</label>
+
+                <input
+                  id="appt-time"
                   type="time"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500 "
-                  onChange={(value) =>
+                  onChange={(event) =>
                     func1({
-                      target: { name: "availability.morningStart", value },
+                      target: {
+                        name: "availability.morningStart",
+                        value: event.target.value,
+                      },
                     })
                   }
                   value={data.availability.morningStart}
-                  name="data.availability.morningStart"
-                  format="h:mm a"
+                  name="morningStart"
                   required
-                ></TimePicker>
-                <TimePicker
+                />
+                <label className="menu-headTextColor ml-5">To:</label>
+
+                <input
+                  id="appt-time"
                   type="time"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500 "
-                  onChange={(value) =>
+                  onChange={(event) =>
                     func1({
-                      target: { name: "availability.morningEnd", value },
+                      target: {
+                        name: "availability.morningEnd",
+                        value: event.target.value,
+                      },
                     })
                   }
                   value={data.availability.morningEnd}
-                  name="data.availability.morningEnd"
-                  format="h:mm a"
+                  name="morningEnd"
                   required
-                ></TimePicker>
-                <TimePicker
+                />
+                <div className="mt-4"></div>
+                <label className="mt-6 ml-1.5 menu-headTextColor font-bold">
+                  Evening
+                </label>
+                <label className="menu-headTextColor ml-5">From:</label>
+
+                <input
+                  id="appt-time"
                   type="time"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500 "
                   onChange={(value) =>
                     func1({
-                      target: { name: "availability.eveningStart", value },
+                      target: {
+                        name: "availability.eveningStart",
+                        value: value.target.value,
+                      },
                     })
                   }
                   value={data.availability.eveningStart}
-                  name="data.availability.eveningStart"
-                  format="h:mm a"
+                  name="eveningStart"
                   required
-                ></TimePicker>
-                <TimePicker
+                />
+                <label className="menu-headTextColor ml-5">To:</label>
+
+                <input
+                  id="appt-time"
                   type="time"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500 "
                   onChange={(value) =>
                     func1({
-                      target: { name: "availability.eveningEnd", value },
+                      target: {
+                        name: "availability.eveningEnd",
+                        value: value.target.value,
+                      },
                     })
                   }
                   value={data.availability.eveningEnd}
-                  name="data.availability.eveningEnd"
-                  format="h:mm a"
+                  name="eveningEnd"
                   required
-                ></TimePicker>
-                <br></br>
-                <br></br>
+                />
+
                 <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
-                    type="submit"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
+                    type="button"
                     onClick={handleBack}
                   >
                     Back
@@ -676,16 +688,17 @@ export default function CreateMenuProvider() {
               </div>
             )}
             {step === 8 && (
-              <div className="p-6 text-center ml-5">
-                <h2 className="text-2xl font-bold text-purple-700 mb-5">
+              <div className="flex flex-col p-6  rounded-lg">
+                <p className="text-2xl font-bold menu-headTextColor text-left mb-4">
                   About
-                </h2>
-                <label>Biograpghy</label>
-                <br></br>
-                <br></br>
+                </p>
+                <label className="mb-2 menu-headTextColor font-bold text-left ml-3">
+                  Biograpghy
+                </label>
                 <input
                   type="textarea"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500 "
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
+                  placeholder="Enter your biography"
                   onChange={func1}
                   value={data.description}
                   name="description"
@@ -696,14 +709,13 @@ export default function CreateMenuProvider() {
                     {error.description}
                   </p>
                 )}
-                <br></br>
-                <br></br>
-                <p>Profile</p>
-                <br></br>
-                <br></br>
+
+                <label className="mb-2 menu-headTextColor font-bold ml-3 text-left mt-2">
+                  Profile
+                </label>
                 <input
                   type="file"
-                  className="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500"
+                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Add your profile"
                   onChange={func1}
                   value={data.profilePicture}
@@ -715,12 +727,11 @@ export default function CreateMenuProvider() {
                     {error.profilePicture}
                   </p>
                 )}
-                <br></br>
-                <br></br>
+
                 <div className="flex justify-center mt-4 gap-4">
                   <button
-                    className="p-3 px-8 rounded-xl bg-slate-200 text-slate-400"
-                    type="submit"
+                    className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
+                    type="button"
                     onClick={handleBack}
                   >
                     Back
@@ -729,13 +740,16 @@ export default function CreateMenuProvider() {
                     className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
                   >
-                    Next
+                    Save
                   </button>
                 </div>
               </div>
             )}
+
+            {/* </div> */}
           </form>
         </div>
+        {/* </div> */}
       </div>
     </div>
   );

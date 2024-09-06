@@ -220,14 +220,14 @@ export default function CreateMenuParent() {
 
   return (
     <div>
-      <div className="fixed progress-bg w-full h-1.5 top-0 z-50">
+      <div className="fixed progress-bg w-full md:h-1.5 h-1 top-0 z-50 ">
         <div
           className="progress-bgs h-full transition-width duration-500 ease-in-out"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
-      <div className="container flex flex-col mx-auto">
-        <h1 className="text-lg md:text-2xl m-10 text-left font-bold text-gray">
+      <div className="container flex flex-col mx-auto mb-16 md:mb-0">
+        <h1 className="text-lg md:text-2xl m-4 text-left font-bold text-gray">
           Fill the form for Parent Profile :
         </h1>
         <div className="flex flex-col md:flex-row md:gap-10 rounded-lg justify-center items-center">

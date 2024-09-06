@@ -10,6 +10,7 @@ import {
   setHasApprovedBooking,
   setLastSeenBookingId,
 } from "../../redux/booking/bookingSlice";
+import { useNavigate } from "react-router-dom";
 import CreateMenuParent from "../parents/CreateMenuParent";
 
 export default function SubmenuProfile() {
@@ -18,6 +19,7 @@ export default function SubmenuProfile() {
   const [isBookingsLinkClicked, setIsBookingsLinkClicked] = useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { bookings, hasApprovedBooking, lastSeenBookingId } = useSelector(
     (state) => state.booking
   );
@@ -63,6 +65,23 @@ export default function SubmenuProfile() {
     }
   }, [location.search, submenuNav]);
 
+  const handleLinkClick = (e, title) => {
+    e.preventDefault();
+    setActiveComponent(title);
+    navigate(`?tag=${title}`);
+    if (title === "Bookings") {
+      setIsBookingsLinkClicked(false);
+      const approvedBookings = bookings.filter(
+        (booking) => booking.status === "approved"
+      );
+      if (approvedBookings.length > 0) {
+        const latestBooking = approvedBookings[approvedBookings.length - 1];
+        dispatch(setLastSeenBookingId(latestBooking._id));
+        dispatch(setHasApprovedBooking(false));
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col w-full transition-all duration-500 ">
       <nav className="block border-b items-start">
@@ -76,20 +95,7 @@ export default function SubmenuProfile() {
                     ? "border-b-2 border-amber-500"
                     : ""
                 }`}
-                onClick={() => {
-                  if (item.title === "Bookings") {
-                    setIsBookingsLinkClicked(false);
-                    const approvedBookings = bookings.filter(
-                      (booking) => booking.status === "approved"
-                    );
-                    if (approvedBookings.length > 0) {
-                      const latestBooking =
-                        approvedBookings[approvedBookings.length - 1];
-                      dispatch(setLastSeenBookingId(latestBooking._id));
-                      dispatch(setHasApprovedBooking(false));
-                    }
-                  }
-                }}
+                onClick={(e) => handleLinkClick(e, item.title)}
               >
                 <span className="flex flex-row items-center gap-1">
                   {item.title}
@@ -115,7 +121,6 @@ export default function SubmenuProfile() {
       )}
       {activeComponent === "Bookings" && (
         <div className="w-full p-2 ">
-          <h1 className="flex flex-col font-bold text-2xl"></h1>
           <UserBooking />
         </div>
       )}

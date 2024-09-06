@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { suggestions } from "./suggestions";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useState, useRef, useEffect } from "react";
 import { searchService } from "../redux/user/userSlice";
 
 function HeaderSearch() {
@@ -69,7 +69,7 @@ function HeaderSearch() {
             className="w-full px-2 py-2 placeholder:text-gray-300 bg-transparent rounded-md outline-none border-none focus:outline-none focus:border-transparent focus:ring-0"
           />
 
-          <button>search</button>
+          <button type="submit">search</button>
         </div>
         {isDropdown && (
           <ul className="p-3 absolute top-12 right-18 w-56 bg-white rounded-lg">

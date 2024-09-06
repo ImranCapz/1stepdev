@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Stepper, Step, Typography } from "@material-tailwind/react";
+import { MdVerifiedUser } from "react-icons/md";
 
 //icons
 import {
@@ -9,46 +10,37 @@ import {
 } from "react-icons/md";
 
 const ProgressBar = ({ currentStep }) => {
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(0);
 
   const steps = [
     {
-      label: "Step 1",
+      label: "Claim",
       description: "Details about your account.",
       icon: MdOutlineVerified,
     },
     {
-      label: "Step 2",
+      label: "Experience & Skills",
       description: "Verify your information.",
-      icon: MdOutlineAccountCircle,
+      icon: MdVerifiedUser,
     },
     {
-      label: "Step 3",
+      label: "Step3",
+      description: "Complete your setup.",
+      icon: MdOutlineSettings,
+    },
+    {
+      label: "Step3",
       description: "Complete your setup.",
       icon: MdOutlineSettings,
     },
   ];
 
   return (
-    <div className="w-full px-24 py-4">
+    <div className="w-full flex items-center px-24 py-4 mb-20">
       <Stepper activeStep={activeStep}>
         {steps.map((step, index) => (
-          <Step key={index}>
-            <div className="flex flex-col items-center">
-              <step.icon className="h-6 w-6" />
-              <div className="text-center mt-6">
-                <p
-                  className={`text-slate-700 ${
-                    activeStep === index + 1 ? "text-blue-500" : ""
-                  }`}
-                >
-                  {step.label}
-                </p>
-                <p className="text-slate-900 font-semibold">
-                  {step.description}
-                </p>
-              </div>
-            </div>
+          <Step key={index} className="h-5 w-5 bg-slate-300">
+            <div className="flex items-center justify-center">{step.label}</div>
           </Step>
         ))}
       </Stepper>

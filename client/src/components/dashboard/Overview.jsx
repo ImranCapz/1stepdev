@@ -9,12 +9,19 @@ import { IoMdAlert } from "react-icons/io";
 import OtpInput from "react-otp-input";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import ProgressBar from "../../components/dashboard/ProgressBar";
+import SearchBar from "../SearchBar";
+import { FcApproval } from "react-icons/fc";
+
+import { Stepper, Step } from "@material-tailwind/react";
+import { MdVerifiedUser } from "react-icons/md";
+import { MdOutlineVerified, MdOutlineSettings } from "react-icons/md";
 
 export default function Overview() {
   const { currentUser } = useSelector((state) => state.user);
   const { currentProvider } = useSelector((state) => state.provider);
+  const [step, setStep] = useState(0);
   const [otpOpen, setOtpOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
   const [otp, setOtp] = useState(0);
   const { bookings } = useSelector((state) => state.booking);
 
@@ -72,10 +79,32 @@ export default function Overview() {
   function onCloseModal() {
     setOtpOpen(false);
   }
+  const steps = [
+    {
+      label: "Claim Profile",
+      description: "Details about your account.",
+      icon: MdOutlineVerified,
+    },
+    {
+      label: "Experience & Skills",
+      description: "Verify your information.",
+      icon: MdVerifiedUser,
+    },
+    {
+      label: "Skilled Provider",
+      description: "Complete your setup.",
+      icon: MdOutlineSettings,
+    },
+    {
+      label: "1Step Pro",
+      description: "Complete your setup.",
+      icon: MdOutlineSettings,
+    },
+  ];
   return (
-    <div className="flex bg-slate-100 justify-center">
-      <div className="p-4 flex flex-row gap-4">
-        <div className="flex flex-col gap-2">
+    <div className="w-full flex bg-slate-100 justify-center mb-16 md:mb-0">
+      <div className="p-4 flex flex-col lg:flex-row gap-4 w-full max-w-screen-xl">
+        <div className="flex flex-col gap-2 lg:w-auto">
           <div className="border border-slate-200 rounded-md bg-white">
             <h1 className="text-gray font-semibold text-xl p-2.5 border-b">
               Profile
@@ -84,7 +113,7 @@ export default function Overview() {
               <Link to={"/dashboard?tab=profile"}>
                 <CiEdit className="size-6 right-3 top-3 absolute cursor-pointer text-gray hover:text-slate-400 transition-all duration-200 ease-in" />
               </Link>
-              <div className="px-16 p-4 flex flex-col items-center">
+              <div className="md:px-16 p-4 flex flex-col items-center">
                 <img
                   src={currentUser.profilePicture}
                   alt="profile"
@@ -101,8 +130,8 @@ export default function Overview() {
               <h1 className="text-white">Become A 1Step Pro</h1>
             </div>
           </div>
+          <div className=""></div>
         </div>
-
         <div className="flex flex-col gap-4">
           {currentProvider ? (
             <>
@@ -113,63 +142,81 @@ export default function Overview() {
                 <Link to={"/dashboard?tab=providers"}>
                   <CiEdit className="size-6 right-3 top-3 absolute cursor-pointer text-gray hover:text-slate-400 transition-all duration-200 ease-in" />
                 </Link>
-                <div className="w-full px-20 mt-2">
-                  <div>
-                    <ProgressBar currentStep={2} />
-                    {}
-                    {currentProvider.verified === false && (
-                      <div className="flex justify-center border border-slate-200 p-4 rounded-lg bg-sky-100">
-                        <button
-                          className="flex flex-row space-x-2 items-center"
-                          onClick={handleVerifyProfile}
-                        >
-                          <IoMdAlert className="text-amber-500" />
-                          {/* <span className="text-slate-700">
-                            is this your profile
-                          </span> */}
-                          <p className="flex flex-row items-center underline text-gray font-semibold">
-                            Claim Your Profile
-                          </p>
-                        </button>
+                <div className="w-full mt-2">
+                  <div className="w-full flex items-center md:px-24 py-4 p-6 mb-20">
+                    <Stepper activeStep={activeStep}>
+                      {steps.map((step, index) => (
+                        <Step key={index} className="h-5 w-5 bg-slate-300">
+                          <div
+                            className={`flex text-slate-500 items-center justify-center mt-8 md:text-base text-xs`}
+                          >
+                            {step.label}
+                          </div>
+                        </Step>
+                      ))}
+                    </Stepper>
+                  </div>
+                  <div className="border-t p-4">
+                    {step === 0 && currentProvider.verified === false && (
+                      <div>
+                        <div>
+                          <h2 className="flex flex-row items-center gap-2 text-xl font-semibold text-slate-800">
+                            Benefit of claiming profile{" "}
+                            <FcApproval className="size-6" />
+                          </h2>
+                          <ul className="list-disc list-inside mt-2 text-gray-800 mb-4">
+                            <li>Get verified badge on your profile.</li>
+                            <li>Get more visibility and attract more.</li>
+                          </ul>
+                        </div>
+                        <div className="flex justify-center border border-slate-200 p-4 rounded-lg bg-sky-100">
+                          <button
+                            className="flex flex-row space-x-2 items-center"
+                            onClick={handleVerifyProfile}
+                          >
+                            <IoMdAlert className="text-amber-500" />
+                            <p className="flex flex-row items-center underline text-gray font-semibold">
+                              Claim Your Profile Now
+                            </p>
+                          </button>
+                        </div>
                       </div>
                     )}
-                    <Modal show={otpOpen} onClose={onCloseModal} popup>
-                      <Modal.Header></Modal.Header>
-                      <Modal.Body>
-                        <div className="flex flex-col text-xl font-semibold text-gray gap-4">
-                          OTP Sended to your {currentProvider.email}
-                          <div className="flex flex-col gap-4 p-10">
-                            <label>Enter OTP</label>
-                            <div className="flex flex-row items-center justify-center">
-                              <OtpInput
-                                value={otp}
-                                onChange={setOtp}
-                                numInputs={6}
-                                renderInput={(props) => (
-                                  <input
-                                    {...props}
-                                    style={{
-                                      width: "2.5rem",
-                                      height: "3rem",
-                                      margin: "0 0.5rem",
-                                      fontSize: "1.5rem",
-                                      borderRadius: "4px",
-                                      border: "1px solid rgba(0,0,0,0.3)",
-                                      color: "black",
-                                      backgroundColor: "white",
-                                    }}
-                                  />
-                                )}
-                              />
-                            </div>
-                            <Button onClick={handleVerifyOtp}>
-                              Verify OTP
-                            </Button>
-                          </div>
-                        </div>
-                      </Modal.Body>
-                    </Modal>
                   </div>
+                  <Modal show={otpOpen} onClose={onCloseModal} popup>
+                    <Modal.Header></Modal.Header>
+                    <Modal.Body>
+                      <div className="flex flex-col text-xl font-semibold text-gray gap-4">
+                        OTP Sended to your {currentProvider.email}
+                        <div className="flex flex-col gap-4 p-10">
+                          <label>Enter OTP</label>
+                          <div className="flex flex-row items-center justify-center">
+                            <OtpInput
+                              value={otp}
+                              onChange={setOtp}
+                              numInputs={6}
+                              renderInput={(props) => (
+                                <input
+                                  {...props}
+                                  style={{
+                                    width: "2.5rem",
+                                    height: "3rem",
+                                    margin: "0 0.5rem",
+                                    fontSize: "1.5rem",
+                                    borderRadius: "4px",
+                                    border: "1px solid rgba(0,0,0,0.3)",
+                                    color: "black",
+                                    backgroundColor: "white",
+                                  }}
+                                />
+                              )}
+                            />
+                          </div>
+                          <Button onClick={handleVerifyOtp}>Verify OTP</Button>
+                        </div>
+                      </div>
+                    </Modal.Body>
+                  </Modal>
                 </div>
               </div>
             </>
@@ -181,8 +228,8 @@ export default function Overview() {
                   alt="profile"
                   className="flex items-center h-24 w-24 rounded-full bg-gray-400 p-1"
                 />
-                <div className="p-5 flex flex-row justify-between w-full">
-                  <div>
+                <div className="p-5 flex flex-col md:flex-row md:justify-between items-center w-full md:gap-6">
+                  <div className="text-center md:text-left">
                     <p className="text-2xl font-semibold text-gray-800">
                       Can&apos;t find a profile for your practice?
                     </p>
@@ -191,7 +238,7 @@ export default function Overview() {
                       you can create a profile for free!
                     </h4>
                   </div>
-                  <div>
+                  <div className="mt-4">
                     <Link to={"/dashboard?tab=providers"}>
                       <Button>Create Profile</Button>
                     </Link>
@@ -200,20 +247,19 @@ export default function Overview() {
               </div>
             </div>
           )}
-          <div className="flex flex-col border border-slate-200 bg-white p-2 rounded-md">
-            <div className="flex flex-row w-full justify-between border-b mb-4">
-              <h1 className="p-3 font-semibold text-xl text-gray">
-                {bookings && bookings.length === 0 ? "No Bookings" : "Your Recent Bookings"}
-              </h1>
-              <button className="p-3 text-sm font-bold text-gray hover:text-gray-500 transition-all duration-200 ease-in-out">
-                <Link to={"/dashboard?tag=Bookings"}>View All</Link>
-              </button>
-            </div>
-
-            {bookings && bookings.length > 0 ? (
-              <>
-                <Table hoverable className="w-ful l">
-                  <Table.Head>
+          {bookings && bookings.length > 0 ? (
+            <div className="flex flex-col border border-slate-200 bg-white p-2 rounded-md">
+              <div className="flex flex-row w-full justify-between border-b mb-4">
+                <h1 className="p-3 font-semibold text-xl text-gray">
+                  Your Recent Bookings
+                </h1>
+                <button className="p-3 md:text-sm text-xs font-bold text-gray hover:text-gray-500 transition-all duration-200 ease-in-out">
+                  <Link to={"/dashboard?tag=Bookings"}>View All</Link>
+                </button>
+              </div>
+              <div className="overflow-auto">
+                <Table hoverable>
+                  <Table.Head className="">
                     <Table.HeadCell>Provider Name</Table.HeadCell>
                     <Table.HeadCell>Services</Table.HeadCell>
                     <Table.HeadCell>Scheduled Time</Table.HeadCell>
@@ -270,11 +316,18 @@ export default function Overview() {
                     </Table.Body>
                   ))}
                 </Table>
-              </>
-            ) : (
-              <></>
-            )}
-          </div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h1 className="text-gray-800 text-xl font-semibold mb-4">
+                No Bookings
+              </h1>
+              <div className="flex items-center justify-center">
+                <SearchBar />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

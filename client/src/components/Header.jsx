@@ -226,6 +226,7 @@ const Header = ({ showSubMenu }) => {
 
   useEffect(() => {
     setDrawer(false);
+    setState(false);
   }, [location]);
 
   return (

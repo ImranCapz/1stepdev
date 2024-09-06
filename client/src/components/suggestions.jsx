@@ -13,3 +13,18 @@ export const suggestions = [
   { value: "Counselling", label: "Counselling" },
   { value: "Social Skills Group", label: "Social Skills Group" },
 ];
+
+export const suggestion = [
+  {
+    value: "In-Clinic",
+    label: "In-Clinic",
+  },
+  {
+    value: "In-Home",
+    label: "In-Home",
+  },
+  {
+    value: "Virtual",
+    label: "Virtual",
+  },
+];
