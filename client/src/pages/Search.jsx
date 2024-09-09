@@ -260,7 +260,7 @@ export default function Search() {
                     onClick={() => {
                       setsearchTerm(item.title);
                     }}
-                    className="block text-sm py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150 cursor-pointer"
+                    className="block md:text-xs 2xl:text-sm py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150 cursor-pointer"
                   >
                     {Array.isArray(item.title) ? item.title : item.title}
                   </Link>

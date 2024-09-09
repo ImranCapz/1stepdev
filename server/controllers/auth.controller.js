@@ -29,7 +29,10 @@ export const signin = async (req, res, next) => {
     );
     const { password: hashedPassword, ...rest } = validUser._doc;
     res
-      .cookie("access_token", token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 })
+      .cookie("access_token", token, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
       .status(200)
       .json(rest);
   } catch (error) {
@@ -58,9 +61,7 @@ export const google = async (req, res, next) => {
         Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
       const newUser = new User({
-        username:
-          req.body.name.split(" ").join("").toLowerCase() +
-          Math.random().toString(36).slice(-8),
+        username: req.body.name,
         email: req.body.email,
         password: hashedPassword,
         profilePicture: req.body.photo,
@@ -74,7 +75,7 @@ export const google = async (req, res, next) => {
       res
         .cookie("access_token", token, {
           httpOnly: true,
-          maxAge: 7 * 24 * 60 * 60 * 1000
+          maxAge: 7 * 24 * 60 * 60 * 1000,
         })
         .status(200)
         .json(rest);

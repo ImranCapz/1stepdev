@@ -46,6 +46,22 @@ export default function ParentForm() {
 
   const handleChange = (e) => {
     let value = e.target.value;
+    const id = e.target.id;
+    const maxLength = {
+      fullName: 15,
+      childName: 15,
+      bloodGroup: 10,
+      height: 3,
+      weight: 3,
+      medicalHistory: 30,
+      allergies: 30,
+      insurance: 30,
+      address: 100,
+    };
+
+    if (maxLength[id] && value.length > maxLength[id]) {
+      return;
+    }
     if (e.target.id === "phoneNumber") {
       if (value.length !== 10) {
         setPhoneValid(false);
@@ -115,6 +131,7 @@ export default function ParentForm() {
       } else {
         toast.error("Parent Details Successfully Removed");
       }
+      setIsModified(false);
       setBtnLoader(false);
     } catch (error) {
       dispatch(updateUserFailure(error));
@@ -257,6 +274,7 @@ export default function ParentForm() {
                 className={`border-2 p-2 input rounded-lg focus:outline-none focus:ring-0 ${
                   !phoneValid ? "error" : ""
                 }`}
+                maxLength="15"
                 value={formData.parentDetails?.emergencyContact}
                 onChange={(value) => {
                   setEmergValue(value);
@@ -285,6 +303,7 @@ export default function ParentForm() {
               <textarea
                 type="text"
                 placeholder="Address"
+                rows={3}
                 className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0"
                 id="address"
                 required

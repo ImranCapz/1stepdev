@@ -93,7 +93,6 @@ const providerSchema = new mongoose.Schema(
     },
     imageUrls: {
       type: Array,
-      required: true,
     },
     userRef: {
       type: String,

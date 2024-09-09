@@ -16,7 +16,9 @@ import { IoIosEyeOff } from "react-icons/io";
 import logo from "../assets/logo.svg";
 
 const Signin = () => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    email: "",
+  });
   const [showpassword, setShowPassword] = useState(false);
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -24,7 +26,18 @@ const Signin = () => {
   const topLoadingBarRef = useRef(null);
 
   const handleChanges = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const id = e.target.id;
+    const value = e.target.value;
+    if (id === "email") {
+      const emailValid = value.split(".com");
+      if (
+        emailValid.length > 2 ||
+        (emailValid.length === 2 && emailValid[1] !== "")
+      ) {
+        return;
+      }
+    }
+    setFormData({ ...formData, [id]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -42,6 +55,7 @@ const Signin = () => {
       const data = await res.json();
       if (data.success === true) {
         dispatch(signinFailure(data));
+        toast.error(data.message);
         return;
       }
       dispatch(signinSuccess(data));
@@ -90,6 +104,7 @@ const Signin = () => {
                 name="email"
                 type="email"
                 onChange={handleChanges}
+                value={formData.email}
                 autoComplete="email"
                 required
                 className="block w-full p-3 rounded-lg ring-1 input ring-inset ring-gray- py-1.5 focus:ring-0 hover:border-purple-400"
@@ -125,10 +140,10 @@ const Signin = () => {
               </div>
             </div>
           </div>
-          <br></br>
+
           <Link
             to="/forgetpassword"
-            className="self-end mt-4 font-semibold leading-6 text-neutral-900 hover:text-slate-400 transition-all duration-300 ease-in-out"
+            className="self-end flex font-semibold leading-6 text-neutral-900 hover:text-slate-400 transition-all duration-300 ease-in-out"
           >
             Forget Password.?
           </Link>

@@ -1,15 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { suggestions, suggestion } from "../suggestions";
 import { FaRegSmileBeam } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  selectProvider,
+  providerData,
+} from "../../redux/provider/providerSlice";
+import { useRef } from "react";
+
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../../firebase";
+import toast from "react-hot-toast";
 
 export default function CreateMenuProvider() {
+  const { currentUser } = useSelector((state) => state.user);
+  const [diserror, setDisError] = useState(false);
   const [data, setData] = useState({
+    imageUrls: [],
     name: [],
     therapytype: [],
-    fullName: "",
     email: "",
     qualification: "",
+    fullName: "",
     experience: "",
+    phone: "",
     address: {
       addressLine1: "",
       street: "",
@@ -20,7 +40,6 @@ export default function CreateMenuProvider() {
     },
     regularPrice: "",
     license: "",
-    phone: "",
     availability: {
       morningStart: "",
       morningEnd: "",
@@ -30,8 +49,13 @@ export default function CreateMenuProvider() {
     description: "",
     profilePicture: "",
   });
+  console.log(data);
   const [step, setStep] = useState(0);
   const [error, setError] = useState({});
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const fileRef = useRef();
 
   const handleButtonClick = (name, value) => {
     setData((prevData) => {
@@ -104,7 +128,6 @@ export default function CreateMenuProvider() {
         const width = window.innerWidth <= 768 ? 140 : 240;
         window.scrollTo({ top: width, behavior: "smooth" });
         console.log(data);
-        console.log("save");
         setStep(step + 1);
       }
     } catch (err) {
@@ -203,9 +226,95 @@ export default function CreateMenuProvider() {
     ));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/server/provider/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          userRef: currentUser._id,
+        }),
+      });
+      if (data.success) {
+        setDisError(true);
+      }
+      const ResData = await res.json();
+      navigate(`/provider/${data._id}`);
+      dispatch(selectProvider(ResData._id));
+      dispatch(providerData(ResData));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //ProfileImage
+  const [uploading, setUploading] = useState(false);
+  const [progressProfile, setProgressProfile] = useState(null);
+  const storeImage = async (file) => {
+    return new Promise((resolve, reject) => {
+      setProgressProfile(0);
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress} % done`);
+          setProgressProfile(progress);
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((getDownloadURL) => {
+            resolve(getDownloadURL);
+          });
+        }
+      );
+    });
+  };
+
+  const handleImageClick = (e) => {
+    e.preventDefault();
+    fileRef.current.click();
+  };
+
+  const handleProfileImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUploading(true);
+      storeImage(file)
+        .then((url) => {
+          setData({
+            ...data,
+            profilePicture: url,
+          });
+          setUploading(false);
+          toast.success("Profile image uploaded successfully");
+          if (progressProfile === 100) {
+            const timer = setTimeout(() => {
+              setProgressProfile(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+          }
+        })
+        .catch(() => {
+          toast.error("Profile image upload failed");
+          setUploading(false);
+        });
+    }
+  };
+
   return (
     <div>
-      <div className="fixed progress-bg w-full md:h-1.5 h-1 top-0 z-50 right-0 left-0">
+      <div className="fixed progress-bg w-full md:h-1 h-1 top-0 z-50 right-0 left-0">
         <div
           className="progress-bgs h-full transition-width duration-500"
           style={{ width: `${progress}%` }}
@@ -230,38 +339,85 @@ export default function CreateMenuProvider() {
           <form onSubmit={submitfn} className="w-full md:w-[500px]">
             {/* <div class=" p-5 rounded-lg shadow-xl"> */}
             {step === 0 && (
-              <div className="flex flex-col p-6 rounded-lg">
-                <label className="font-bold menu-headTextColor mb-5 mt- text-left">
-                  Please Select your Service
-                </label>
-
-                {/* <div className="w-64 h-48 rounded-lg overflow-y-scroll p-4 mx-auto"> */}
-                <div className="flex flex-col max-h-64 overflow-y-auto">
-                  {ServiceButtons(suggestions, "name")}
-                </div>
-                {/* </div> */}
-
-                {error.name && (
-                  <p className="text-red-500 font-serif text-sm mt-1">
-                    {error.name}
-                  </p>
-                )}
-                <div className="flex mt-4 gap-4 justify-center">
-                  <button
-                    className="bg-slate-200 p-3 px-8 rounded-xl text-slate-400"
-                    type="submit"
-                    disabled
+              <>
+                <input
+                  type="file"
+                  id="profilePicture"
+                  name="profilePicture"
+                  ref={fileRef}
+                  hidden
+                  accept="image/*"
+                  required
+                  onChange={handleProfileImageChange}
+                />
+                <div className="relative w-24 h-24 mx-auto group">
+                  <label
+                    htmlFor="profilePicture"
+                    className="w-24 h-24 cursor-pointer"
+                    onClick={handleImageClick}
                   >
-                    Back
-                  </button>
-                  <button
-                    className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
-                    type="submit"
-                  >
-                    Next
-                  </button>
+                    <img
+                      src={
+                        data.profilePicture ||
+                        "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                      }
+                      alt="profile"
+                      className={`w-24 h-24 rounded-full object-cover border-4
+                      } ${Error.profilePicture && "border-red-500"}`}
+                    />
+                    <div
+                      className="border-4 rounded-full w-24 h-24 absolute inset-0 transition-all duration-300"
+                      style={{
+                        borderColor: `rgba(49, 196, 141, ${
+                          progressProfile / 100
+                        })`,
+                        border: `${progressProfile}%`,
+                      }}
+                    ></div>
+                    <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
+                      <img
+                        src="https://www.svgrepo.com/show/33565/upload.svg"
+                        alt="camera"
+                        className="w-8 h-8"
+                      />
+                      <p className="text-white text-xs">Choose Profile</p>
+                    </div>
+                    {}
+                  </label>
                 </div>
-              </div>
+                <div className="flex flex-col p-6 rounded-lg">
+                  <label className="font-bold menu-headTextColor mb-5 mt- text-left">
+                    Please Select your Service
+                  </label>
+
+                  {/* <div className="w-64 h-48 rounded-lg overflow-y-scroll p-4 mx-auto"> */}
+                  <div className="flex flex-col max-h-64 overflow-y-auto">
+                    {ServiceButtons(suggestions, "name")}
+                  </div>
+                  {/* </div> */}
+
+                  {error.name && (
+                    <p className="text-red-500 font-serif text-sm mt-1">
+                      {error.name}
+                    </p>
+                  )}
+                  <div className="flex mt-4 gap-4 justify-center">
+                    <button
+                      className="bg-slate-200 p-3 px-8 rounded-xl text-slate-400"
+                      type="submit"
+                      disabled
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
+                      type="submit"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
             {step === 1 && (
               <div className="flex flex-col p-6 rounded-lg">
@@ -710,7 +866,7 @@ export default function CreateMenuProvider() {
                   </p>
                 )}
 
-                <label className="mb-2 menu-headTextColor font-bold ml-3 text-left mt-2">
+                {/* <label className="mb-2 menu-headTextColor font-bold ml-3 text-left mt-2">
                   Profile
                 </label>
                 <input
@@ -726,7 +882,7 @@ export default function CreateMenuProvider() {
                   <p className="text-red-500 font-serif text-sm mt-1">
                     {error.profilePicture}
                   </p>
-                )}
+                )} */}
 
                 <div className="flex justify-center mt-4 gap-4">
                   <button
@@ -737,19 +893,16 @@ export default function CreateMenuProvider() {
                     Back
                   </button>
                   <button
+                    onClick={handleSubmit}
                     className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
-                    type="submit"
                   >
                     Save
                   </button>
                 </div>
               </div>
             )}
-
-            {/* </div> */}
           </form>
         </div>
-        {/* </div> */}
       </div>
     </div>
   );

@@ -100,7 +100,6 @@ export default function CreateMenuParent() {
     if (step === 4 && !/^[0-9]{10}$/.test(parent.parentDetails.phoneNumber)) {
       newErrors.phoneNumber = "Phone number must be 10 digits";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -220,7 +219,7 @@ export default function CreateMenuParent() {
 
   return (
     <div>
-      <div className="fixed progress-bg w-full md:h-1.5 h-1 top-0 z-50 ">
+      <div className="fixed progress-bg w-full md:h-1 h-1 top-0 z-50 ">
         <div
           className="progress-bgs h-full transition-width duration-500 ease-in-out"
           style={{ width: `${progress}%` }}
@@ -379,6 +378,7 @@ export default function CreateMenuParent() {
                   className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter height in cm"
                   onChange={func1}
+                  maxLength={3}
                   value={parent.parentDetails.height}
                   name="parentDetails.height"
                   required
@@ -391,6 +391,7 @@ export default function CreateMenuParent() {
                   className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter weight in kg"
                   onChange={func1}
+                  maxLength={3}
                   value={parent.parentDetails.weight}
                   name="parentDetails.weight"
                   required
@@ -461,6 +462,7 @@ export default function CreateMenuParent() {
                   className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter emergency contact number"
                   onChange={func1}
+                  maxLength={10}
                   value={parent.parentDetails.emergencyContact}
                   name="parentDetails.emergencyContact"
                   required
@@ -517,10 +519,11 @@ export default function CreateMenuParent() {
                   </label>
 
                   <input
-                    type="textarea"
+                    type="number"
                     className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                     placeholder="Enter your phone number"
                     onChange={func1}
+                    maxLength={10}
                     value={parent.parentDetails.phoneNumber}
                     name="parentDetails.phoneNumber"
                     required

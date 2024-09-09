@@ -13,7 +13,7 @@ import { useRef } from "react";
 import Select from "react-select";
 import { Country, State, City } from "country-state-city";
 import { useDispatch } from "react-redux";
-import { selectProvider } from "../redux/provider/providerSlice";
+import { selectProvider, providerData } from "../redux/provider/providerSlice";
 import BeatLoader from "react-spinners/BeatLoader";
 import { FileInput } from "flowbite-react";
 import Input from "react-phone-number-input/input";
@@ -134,6 +134,29 @@ export default function CreateProvider() {
     const { id, value, type } = e.target;
     const addressFields = ["addressLine1", "street", "pincode"];
 
+    const maxLength = {
+      fullName: 25,
+      phone: 13,
+      qualificatio: 30,
+      experience: 2,
+      regularPrice: 6,
+      pincode: 6,
+      description: 200,
+    };
+
+    if (maxLength[id] && value.length > maxLength[id]) {
+      return;
+    }
+
+    if (id === "email") {
+      const emailValid = value.split(".com");
+      if (
+        emailValid.length > 2 ||
+        (emailValid.length === 2 && emailValid[1].length !== "")
+      ) {
+        return;
+      }
+    }
     if (addressFields.includes(id)) {
       setFormData((prevState) => ({
         ...prevState,
@@ -483,7 +506,7 @@ export default function CreateProvider() {
                     {Errors.email && (
                       <IoMdAlert className="text-red-700 text-sm" />
                     )}
-                    Email*{" "}
+                    Email*
                   </p>
                 </label>
                 <input
@@ -661,6 +684,7 @@ export default function CreateProvider() {
                   <div className="w-full flex flex-col gap-2">
                     <label className="font-semibold text-main">Pincode*</label>
                     <input
+                      type="number"
                       placeholder="Pincode"
                       className="w-full border-2 p-1.5 border-slate-300 rounded-lg input focus:outline-none focus:ring-0"
                       id="pincode"
@@ -673,7 +697,7 @@ export default function CreateProvider() {
                 <div className="flex flex-wrap gap-2">
                   <div className="flex items-center gap-2">
                     <label className="font-semibold text-main md:text-base text-sm">
-                      fee per Appoinment*
+                      Fee per Appoinment*
                     </label>
                     <input
                       type="number"
@@ -809,6 +833,7 @@ export default function CreateProvider() {
                     }`}
                     id="phone"
                     required
+                    maxLength="15"
                     onChange={(value) => {
                       setValue(value);
                       setFormData({

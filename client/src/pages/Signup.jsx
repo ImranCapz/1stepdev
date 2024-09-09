@@ -10,7 +10,10 @@ import { IoIosEyeOff } from "react-icons/io";
 import logo from "../assets/logo.svg";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    email: "",
+    username: "",
+  });
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,6 +23,17 @@ const Signup = () => {
   const topLoadingBarColor = error || passerror ? "#ff0000" : "#ff9900";
 
   const handleChanges = (e) => {
+    const id = e.target.id;
+    const value = e.target.value;
+    if (id === "email") {
+      const emailValid = value.split(".com");
+      if (
+        emailValid.length > 2 ||
+        (emailValid.length === 2 && emailValid[1] !== "")
+      ) {
+        return;
+      }
+    }
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
@@ -55,6 +69,7 @@ const Signup = () => {
       const data = await res.json();
       setLoading(false);
       if (data.success === true) {
+        toast.error(data.message);
         setError(true);
         return;
       }
@@ -113,6 +128,7 @@ const Signup = () => {
                 id="email"
                 type="email"
                 onChange={handleChanges}
+                value={formData.email}
                 autoComplete="email"
                 required
                 className="block w-full p-3 rounded-lg ring-1 input ring-inset ring-gray- py-1.5 focus:ring-0 hover:border-purple-400"

@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
 import {
   getDownloadURL,
@@ -7,28 +6,39 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import TopLoadingBar from "react-top-loading-bar";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+
+//redux
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import {
   updateUserFailure,
   updateUserSuccess,
   updateUserStart,
 } from "../redux/user/userSlice";
-import TopLoadingBar from "react-top-loading-bar";
-import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
+import { selectProvider } from "../redux/provider/providerSlice";
+
+//icons
+import { FaEye } from "react-icons/fa";
+import { IoIosEyeOff } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa";
 import { FiMail } from "react-icons/fi";
 import { PiLockSimpleBold } from "react-icons/pi";
-import { selectProvider } from "../redux/provider/providerSlice";
 
 export default function Profile() {
   const fileRef = useRef(null);
   const [image, setImage] = useState();
   const [imagePrecent, setImagePrecent] = useState(0);
   const [imageError, setImageError] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    profilePicture: "",
+    password: "",
+  });
   const TopLoadingBarRef = useRef(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [showProviderError, setShowProviderError] = useState(false);
   const [userProvider, setUserProvider] = useState([]);
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -133,6 +143,10 @@ export default function Profile() {
     }
   };
 
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="bg-slate-100 p-3 mx-auto">
       <TopLoadingBar ref={TopLoadingBarRef} color="#ff9900" height={3} />
@@ -226,16 +240,31 @@ export default function Profile() {
               <label htmlFor="username" className="text-xl mt-4 text-slate-600">
                 Password
               </label>
-              <div className="flex items-center mt-2 w-50 h-14 rounded-lg ring-0 ring-inset border-0 focus:ring-2 bg-slate-100">
+              <div className="relative flex items-center mt-2 w-50 h-14 rounded-lg ring-0 ring-inset border-0 focus:ring-2 bg-slate-100">
                 <PiLockSimpleBold className="ml-3 text-xl text-gray-400" />
                 <input
-                  type="text"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   placeholder="password"
-                  className="flex-grow text-xl pl-3 text-gray-500 bg-state-100 p-3 rounded-lg ring-0 ring-inset ring-gray-300 py-1.5 border-0 focus:ring-2 bg-slate-100"
+                  className="flex-grow text-xl pl-3 text-gray-700 bg-state-100 p-3 rounded-lg ring-0 ring-inset ring-gray-300 py-1.5 border-0 focus:ring-2 bg-slate-100"
                   onChange={handleChange}
                 />
               </div>
+              {formData.password && (
+                <div className="absolute right-0 bottom-[127px] pr-5">
+                  <button type="button" onClick={handlePasswordVisibility}>
+                    {showPassword ? (
+                      <FaEye className="text-slate-700" />
+                    ) : (
+                      <IoIosEyeOff className="text-slate-600" />
+                    )}
+                  </button>
+                </div>
+              )}
+
+              <h1 className="text-slate-500 font-semibold">
+                <b>Note</b>: Enter new password for reset old password.
+              </h1>
               <button className="bg-blue-600 text-xl font-semibold text-white mt-6 p-3 rounded-lg hover:opacity-95 transition-all disabled:opacity-80">
                 {loading ? "Saving..." : "Save Changes"}
               </button>
