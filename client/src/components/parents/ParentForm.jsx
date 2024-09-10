@@ -344,11 +344,13 @@ export default function ParentForm() {
                 onChange={handleChange}
                 value={formData.parentDetails?.dob}
               />
-              <label className="text-sm font-semibold text-main">Height*</label>
+              <label className="text-sm font-semibold text-main">
+                Height Kg*
+              </label>
               <input
-                type="text"
+                type="number"
                 placeholder="Height"
-                className="input border-2 p-2 rounded-lg  focus:outline-none focus:ring-0"
+                className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                 id="height"
                 required
                 onChange={handleChange}
@@ -442,8 +444,8 @@ export default function ParentForm() {
               />
               <label className="text-sm font-semibold text-main">Weight*</label>
               <input
-                type="text"
-                placeholder="Weight"
+                type="number"
+                placeholder="Weight cm*"
                 className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0 "
                 id="weight"
                 required

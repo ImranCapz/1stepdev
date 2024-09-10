@@ -18,8 +18,14 @@ import {
 import { app } from "../../firebase";
 import toast from "react-hot-toast";
 
+import Input from "react-phone-number-input/input";
+
 export default function CreateMenuProvider() {
   const { currentUser } = useSelector((state) => state.user);
+  const [value, setValue] = useState("");
+  const [buttonLoader, setButtonLoader] = useState(false);
+  console.log(buttonLoader)
+
   const [data, setData] = useState({
     imageUrls: [],
     name: [],
@@ -28,7 +34,7 @@ export default function CreateMenuProvider() {
     qualification: "",
     fullName: "",
     experience: "",
-    phone: "",
+    phone: value,
     address: {
       addressLine1: "",
       street: "",
@@ -48,9 +54,9 @@ export default function CreateMenuProvider() {
     description: "",
     profilePicture: "",
   });
+
   const [step, setStep] = useState(0);
   const [error, setError] = useState({});
-  console.log(error);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -69,7 +75,21 @@ export default function CreateMenuProvider() {
   const func1 = (e) => {
     const { name, value } = e.target;
     const keys = name.split(".");
-
+    if (name === "address.pincode") {
+      if (value.length > 6) {
+        return;
+      }
+    }
+    if (name === "regularPrice") {
+      if (value.length > 5) {
+        return;
+      }
+    }
+    if (name === "experience") {
+      if (value.length > 2) {
+        return;
+      }
+    }
     if (keys.length === 2) {
       setData((prevData) => ({
         ...prevData,
@@ -104,8 +124,8 @@ export default function CreateMenuProvider() {
     if (step === 5 && data.experience < 0) {
       newErrors.experience = "Experience must be greater than or equal to 0";
     }
-    if (step === 6 && !/^[0-9]{10}$/.test(data.phone)) {
-      newErrors.phone = "Phone number must be 10 digits";
+    if (step === 6 && !/^\+\d{12}$/.test(data.phone)) {
+      newErrors.phone = "Phone number must have exactly 15 digits";
     }
     if (step === 3 && !/^[0-9]{6}$/.test(data.address.pincode)) {
       newErrors.pincode = "Pincode must be 6 digits";
@@ -113,8 +133,8 @@ export default function CreateMenuProvider() {
     if (step === 8 && data.description.split(" ").length < 30) {
       newErrors.description = "Biography must be at least 30 words";
     }
-    if (step === 8 && !data.profilePicture) {
-      newErrors.profilePicture = "Image is required";
+    if (step === 0 && !data.profilePicture) {
+      newErrors.profilePicture = "Profile picture is required";
     }
 
     setError(newErrors);
@@ -239,10 +259,10 @@ export default function CreateMenuProvider() {
         }),
       });
       if (data.success) {
-        setDisError(true);
+        console.log(data.success);
       }
       const ResData = await res.json();
-      navigate(`/provider/${data._id}`);
+      navigate(`/provider/${ResData._id}`);
       dispatch(selectProvider(ResData._id));
       dispatch(providerData(ResData));
     } catch (error) {
@@ -252,10 +272,12 @@ export default function CreateMenuProvider() {
 
   //ProfileImage
   const [uploading, setUploading] = useState(false);
+  console.log(uploading);
   const [progressProfile, setProgressProfile] = useState(null);
   const storeImage = async (file) => {
     return new Promise((resolve, reject) => {
-      setProgressProfile(0);
+      setProgressProfile(null);
+      setButtonLoader(true);
       const storage = getStorage(app);
       const fileName = new Date().getTime() + file.name;
       const storageRef = ref(storage, fileName);
@@ -265,8 +287,8 @@ export default function CreateMenuProvider() {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress} % done`);
           setProgressProfile(progress);
+          setButtonLoader(false);
         },
         (error) => {
           reject(error);
@@ -288,25 +310,16 @@ export default function CreateMenuProvider() {
   const handleProfileImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setUploading(true);
       storeImage(file)
         .then((url) => {
           setData({
             ...data,
             profilePicture: url,
           });
-          setUploading(false);
           toast.success("Profile image uploaded successfully");
-          if (progressProfile === 100) {
-            const timer = setTimeout(() => {
-              setProgressProfile(null);
-            }, 3000);
-            return () => clearTimeout(timer);
-          }
         })
         .catch(() => {
           toast.error("Profile image upload failed");
-          setUploading(false);
         });
     }
   };
@@ -346,7 +359,6 @@ export default function CreateMenuProvider() {
                   ref={fileRef}
                   hidden
                   accept="image/*"
-                  required
                   onChange={handleProfileImageChange}
                 />
                 <div className="relative w-24 h-24 mx-auto group">
@@ -362,7 +374,7 @@ export default function CreateMenuProvider() {
                       }
                       alt="profile"
                       className={`w-24 h-24 rounded-full object-cover border-4
-                      } ${Error.profilePicture && "border-red-500"}`}
+                      } ${error.profilePicture && "border-red-500"}`}
                     />
                     <div
                       className="border-4 rounded-full w-24 h-24 absolute inset-0 transition-all duration-300"
@@ -383,14 +395,18 @@ export default function CreateMenuProvider() {
                     </div>
                   </label>
                 </div>
-                {error.profilePicture && <p>{error.profilePicture}</p>}
-                {progressProfile && (
+                {error.profilePicture && !progressProfile && (
+                  <p className="text-center mt-2 text-red-500">
+                    {error.profilePicture}
+                  </p>
+                )}
+                {progressProfile === 100 && (
                   <p className="text-center mt-2 text-gray font-semibold">
-                    Profile upload successfully
+                    Profile image upload successfully
                   </p>
                 )}
                 <div className="flex flex-col p-6 rounded-lg">
-                  <label className="font-bold menu-headTextColor mb-5 mt- text-left">
+                  <label className="font-bold menu-headTextColor mb-5 text-left">
                     Please Select your Service
                   </label>
                   <div className="flex flex-col max-h-64 overflow-y-auto">
@@ -412,8 +428,11 @@ export default function CreateMenuProvider() {
                       Back
                     </button>
                     <button
-                      className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
+                      className={`p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95 ${
+                        buttonLoader ? "cursor-not-allowed opacity-50" : ""
+                      }`}
                       type="submit"
+                      disabled={buttonLoader}
                     >
                       Next
                     </button>
@@ -468,6 +487,7 @@ export default function CreateMenuProvider() {
                   onChange={func1}
                   value={data.fullName}
                   name="fullName"
+                  maxLength={20}
                   required
                 ></input>
                 <label className="ml-3 menu-headTextColor font-bold text-left mb-2 mt-2">
@@ -480,6 +500,7 @@ export default function CreateMenuProvider() {
                   onChange={func1}
                   value={data.email}
                   name="email"
+                  id="email"
                   required
                 ></input>
                 {error.email && (
@@ -497,6 +518,7 @@ export default function CreateMenuProvider() {
                   onChange={func1}
                   value={data.qualification}
                   name="qualification"
+                  maxLength={20}
                   required
                 ></input>
                 <div className="mt-4 flex justify-center gap-4">
@@ -531,6 +553,7 @@ export default function CreateMenuProvider() {
                   onChange={func1}
                   value={data.address.addressLine1}
                   name="address.addressLine1"
+                  maxLength={30}
                   required
                 ></input>
 
@@ -544,6 +567,7 @@ export default function CreateMenuProvider() {
                   onChange={func1}
                   value={data.address.street}
                   name="address.street"
+                  maxLength={30}
                   required
                 ></input>
 
@@ -557,6 +581,7 @@ export default function CreateMenuProvider() {
                   onChange={func1}
                   value={data.address.country}
                   name="address.country"
+                  maxLength={20}
                   required
                 ></input>
 
@@ -570,6 +595,7 @@ export default function CreateMenuProvider() {
                   onChange={func1}
                   value={data.address.state}
                   name="address.state"
+                  maxLength={20}
                   required
                 ></input>
 
@@ -583,6 +609,7 @@ export default function CreateMenuProvider() {
                   onChange={func1}
                   value={data.address.city}
                   name="address.city"
+                  maxLength={20}
                   required
                 ></input>
 
@@ -590,12 +617,13 @@ export default function CreateMenuProvider() {
                   Pincode
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your Pincode"
                   onChange={func1}
                   value={data.address.pincode}
                   name="address.pincode"
+                  maxLength="6"
                   required
                 ></input>
                 {error.pincode && (
@@ -626,7 +654,7 @@ export default function CreateMenuProvider() {
                   Fee per Appoinment
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="Enter your fee"
                   onChange={func1}
@@ -708,27 +736,34 @@ export default function CreateMenuProvider() {
                   onChange={func1}
                   value={data.license}
                   name="license"
+                  maxLength={10}
                   required
                 ></input>
 
-                <label className="mb-2 menu-headTextColor font-bold text-left ml-3 mt-2">
-                  Phone Number
+                <label className="mb-2 menu-headTextColor font-bold ml-3 mt-3 text-left">
+                  Phone Number{" "}
+                  <span className="text-xs">(with Country Code)</span>
                 </label>
-                <input
-                  type="text"
-                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
-                  placeholder="Enter your Phone no"
-                  onChange={func1}
+
+                <Input
+                  placeholder="Phone number"
+                  className={`border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300 `}
+                  id="phone"
+                  maxLength="15"
+                  onChange={(value) => {
+                    setValue(value);
+                    setData({
+                      ...data,
+                      phone: value,
+                    });
+                  }}
                   value={data.phone}
-                  name="phone"
-                  required
-                ></input>
+                />
                 {error.phone && (
                   <p className="text-red-500 font-serif text-sm mt-1">
                     {error.phone}
                   </p>
                 )}
-
                 <div className="flex justify-center mt-4 gap-4">
                   <button
                     className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
@@ -748,86 +783,90 @@ export default function CreateMenuProvider() {
             )}
 
             {step === 7 && (
-              <div className="p-6  rounded-lg">
-                <p className="text-2xl font-bold menu-headTextColor mb-10 mt-10">
+              <div className="p-6 rounded-lg">
+                <p className="text-2xl font-bold menu-headTextColor mb-4">
                   Availability
                 </p>
+                <label
+                  htmlFor="appt-time"
+                  className="block text-sm font-medium text-gray-700 mb-5"
+                >
+                  Please specify your availability time
+                </label>
                 <label className="mb-5 menu-headTextColor font-bold text-left">
                   Morning
                 </label>
-                <label className="menu-headTextColor ml-5">From:</label>
-
-                <input
-                  id="appt-time"
-                  type="time"
-                  onChange={(event) =>
-                    func1({
-                      target: {
-                        name: "availability.morningStart",
-                        value: event.target.value,
-                      },
-                    })
-                  }
-                  value={data.availability.morningStart}
-                  name="morningStart"
-                  required
-                />
-                <label className="menu-headTextColor ml-5">To:</label>
-
-                <input
-                  id="appt-time"
-                  type="time"
-                  onChange={(event) =>
-                    func1({
-                      target: {
-                        name: "availability.morningEnd",
-                        value: event.target.value,
-                      },
-                    })
-                  }
-                  value={data.availability.morningEnd}
-                  name="morningEnd"
-                  required
-                />
-                <div className="mt-4"></div>
-                <label className="mt-6 ml-1.5 menu-headTextColor font-bold">
+                <div className="flex flex-row mt-6 mb-6 items-center">
+                  <label className="menu-headTextColor mr-2">From:</label>
+                  <input
+                    id="appt-time"
+                    type="time"
+                    onChange={(event) =>
+                      func1({
+                        target: {
+                          name: "availability.morningStart",
+                          value: event.target.value,
+                        },
+                      })
+                    }
+                    value={data.availability.morningStart}
+                    name="morningStart"
+                    required
+                  />
+                  <label className="menu-headTextColor ml-3 mr-2">To:</label>
+                  <input
+                    id="appt-time"
+                    type="time"
+                    onChange={(event) =>
+                      func1({
+                        target: {
+                          name: "availability.morningEnd",
+                          value: event.target.value,
+                        },
+                      })
+                    }
+                    value={data.availability.morningEnd}
+                    name="morningEnd"
+                    required
+                  />
+                </div>
+                <label className="mb-2 ml-1.5 menu-headTextColor font-bold">
                   Evening
                 </label>
-                <label className="menu-headTextColor ml-5">From:</label>
-
-                <input
-                  id="appt-time"
-                  type="time"
-                  onChange={(value) =>
-                    func1({
-                      target: {
-                        name: "availability.eveningStart",
-                        value: value.target.value,
-                      },
-                    })
-                  }
-                  value={data.availability.eveningStart}
-                  name="eveningStart"
-                  required
-                />
-                <label className="menu-headTextColor ml-5">To:</label>
-
-                <input
-                  id="appt-time"
-                  type="time"
-                  onChange={(value) =>
-                    func1({
-                      target: {
-                        name: "availability.eveningEnd",
-                        value: value.target.value,
-                      },
-                    })
-                  }
-                  value={data.availability.eveningEnd}
-                  name="eveningEnd"
-                  required
-                />
-
+                <div className="flex flex-row mt-6 mb-6 items-center">
+                  <label className="menu-headTextColor mr-2">From:</label>
+                  <input
+                    id="appt-time"
+                    type="time"
+                    onChange={(value) =>
+                      func1({
+                        target: {
+                          name: "availability.eveningStart",
+                          value: value.target.value,
+                        },
+                      })
+                    }
+                    value={data.availability.eveningStart}
+                    name="eveningStart"
+                    required
+                  />
+                  <label className="menu-headTextColor ml-3 mr-2">To:</label>
+                  <input
+                    id="appt-time"
+                    type="time"
+                    onChange={(value) =>
+                      func1({
+                        target: {
+                          name: "availability.eveningEnd",
+                          value: value.target.value,
+                        },
+                      })
+                    }
+                    value={data.availability.eveningEnd}
+                    name="eveningEnd"
+                    required
+                  />
+                </div>
                 <div className="flex justify-center mt-4 gap-4">
                   <button
                     className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"

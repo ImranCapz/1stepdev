@@ -263,7 +263,7 @@ export default function Profile() {
               )}
 
               <h1 className="text-slate-500 font-semibold">
-                <b>Note</b>: Enter new password for reset old password.
+                <b>Note</b>: Enter new password to reset old password.
               </h1>
               <button className="bg-blue-600 text-xl font-semibold text-white mt-6 p-3 rounded-lg hover:opacity-95 transition-all disabled:opacity-80">
                 {loading ? "Saving..." : "Save Changes"}
