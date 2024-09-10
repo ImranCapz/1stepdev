@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { suggestions, suggestion } from "../suggestions";
 import { FaRegSmileBeam } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -20,7 +20,6 @@ import toast from "react-hot-toast";
 
 export default function CreateMenuProvider() {
   const { currentUser } = useSelector((state) => state.user);
-  const [diserror, setDisError] = useState(false);
   const [data, setData] = useState({
     imageUrls: [],
     name: [],
@@ -49,9 +48,9 @@ export default function CreateMenuProvider() {
     description: "",
     profilePicture: "",
   });
-  console.log(data);
   const [step, setStep] = useState(0);
   const [error, setError] = useState({});
+  console.log(error);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -382,15 +381,18 @@ export default function CreateMenuProvider() {
                       />
                       <p className="text-white text-xs">Choose Profile</p>
                     </div>
-                    {}
                   </label>
                 </div>
+                {error.profilePicture && <p>{error.profilePicture}</p>}
+                {progressProfile && (
+                  <p className="text-center mt-2 text-gray font-semibold">
+                    Profile upload successfully
+                  </p>
+                )}
                 <div className="flex flex-col p-6 rounded-lg">
                   <label className="font-bold menu-headTextColor mb-5 mt- text-left">
                     Please Select your Service
                   </label>
-
-                  {/* <div className="w-64 h-48 rounded-lg overflow-y-scroll p-4 mx-auto"> */}
                   <div className="flex flex-col max-h-64 overflow-y-auto">
                     {ServiceButtons(suggestions, "name")}
                   </div>

@@ -102,7 +102,7 @@ export default function Overview() {
     },
   ];
   return (
-    <div className="w-full flex bg-slate-100 justify-center mb-16 md:mb-0">
+    <div className="w-full flex bg-slate-100 justify-center items-center mx-auto mb-16 md:mb-0">
       <div className="p-4 flex flex-col lg:flex-row gap-2 w-full">
         <div className="flex flex-col gap-2 lg:w-auto">
           <div className="border border-slate-200 rounded-md bg-white">
@@ -132,7 +132,7 @@ export default function Overview() {
           </div>
           <div className=""></div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 flex-grow">
           {currentProvider ? (
             <>
               <div className="relative flex flex-col border border-slate-200 bg-white p-1 rounded-md">
@@ -221,7 +221,7 @@ export default function Overview() {
               </div>
             </>
           ) : (
-            <div className="flex border border-slate-200 bg-white p-1 rounded-md">
+            <div className="flex border border-slate-200 bg-white p-1 rounded-md w-full">
               <div className="flex flex-col sm:flex-row items-center p-4 w-full">
                 <img
                   src={profileImage}
@@ -248,8 +248,8 @@ export default function Overview() {
             </div>
           )}
           {bookings && bookings.length > 0 ? (
-            <div className="w-full flex flex-col border border-slate-200 bg-white p-2 rounded-md">
-              <div className="flex flex-row w-full justify-between border-b mb-4">
+            <div className="flex flex-col border border-slate-200 bg-white p-2 rounded-md">
+              <div className="flex flex-row justify-between border-b mb-4">
                 <h1 className="p-3 font-semibold text-xl text-gray">
                   Your Recent Bookings
                 </h1>
@@ -267,7 +267,6 @@ export default function Overview() {
                     <Table.HeadCell>Note</Table.HeadCell>
                     <Table.HeadCell>Status</Table.HeadCell>
                     <Table.HeadCell>Process</Table.HeadCell>
-                    {/* <Table.HeadCell>Edit</Table.HeadCell> */}
                   </Table.Head>
                   {bookings.slice(0, 3).map((bookingDetails) => (
                     <Table.Body className="divide-y" key={bookingDetails._id}>
@@ -309,9 +308,6 @@ export default function Overview() {
                           )}
                         </Table.Cell>
                         <Table.Cell>{bookingDetails.status}</Table.Cell>
-                        {/* <Table.Cell>
-                      <Button>EDIT</Button>
-                    </Table.Cell> */}
                       </Table.Row>
                     </Table.Body>
                   ))}
@@ -319,11 +315,11 @@ export default function Overview() {
               </div>
             </div>
           ) : (
-            <div>
+            <div className="flex flex-col items-center justify-center border border-slate-200 bg-white p-4 rounded-md w-full">
               <h1 className="text-gray-800 text-xl font-semibold mb-4">
                 No Bookings
               </h1>
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center w-full">
                 <SearchBar />
               </div>
             </div>
