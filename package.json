@@ -339,6 +339,7 @@
     "uri-js": "^4.4.1",
     "util-deprecate": "^1.0.2",
     "utils-merge": "^1.0.1",
+    "validator": "^13.12.0",
     "vary": "^1.1.2",
     "vite": "^5.0.12",
     "which": "^2.0.2",

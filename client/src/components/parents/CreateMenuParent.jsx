@@ -8,9 +8,12 @@ import {
   updateUserSuccess,
 } from "../../redux/user/userSlice";
 import toast from "react-hot-toast";
+import Input from "react-phone-number-input/input";
 
 export default function CreateMenuParent() {
   const { currentUser } = useSelector((state) => state.user);
+  const [parentPhone, setParentPhone] = useState("");
+  const [emergPhone, setEmergPhone] = useState("");
   const [parent, setParent] = useState({
     isParent: true,
     parentDetails: {
@@ -24,12 +27,14 @@ export default function CreateMenuParent() {
       bloodGroup: "",
       medicalHistory: "",
       allergies: "",
-      emergencyContact: "",
+      emergencyContact: emergPhone,
       insurance: "",
       address: "",
-      phoneNumber: "",
+      phoneNumber: parentPhone,
     },
   });
+
+  console.log(parent);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
   const [successScreen, setSuccessScreen] = useState(false);
@@ -46,6 +51,13 @@ export default function CreateMenuParent() {
   const func1 = (e) => {
     const { name, value } = e.target;
     const keys = name.split(".");
+
+    if (name === "parentDetails.height" && value.length > 3) {
+      return;
+    }
+    if (name === "parentDetails.weight" && value.length > 3) {
+      return;
+    }
     if (keys.length === 2) {
       setParent((prevData) => ({
         ...prevData,
@@ -94,11 +106,21 @@ export default function CreateMenuParent() {
     if (step === 0 && !/^[A-Za-z\s]+$/.test(parent.parentDetails.fullName)) {
       newErrors.fullName = "Name must contains only alphabets";
     }
+    if (
+      step === 3 &&
+      !/^\+\d{12}$/.test(parent.parentDetails.emergencyContact)
+    ) {
+      newErrors.emergencyContact =
+        "Emergency contact must be a valid phone number";
+    }
     if (step === 1 && !/^[A-Za-z\s]+$/.test(parent.parentDetails.childName)) {
       newErrors.childName = "Name must contains only alphabets";
     }
-    if (step === 4 && !/^[0-9]{10}$/.test(parent.parentDetails.phoneNumber)) {
-      newErrors.phoneNumber = "Phone number must be 10 digits";
+    if (step === 4 && !/^\+\d{12}$/.test(parent.parentDetails.phoneNumber)) {
+      newErrors.phoneNumber = "Emergency contact must be a valid phone number";
+    }
+    if (step === 1 && !parent.parentDetails.gender) {
+      newErrors.gender = "Please choose a gender";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -257,6 +279,7 @@ export default function CreateMenuParent() {
                   onChange={func1}
                   value={parent.parentDetails.fullName}
                   name="parentDetails.fullName"
+                  maxLength={25}
                   required
                 ></input>
                 {errors.fullName && (
@@ -307,6 +330,7 @@ export default function CreateMenuParent() {
                   onChange={func1}
                   value={parent.parentDetails.childName}
                   name="parentDetails.childName"
+                  maxLength={25}
                   required
                 ></input>
                 {errors.childName && (
@@ -328,7 +352,7 @@ export default function CreateMenuParent() {
                   required
                 ></input>
 
-                <div className="mb-4 mt-5">
+                <div className="mt-5">
                   <label
                     htmlFor="gender"
                     className="block menu-headTextColor font-bold mb-5 "
@@ -343,10 +367,18 @@ export default function CreateMenuParent() {
                     placeholder="select gender"
                     className="w-full p-3 rounded-lg border-gray-300 mb-5 input border-2 focus:outline-none focus:ring-0"
                   >
+                    <option value="" disabled>
+                      select a gender
+                    </option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>
                   </select>
+                  {errors.gender && (
+                    <p className="text-red-500 font-serif text-sm mt-1">
+                      {errors.gender}
+                    </p>
+                  )}
                 </div>
                 <div className="flex justify-center mt-4 gap-4">
                   <button
@@ -374,11 +406,10 @@ export default function CreateMenuParent() {
                   Height
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter height in cm"
                   onChange={func1}
-                  maxLength={3}
                   value={parent.parentDetails.height}
                   name="parentDetails.height"
                   required
@@ -387,11 +418,10 @@ export default function CreateMenuParent() {
                   Weight
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter weight in kg"
                   onChange={func1}
-                  maxLength={3}
                   value={parent.parentDetails.weight}
                   name="parentDetails.weight"
                   required
@@ -406,6 +436,7 @@ export default function CreateMenuParent() {
                   onChange={func1}
                   value={parent.parentDetails.bloodGroup}
                   name="parentDetails.bloodGroup"
+                  maxLength={10}
                   required
                 ></input>
                 <div className="flex justify-center mt-4 gap-4">
@@ -441,6 +472,7 @@ export default function CreateMenuParent() {
                   value={parent.parentDetails.medicalHistory}
                   name="parentDetails.medicalHistory"
                   required
+                  maxLength={30}
                 ></input>
                 <label className="mt-5 menu-headTextColor font-bold">
                   Allergies
@@ -452,21 +484,35 @@ export default function CreateMenuParent() {
                   onChange={func1}
                   value={parent.parentDetails.allergies}
                   name="parentDetails.allergies"
+                  maxLength={30}
                   required
                 ></input>
                 <label className="mt-5 menu-headTextColor font-bold">
                   Emergency Contact
                 </label>
-                <input
-                  type="text"
-                  className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
+                <Input
                   placeholder="Enter emergency contact number"
-                  onChange={func1}
-                  maxLength={10}
+                  className={`border-2 p-2 mt-2 mb-4 input rounded-lg focus:outline-none focus:ring-0 w-full`}
                   value={parent.parentDetails.emergencyContact}
-                  name="parentDetails.emergencyContact"
-                  required
-                ></input>
+                  maxLength={15}
+                  onChange={(value) => {
+                    setEmergPhone(value);
+                    setParent((prevData) => {
+                      return {
+                        ...prevData,
+                        parentDetails: {
+                          ...prevData.parentDetails,
+                          emergencyContact: value,
+                        },
+                      };
+                    });
+                  }}
+                />
+                {errors.emergencyContact && (
+                  <p className="text-red-500 font-serif text-sm mt-1">
+                    {errors.emergencyContact}
+                  </p>
+                )}
                 <label className="mb-5 menu-headTextColor font-bold">
                   Insurance
                 </label>
@@ -517,17 +563,24 @@ export default function CreateMenuParent() {
                   <label className="mb-5 menu-headTextColor font-bold">
                     Phone Number
                   </label>
-
-                  <input
-                    type="number"
-                    className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
-                    placeholder="Enter your phone number"
-                    onChange={func1}
-                    maxLength={10}
+                  <Input
+                    placeholder="Enter phone number"
+                    className={`border-2 p-2 mt-2 mb-4 input rounded-lg focus:outline-none focus:ring-0 w-full`}
                     value={parent.parentDetails.phoneNumber}
-                    name="parentDetails.phoneNumber"
-                    required
-                  ></input>
+                    maxLength={15}
+                    onChange={(value) => {
+                      setParentPhone(value);
+                      setParent((prevData) => {
+                        return {
+                          ...prevData,
+                          parentDetails: {
+                            ...prevData.parentDetails,
+                            phoneNumber: value,
+                          },
+                        };
+                      });
+                    }}
+                  />
                   {errors.phoneNumber && (
                     <p className="text-red-500 font-serif text-sm mt-1">
                       {errors.phoneNumber}

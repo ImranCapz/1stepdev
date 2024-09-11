@@ -19,6 +19,7 @@ import { FileInput } from "flowbite-react";
 import Input from "react-phone-number-input/input";
 import { IoMdAlert } from "react-icons/io";
 import { suggestions } from "../components/suggestions";
+import validator from "validator";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -28,7 +29,8 @@ export default function CreateProvider() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [providerData, setProviderData] = useState({});
+  const [saveButton, setSaveButton] = useState(false);
+  const [providerDatas, setProviderData] = useState({});
   const navigate = useNavigate();
   const fileRef = useRef(null);
   const dispatch = useDispatch();
@@ -70,6 +72,7 @@ export default function CreateProvider() {
 
   // console.log("Formdata", formData);
   const handleRemoveImage = (index) => {
+    setSaveButton(true);
     setFormData({
       ...formData,
       imageUrls: formData.imageUrls.filter((_, i) => i !== index),
@@ -79,6 +82,7 @@ export default function CreateProvider() {
   const handleImageSubmit = () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
+      setSaveButton(true);
       setImageUploadError(false);
       const promises = [];
 
@@ -129,11 +133,9 @@ export default function CreateProvider() {
       );
     });
   };
-
   const handleChange = (e) => {
-    const { id, value, type } = e.target;
+    let { id, value, type } = e.target;
     const addressFields = ["addressLine1", "street", "pincode"];
-
     const maxLength = {
       fullName: 25,
       phone: 13,
@@ -143,18 +145,23 @@ export default function CreateProvider() {
       pincode: 6,
       description: 200,
     };
-
     if (maxLength[id] && value.length > maxLength[id]) {
       return;
     }
-
+    if (id === "fullName") {
+      value = value.replace(/[^a-zA-Z\s]/g, "");
+    }
     if (id === "email") {
-      const emailValid = value.split(".com");
-      if (
-        emailValid.length > 2 ||
-        (emailValid.length === 2 && emailValid[1].length !== "")
-      ) {
-        return;
+      if (validator.isEmail(value)) {
+        setErrors((prevState) => ({
+          ...prevState,
+          email: false,
+        }));
+      } else {
+        setErrors((prevState) => ({
+          ...prevState,
+          email: true,
+        }));
       }
     }
     if (addressFields.includes(id)) {
@@ -179,6 +186,7 @@ export default function CreateProvider() {
         [id]: value,
       });
     }
+    setSaveButton(true);
   };
 
   const handleSubmit = async (e) => {
@@ -217,14 +225,14 @@ export default function CreateProvider() {
         errors.description = false;
         setErrors(errors);
       }
-      if (!formData.imageUrls || formData.imageUrls.length < 1) {
-        errors.imageUrls = true;
-        setErrors(errors);
-        return toast.error("You must upload at least one image");
-      } else {
-        errors.imageUrls = false;
-        setErrors(errors);
-      }
+      // if (!formData.imageUrls || formData.imageUrls.length < 1) {
+      //   errors.imageUrls = true;
+      //   setErrors(errors);
+      //   return toast.error("You must upload at least one image");
+      // } else {
+      //   errors.imageUrls = false;
+      //   setErrors(errors);
+      // }
       setLoading(true);
       setError(false);
       const res = await fetch("/server/provider/create", {
@@ -239,6 +247,7 @@ export default function CreateProvider() {
       });
       const data = await res.json();
       setLoading(false);
+      setSaveButton(false);
       if (data.success) {
         setError(data.message);
       }
@@ -246,6 +255,7 @@ export default function CreateProvider() {
       dispatch(selectProvider(data._id));
     } catch (error) {
       setError(error.message);
+      setSaveButton(false);
       setLoading(false);
     }
   };
@@ -259,6 +269,7 @@ export default function CreateProvider() {
     const file = e.target.files[0];
     if (file) {
       setUploading(true);
+      setSaveButton(true);
       storeImage(file)
         .then((url) => {
           setFormData({
@@ -344,12 +355,42 @@ export default function CreateProvider() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      if (formData.imageUrls.length < 1)
-        return toast.error("You must upload at least one image");
-      setError(false);
+      let errors = { ...Errors };
+      if (!formData.profilePicture || formData.profilePicture.length < 1) {
+        errors.profilePicture = true;
+        setErrors(errors);
+        return toast.error("You must upload a profile picture");
+      } else {
+        errors.profilePicture = false;
+        setErrors(errors);
+      }
+      if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        errors.email = true;
+        setErrors(errors);
+        return toast.error("Invalid email address");
+      } else {
+        errors.email = false;
+        setErrors(errors);
+      }
+      if (!formData.phone || formData.phone.length !== 13) {
+        errors.phone = true;
+        setErrors(errors);
+        return toast.error("Phone number must be 10 digits");
+      } else {
+        errors.phone = false;
+        setErrors(errors);
+      }
+      if (!formData.description || formData.description.length < 40) {
+        errors.description = true;
+        setErrors(errors);
+        return toast.error("Description must be at least 40 characters");
+      } else {
+        errors.description = false;
+        setErrors(errors);
+      }
       // console.log("Provider", providerData);
       const res = await fetch(
-        `/server/provider/update/${providerData.fetchprovider._id}`,
+        `/server/provider/update/${providerDatas.fetchprovider._id}`,
         {
           method: "POST",
           headers: {
@@ -362,6 +403,8 @@ export default function CreateProvider() {
         }
       );
       const data = await res.json();
+      dispatch(providerData(data));
+      setSaveButton(false);
       if (data.success) {
         setError(data.message);
       }
@@ -389,12 +432,11 @@ export default function CreateProvider() {
       ) : (
         <>
           {currentUser._id ===
-          (providerData &&
-            providerData.fetchprovider &&
-            providerData.fetchprovider.userRef) ? (
+          (providerDatas &&
+            providerDatas.fetchprovider &&
+            providerDatas.fetchprovider.userRef) ? (
             <>
               <h1 className="flex flex-col p-2 font-bold text-2xl text-gray">
-                {" "}
                 Your Provider Details :
               </h1>
             </>
@@ -450,7 +492,7 @@ export default function CreateProvider() {
           </div>
           <div className="bg-white lg:w-[1300px] mx-auto items-center rounded-xl">
             <form
-              onSubmit={handleSubmit}
+              onSubmit={currentProvider ? handleUpdate : handleSubmit}
               className="flex flex-col sm:flex-row gap-10 mt-6 md:p-20 p-6 rounded-lg mx-auto"
             >
               <div className="flex flex-col gap-3 flex-1">
@@ -478,6 +520,7 @@ export default function CreateProvider() {
                       ...preState,
                       name: selectedOptions.map((option) => option.value),
                     }));
+                    setSaveButton(true);
                   }}
                   styles={{
                     control: (provided) => ({
@@ -584,6 +627,7 @@ export default function CreateProvider() {
                             country: selectedOption.label,
                           },
                         });
+                        setSaveButton(true);
                       }}
                       styles={{
                         control: (provided) => ({
@@ -625,6 +669,7 @@ export default function CreateProvider() {
                             state: selectedOption.label,
                           },
                         });
+                        setSaveButton(true);
                       }}
                       styles={{
                         control: (provided) => ({
@@ -667,6 +712,7 @@ export default function CreateProvider() {
                             city: selectedOption.label,
                           },
                         });
+                        setSaveButton(true);
                       }}
                       styles={{
                         control: (provided) => ({
@@ -795,6 +841,7 @@ export default function CreateProvider() {
                         (option) => option.value
                       ),
                     }));
+                    setSaveButton(true);
                   }}
                   styles={{
                     control: (provided) => ({
@@ -840,6 +887,7 @@ export default function CreateProvider() {
                         ...formData,
                         phone: value,
                       });
+                      setSaveButton(true);
                     }}
                     value={formData.phone}
                   />
@@ -953,14 +1001,13 @@ export default function CreateProvider() {
                     </div>
                   ))}
                 {currentUser._id ===
-                (providerData &&
-                  providerData.fetchprovider &&
-                  providerData.fetchprovider.userRef) ? (
+                (providerDatas &&
+                  providerDatas.fetchprovider &&
+                  providerDatas.fetchprovider.userRef) ? (
                   <>
                     <button
                       type="submit"
-                      onClick={handleUpdate}
-                      disabled={loading || uploading}
+                      disabled={!saveButton || loading || uploading}
                       className="p-3 bg-blue-600 text-white rounded=lg rounded-lg Captialize hover:opacity-95 disabled:opacity-80 transition-all duration-300 ease-in-out"
                     >
                       {loading ? "Saving..." : "Save Changes"}

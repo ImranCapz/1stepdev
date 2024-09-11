@@ -783,7 +783,7 @@ export default function MessageDash() {
             </>
           ) : (
             <>
-              <div className="flex flex-col w-full max-h-screen p- mx-auto">
+              <div className="flex flex-col w-full max-h-screen mx-auto">
                 <div className="h-52vh md:h-72vh bg-nomsgbg bg-cover bg-center flex flex-col justify-center items-center text-white">
                   <div className="flex flex-col items-center text-center justify-center">
                     <h1 className="flex flex-col text-xl md:text-4xl font-bold mt-2 text-gray-700">

@@ -48,7 +48,7 @@ export default function ParentForm() {
     let value = e.target.value;
     const id = e.target.id;
     const maxLength = {
-      fullName: 15,
+      fullName: 25,
       childName: 15,
       bloodGroup: 10,
       height: 3,
@@ -59,6 +59,9 @@ export default function ParentForm() {
       address: 100,
     };
 
+    if (id === "fullName") {
+      value = value.replace(/[^a-zA-Z\s]/g, "");
+    }
     if (maxLength[id] && value.length > maxLength[id]) {
       return;
     }
@@ -345,11 +348,11 @@ export default function ParentForm() {
                 value={formData.parentDetails?.dob}
               />
               <label className="text-sm font-semibold text-main">
-                Height Kg*
+                Height Cm*
               </label>
               <input
                 type="number"
-                placeholder="Height"
+                placeholder="Height in Cm"
                 className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                 id="height"
                 required
@@ -442,10 +445,12 @@ export default function ParentForm() {
                 onChange={handleChange}
                 value={formData.parentDetails?.childName}
               />
-              <label className="text-sm font-semibold text-main">Weight*</label>
+              <label className="text-sm font-semibold text-main">
+                Weight Kg*
+              </label>
               <input
                 type="number"
-                placeholder="Weight cm*"
+                placeholder="Weight Kg*"
                 className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0 "
                 id="weight"
                 required

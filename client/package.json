@@ -55,7 +55,8 @@
     "socket.io-client": "^4.7.5",
     "swiper": "^11.0.7",
     "timeago-react": "^3.0.6",
-    "typewriter-effect": "^2.21.0"
+    "typewriter-effect": "^2.21.0",
+    "validator": "^13.12.0"
   },
   "devDependencies": {
     "@tailwindcss/line-clamp": "^0.4.4",
