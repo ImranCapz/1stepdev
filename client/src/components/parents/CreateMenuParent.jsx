@@ -49,14 +49,27 @@ export default function CreateMenuParent() {
   const progress = (step / totalstep) * 100;
 
   const func1 = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
     const keys = name.split(".");
+
+    if (name === "parentDetails.childName") {
+      value = value.replace(/[^a-zA-Z\s]/g, "");
+    }
+    if (name === "parentDetails.fullName") {
+      value = value.replace(/[^a-zA-Z\s]/g, "");
+    }
 
     if (name === "parentDetails.height" && value.length > 3) {
       return;
     }
     if (name === "parentDetails.weight" && value.length > 3) {
       return;
+    }
+    if (name === "parentDetails.dob") {
+      const dob = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dob.test(value)) {
+        return;
+      }
     }
     if (keys.length === 2) {
       setParent((prevData) => ({

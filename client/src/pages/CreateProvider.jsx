@@ -795,7 +795,7 @@ export default function CreateProvider() {
                 <p className="font-semibold text-main">
                   Explain About your therapy section*
                   <span className="text-sm">
-                    &nbsp;&nbsp;(40 minimum words)
+                    &nbsp;&nbsp;(60 minimum words)
                   </span>
                 </p>
                 <textarea
@@ -812,7 +812,7 @@ export default function CreateProvider() {
                 />
                 {Errors.description && (
                   <p className="text-sm text-red-500 font-semibold">
-                    Please write a 40-word description in the field.
+                    Please write a 60-word description in the field.
                   </p>
                 )}
                 <label className="font-semibold text-main">

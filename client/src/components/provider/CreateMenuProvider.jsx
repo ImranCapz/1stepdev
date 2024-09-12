@@ -17,6 +17,7 @@ import {
 } from "firebase/storage";
 import { app } from "../../firebase";
 import toast from "react-hot-toast";
+import { GrStatusGood } from "react-icons/gr";
 
 import Input from "react-phone-number-input/input";
 
@@ -24,7 +25,6 @@ export default function CreateMenuProvider() {
   const { currentUser } = useSelector((state) => state.user);
   const [value, setValue] = useState("");
   const [buttonLoader, setButtonLoader] = useState(false);
-  console.log(buttonLoader)
 
   const [data, setData] = useState({
     imageUrls: [],
@@ -54,6 +54,7 @@ export default function CreateMenuProvider() {
     description: "",
     profilePicture: "",
   });
+  console.log(data);
 
   const [step, setStep] = useState(0);
   const [error, setError] = useState({});
@@ -73,13 +74,25 @@ export default function CreateMenuProvider() {
   };
 
   const func1 = (e) => {
-    const { name, value } = e.target;
+    const newErrors = {};
+    let { name, value } = e.target;
     const keys = name.split(".");
+
     if (name === "address.pincode") {
       if (value.length > 6) {
         return;
       }
     }
+    if (name === "email") {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.com$/;
+      if (emailPattern.test(value)) {
+        newErrors.email = false;
+      } else {
+        newErrors.email = true;
+      }
+      setError(newErrors);
+    }
+
     if (name === "regularPrice") {
       if (value.length > 5) {
         return;
@@ -89,6 +102,9 @@ export default function CreateMenuProvider() {
       if (value.length > 2) {
         return;
       }
+    }
+    if (name === "fullName") {
+      value = value.replace(/[^a-zA-Z\s]/g, "");
     }
     if (keys.length === 2) {
       setData((prevData) => ({
@@ -114,7 +130,6 @@ export default function CreateMenuProvider() {
     if (step === 1 && data.therapytype.length === 0) {
       newErrors.therapytype = "Please select at least one service type";
     }
-
     if (step === 2 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       newErrors.email = "Invalid email format";
     }
@@ -130,8 +145,8 @@ export default function CreateMenuProvider() {
     if (step === 3 && !/^[0-9]{6}$/.test(data.address.pincode)) {
       newErrors.pincode = "Pincode must be 6 digits";
     }
-    if (step === 8 && data.description.split(" ").length < 30) {
-      newErrors.description = "Biography must be at least 30 words";
+    if (step === 8 && data.description.split(" ").length < 60) {
+      newErrors.description = "Biography must be at least 60 words";
     }
     if (step === 0 && !data.profilePicture) {
       newErrors.profilePicture = "Profile picture is required";
@@ -146,7 +161,6 @@ export default function CreateMenuProvider() {
       if (validate()) {
         const width = window.innerWidth <= 768 ? 140 : 240;
         window.scrollTo({ top: width, behavior: "smooth" });
-        console.log(data);
         setStep(step + 1);
       }
     } catch (err) {
@@ -272,7 +286,6 @@ export default function CreateMenuProvider() {
 
   //ProfileImage
   const [uploading, setUploading] = useState(false);
-  console.log(uploading);
   const [progressProfile, setProgressProfile] = useState(null);
   const storeImage = async (file) => {
     return new Promise((resolve, reject) => {
@@ -322,6 +335,30 @@ export default function CreateMenuProvider() {
           toast.error("Profile image upload failed");
         });
     }
+  };
+
+  //timeslot
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  const generateTimeSlots = () => {
+    const Slots = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const time = `${String(hour).padStart(2, "0")} : ${String(
+          minute
+        ).padStart(2, "0")}`;
+        Slots.push(time);
+      }
+    }
+    return Slots;
   };
 
   return (
@@ -493,21 +530,26 @@ export default function CreateMenuProvider() {
                 <label className="ml-3 menu-headTextColor font-bold text-left mb-2 mt-2">
                   Email
                 </label>
-                <input
-                  type="text"
-                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
-                  placeholder="Enter your Email"
-                  onChange={func1}
-                  value={data.email}
-                  name="email"
-                  id="email"
-                  required
-                ></input>
-                {error.email && (
-                  <p className="text-red-500 font-serif text-sm mt-1">
-                    {error.email}
-                  </p>
-                )}
+                <div className="relative">
+                  <input
+                    type="text"
+                    className={`w-full border-2 p-2 input rounded-lg focus:outline-none focus:ring-0 ${
+                      error.email
+                        ? "border-red-500 focus:border-red-500 text-red-700"
+                        : "border-green-500 focus:border-green-500 text-green-800"
+                    }`}
+                    placeholder="Enter your Email"
+                    onChange={func1}
+                    value={data.email}
+                    name="email"
+                    id="email"
+                    required
+                  ></input>
+                  {!error.email && (
+                    <GrStatusGood className="absolute top-1/2 right-3 transform -translate-y-1/2 text-green-800" />
+                  )}
+                </div>
+
                 <label className="ml-3 menu-headTextColor font-bold text-left mb-2 mt-2">
                   Qualification
                 </label>
@@ -532,6 +574,7 @@ export default function CreateMenuProvider() {
                   <button
                     className="p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
                     type="submit"
+                    disabled={error.email}
                   >
                     Next
                   </button>

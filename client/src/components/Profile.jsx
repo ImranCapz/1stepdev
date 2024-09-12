@@ -36,12 +36,16 @@ export default function Profile() {
     profilePicture: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
   const TopLoadingBarRef = useRef(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showProviderError, setShowProviderError] = useState(false);
   const [userProvider, setUserProvider] = useState([]);
   const { currentUser, loading, error } = useSelector((state) => state.user);
+  const [isModified, setIsModified] = useState(false);
+  const [saveButton, SetSaveButton] = useState(false);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -56,7 +60,6 @@ export default function Profile() {
     const fileName = new Date().getTime() + image.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, image);
-
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -66,11 +69,13 @@ export default function Profile() {
       },
       (error) => {
         setImageError(true);
+        console.log(error);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
-          setFormData({ ...formData, profilePicture: downloadURL })
-        );
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, profilePicture: downloadURL });
+          setIsModified(true);
+        });
       }
     );
   };
@@ -99,6 +104,8 @@ export default function Profile() {
       }
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
+      setIsModified(false);
+      toast.success("Profile Updated Successfully");
     } catch (error) {
       dispatch(updateUserFailure(error));
     } finally {
@@ -107,7 +114,11 @@ export default function Profile() {
   };
 
   const handleChange = (e) => {
+    if (e.target.id === "username") {
+      e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+    }
     setFormData({ ...formData, [e.target.id]: e.target.value });
+    setIsModified(true);
   };
 
   const handleShowProvider = async () => {
@@ -176,7 +187,11 @@ export default function Profile() {
                   onClick={handleImageClick}
                 >
                   <img
-                    src={formData.profilePicture || currentUser.profilePicture}
+                    src={
+                      currentUser.profilePicture ||
+                      formData.profilePicture ||
+                      "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                    }
                     alt="profile"
                     className="w-32 h-32 rounded-full object-cover border-4 border-[lightgray]"
                   />
@@ -216,6 +231,7 @@ export default function Profile() {
                   defaultValue={currentUser.username}
                   type="text"
                   id="username"
+                  maxLength={20}
                   required
                   placeholder="username"
                   className="flex-grow text-xl pl-3 text-gray-800 bg-state-100 p-3 rounded-lg ring-0 ring-inset ring-gray-300 py-1.5 border-0 focus:ring-2 bg-slate-100"
@@ -265,7 +281,10 @@ export default function Profile() {
               <h1 className="text-slate-500 font-semibold">
                 <b>Note</b>: Enter new password to reset old password.
               </h1>
-              <button className="bg-blue-600 text-xl font-semibold text-white mt-6 p-3 rounded-lg hover:opacity-95 transition-all disabled:opacity-80">
+              <button
+                disabled={!isModified}
+                className="bg-blue-600 text-xl font-semibold text-white mt-6 p-3 rounded-lg hover:opacity-95 transition-all disabled:opacity-80"
+              >
                 {loading ? "Saving..." : "Save Changes"}
               </button>
             </div>

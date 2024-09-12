@@ -58,6 +58,12 @@ export default function ParentForm() {
       insurance: 30,
       address: 100,
     };
+    if (id === "dob") {
+      const dobPattern = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dobPattern.test(value)) {
+        return;
+      }
+    }
 
     if (id === "fullName") {
       value = value.replace(/[^a-zA-Z\s]/g, "");
@@ -341,7 +347,7 @@ export default function ParentForm() {
               <input
                 type="date"
                 placeholder="Date of Birth"
-                className="input border-2 p-2 rounded-lg  focus:ring-0"
+                className="input border-2 p-2 rounded-lg focus:ring-0"
                 id="dob"
                 required
                 onChange={handleChange}
