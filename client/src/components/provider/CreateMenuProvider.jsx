@@ -18,7 +18,7 @@ import {
 import { app } from "../../firebase";
 import toast from "react-hot-toast";
 import { GrStatusGood } from "react-icons/gr";
-
+import { Select, Option } from "@material-tailwind/react";
 import Input from "react-phone-number-input/input";
 
 export default function CreateMenuProvider() {
@@ -53,6 +53,15 @@ export default function CreateMenuProvider() {
     },
     description: "",
     profilePicture: "",
+    timeSlots: {
+      Monday: [],
+      Tuesday: [],
+      Wednesday: [],
+      Thursday: [],
+      Friday: [],
+      Saturday: [],
+      Sunday: [],
+    },
   });
   console.log(data);
 
@@ -349,16 +358,47 @@ export default function CreateMenuProvider() {
   ];
 
   const generateTimeSlots = () => {
-    const Slots = [];
-    for (let hour = 0; hour < 24; hour++) {
+    const morningSlots = [];
+    const afternoonSlots = [];
+    const eveningSlots = [];
+
+    for (let hour = 7; hour < 24; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
-        const time = `${String(hour).padStart(2, "0")} : ${String(
+        const period = hour < 12 ? "AM" : "PM";
+        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+        const time = `${String(hour12).padStart(2, "0")}:${String(
           minute
-        ).padStart(2, "0")}`;
-        Slots.push(time);
+        ).padStart(2, "0")} ${period}`;
+
+        if (hour < 12) {
+          morningSlots.push(time);
+        } else if (hour < 16) {
+          afternoonSlots.push(time);
+        } else {
+          eveningSlots.push(time);
+        }
       }
     }
-    return Slots;
+
+    return { morningSlots, afternoonSlots, eveningSlots };
+  };
+
+  const { morningSlots, afternoonSlots, eveningSlots } = generateTimeSlots();
+
+  const [selectedDays, setSelectedDays] = useState("Monday");
+
+  const handleDayClick = (day) => {
+    setSelectedDays(day);
+  };
+
+  const handlleTimeSlotToggle = (day, time) => {
+    const updateTimeSlot = data.timeSlots[day].includes(time)
+      ? data.timeSlots[day].filter((slot) => slot !== time)
+      : [...data.timeSlots[day], time];
+    setData({
+      ...data,
+      timeSlots: { ...data.timeSlots, [day]: updateTimeSlot },
+    });
   };
 
   return (
@@ -388,94 +428,188 @@ export default function CreateMenuProvider() {
           <form onSubmit={submitfn} className="w-full md:w-[500px]">
             {/* <div class=" p-5 rounded-lg shadow-xl"> */}
             {step === 0 && (
-              <>
-                <input
-                  type="file"
-                  id="profilePicture"
-                  name="profilePicture"
-                  ref={fileRef}
-                  hidden
-                  accept="image/*"
-                  onChange={handleProfileImageChange}
-                />
-                <div className="relative w-24 h-24 mx-auto group">
-                  <label
-                    htmlFor="profilePicture"
-                    className="w-24 h-24 cursor-pointer"
-                    onClick={handleImageClick}
-                  >
-                    <img
-                      src={
-                        data.profilePicture ||
-                        "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
-                      }
-                      alt="profile"
-                      className={`w-24 h-24 rounded-full object-cover border-4
-                      } ${error.profilePicture && "border-red-500"}`}
-                    />
-                    <div
-                      className="border-4 rounded-full w-24 h-24 absolute inset-0 transition-all duration-300"
-                      style={{
-                        borderColor: `rgba(49, 196, 141, ${
-                          progressProfile / 100
-                        })`,
-                        border: `${progressProfile}%`,
-                      }}
-                    ></div>
-                    <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
-                      <img
-                        src="https://www.svgrepo.com/show/33565/upload.svg"
-                        alt="camera"
-                        className="w-8 h-8"
-                      />
-                      <p className="text-white text-xs">Choose Profile</p>
-                    </div>
-                  </label>
-                </div>
-                {error.profilePicture && !progressProfile && (
-                  <p className="text-center mt-2 text-red-500">
-                    {error.profilePicture}
-                  </p>
-                )}
-                {progressProfile === 100 && (
-                  <p className="text-center mt-2 text-gray font-semibold">
-                    Profile image upload successfully
-                  </p>
-                )}
-                <div className="flex flex-col p-6 rounded-lg">
-                  <label className="font-bold menu-headTextColor mb-5 text-left">
-                    Please Select your Service
-                  </label>
-                  <div className="flex flex-col max-h-64 overflow-y-auto">
-                    {ServiceButtons(suggestions, "name")}
+              <div className="p-3 md:p-6 bg-purple-50 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <h1 className="text-gray md:text-xl text-sm font-bold">
+                    Pick your TimeSlot
+                  </h1>
+                  <div className="flex flex-row gap-2 items-center">
+                    <h1 className="text-sm text-gray">Session Gap</h1>
+                    <select className="text-xs w-24 border-2 focus:border-purple-400 outline outline-none focus:ring-0">
+                      <option>15 min</option>
+                      <option>30 min</option>
+                    </select>
                   </div>
-                  {/* </div> */}
-
-                  {error.name && (
-                    <p className="text-red-500 font-serif text-sm mt-1">
-                      {error.name}
-                    </p>
-                  )}
-                  <div className="flex mt-4 gap-4 justify-center">
+                </div>
+                <div className="flex justify-center mt-4 overflow-auto ">
+                  {daysOfWeek.map((day) => (
                     <button
-                      className="bg-slate-200 p-3 px-8 rounded-xl text-slate-400"
-                      type="submit"
-                      disabled
-                    >
-                      Back
-                    </button>
-                    <button
-                      className={`p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95 ${
-                        buttonLoader ? "cursor-not-allowed opacity-50" : ""
+                      type="button"
+                      key={day}
+                      className={`px-3 py-2 border-primary-60 font-semibold  ${
+                        selectedDays === day
+                          ? "text-primary-60 bg-primary-50 transition-all duration-300"
+                          : "bg-slate-200 text-gray"
                       }`}
-                      type="submit"
-                      disabled={buttonLoader}
+                      onClick={() => handleDayClick(day)}
                     >
-                      Next
+                      {day.slice(0, 3)}
                     </button>
-                  </div>
+                  ))}
                 </div>
-              </>
+                {selectedDays && (
+                  <>
+                    <h1 className="mt-2 text-gray font-medium">
+                      Morning Slots
+                    </h1>
+                    <div className="grid grid-cols-3 md:grid-cols-6 gap-2 overflow-auto mt-2">
+                      {morningSlots.map((time) => (
+                        <button
+                          key={time}
+                          onClick={() =>
+                            handlleTimeSlotToggle(selectedDays, time)
+                          }
+                          className={`py-2 text-xs  rounded-md border border-slate-200 hover:bg-primary-50 hover:text-primary-60 duration-200 ${
+                            data.timeSlots[selectedDays].includes(time)
+                              ? "bg-primary-50 text-primary-60 border border-purple-200"
+                              : "bg-slate-100 border border-slate-300"
+                          }`}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
+                    <h1 className="mt-2 text-gray font-medium">
+                      Afternoon Slots
+                    </h1>
+                    <div className="grid grid-cols-3 md:grid-cols-6 gap-2 overflow-auto mt-2">
+                      {afternoonSlots.map((time) => (
+                        <button
+                          key={time}
+                          onClick={() =>
+                            handlleTimeSlotToggle(selectedDays, time)
+                          }
+                          className={`py-2 text-xs  rounded-md  hover:bg-primary-50 hover:text-primary-60 duration-200 ${
+                            data.timeSlots[selectedDays].includes(time)
+                              ? "bg-primary-50 text-primary-60 border border-purple-200"
+                              : "bg-slate-100 border border-slate-300"
+                          }`}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
+                    <h1 className="mt-2 text-gray font-medium">
+                      Evening Slots
+                    </h1>
+                    <div className="grid grid-cols-3 md:grid-cols-6 gap-2 overflow-auto mt-2">
+                      {eveningSlots.map((time) => (
+                        <button
+                          key={time}
+                          onClick={() =>
+                            handlleTimeSlotToggle(selectedDays, time)
+                          }
+                          className={`py-2 text-xs rounded-md  hover:bg-primary-50 hover:text-primary-60 duration-200 ${
+                            data.timeSlots[selectedDays].includes(time)
+                              ? "bg-primary-50 text-primary-60 border border-purple-200"
+                              : "bg-slate-100 border border-slate-300"
+                          }`}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+              // <>
+              //   <input
+              //     type="file"
+              //     id="profilePicture"
+              //     name="profilePicture"
+              //     ref={fileRef}
+              //     hidden
+              //     accept="image/*"
+              //     onChange={handleProfileImageChange}
+              //   />
+              //   <div className="relative w-24 h-24 mx-auto group">
+              //     <label
+              //       htmlFor="profilePicture"
+              //       className="w-24 h-24 cursor-pointer"
+              //       onClick={handleImageClick}
+              //     >
+              //       <img
+              //         src={
+              //           data.profilePicture ||
+              //           "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+              //         }
+              //         alt="profile"
+              //         className={`w-24 h-24 rounded-full object-cover border-4
+              //         } ${error.profilePicture && "border-red-500"}`}
+              //       />
+              //       <div
+              //         className="border-4 rounded-full w-24 h-24 absolute inset-0 transition-all duration-300"
+              //         style={{
+              //           borderColor: `rgba(49, 196, 141, ${
+              //             progressProfile / 100
+              //           })`,
+              //           border: `${progressProfile}%`,
+              //         }}
+              //       ></div>
+              //       <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
+              //         <img
+              //           src="https://www.svgrepo.com/show/33565/upload.svg"
+              //           alt="camera"
+              //           className="w-8 h-8"
+              //         />
+              //         <p className="text-white text-xs">Choose Profile</p>
+              //       </div>
+              //     </label>
+              //   </div>
+              //   {error.profilePicture && !progressProfile && (
+              //     <p className="text-center mt-2 text-red-500">
+              //       {error.profilePicture}
+              //     </p>
+              //   )}
+              //   {progressProfile === 100 && (
+              //     <p className="text-center mt-2 text-gray font-semibold">
+              //       Profile image upload successfully
+              //     </p>
+              //   )}
+              //   <div className="flex flex-col p-6 rounded-lg">
+              //     <label className="font-bold menu-headTextColor mb-5 text-left">
+              //       Please Select your Service
+              //     </label>
+              //     <div className="flex flex-col max-h-64 overflow-y-auto">
+              //       {ServiceButtons(suggestions, "name")}
+              //     </div>
+              //     {/* </div> */}
+
+              //     {error.name && (
+              //       <p className="text-red-500 font-serif text-sm mt-1">
+              //         {error.name}
+              //       </p>
+              //     )}
+              //     <div className="flex mt-4 gap-4 justify-center">
+              //       <button
+              //         className="bg-slate-200 p-3 px-8 rounded-xl text-slate-400"
+              //         type="submit"
+              //         disabled
+              //       >
+              //         Back
+              //       </button>
+              //       <button
+              //         className={`p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95 ${
+              //           buttonLoader ? "cursor-not-allowed opacity-50" : ""
+              //         }`}
+              //         type="submit"
+              //         disabled={buttonLoader}
+              //       >
+              //         Next
+              //       </button>
+              //     </div>
+              //   </div>
+              // </>
             )}
             {step === 1 && (
               <div className="flex flex-col p-6 rounded-lg">

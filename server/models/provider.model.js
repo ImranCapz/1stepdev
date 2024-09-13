@@ -102,6 +102,36 @@ const providerSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    timeSlots: {
+      Monday: {
+        type: Array,
+        default: [],
+      },
+      Tuesday: {
+        type: Array,
+        default: [],
+      },
+      Wednesday: {
+        type: Array,
+        default: [],
+      },
+      Thursday: {
+        type: Array,
+        default: [],
+      },
+      Friday: {
+        type: Array,
+        default: [],
+      },
+      Saturday: {
+        type: Array,
+        default: [],
+      },
+      Sunday: {
+        type: Array,
+        default: [],
+      },
+    },
   },
   { timestamps: true }
 );

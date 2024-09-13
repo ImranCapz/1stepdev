@@ -21,7 +21,7 @@ export default {
         bounce: "bounce 0.5s ease-in-out",
         fadeIn: "fadeIn 2s ease-in-out",
       },
-      backgroundImage: (theme) => ({
+      backgroundImage: () => ({
         listbg: "url('../../client/src/components/provider/listbg.jpg')",
         nomsgbg: "url('../../client/src/assets/nomessage.jpg')",
         provmsgbg: "url('../../client/src/assets/providermsg.jpg')",
@@ -33,6 +33,7 @@ export default {
       colors: {
         primary: {
           50: "#D1BEE0",
+          60: "#5f4855",
           100: "#dbeafe",
           200: "#bfdbfe",
           300: "#93c5fd",
