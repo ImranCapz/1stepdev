@@ -132,6 +132,11 @@ const providerSchema = new mongoose.Schema(
         default: [],
       },
     },
+    bookedSlots: {
+      type: Map,
+      of: [String],
+      default: {},
+    },
   },
   { timestamps: true }
 );

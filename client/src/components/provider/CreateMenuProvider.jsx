@@ -20,6 +20,9 @@ import toast from "react-hot-toast";
 import { GrStatusGood } from "react-icons/gr";
 import { Select, Option } from "@material-tailwind/react";
 import Input from "react-phone-number-input/input";
+import "./CreateMenu.css";
+import { Modal } from "flowbite-react";
+import { Kbd } from "flowbite-react";
 
 export default function CreateMenuProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -347,6 +350,12 @@ export default function CreateMenuProvider() {
   };
 
   //timeslot
+
+  const [selectedDays, setSelectedDays] = useState("Monday");
+  const [multiSelectedDays, setMultiSelectedDays] = useState([]);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+
   const daysOfWeek = [
     "Monday",
     "Tuesday",
@@ -356,6 +365,25 @@ export default function CreateMenuProvider() {
     "Saturday",
     "Sunday",
   ];
+  const [session, setSession] = useState(30);
+
+  const handleSessionChange = (e) => {
+    setSession(Number(e.target.value));
+  };
+
+  const handleDayClick = (day) => {
+    setSelectedDays(day);
+  };
+  const handleAllDayClick = (day) => {
+    if (multiSelectedDays.includes(day)) {
+      setMultiSelectedDays(multiSelectedDays.filter((d) => d !== day));
+    } else {
+      setMultiSelectedDays([...multiSelectedDays, day]);
+    }
+  };
+
+  console.log(selectedDays);
+  console.log(multiSelectedDays);
 
   const generateTimeSlots = () => {
     const morningSlots = [];
@@ -363,7 +391,7 @@ export default function CreateMenuProvider() {
     const eveningSlots = [];
 
     for (let hour = 7; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 30) {
+      for (let minute = 0; minute < 60; minute += session) {
         const period = hour < 12 ? "AM" : "PM";
         const hour12 = hour % 12 === 0 ? 12 : hour % 12;
         const time = `${String(hour12).padStart(2, "0")}:${String(
@@ -385,12 +413,6 @@ export default function CreateMenuProvider() {
 
   const { morningSlots, afternoonSlots, eveningSlots } = generateTimeSlots();
 
-  const [selectedDays, setSelectedDays] = useState("Monday");
-
-  const handleDayClick = (day) => {
-    setSelectedDays(day);
-  };
-
   const handlleTimeSlotToggle = (day, time) => {
     const updateTimeSlot = data.timeSlots[day].includes(time)
       ? data.timeSlots[day].filter((slot) => slot !== time)
@@ -401,8 +423,156 @@ export default function CreateMenuProvider() {
     });
   };
 
+  //timevalidation
+
+  const validateTime = (time) => {
+    const [hour, minute] = time.split(":").map(Number);
+    if (hour < 7 || hour > 23) {
+      return toast.error("Please select a time between 7:00 AM to 11:45 PM");
+    }
+    const roundedMinute = minute < 30 ? "00" : "30";
+    return `${String(hour).padStart(2, "0")}:${roundedMinute}`;
+  };
+
+  const handleStartTimeChange = (e) => {
+    const validatedTime = validateTime(e.target.value);
+    if (validateTime) {
+      setStartTime(validatedTime);
+      if (endTime && validatedTime > endTime) {
+        setEndTime("");
+      }
+    } else {
+      toast.error("Please select a time between 7:00 AM and 11:00 PM");
+    }
+  };
+
+  const handleEndTimeChange = (e) => {
+    const validatedTime = validateTime(e.target.value);
+    if (validatedTime >= startTime) {
+      setEndTime(validatedTime);
+    }
+  };
+
+  const convertToFormat = (time) => {
+    const [partTime, modifier] = time.split(" ");
+    let [hours, minutes] = partTime.split(":").map(Number);
+
+    if (modifier === "PM" && hours !== 12) {
+      hours += 12;
+    } else if (modifier === "AM" && hours === 12) {
+      hours = 0;
+    }
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}`;
+  };
+
+  const FilterTimeSlot = (slots, startTime, endTime) => {
+    const start = convertToFormat(startTime);
+    const end = convertToFormat(endTime);
+
+    return slots.filter((slots) => {
+      const slot = convertToFormat(slots);
+      return slot >= start && slot <= end;
+    });
+  };
+
+  const handleTimeApply = () => {
+    if (!startTime || !endTime) {
+      toast.error("Please select start and end time");
+      return;
+    }
+    const allSlots = [...morningSlots, ...afternoonSlots, ...eveningSlots];
+    const filteredSlots = FilterTimeSlot(allSlots, startTime, endTime);
+
+    setData((prevData) => {
+      const updatedTimeSlots = { ...prevData.timeSlots };
+      multiSelectedDays.forEach((day) => {
+        updatedTimeSlots[day] = filteredSlots;
+      });
+      return { ...prevData, timeSlots: updatedTimeSlots };
+    });
+    setOpenTimeRangeModal(false);
+  };
+
+  const [openTimeRangeModal, setOpenTimeRangeModal] = useState(false);
+
+  function openModal() {
+    setOpenTimeRangeModal(true);
+    setMultiSelectedDays([selectedDays]);
+  }
+
   return (
     <div>
+      <Modal
+        size={"md"}
+        show={openTimeRangeModal}
+        onClose={() => setOpenTimeRangeModal(false)}
+      >
+        <Modal.Header>Choose for {multiSelectedDays.join(", ")},</Modal.Header>
+        <div className="p-4">
+          <div className="flex flex-row items-center justify-center">
+            {daysOfWeek.map((day) => (
+              <button
+                type="button"
+                key={day}
+                className={`px-2 py-2 border-primary-60 font-semibold  ${
+                  multiSelectedDays.includes(day)
+                    ? "text-primary-60 bg-primary-50 transition-all duration-300"
+                    : "bg-slate-200 text-gray"
+                }`}
+                onClick={() => handleAllDayClick(day)}
+              >
+                {day.slice(0, 3)}
+              </button>
+            ))}
+          </div>
+          <div className="p-4 flex gap-2 items-center mt-2 justify-center">
+            <div className="flex flex-col">
+              <lable style={{ fontSize: "14px" }}>Start Time</lable>
+              <input
+                type="time"
+                id="startTime"
+                className="rounded-lg text-xs mt-1"
+                value={startTime}
+                onChange={handleStartTimeChange}
+              />
+            </div>
+            <div className="flex flex-col">
+              <lable style={{ fontSize: "14px" }}>End Time</lable>
+              <input
+                type="time"
+                id="endTime"
+                className="rounded-lg text-xs mt-1"
+                value={endTime}
+                onChange={handleEndTimeChange}
+              />
+            </div>
+          </div>
+          <div className="mb-6 mt-6 flex items-center justify-center gap-4">
+            <button
+              onClick={() => setOpenTimeRangeModal(false)}
+              className="px-2 py-1 bg-slate-200 rounded-md font-medium text-slate-700 hover:bg-slate-300 duration-300"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleTimeApply}
+              className="px-4 py-1 card-btn rounded-md "
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+        <Modal.Footer>
+          {" "}
+          <h1 className="text-gray text-xs">
+            <Kbd>Note :</Kbd> Select multiple days if the session time remains
+            the same.
+          </h1>
+        </Modal.Footer>
+      </Modal>
       <div className="fixed progress-bg w-full md:h-1 h-1 top-0 z-50 right-0 left-0">
         <div
           className="progress-bgs h-full transition-width duration-500"
@@ -435,9 +605,14 @@ export default function CreateMenuProvider() {
                   </h1>
                   <div className="flex flex-row gap-2 items-center">
                     <h1 className="text-sm text-gray">Session Gap</h1>
-                    <select className="text-xs w-24 border-2 focus:border-purple-400 outline outline-none focus:ring-0">
-                      <option>15 min</option>
-                      <option>30 min</option>
+                    <select
+                      className="text-xs rounded-m w-24 border-2 focus:border-purple-400 outline outline-none focus:ring-0"
+                      onChange={handleSessionChange}
+                      value={session}
+                    >
+                      <option value={15}>15 min</option>
+                      <option value={30}>30 min</option>
+                      <option value={45}>45 min</option>
                     </select>
                   </div>
                 </div>
@@ -457,6 +632,14 @@ export default function CreateMenuProvider() {
                     </button>
                   ))}
                 </div>
+                <div className="flex mt-2">
+                  <button
+                    onClick={openModal}
+                    className="p-1 px-2 text-xs rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
+                  >
+                    Select Time Range
+                  </button>
+                </div>
                 {selectedDays && (
                   <>
                     <h1 className="mt-2 text-gray font-medium">
@@ -469,7 +652,7 @@ export default function CreateMenuProvider() {
                           onClick={() =>
                             handlleTimeSlotToggle(selectedDays, time)
                           }
-                          className={`py-2 text-xs  rounded-md border border-slate-200 hover:bg-primary-50 hover:text-primary-60 duration-200 ${
+                          className={`py-2 text-xs  rounded-md border border-slate-200 hover:border-primary-50 hover:text-primary-60 duration-200 ${
                             data.timeSlots[selectedDays].includes(time)
                               ? "bg-primary-50 text-primary-60 border border-purple-200"
                               : "bg-slate-100 border border-slate-300"
@@ -489,7 +672,7 @@ export default function CreateMenuProvider() {
                           onClick={() =>
                             handlleTimeSlotToggle(selectedDays, time)
                           }
-                          className={`py-2 text-xs  rounded-md  hover:bg-primary-50 hover:text-primary-60 duration-200 ${
+                          className={`py-2 text-xs  rounded-md  hover:border-primary-50 hover:text-primary-60 duration-200 ${
                             data.timeSlots[selectedDays].includes(time)
                               ? "bg-primary-50 text-primary-60 border border-purple-200"
                               : "bg-slate-100 border border-slate-300"
@@ -509,7 +692,7 @@ export default function CreateMenuProvider() {
                           onClick={() =>
                             handlleTimeSlotToggle(selectedDays, time)
                           }
-                          className={`py-2 text-xs rounded-md  hover:bg-primary-50 hover:text-primary-60 duration-200 ${
+                          className={`py-2 text-xs rounded-md  hover:border-primary-50 hover:text-primary-60 duration-200 ${
                             data.timeSlots[selectedDays].includes(time)
                               ? "bg-primary-50 text-primary-60 border border-purple-200"
                               : "bg-slate-100 border border-slate-300"
