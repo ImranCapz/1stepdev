@@ -18,7 +18,6 @@ import {
 import { app } from "../../firebase";
 import toast from "react-hot-toast";
 import { GrStatusGood } from "react-icons/gr";
-import { Select, Option } from "@material-tailwind/react";
 import Input from "react-phone-number-input/input";
 import "./CreateMenu.css";
 import { Modal } from "flowbite-react";
@@ -48,12 +47,6 @@ export default function CreateMenuProvider() {
     },
     regularPrice: "",
     license: "",
-    availability: {
-      morningStart: "",
-      morningEnd: "",
-      eveningStart: "",
-      eveningEnd: "",
-    },
     description: "",
     profilePicture: "",
     timeSlots: {
@@ -69,7 +62,9 @@ export default function CreateMenuProvider() {
   console.log(data);
 
   const [step, setStep] = useState(0);
-  const [error, setError] = useState({});
+  const [error, setError] = useState({
+    email: false,
+  });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -86,7 +81,7 @@ export default function CreateMenuProvider() {
   };
 
   const func1 = (e) => {
-    const newErrors = {};
+    const newErrors = { ...error };
     let { name, value } = e.target;
     const keys = name.split(".");
 
@@ -139,11 +134,17 @@ export default function CreateMenuProvider() {
     if (step === 0 && data.name.length === 0) {
       newErrors.name = "Please select at least one service";
     }
+    if (step === 0 && !data.profilePicture) {
+      newErrors.profilePicture = "Profile picture is required";
+    }
     if (step === 1 && data.therapytype.length === 0) {
       newErrors.therapytype = "Please select at least one service type";
     }
     if (step === 2 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       newErrors.email = "Invalid email format";
+    }
+    if (step === 3 && !/^[0-9]{6}$/.test(data.address.pincode)) {
+      newErrors.pincode = "Pincode must be 6 digits";
     }
     if (step === 4 && data.regularPrice <= 100) {
       newErrors.regularPrice = "Fee must be greater than 100";
@@ -152,18 +153,12 @@ export default function CreateMenuProvider() {
       newErrors.experience = "Experience must be greater than or equal to 0";
     }
     if (step === 6 && !/^\+\d{12}$/.test(data.phone)) {
-      newErrors.phone = "Phone number must have exactly 15 digits";
-    }
-    if (step === 3 && !/^[0-9]{6}$/.test(data.address.pincode)) {
-      newErrors.pincode = "Pincode must be 6 digits";
+      newErrors.phone =
+        "Phone number must have exactly 12 digits with Country Code";
     }
     if (step === 8 && data.description.split(" ").length < 60) {
       newErrors.description = "Biography must be at least 60 words";
     }
-    if (step === 0 && !data.profilePicture) {
-      newErrors.profilePicture = "Profile picture is required";
-    }
-
     setError(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -213,7 +208,7 @@ export default function CreateMenuProvider() {
   const goodtoknowrules = (step) => {
     switch (step) {
       case 0:
-        return "Ensure the service aligns with your expertise and qualifications.";
+        return "Ensure the service aligns with your expertise and qualifications.Profile picture must be a clear, professional image.";
       case 1:
         return "Provide a detailed and accurate service type to attract the right clients.";
       case 2:
@@ -229,7 +224,7 @@ export default function CreateMenuProvider() {
       case 7:
         return "Be realistic about your availability to avoid overbooking.";
       case 8:
-        return "Your biography should be at least 30 words. Profile picture must be a clear, professional image.";
+        return "Your biography should be at least 30 words.";
       default:
         return "";
     }
@@ -337,10 +332,10 @@ export default function CreateMenuProvider() {
     if (file) {
       storeImage(file)
         .then((url) => {
-          setData({
-            ...data,
+          setData((prevData) => ({
+            ...prevData,
             profilePicture: url,
-          });
+          }));
           toast.success("Profile image uploaded successfully");
         })
         .catch(() => {
@@ -355,6 +350,9 @@ export default function CreateMenuProvider() {
   const [multiSelectedDays, setMultiSelectedDays] = useState([]);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [startTime2, setStartTime2] = useState("");
+  const [endTime2, setEndTime2] = useState("");
+  const [session, setSession] = useState(30);
 
   const daysOfWeek = [
     "Monday",
@@ -365,7 +363,6 @@ export default function CreateMenuProvider() {
     "Saturday",
     "Sunday",
   ];
-  const [session, setSession] = useState(30);
 
   const handleSessionChange = (e) => {
     setSession(Number(e.target.value));
@@ -381,9 +378,6 @@ export default function CreateMenuProvider() {
       setMultiSelectedDays([...multiSelectedDays, day]);
     }
   };
-
-  console.log(selectedDays);
-  console.log(multiSelectedDays);
 
   const generateTimeSlots = () => {
     const morningSlots = [];
@@ -434,6 +428,21 @@ export default function CreateMenuProvider() {
     return `${String(hour).padStart(2, "0")}:${roundedMinute}`;
   };
 
+  const convertToFormat = (time) => {
+    const [partTime, modifier] = time.split(" ");
+    let [hours, minutes] = partTime.split(":").map(Number);
+
+    if (modifier === "PM" && hours !== 12) {
+      hours += 12;
+    } else if (modifier === "AM" && hours === 12) {
+      hours = 0;
+    }
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}`;
+  };
+
   const handleStartTimeChange = (e) => {
     const validatedTime = validateTime(e.target.value);
     if (validateTime) {
@@ -453,19 +462,23 @@ export default function CreateMenuProvider() {
     }
   };
 
-  const convertToFormat = (time) => {
-    const [partTime, modifier] = time.split(" ");
-    let [hours, minutes] = partTime.split(":").map(Number);
-
-    if (modifier === "PM" && hours !== 12) {
-      hours += 12;
-    } else if (modifier === "AM" && hours === 12) {
-      hours = 0;
+  const handleStartTimeChange2 = (e) => {
+    const validatedTime = validateTime(e.target.value);
+    if (validateTime) {
+      setStartTime2(validatedTime);
+      if (endTime2 && validatedTime > endTime2) {
+        setEndTime2("");
+      }
+    } else {
+      toast.error("Please select a time between 7:00 AM and 11:00 PM");
     }
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-      2,
-      "0"
-    )}`;
+  };
+
+  const handleEndTimeChange2 = (e) => {
+    const validatedTime = validateTime(e.target.value);
+    if (validatedTime >= startTime2) {
+      setEndTime2(validatedTime);
+    }
   };
 
   const FilterTimeSlot = (slots, startTime, endTime) => {
@@ -483,19 +496,25 @@ export default function CreateMenuProvider() {
       toast.error("Please select start and end time");
       return;
     }
+    if (multiSelectedDays.length === 0) {
+      toast.error("Please select atleast one day");
+      return;
+    }
     const allSlots = [...morningSlots, ...afternoonSlots, ...eveningSlots];
     const filteredSlots = FilterTimeSlot(allSlots, startTime, endTime);
+    const filteredSlots2 = FilterTimeSlot(allSlots, startTime2, endTime2);
 
     setData((prevData) => {
       const updatedTimeSlots = { ...prevData.timeSlots };
       multiSelectedDays.forEach((day) => {
-        updatedTimeSlots[day] = filteredSlots;
+        updatedTimeSlots[day] = [...filteredSlots, ...filteredSlots2];
       });
       return { ...prevData, timeSlots: updatedTimeSlots };
     });
     setOpenTimeRangeModal(false);
   };
 
+  //modal for time range
   const [openTimeRangeModal, setOpenTimeRangeModal] = useState(false);
 
   function openModal() {
@@ -529,8 +548,9 @@ export default function CreateMenuProvider() {
             ))}
           </div>
           <div className="p-4 flex gap-2 items-center mt-2 justify-center">
+            <h1 className="text-base">Session 1 *</h1>
             <div className="flex flex-col">
-              <lable style={{ fontSize: "14px" }}>Start Time</lable>
+              <label style={{ fontSize: "11px" }}>Start Time</label>
               <input
                 type="time"
                 id="startTime"
@@ -540,7 +560,7 @@ export default function CreateMenuProvider() {
               />
             </div>
             <div className="flex flex-col">
-              <lable style={{ fontSize: "14px" }}>End Time</lable>
+              <label style={{ fontSize: "11px" }}>End Time</label>
               <input
                 type="time"
                 id="endTime"
@@ -550,16 +570,39 @@ export default function CreateMenuProvider() {
               />
             </div>
           </div>
+          <div className="p- flex gap-2 items-center justify-center">
+            <h1 className="text-base">Session 2 &nbsp;</h1>
+            <div className="flex flex-col">
+              <label style={{ fontSize: "11px" }}>Start Time</label>
+              <input
+                type="time"
+                id="startTime2"
+                className="rounded-lg text-xs mt-1"
+                value={startTime2}
+                onChange={handleStartTimeChange2}
+              />
+            </div>
+            <div className="flex flex-col">
+              <label style={{ fontSize: "11px" }}>End Time</label>
+              <input
+                type="time"
+                id="endTime2"
+                className="rounded-lg text-xs mt-1"
+                value={endTime2}
+                onChange={handleEndTimeChange2}
+              />
+            </div>
+          </div>
           <div className="mb-6 mt-6 flex items-center justify-center gap-4">
             <button
               onClick={() => setOpenTimeRangeModal(false)}
-              className="px-2 py-1 bg-slate-200 rounded-md font-medium text-slate-700 hover:bg-slate-300 duration-300"
+              className="px-6 py-1 bg-slate-200 rounded-md font-medium text-slate-700 hover:bg-slate-300 duration-300"
             >
               Cancel
             </button>
             <button
               onClick={handleTimeApply}
-              className="px-4 py-1 card-btn rounded-md "
+              className="px-7 py-1 card-btn rounded-md "
             >
               Apply
             </button>
@@ -568,8 +611,8 @@ export default function CreateMenuProvider() {
         <Modal.Footer>
           {" "}
           <h1 className="text-gray text-xs">
-            <Kbd>Note :</Kbd> Select multiple days if the session time remains
-            the same.
+            <Kbd style={{ backgroundColor: "#e5e7c7" }}>Note :</Kbd> Select
+            multiple days if the session time remains the same.
           </h1>
         </Modal.Footer>
       </Modal>
@@ -598,201 +641,94 @@ export default function CreateMenuProvider() {
           <form onSubmit={submitfn} className="w-full md:w-[500px]">
             {/* <div class=" p-5 rounded-lg shadow-xl"> */}
             {step === 0 && (
-              <div className="p-3 md:p-6 bg-purple-50 rounded-lg">
-                <div className="flex justify-between items-center">
-                  <h1 className="text-gray md:text-xl text-sm font-bold">
-                    Pick your TimeSlot
-                  </h1>
-                  <div className="flex flex-row gap-2 items-center">
-                    <h1 className="text-sm text-gray">Session Gap</h1>
-                    <select
-                      className="text-xs rounded-m w-24 border-2 focus:border-purple-400 outline outline-none focus:ring-0"
-                      onChange={handleSessionChange}
-                      value={session}
+              <>
+                <input
+                  type="file"
+                  id="profilePicture"
+                  name="profilePicture"
+                  ref={fileRef}
+                  hidden
+                  accept="image/*"
+                  onChange={handleProfileImageChange}
+                />
+                <div className="relative w-24 h-24 mx-auto group">
+                  <label
+                    htmlFor="profilePicture"
+                    className="w-24 h-24 cursor-pointer"
+                    onClick={handleImageClick}
+                  >
+                    <img
+                      src={
+                        data.profilePicture ||
+                        "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                      }
+                      alt="profile"
+                      className={`w-24 h-24 rounded-full object-cover border-4
+                      } ${error.profilePicture && "border-red-500"}`}
+                    />
+                    <div
+                      className="border-4 rounded-full w-24 h-24 absolute inset-0 transition-all duration-300"
+                      style={{
+                        borderColor: `rgba(49, 196, 141, ${
+                          progressProfile / 100
+                        })`,
+                        border: `${progressProfile}%`,
+                      }}
+                    ></div>
+                    <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
+                      <img
+                        src="https://www.svgrepo.com/show/33565/upload.svg"
+                        alt="camera"
+                        className="w-8 h-8"
+                      />
+                      <p className="text-white text-xs">Choose Profile</p>
+                    </div>
+                  </label>
+                </div>
+                {error.profilePicture && !progressProfile && (
+                  <p className="text-center mt-2 text-red-500">
+                    {error.profilePicture}
+                  </p>
+                )}
+                {progressProfile === 100 && (
+                  <p className="text-center mt-2 text-gray font-semibold">
+                    Profile image upload successfully
+                  </p>
+                )}
+                <div className="flex flex-col p-6 rounded-lg">
+                  <label className="font-bold menu-headTextColor mb-5 text-left">
+                    Please Select your Service
+                  </label>
+                  <div className="flex flex-col max-h-64 overflow-y-auto">
+                    {ServiceButtons(suggestions, "name")}
+                  </div>
+                  {/* </div> */}
+
+                  {error.name && (
+                    <p className="text-red-500 font-serif text-sm mt-1">
+                      {error.name}
+                    </p>
+                  )}
+                  <div className="flex mt-4 gap-4 justify-center">
+                    <button
+                      className="bg-slate-200 p-3 px-8 rounded-xl text-slate-400"
+                      type="submit"
+                      disabled
                     >
-                      <option value={15}>15 min</option>
-                      <option value={30}>30 min</option>
-                      <option value={45}>45 min</option>
-                    </select>
+                      Back
+                    </button>
+                    <button
+                      className={`p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95 ${
+                        buttonLoader ? "cursor-not-allowed opacity-50" : ""
+                      }`}
+                      type="submit"
+                      disabled={buttonLoader}
+                    >
+                      Next
+                    </button>
                   </div>
                 </div>
-                <div className="flex justify-center mt-4 overflow-auto ">
-                  {daysOfWeek.map((day) => (
-                    <button
-                      type="button"
-                      key={day}
-                      className={`px-3 py-2 border-primary-60 font-semibold  ${
-                        selectedDays === day
-                          ? "text-primary-60 bg-primary-50 transition-all duration-300"
-                          : "bg-slate-200 text-gray"
-                      }`}
-                      onClick={() => handleDayClick(day)}
-                    >
-                      {day.slice(0, 3)}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex mt-2">
-                  <button
-                    onClick={openModal}
-                    className="p-1 px-2 text-xs rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
-                  >
-                    Select Time Range
-                  </button>
-                </div>
-                {selectedDays && (
-                  <>
-                    <h1 className="mt-2 text-gray font-medium">
-                      Morning Slots
-                    </h1>
-                    <div className="grid grid-cols-3 md:grid-cols-6 gap-2 overflow-auto mt-2">
-                      {morningSlots.map((time) => (
-                        <button
-                          key={time}
-                          onClick={() =>
-                            handlleTimeSlotToggle(selectedDays, time)
-                          }
-                          className={`py-2 text-xs  rounded-md border border-slate-200 hover:border-primary-50 hover:text-primary-60 duration-200 ${
-                            data.timeSlots[selectedDays].includes(time)
-                              ? "bg-primary-50 text-primary-60 border border-purple-200"
-                              : "bg-slate-100 border border-slate-300"
-                          }`}
-                        >
-                          {time}
-                        </button>
-                      ))}
-                    </div>
-                    <h1 className="mt-2 text-gray font-medium">
-                      Afternoon Slots
-                    </h1>
-                    <div className="grid grid-cols-3 md:grid-cols-6 gap-2 overflow-auto mt-2">
-                      {afternoonSlots.map((time) => (
-                        <button
-                          key={time}
-                          onClick={() =>
-                            handlleTimeSlotToggle(selectedDays, time)
-                          }
-                          className={`py-2 text-xs  rounded-md  hover:border-primary-50 hover:text-primary-60 duration-200 ${
-                            data.timeSlots[selectedDays].includes(time)
-                              ? "bg-primary-50 text-primary-60 border border-purple-200"
-                              : "bg-slate-100 border border-slate-300"
-                          }`}
-                        >
-                          {time}
-                        </button>
-                      ))}
-                    </div>
-                    <h1 className="mt-2 text-gray font-medium">
-                      Evening Slots
-                    </h1>
-                    <div className="grid grid-cols-3 md:grid-cols-6 gap-2 overflow-auto mt-2">
-                      {eveningSlots.map((time) => (
-                        <button
-                          key={time}
-                          onClick={() =>
-                            handlleTimeSlotToggle(selectedDays, time)
-                          }
-                          className={`py-2 text-xs rounded-md  hover:border-primary-50 hover:text-primary-60 duration-200 ${
-                            data.timeSlots[selectedDays].includes(time)
-                              ? "bg-primary-50 text-primary-60 border border-purple-200"
-                              : "bg-slate-100 border border-slate-300"
-                          }`}
-                        >
-                          {time}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-              // <>
-              //   <input
-              //     type="file"
-              //     id="profilePicture"
-              //     name="profilePicture"
-              //     ref={fileRef}
-              //     hidden
-              //     accept="image/*"
-              //     onChange={handleProfileImageChange}
-              //   />
-              //   <div className="relative w-24 h-24 mx-auto group">
-              //     <label
-              //       htmlFor="profilePicture"
-              //       className="w-24 h-24 cursor-pointer"
-              //       onClick={handleImageClick}
-              //     >
-              //       <img
-              //         src={
-              //           data.profilePicture ||
-              //           "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
-              //         }
-              //         alt="profile"
-              //         className={`w-24 h-24 rounded-full object-cover border-4
-              //         } ${error.profilePicture && "border-red-500"}`}
-              //       />
-              //       <div
-              //         className="border-4 rounded-full w-24 h-24 absolute inset-0 transition-all duration-300"
-              //         style={{
-              //           borderColor: `rgba(49, 196, 141, ${
-              //             progressProfile / 100
-              //           })`,
-              //           border: `${progressProfile}%`,
-              //         }}
-              //       ></div>
-              //       <div className="hidden rounded-full group-hover:flex flex-col items-center justify-center absolute inset-0 bg-gray-800 bg-opacity-60">
-              //         <img
-              //           src="https://www.svgrepo.com/show/33565/upload.svg"
-              //           alt="camera"
-              //           className="w-8 h-8"
-              //         />
-              //         <p className="text-white text-xs">Choose Profile</p>
-              //       </div>
-              //     </label>
-              //   </div>
-              //   {error.profilePicture && !progressProfile && (
-              //     <p className="text-center mt-2 text-red-500">
-              //       {error.profilePicture}
-              //     </p>
-              //   )}
-              //   {progressProfile === 100 && (
-              //     <p className="text-center mt-2 text-gray font-semibold">
-              //       Profile image upload successfully
-              //     </p>
-              //   )}
-              //   <div className="flex flex-col p-6 rounded-lg">
-              //     <label className="font-bold menu-headTextColor mb-5 text-left">
-              //       Please Select your Service
-              //     </label>
-              //     <div className="flex flex-col max-h-64 overflow-y-auto">
-              //       {ServiceButtons(suggestions, "name")}
-              //     </div>
-              //     {/* </div> */}
-
-              //     {error.name && (
-              //       <p className="text-red-500 font-serif text-sm mt-1">
-              //         {error.name}
-              //       </p>
-              //     )}
-              //     <div className="flex mt-4 gap-4 justify-center">
-              //       <button
-              //         className="bg-slate-200 p-3 px-8 rounded-xl text-slate-400"
-              //         type="submit"
-              //         disabled
-              //       >
-              //         Back
-              //       </button>
-              //       <button
-              //         className={`p-3 px-8 rounded-xl btn-color text-white font-semibold text-center hover:opacity-95 ${
-              //           buttonLoader ? "cursor-not-allowed opacity-50" : ""
-              //         }`}
-              //         type="submit"
-              //         disabled={buttonLoader}
-              //       >
-              //         Next
-              //       </button>
-              //     </div>
-              //   </div>
-              // </>
+              </>
             )}
             {step === 1 && (
               <div className="flex flex-col p-6 rounded-lg">
@@ -930,68 +866,77 @@ export default function CreateMenuProvider() {
                   maxLength={30}
                   required
                 ></input>
+                <div className="flex flex-row mt-5 gap-4">
+                  <div className="w-full">
+                    <label className="ml-3 menu-headTextColor font-bold text-left">
+                      Country
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full input border-2 p-2 mt-2 rounded-lg focus:outline-none focus:ring-0"
+                      placeholder="Enter your Country"
+                      onChange={func1}
+                      value={data.address.country}
+                      name="address.country"
+                      maxLength={20}
+                      required
+                    ></input>
+                  </div>
+                  <div className="w-full">
+                    <label className="ml-3 menu-headTextColor font-bold text-left">
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full input border-2 p-2 mt-2 rounded-lg focus:outline-none focus:ring-0"
+                      placeholder="Enter your State"
+                      onChange={func1}
+                      value={data.address.state}
+                      name="address.state"
+                      maxLength={20}
+                      required
+                    ></input>
+                  </div>
+                </div>
+                <div className="flex flex-row mt-5 gap-4">
+                  <div className="w-full">
+                    <label className="ml-3 menu-headTextColor font-bold text-left ">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full input border-2 p-2 mt-2 rounded-lg focus:outline-none focus:ring-0"
+                      placeholder="Enter your City"
+                      onChange={func1}
+                      value={data.address.city}
+                      name="address.city"
+                      maxLength={20}
+                      required
+                    ></input>
+                  </div>
+                  <div className="w-full">
+                    <label className="ml-3 menu-headTextColor font-bold text-left">
+                      Pincode
+                    </label>
+                    <input
+                      type="number"
+                      className="w-full input border-2 mt-2 p-2 rounded-lg focus:outline-none focus:ring-0"
+                      placeholder="Enter your Pincode"
+                      onChange={func1}
+                      value={data.address.pincode}
+                      name="address.pincode"
+                      maxLength="6"
+                      required
+                    ></input>
+                  </div>
+                </div>
 
-                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
-                  Country
-                </label>
-                <input
-                  type="text"
-                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
-                  placeholder="Enter your Country"
-                  onChange={func1}
-                  value={data.address.country}
-                  name="address.country"
-                  maxLength={20}
-                  required
-                ></input>
-
-                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
-                  State
-                </label>
-                <input
-                  type="text"
-                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
-                  placeholder="Enter your State"
-                  onChange={func1}
-                  value={data.address.state}
-                  name="address.state"
-                  maxLength={20}
-                  required
-                ></input>
-
-                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
-                  City
-                </label>
-                <input
-                  type="text"
-                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
-                  placeholder="Enter your City"
-                  onChange={func1}
-                  value={data.address.city}
-                  name="address.city"
-                  maxLength={20}
-                  required
-                ></input>
-
-                <label className="ml-3 mt-5 menu-headTextColor font-bold text-left mb-2">
-                  Pincode
-                </label>
-                <input
-                  type="number"
-                  className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
-                  placeholder="Enter your Pincode"
-                  onChange={func1}
-                  value={data.address.pincode}
-                  name="address.pincode"
-                  maxLength="6"
-                  required
-                ></input>
                 {error.pincode && (
                   <p className="text-red-500 font-serif text-sm mt-1">
                     {error.pincode}
                   </p>
                 )}
-                <div className="mt-4 flex justify-center gap-4">
+                <div className="mt-6 flex justify-center gap-4">
                   <button
                     className="p-3 px-8 rounded-xl bg-slate-300 text-slate-700"
                     type="button"
@@ -1143,91 +1088,132 @@ export default function CreateMenuProvider() {
             )}
 
             {step === 7 && (
-              <div className="p-6 rounded-lg">
-                <p className="text-2xl font-bold menu-headTextColor mb-4">
-                  Availability
-                </p>
-                <label
-                  htmlFor="appt-time"
-                  className="block text-sm font-medium text-gray-700 mb-5"
-                >
-                  Please specify your availability time
-                </label>
-                <label className="mb-5 menu-headTextColor font-bold text-left">
-                  Morning
-                </label>
-                <div className="flex flex-row mt-6 mb-6 items-center">
-                  <label className="menu-headTextColor mr-2">From:</label>
-                  <input
-                    id="appt-time"
-                    type="time"
-                    onChange={(event) =>
-                      func1({
-                        target: {
-                          name: "availability.morningStart",
-                          value: event.target.value,
-                        },
-                      })
-                    }
-                    value={data.availability.morningStart}
-                    name="morningStart"
-                    required
-                  />
-                  <label className="menu-headTextColor ml-3 mr-2">To:</label>
-                  <input
-                    id="appt-time"
-                    type="time"
-                    onChange={(event) =>
-                      func1({
-                        target: {
-                          name: "availability.morningEnd",
-                          value: event.target.value,
-                        },
-                      })
-                    }
-                    value={data.availability.morningEnd}
-                    name="morningEnd"
-                    required
-                  />
+              <>
+                <div className="p-3 md:p-6 bg-purple-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <h1 className="text-gray md:text-xl text-sm font-bold">
+                      Pick your TimeSlot
+                    </h1>
+                    <div className="flex flex-row gap-2 items-center">
+                      <h1 className="text-sm text-gray">Session Gap</h1>
+                      <select
+                        className="text-xs rounded-m w-24 border-2 focus:border-purple-400 outline outline-none focus:ring-0"
+                        onChange={handleSessionChange}
+                        value={session}
+                      >
+                        <option value={15}>15 min</option>
+                        <option value={30}>30 min</option>
+                        <option value={45}>45 min</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex justify-center mt-4 overflow-auto ">
+                    {daysOfWeek.map((day) => (
+                      <div
+                        key={day}
+                        className="flex flex-col items-center gap-2"
+                      >
+                        <button
+                          type="button"
+                          className={`px-3 py-2 border-primary-60 font-semibold  ${
+                            selectedDays === day
+                              ? "text-primary-60 bg-primary-50 transition-all duration-300"
+                              : "bg-slate-200 text-gray"
+                          }`}
+                          onClick={() => handleDayClick(day)}
+                        >
+                          {day.slice(0, 3)}
+                        </button>
+                        <div className="flex flex-col text-center items-center">
+                          <p
+                            className="text-xs text-gray-900"
+                            style={{ fontSize: "11px" }}
+                          >
+                            {data.timeSlots[day].length}
+                          </p>
+                          <p style={{ fontSize: "11px" }}>Slots</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex mt-2">
+                    <button
+                      onClick={openModal}
+                      type="button"
+                      className="p-1 px-2 text-xs rounded-xl btn-color text-white font-semibold text-center hover:opacity-95"
+                    >
+                      Select Time Range
+                    </button>
+                  </div>
+                  {selectedDays && (
+                    <>
+                      <h1 className="mt-2 text-gray font-medium">
+                        Morning Slots
+                      </h1>
+                      <div className="grid grid-cols-3 md:grid-cols-6 gap-2 overflow-auto mt-2">
+                        {morningSlots.map((time) => (
+                          <button
+                            key={time}
+                            type="button"
+                            onClick={() =>
+                              handlleTimeSlotToggle(selectedDays, time)
+                            }
+                            className={`py-2 text-xs  rounded-md border border-slate-200 hover:border-primary-50 hover:text-primary-60 duration-200 ${
+                              data.timeSlots[selectedDays].includes(time)
+                                ? "bg-primary-50 text-primary-60 border border-purple-200"
+                                : "bg-slate-100 border border-slate-300"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                      <h1 className="mt-2 text-gray font-medium">
+                        Afternoon Slots
+                      </h1>
+                      <div className="grid grid-cols-3 md:grid-cols-6 gap-2 overflow-auto mt-2">
+                        {afternoonSlots.map((time) => (
+                          <button
+                            key={time}
+                            type="button"
+                            onClick={() =>
+                              handlleTimeSlotToggle(selectedDays, time)
+                            }
+                            className={`py-2 text-xs  rounded-md  hover:border-primary-50 hover:text-primary-60 duration-200 ${
+                              data.timeSlots[selectedDays].includes(time)
+                                ? "bg-primary-50 text-primary-60 border border-purple-200"
+                                : "bg-slate-100 border border-slate-300"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                      <h1 className="mt-2 text-gray font-medium">
+                        Evening Slots
+                      </h1>
+                      <div className="grid grid-cols-3 md:grid-cols-6 gap-2 overflow-auto mt-2">
+                        {eveningSlots.map((time) => (
+                          <button
+                            key={time}
+                            type="button"
+                            onClick={() =>
+                              handlleTimeSlotToggle(selectedDays, time)
+                            }
+                            className={`py-2 text-xs rounded-md  hover:border-primary-50 hover:text-primary-60 duration-200 ${
+                              data.timeSlots[selectedDays].includes(time)
+                                ? "bg-primary-50 text-primary-60 border border-purple-200"
+                                : "bg-slate-100 border border-slate-300"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
-                <label className="mb-2 ml-1.5 menu-headTextColor font-bold">
-                  Evening
-                </label>
-                <div className="flex flex-row mt-6 mb-6 items-center">
-                  <label className="menu-headTextColor mr-2">From:</label>
-                  <input
-                    id="appt-time"
-                    type="time"
-                    onChange={(value) =>
-                      func1({
-                        target: {
-                          name: "availability.eveningStart",
-                          value: value.target.value,
-                        },
-                      })
-                    }
-                    value={data.availability.eveningStart}
-                    name="eveningStart"
-                    required
-                  />
-                  <label className="menu-headTextColor ml-3 mr-2">To:</label>
-                  <input
-                    id="appt-time"
-                    type="time"
-                    onChange={(value) =>
-                      func1({
-                        target: {
-                          name: "availability.eveningEnd",
-                          value: value.target.value,
-                        },
-                      })
-                    }
-                    value={data.availability.eveningEnd}
-                    name="eveningEnd"
-                    required
-                  />
-                </div>
-                <div className="flex justify-center mt-4 gap-4">
+                <div className="flex justify-center mt-4 mb-6 gap-4">
                   <button
                     className="p-3 px-8 rounded-xl bg-slate-300 text-slate-600"
                     type="button"
@@ -1242,7 +1228,7 @@ export default function CreateMenuProvider() {
                     Next
                   </button>
                 </div>
-              </div>
+              </>
             )}
             {step === 8 && (
               <div className="flex flex-col p-6  rounded-lg">

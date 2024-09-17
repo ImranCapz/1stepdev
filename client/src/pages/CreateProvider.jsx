@@ -53,12 +53,6 @@ export default function CreateProvider() {
       pincode: "",
     },
     therapytype: "",
-    availability: {
-      morningStart: "",
-      morningEnd: "",
-      eveningStart: "",
-      eveningEnd: "",
-    },
     regularPrice: "",
     description: "",
     profilePicture: "",
@@ -896,7 +890,7 @@ export default function CreateProvider() {
                       Please enter a 10-digit number.
                     </p>
                   )}
-                  <p className="font-semibold text-main">Availability:</p>
+                  {/* <p className="font-semibold text-main">Availability:</p>
                   <div className="flex md:flex-row flex-col gap-4">
                     <p className="font-semibold text-main">Morning:</p>
                     <div className="flex gap-2">
@@ -937,8 +931,8 @@ export default function CreateProvider() {
                         value={formData.availability.eveningEnd}
                         onChange={handleChange}
                       />
-                    </div>
-                  </div>
+                    </div> */}
+                  {/* </div> */}
                 </div>
 
                 <p className="font-semibold text-main">

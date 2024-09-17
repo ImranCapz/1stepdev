@@ -197,16 +197,6 @@ export default function BookingContact({ provider }) {
 
             <h2 className="text-gray-600 mt-2">Scheduled* </h2>
             <div className="flex flex-row gap-2">
-              <input
-                type="datetime-local"
-                name="scheduledTime"
-                id="scheduledTime"
-                onChange={handleChange}
-                min={getCurrentDateTime()}
-                className="w-[130px] md:w-[170px] border-2 rounded-lg border-transparent focus:outline-none focus:ring-0 focus:ring-amber-500 focus:border-amber-500 hover:border-amber-500"
-                required
-              />
-
               <Select
                 id="sessionType"
                 options={provider.therapytype.map((name) => {

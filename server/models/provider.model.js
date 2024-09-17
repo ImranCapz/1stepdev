@@ -60,24 +60,6 @@ const providerSchema = new mongoose.Schema(
       type: Array,
       required: true,
     },
-    availability: {
-      morningStart: {
-        type: String,
-        required: true,
-      },
-      morningEnd: {
-        type: String,
-        required: true,
-      },
-      eveningStart: {
-        type: String,
-        required: true,
-      },
-      eveningEnd: {
-        type: String,
-        required: true,
-      },
-    },
     regularPrice: {
       type: Number,
       required: true,

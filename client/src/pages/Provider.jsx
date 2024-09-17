@@ -757,7 +757,7 @@ export default function Provider() {
                         <Button className="card-btn">Leave Review</Button>
                       </Link>
                     </div>
-                    <div className="p-2">
+                    {/* <div className="p-2">
                       <p className="text-slate-700 text-base font-semibold">
                         MON - SAT
                       </p>
@@ -771,7 +771,7 @@ export default function Provider() {
                         {" - "}
                         {convert12Hrs(provider.availability.eveningEnd)}
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                   <div>
                     {provider.verified === true && (
@@ -867,7 +867,7 @@ export default function Provider() {
                   }}
                 >
                   {!message && (
-                    <div className="border-2 bg-purple-100 rounded-lg md:w-[390px] 2xl:w-[440px]">
+                    <div className="border-2 bg-purple-100 rounded-lg md:w-[440px] 2xl:w-[480px]">
                       <div className="p-6">
                         <p className="font-bold text-xl text-gray ">
                           Get in touch with {provider.fullName}
@@ -884,6 +884,9 @@ export default function Provider() {
                   </div> */}
                         {!currentUser && (
                           <div className="flex flex-col mt-2 gap-4">
+                            <p className="font-bold text-xl text-gray ">
+                              Get in touch with {provider.fullName}
+                            </p>
                             <Button
                               onClick={() => {
                                 setOpenModal(true);
@@ -958,7 +961,7 @@ export default function Provider() {
                       </div>
                     </div>
                   )}
-                  <div className="md:w-[390px] 2xl:w-[440px] border-2 bg-purple-100 rounded-lg">
+                  <div className="md:w-[440px] 2xl:w-[480px] border-2 bg-purple-100 rounded-lg">
                     <div className="p-6">
                       <p className="font-bold text-xl text-gray ">
                         Get a Quick Response
