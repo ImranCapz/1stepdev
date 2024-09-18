@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { Button } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
 import Select from "react-select";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { FaAngleLeft } from "react-icons/fa";
+import { FaAngleRight } from "react-icons/fa";
+import noslot from "../assets/noslot.png";
 
 export default function BookingContact({ provider }) {
   const [booking, setBooking] = useState();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
+  const [selectedDays, setSelectedDays] = useState("Saturday");
   const [nameOption, setNameOption] = useState("you");
   const [formData, setFormData] = useState({
     patientName: "",
@@ -20,6 +24,8 @@ export default function BookingContact({ provider }) {
     sessionType: "",
     status: "pending",
   });
+
+  const scrollRef = useRef(null);
   // console.log(formData);
 
   useEffect(() => {
@@ -71,9 +77,20 @@ export default function BookingContact({ provider }) {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  const handleSlotClick = (slot) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      scheduledTime: slot,
+    }));
+  };
+
   const handleToggle = (e, option) => {
     e.preventDefault();
     setNameOption(option);
+  };
+
+  const handleDayClick = (day) => {
+    setSelectedDays(day);
   };
 
   const getCurrentDateTime = () => {
@@ -86,12 +103,77 @@ export default function BookingContact({ provider }) {
     return `${year}-${month}-${day}T${hour}:${minute}`;
   };
 
+  // useEffect(() => {
+  //   const today = new Date();
+  //   const dayofWeek = [
+  //     "Sunday",
+  //     "Monday",
+  //     "Tuesday",
+  //     "Wednesday",
+  //     "Thursday",
+  //     "Friday",
+  //     "Saturday",
+  //   ];
+  //   const currentDay = dayofWeek[today.getDay()];
+  //   setSelectedDays(currentDay);
+  // }, []);
+
+  const morningTime = ["7:00 AM", "11:59 AM"];
+  const afternoonTime = ["12:00 PM", "03:59 PM"];
+  const eveningTime = ["04:00 PM", "11:59 PM"];
+
+  const convertTo24Hour = (time) => {
+    const [hours, minutes] = time.split(":");
+    const period = time.slice(-2);
+    let hours24 = parseInt(hours, 10);
+    if (period === "PM" && hours24 < 12) hours24 += 12;
+    if (period === "AM" && hours24 === 12) hours24 = 0;
+    return `${String(hours24).padStart(2, 0)} : ${minutes} ${period}`;
+  };
+
+  const filteredSlots = (slots, start, end) => {
+    const start24 = convertTo24Hour(start);
+    const end24 = convertTo24Hour(end);
+    const now = new Date();
+    const currentTime = `${now.getHours().toString().padStart(2, 0)} : ${now
+      .getMinutes()
+      .toString()
+      .padStart(2, 0)}`;
+    return slots.filter((slot) => {
+      const slot24 = convertTo24Hour(slot);
+      if (
+        selectedDays === new Date().toLocaleString("en-US", { weekday: "long" })
+      ) {
+        return slot24 >= start24 && slot24 <= end24 && slot24 > currentTime;
+      }
+      return slot24 >= start24 && slot24 <= end24;
+    });
+  };
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: -200,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: 200,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <>
       {booking && (
         <div className="flex flex-col gap-4 mt-4">
           <form>
-            <div className="flex flex-row justify-center gap-1 items-center">
+            {/* <div className="flex flex-row justify-center gap-1 items-center">
               <button
                 onClick={(e) => handleToggle(e, "you")}
                 className={`p-2 w-20 rounded-lg font-bold hover:text-slate-700 transition duration-300 ease-in-out  ${
@@ -112,111 +194,247 @@ export default function BookingContact({ provider }) {
               >
                 Someone Else
               </button>
+            </div> */}
+            <div className="relative">
+              <button
+                type="button"
+                className="absolute left-0 top-1/4 ml-2 text-purple-500 text-xl"
+                onClick={scrollLeft}
+              >
+                <FaAngleLeft />
+              </button>
+              <div
+                ref={scrollRef}
+                className="flex flex-row border bg-white px-8 border-slate-300 overflow-hidden justify-between gap-8"
+                style={{ maxWidth: "600px" }}
+              >
+                {Object.keys(provider.timeSlots)
+                  .filter((day) => {
+                    const today = new Date();
+                    const dayOfWeek = [
+                      "Sunday",
+                      "Monday",
+                      "Tuesday",
+                      "Wednesday",
+                      "Thursday",
+                      "Friday",
+                      "Saturday",
+                    ];
+                    const currentDayIndex = today.getDay();
+                    const dayIndex = dayOfWeek.indexOf(day);
+                    return dayIndex >= currentDayIndex;
+                  })
+                  .map((day) => (
+                    <button
+                      type="button"
+                      className={`p-2 rounded-t-lg font-semibold text-sm text-gray-500 transition duration-300 ease-in-out ${
+                        selectedDays === day
+                          ? "border-b border-purple-500 text-gray-700"
+                          : "text-gray-500"
+                      }`}
+                      key={day}
+                      onClick={() => handleDayClick(day)}
+                    >
+                      <>
+                        {day ===
+                        new Date().toLocaleString("en-us", {
+                          weekday: "long",
+                        }) ? (
+                          <>
+                            <p>Today</p>
+                          </>
+                        ) : day ===
+                          new Date(
+                            new Date().setDate(new Date().getDate() + 1)
+                          ).toLocaleString("en-us", { weekday: "long" }) ? (
+                          <p>Tomorrow</p>
+                        ) : (
+                          day
+                        )}
+                      </>
+                    </button>
+                  ))}
+              </div>
+              <button
+                type="button"
+                onClick={scrollRight}
+                className="absolute right-0 top-1/4 mr-2 text-purple-500 text-xl"
+              >
+                <FaAngleRight />
+              </button>
             </div>
-            {nameOption === "you" && (
-              <>
-                <h2 className="text-gray-600 mt-2">Name* </h2>
-                <input
-                  type="text"
-                  name="patientName"
-                  id="patientName"
-                  value={formData.patientName}
-                  onChange={handleChange}
-                  placeholder="Full Name"
-                  className="w-full border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
-                  required
-                />
-              </>
-            )}
-            {nameOption === "someone else" && (
-              <>
-                <h2 className="text-gray-600 mt-2">Patient Name* </h2>
-                <input
-                  type="text"
-                  name="patientName"
-                  id="patientName"
-                  onChange={handleChange}
-                  placeholder="Someone else"
-                  className="w-full border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
-                  required
-                />
-              </>
-            )}
-            <h2 className="text-gray-600 mt-2">
-              How can we help your family?*{" "}
-            </h2>
-            <Select
-              id="name"
-              options={provider.name.map((name) => {
-                return { value: name, label: name };
-              })}
-              isMulti
-              required
-              placeholder="What service do you need?"
-              touchUi={false}
-              className="border-2 p-0.5 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
-              onChange={(selectedOptions) => {
-                setFormData((preState) => ({
-                  ...preState,
-                  service: selectedOptions.map((option) => option.value),
-                }));
-              }}
-              styles={{
-                control: (provided) => ({
-                  ...provided,
-                  backgroundColor: "transparent",
-                  minWidth: "160px",
-                  border: "none",
-                  outline: "none",
-                  boxShadow: "none",
-                  transition: "all 0.3s ease",
-                }),
-              }}
-            />
-            <h2 className="text-gray-600 mt-2">Email* </h2>
-            <input
-              type="email"
-              value={formData.email}
-              name="email"
-              id="email"
-              onChange={handleChange}
-              className="w-full border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
-              required
-            />
-            <h2 className="text-gray-600 mt-2">Note* </h2>
-            <textarea
-              type="text"
-              name="note"
-              id="note"
-              rows="2"
-              onChange={handleChange}
-              className="w-full border-2 rounded-lg mb-1 border-transparent focus:outline-none focus:ring-0 focus:ring-amber-500 focus:border-amber-500 hover:border-amber-500"
-              placeholder="Enter you Message here..."
-              required
-            ></textarea>
 
-            <h2 className="text-gray-600 mt-2">Scheduled* </h2>
-            <div className="flex flex-row gap-2">
+            {selectedDays && (
+              <div className="px-4 h-48 overflow-auto">
+                {(() => {
+                  const morningSlots = filteredSlots(
+                    provider.timeSlots[selectedDays],
+                    morningTime[0],
+                    morningTime[1]
+                  );
+                  const afternoonSlots = filteredSlots(
+                    provider.timeSlots[selectedDays],
+                    afternoonTime[0],
+                    afternoonTime[1]
+                  );
+                  const eveningSlots = filteredSlots(
+                    provider.timeSlots[selectedDays],
+                    eveningTime[0],
+                    eveningTime[1]
+                  );
+
+                  if (
+                    morningSlots.length === 0 &&
+                    afternoonSlots.length === 0 &&
+                    eveningSlots.length === 0
+                  ) {
+                    return (
+                      <>
+                        <div className="flex flex-col items-center justify-center mx-auto mt-4">
+                          <img
+                            src={noslot}
+                            className="w-20 h-20 object cover"
+                          />
+                          <p className="flex flex-col items-center text-gray-500">
+                            There are no slots available.
+                          </p>{" "}
+                          <button
+                            type="button"
+                            className="card-btn mt-2 p-2 rounded-md font-semibold"
+                          >
+                            Message Now for Quick Response
+                          </button>
+                        </div>
+                      </>
+                    );
+                  }
+
+                  return (
+                    <>
+                      {morningSlots.length > 0 && (
+                        <div>
+                          <h1 className="mt-2 text-gray text-sm font-medium mb-2">
+                            Morning Slots
+                          </h1>
+                          <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                            {morningSlots.map((slot, index) => (
+                              <button
+                                type="button"
+                                className={`py-2 text-xs rounded-md text-primary-60  duration-100
+                      ${
+                        formData.scheduledTime === slot
+                          ? "border bg-primary-70 text-white border-purple-200"
+                          : "border-2 border-primary-50  hover:bg-primary-50"
+                      }`}
+                                key={index}
+                                onClick={() => handleSlotClick(slot)}
+                              >
+                                {slot}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {afternoonSlots.length > 0 && (
+                        <div>
+                          <h1 className="mt-2 text-gray text-sm font-medium mb-2">
+                            Afternoon Slots
+                          </h1>
+                          <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                            {afternoonSlots.map((slot, index) => (
+                              <button
+                                type="button"
+                                className={`py-2 text-xs rounded-md text-primary-60  duration-100
+                      ${
+                        formData.scheduledTime === slot
+                          ? "border bg-primary-70 text-white border-purple-200"
+                          : "border-2 border-primary-50  hover:bg-primary-50"
+                      }`}
+                                key={index}
+                                onClick={() => handleSlotClick(slot)}
+                              >
+                                {slot}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {eveningSlots.length > 0 && (
+                        <div>
+                          <h1 className="mt-2 text-gray text-sm font-medium mb-2">
+                            Evening Slots
+                          </h1>
+                          <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                            {eveningSlots.map((slot, index) => (
+                              <button
+                                type="button"
+                                className={`py-2 text-xs rounded-md text-primary-60  duration-100
+                      ${
+                        formData.scheduledTime === slot
+                          ? "border bg-primary-70 text-white border-purple-200"
+                          : "border-2 border-primary-50  hover:bg-primary-50"
+                      }`}
+                                key={index}
+                                onClick={() => handleSlotClick(slot)}
+                              >
+                                {slot}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            )}
+            <div className="px-4">
+              {nameOption === "you" && (
+                <>
+                  <h2 className="text-gray-600 mt-2">Name* </h2>
+                  <input
+                    type="text"
+                    name="patientName"
+                    id="patientName"
+                    value={formData.patientName}
+                    onChange={handleChange}
+                    placeholder="Full Name"
+                    className="w-full border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
+                    required
+                  />
+                </>
+              )}
+              {nameOption === "someone else" && (
+                <>
+                  <h2 className="text-gray-600 mt-2">Patient Name* </h2>
+                  <input
+                    type="text"
+                    name="patientName"
+                    id="patientName"
+                    onChange={handleChange}
+                    placeholder="Someone else"
+                    className="w-full border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
+                    required
+                  />
+                </>
+              )}
+              <h2 className="text-gray-600 mt-2">
+                How can we help your family?*{" "}
+              </h2>
               <Select
-                id="sessionType"
-                options={provider.therapytype.map((name) => {
-                  return {
-                    value: name,
-                    label: name,
-                  };
+                id="name"
+                options={provider.name.map((name) => {
+                  return { value: name, label: name };
                 })}
+                isMulti
                 required
-                placeholder="Session Type"
+                placeholder="What service do you need?"
                 touchUi={false}
-                className="w-full border-2 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
+                className="border-2 p-0.5 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
                 onChange={(selectedOptions) => {
-                  setFormData((prevState) => ({
-                    ...prevState,
-                    sessionType: Array.isArray(selectedOptions)
-                      ? selectedOptions.map((option) => option.value)
-                      : selectedOptions
-                      ? selectedOptions.value
-                      : [],
+                  setFormData((preState) => ({
+                    ...preState,
+                    service: selectedOptions.map((option) => option.value),
                   }));
                 }}
                 styles={{
@@ -231,14 +449,73 @@ export default function BookingContact({ provider }) {
                   }),
                 }}
               />
+              <h2 className="text-gray-600 mt-2">Email* </h2>
+              <input
+                type="email"
+                value={formData.email}
+                name="email"
+                id="email"
+                onChange={handleChange}
+                className="w-full border-2 border-transparent rounded-lg mb-1 focus:outline-none focus:shadow-inner focus:ring-0 focus:border-amber-500 hover:border-amber-500"
+                required
+              />
+              <h2 className="text-gray-600 mt-2">Note* </h2>
+              <textarea
+                type="text"
+                name="note"
+                id="note"
+                rows="2"
+                onChange={handleChange}
+                className="w-full border-2 rounded-lg mb-1 border-transparent focus:outline-none focus:ring-0 focus:ring-amber-500 focus:border-amber-500 hover:border-amber-500"
+                placeholder="Enter you Message here..."
+                required
+              ></textarea>
+
+              <h2 className="text-gray-600 mt-2">Scheduled* </h2>
+              <div className="flex flex-row gap-2">
+                <Select
+                  id="sessionType"
+                  options={provider.therapytype.map((name) => {
+                    return {
+                      value: name,
+                      label: name,
+                    };
+                  })}
+                  required
+                  placeholder="Session Type"
+                  touchUi={false}
+                  className="w-full border-2 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
+                  onChange={(selectedOptions) => {
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      sessionType: Array.isArray(selectedOptions)
+                        ? selectedOptions.map((option) => option.value)
+                        : selectedOptions
+                        ? selectedOptions.value
+                        : [],
+                    }));
+                  }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "transparent",
+                      minWidth: "160px",
+                      border: "none",
+                      outline: "none",
+                      boxShadow: "none",
+                      transition: "all 0.3s ease",
+                    }),
+                  }}
+                />
+              </div>
+              <Button
+                type="submit"
+                onClick={handleSubmit}
+                className="w-full mt-4 blue-button h-14 text-slate-800 font-bold text-center p-3 uppercase rounded-lg hover:opacity-95"
+              >
+                Book a Slot
+              </Button>
             </div>
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              className="w-full mt-4 blue-button h-14 text-slate-800 font-bold text-center p-3 uppercase rounded-lg hover:opacity-95"
-            >
-              Book a Slot
-            </Button>
           </form>
         </div>
       )}
@@ -252,6 +529,7 @@ BookingContact.propTypes = {
     name: PropTypes.array.isRequired,
     userRef: PropTypes.string.isRequired,
     fullName: PropTypes.string.isRequired,
+    timeSlots: PropTypes.object.isRequired,
     therapytype: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
 };

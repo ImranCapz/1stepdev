@@ -64,7 +64,7 @@ export default function Provider() {
   const [otpOpen, setOtpOpen] = useState(false);
   const [otp, setOtp] = useState(0);
   const [topNavbar, setTopNavbar] = useState(false);
-
+  console.log(provider);
   const urlRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -868,10 +868,13 @@ export default function Provider() {
                 >
                   {!message && (
                     <div className="border-2 bg-purple-100 rounded-lg md:w-[440px] 2xl:w-[480px]">
-                      <div className="p-6">
-                        <p className="font-bold text-xl text-gray ">
-                          Get in touch with {provider.fullName}
-                        </p>
+                      <div className={`${contact ? "px-4 p-4" : "p-6"}`}>
+                        <div>
+                          <p className="font-bold text-xl text-gray">
+                            Get in touch with {provider.fullName}
+                          </p>
+                        </div>
+
                         {/* <div className="video-responsive">
                     <iframe
                       width="300"
@@ -957,8 +960,8 @@ export default function Provider() {
                               </Button>
                             </div>
                           )}
-                        {contact && <BookingContact provider={provider} />}
                       </div>
+                      {contact && <BookingContact provider={provider} />}
                     </div>
                   )}
                   <div className="md:w-[440px] 2xl:w-[480px] border-2 bg-purple-100 rounded-lg">

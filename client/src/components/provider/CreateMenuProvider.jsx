@@ -1158,7 +1158,7 @@ export default function CreateMenuProvider() {
                             onClick={() =>
                               handlleTimeSlotToggle(selectedDays, time)
                             }
-                            className={`py-2 text-xs  rounded-md border border-slate-200 hover:border-primary-50 hover:text-primary-60 duration-200 ${
+                            className={`py-2 text-xs rounded-md border border-slate-200 hover:border-primary-50 hover:text-primary-60 duration-200 ${
                               data.timeSlots[selectedDays].includes(time)
                                 ? "bg-primary-50 text-primary-60 border border-purple-200"
                                 : "bg-slate-100 border border-slate-300"
