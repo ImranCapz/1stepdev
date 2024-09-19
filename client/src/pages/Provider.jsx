@@ -870,9 +870,11 @@ export default function Provider() {
                     <div className="border-2 bg-purple-100 rounded-lg md:w-[440px] 2xl:w-[480px]">
                       <div className={`${contact ? "px-4 p-4" : "p-6"}`}>
                         <div>
-                          <p className="font-bold text-xl text-gray">
-                            Get in touch with {provider.fullName}
-                          </p>
+                          {currentUser && (
+                            <p className="font-bold text-xl text-gray">
+                              Get in touch with {provider.fullName}
+                            </p>
+                          )}
                         </div>
 
                         {/* <div className="video-responsive">
