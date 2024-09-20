@@ -79,6 +79,7 @@ export default function UserBooking() {
                 <Table.HeadCell>Provider Name</Table.HeadCell>
                 <Table.HeadCell>Services</Table.HeadCell>
                 <Table.HeadCell>Scheduled Time</Table.HeadCell>
+                <Table.HeadCell>Slot Time</Table.HeadCell>
                 <Table.HeadCell>Session Type</Table.HeadCell>
                 <Table.HeadCell>Note</Table.HeadCell>
                 <Table.HeadCell>Status</Table.HeadCell>
@@ -87,16 +88,28 @@ export default function UserBooking() {
               </Table.Head>
               {booking.map((bookingDetails) => (
                 <Table.Body className="divide-y" key={bookingDetails._id}>
-                  <Table.Row className="bg-white text-gray-600">
+                  <Table.Row
+                    className={`text-gray-600 rounded-lg ${
+                      bookingDetails.status === "pending" &&
+                      "border-l-4 border-amber-300"
+                    } ${
+                      bookingDetails.status === "approved" &&
+                      "border-l-4 border-emerald-400"
+                    }  ${
+                      bookingDetails.status === "rejected" &&
+                      "border-l-4 border-red-500"
+                    }`}
+                  >
                     <Table.Cell>
                       {bookingDetails.providerDetails.fullName}
                     </Table.Cell>
                     <Table.Cell>{bookingDetails.service.join(", ")}</Table.Cell>
                     <Table.Cell>
                       {new Date(
-                        bookingDetails.scheduledTime
+                        bookingDetails.scheduledTime.date
                       ).toLocaleDateString()}
                     </Table.Cell>
+                    <Table.Cell>{bookingDetails.scheduledTime.slot}</Table.Cell>
                     <Table.Cell>{bookingDetails.sessionType}</Table.Cell>
                     <Table.Cell>{bookingDetails.note}</Table.Cell>
                     <Table.Cell>
@@ -122,7 +135,9 @@ export default function UserBooking() {
                         ""
                       )}
                     </Table.Cell>
-                    <Table.Cell>{bookingDetails.status}</Table.Cell>
+                    <Table.Cell>
+                      <p>{bookingDetails.status}</p>
+                    </Table.Cell>
                     {/* <Table.Cell>
                       <Button>EDIT</Button>
                     </Table.Cell> */}

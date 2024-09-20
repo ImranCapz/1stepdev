@@ -17,8 +17,14 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
     scheduledTime: {
-      type: Date,
-      required: true,
+      slot: {
+        type: String,
+        required: true,
+      },
+      date: {
+        type: Date,
+        required: true,
+      },
     },
     note: {
       type: String,

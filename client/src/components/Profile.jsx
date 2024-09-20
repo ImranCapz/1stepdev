@@ -165,7 +165,7 @@ export default function Profile() {
         Account Settings :{" "}
       </h1>
       <div className="p-10 bg-white rounded-lg border">
-        <div className="">
+        <div>
           <form
             className="flex flex-col items-start gap-7 md:w-[900px]"
             onSubmit={handleSubmit}
@@ -221,7 +221,7 @@ export default function Profile() {
                 )}
               </p>
             </div>
-            <div className="flex flex-col md:w-1/2 gap-2 relative">
+            <div className="flex flex-col w-72 md:w-1/2 gap-2 relative">
               <label htmlFor="username" className="text-xl text-slate-600">
                 Username
               </label>
@@ -234,7 +234,7 @@ export default function Profile() {
                   maxLength={20}
                   required
                   placeholder="username"
-                  className="flex-grow text-xl pl-3 text-gray-800 bg-state-100 p-3 rounded-lg ring-0 ring-inset ring-gray-300 py-1.5 border-0 focus:ring-2 bg-slate-100"
+                  className=" text-xl pl-3 w-52 text-gray-800 bg-state-100 p-3 rounded-lg ring-0 ring-inset py-1.5 border-0 focus:ring-2 bg-slate-100"
                   onChange={handleChange}
                 />
               </div>
@@ -262,7 +262,7 @@ export default function Profile() {
                   type={showPassword ? "text" : "password"}
                   id="password"
                   placeholder="password"
-                  className="flex-grow text-xl pl-3 text-gray-700 bg-state-100 p-3 rounded-lg ring-0 ring-inset ring-gray-300 py-1.5 border-0 focus:ring-2 bg-slate-100"
+                  className="flex-grow w-52 text-xl pl-3 text-gray-700 bg-state-100 p-3 rounded-lg ring-0 ring-inset ring-gray-300 py-1.5 border-0 focus:ring-2 bg-slate-100"
                   onChange={handleChange}
                 />
               </div>
@@ -283,7 +283,7 @@ export default function Profile() {
               </h1>
               <button
                 disabled={!isModified}
-                className="bg-blue-600 text-xl font-semibold text-white mt-6 p-3 rounded-lg hover:opacity-95 transition-all disabled:opacity-80"
+                className=" bg-blue-600 text-xl font-semibold text-white mt-6 p-3 rounded-lg hover:opacity-95 transition-all disabled:opacity-80"
               >
                 {loading ? "Saving..." : "Save Changes"}
               </button>

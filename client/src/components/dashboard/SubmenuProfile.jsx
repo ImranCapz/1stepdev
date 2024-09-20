@@ -83,32 +83,35 @@ export default function SubmenuProfile() {
   };
 
   return (
-    <div className="flex flex-col w-full transition-all duration-500 ">
-      <nav className="block border-b items-start">
-        <ul className=" flex items-center gap-x-3 max-w-screen-2xl mx-auto px-4 overflow-x-auto lg:px-8">
-          {submenuNav.map((item, idx) => (
-            <li key={idx} className="py-1">
-              <Link
-                to={`?tag=${item.title}`}
-                className={`block py-2 px-3 rounded-lg md:text-base text-sm text-gray-700 hover:text-amber-500 hover:bg-amber-100 duration-150 ${
-                  activeComponent === item.title
-                    ? "border-b-2 border-amber-500"
-                    : ""
-                }`}
-                onClick={(e) => handleLinkClick(e, item.title)}
-              >
-                <span className="flex flex-row items-center gap-1">
-                  {item.title}
-                  {item.title === "Bookings" && hasApprovedBooking && (
-                    <MdNotificationsActive />
-                  )}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
+    <div className="flex flex-col transition-all duration-500 ">
+      <div className="flex flex-row">
+        {submenuNav.map((item, idx) => (
+          <nav key={idx} className="">
+            <div
+              className={`border-b-2 hover:text-amber-500 hover:bg-amber-100 duration-150 ${
+                activeComponent === item.title ? "border-amber-500 " : ""
+              }`}
+            >
+              <ul className="flex max-w-screen-2xl overflow-x-auto lg:px-4">
+                <li className={`py-1`}>
+                  <Link
+                    to={`?tag=${item.title}`}
+                    className={`block py-1.5 px-2 rounded-t-lg md:text-base text-sm text-gray-700 `}
+                    onClick={(e) => handleLinkClick(e, item.title)}
+                  >
+                    <span className="flex flex-row items-center gap-1">
+                      {item.title}
+                      {item.title === "Bookings" && hasApprovedBooking && (
+                        <MdNotificationsActive />
+                      )}
+                    </span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        ))}
+      </div>
       {activeComponent === "Profile setting" && (
         <div className="w-full min-h-screen transition-all duration-500">
           <Profile />

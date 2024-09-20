@@ -13,11 +13,15 @@ export default function BookingContact({ provider }) {
   const [booking, setBooking] = useState();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
-  const [selectedDays, setSelectedDays] = useState("Saturday");
+  const [selectedDays, setSelectedDays] = useState("");
+  const [selectedDate, setSeletedDate] = useState("");
   const [nameOption, setNameOption] = useState("you");
   const [formData, setFormData] = useState({
     patientName: "",
-    scheduledTime: "",
+    scheduledTime: {
+      slot: "",
+      date: "",
+    },
     email: "",
     note: "",
     service: "",
@@ -26,7 +30,7 @@ export default function BookingContact({ provider }) {
   });
 
   const scrollRef = useRef(null);
-  // console.log(formData);
+  console.log(formData);
 
   useEffect(() => {
     const fetchbooking = async () => {
@@ -80,7 +84,10 @@ export default function BookingContact({ provider }) {
   const handleSlotClick = (slot) => {
     setFormData((prevState) => ({
       ...prevState,
-      scheduledTime: slot,
+      scheduledTime: {
+        slot: slot,
+        date: selectedDate,
+      },
     }));
   };
 
@@ -99,6 +106,20 @@ export default function BookingContact({ provider }) {
     return `${year}-${month}-${day}T${hour}:${minute}`;
   };
 
+  const getDayName = (date) => {
+    return date.toLocaleString("en-US", { weekday: "long" });
+  };
+
+  const formattedDate = (date) => {
+    const options = {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    };
+    return date.toLocaleString("en-IN", options);
+  };
+
   useEffect(() => {
     const today = new Date();
     const dayofWeek = [
@@ -111,33 +132,19 @@ export default function BookingContact({ provider }) {
       "Saturday",
     ];
     const currentDay = dayofWeek[today.getDay()];
+
     setSelectedDays(currentDay);
+    const formatdate = formattedDate(today);
+    setSeletedDate(formatdate);
   }, []);
 
   const morningTime = ["7:00 AM", "11:59 AM"];
   const afternoonTime = ["12:00 PM", "03:59 PM"];
   const eveningTime = ["04:00 PM", "11:59 PM"];
 
-  const scrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: -200,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  const scrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: 200,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  const handleDayClick = (day) => {
-    setSelectedDays(day);
+  const handleDayClick = (dayName, formattedDate) => {
+    setSelectedDays(dayName);
+    setSeletedDate(formattedDate);
   };
 
   const convertTo24Hour = (time) => {
@@ -149,7 +156,8 @@ export default function BookingContact({ provider }) {
     return `${String(hours24).padStart(2, 0)}:${minutes.slice(0, 2)}`;
   };
 
-  const filteredSlots = (slots, start, end, day) => {
+  const filteredSlots = (slots, start, end, selectDate) => {
+    if (!slots) return [];
     const start24 = convertTo24Hour(start);
     const end24 = convertTo24Hour(end);
     const now = new Date();
@@ -160,7 +168,9 @@ export default function BookingContact({ provider }) {
 
     return slots.filter((slot) => {
       const slot24 = convertTo24Hour(slot);
-      if (day === new Date().toLocaleString("en-US", { weekday: "long" })) {
+      const slotDate = new Date(selectDate);
+      const currentDay = new Date();
+      if (slotDate.toLocaleDateString() === currentDay.toLocaleDateString()) {
         return slot24 >= start24 && slot24 <= end24 && slot24 > currentTime;
       }
       return slot24 >= start24 && slot24 <= end24;
@@ -168,65 +178,74 @@ export default function BookingContact({ provider }) {
   };
 
   //count slots for day
-  const countSlotsForDay = (day) => {
+  const countSlotsForDay = (dayName, formattedDate) => {
     const morningSlots = filteredSlots(
-      provider.timeSlots[day],
+      provider.timeSlots[dayName],
       morningTime[0],
       morningTime[1],
-      day
+      formattedDate
     );
     const afternoonSlots = filteredSlots(
-      provider.timeSlots[day],
+      provider.timeSlots[dayName],
       afternoonTime[0],
       afternoonTime[1],
-      day
+      formattedDate
     );
     const eveningSlots = filteredSlots(
-      provider.timeSlots[day],
+      provider.timeSlots[dayName],
       eveningTime[0],
       eveningTime[1],
-      day
+      formattedDate
     );
 
     return morningSlots.length + afternoonSlots.length + eveningSlots.length;
   };
 
-  const getDayName = (date) => {
-    return date.toLocaleString("en-US", { weekday: "long" });
-  };
-
-  const todayName = getDayName(new Date());
-  const tomorrowName = getDayName(
+  const todayName = formattedDate(new Date());
+  const tomorrowName = formattedDate(
     new Date(new Date().setDate(new Date().getDate() + 1))
   );
+
+  const getNext10Days = () => {
+    const day = [];
+    for (let i = 0; i < 12; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() + i);
+      day.push({
+        dayName: getDayName(date),
+        formattedDate: formattedDate(date),
+      });
+    }
+    return day;
+  };
+
+  const next10Days = getNext10Days();
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      const scrollValue = window.innerWidth > 768 ? 426 : 359;
+      scrollRef.current.scrollBy({
+        left: -scrollValue,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      const scrollValue = window.innerWidth > 768 ? 426 : 359;
+      scrollRef.current.scrollBy({
+        left: scrollValue,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
     <>
       {booking && (
         <div className="flex flex-col gap-4 mt-4">
           <form>
-            {/* <div className="flex flex-row justify-center gap-1 items-center">
-              <button
-                onClick={(e) => handleToggle(e, "you")}
-                className={`p-2 w-20 rounded-lg font-bold hover:text-slate-700 transition duration-300 ease-in-out  ${
-                  nameOption === "you"
-                    ? "p-3 bg-emerald-400 text-slate-700"
-                    : "bg-slate-300 text-slate-500 hover:text-slate-700"
-                }`}
-              >
-                You
-              </button>
-              <button
-                onClick={(e) => handleToggle(e, "someone else")}
-                className={`p-2 w-30 rounded-lg font-bold transition duration-300 ease-in-out ${
-                  nameOption === "someone else"
-                    ? "p-3 bg-emerald-400 text-slate-700"
-                    : "bg-slate-300 text-slate-500 hover:text-slate-700"
-                }`}
-              >
-                Someone Else
-              </button>
-            </div> */}
             <div className="relative">
               <button
                 type="button"
@@ -237,83 +256,71 @@ export default function BookingContact({ provider }) {
               </button>
               <div
                 ref={scrollRef}
-                className="flex flex-row border bg-white px-8 md:px-12 border-slate-300 overflow-hidden justify-between gap-8"
-                style={{ maxWidth: "600px" }}
+                className="flex flex-row border bg-white px-2 md:px-2 2xl:px-7 gap-2 md:gap-8 border-slate-300 overflow-x-auto md:overflow-hidden justify-between"
               >
-                {Object.keys(provider.timeSlots)
-                  .filter((day) => {
-                    const today = new Date();
-                    const dayOfWeek = [
-                      "Sunday",
-                      "Monday",
-                      "Tuesday",
-                      "Wednesday",
-                      "Thursday",
-                      "Friday",
-                      "Saturday",
-                    ];
-                    const currentDayIndex = today.getDay();
-                    const dayIndex = dayOfWeek.indexOf(day);
-                    return dayIndex >= currentDayIndex;
-                  })
-                  .map((day) => {
-                    const totalCount = countSlotsForDay(day);
-                    return (
-                      <button
-                        type="button"
-                        className={`p-2 rounded-t-lg font-semibold text-sm text-gray-500 transition duration-300 ease-in-out ${
-                          selectedDays === day
-                            ? "border-b border-purple-500 text-gray-700"
-                            : "text-gray-500"
-                        }`}
-                        key={day}
-                        onClick={() => handleDayClick(day)}
-                      >
-                        <>
-                          {day === todayName ? (
-                            <>
-                              <p>Today</p>
-                              {totalCount > 0 ? (
-                                <p className="text-[11px] text-green-500">
-                                  {totalCount} Slots
-                                </p>
-                              ) : (
-                                <p className="text-[11px] text-red-500">
-                                  No Slots
-                                </p>
-                              )}
-                            </>
-                          ) : day === tomorrowName ? (
-                            <>
-                              <p>Tomorrow</p>
-                              {totalCount > 0 ? (
-                                <p className="text-[11px] text-green-500">
-                                  {totalCount} Slots
-                                </p>
-                              ) : (
-                                <p className="text-[11px] text-red-500">
-                                  No Slots
-                                </p>
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              <p>{day}</p>
-                              {totalCount > 0 ? (
-                                <p className="text-[11px] text-green-500">
-                                  {totalCount} Slots
-                                </p>
-                              ) : (
-                                <p className="text-[11px] text-gray-500">
-                                  No Slots
-                                </p>
-                              )}
-                            </>
-                          )}
-                        </>
-                      </button>
-                    );
-                  })}
+                {next10Days.map((day, index) => {
+                  const totalCount = countSlotsForDay(
+                    day.dayName,
+                    day.formattedDate
+                  );
+                  return (
+                    <button
+                      type="button"
+                      className={`p-2 rounded-t-lg font-semibold text-sm text-gray-500 transition duration-300 ease-in-out ${
+                        selectedDate === day.formattedDate
+                          ? "border-b-2 border-purple-500 text-gray-700"
+                          : "text-gray-500"
+                      }`}
+                      key={index}
+                      onClick={() =>
+                        handleDayClick(day.dayName, day.formattedDate)
+                      }
+                    >
+                      <div className="w-24 whitespace-nowarp">
+                        {day.formattedDate === todayName ? (
+                          <>
+                            <p>Today</p>
+                            {totalCount > 0 ? (
+                              <p className="text-[11px] text-green-500 whitespace-nowrap">
+                                {totalCount} Slots
+                              </p>
+                            ) : (
+                              <p className="text-[11px] text-slate-500">
+                                No Slots Available
+                              </p>
+                            )}
+                          </>
+                        ) : day.formattedDate === tomorrowName ? (
+                          <div className="w-24 whitespace-nowarp">
+                            <p>Tomorrow</p>
+                            {totalCount > 0 ? (
+                              <p className="text-[11px] text-green-500">
+                                {totalCount} Slots
+                              </p>
+                            ) : (
+                              <p className="text-[11px] text-slate-500">
+                                No Slots Available
+                              </p>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="w-24 whitespace-nowarp">
+                            <p>{day.formattedDate.slice(0, 11)}</p>
+                            {totalCount > 0 ? (
+                              <p className="text-[11px] text-green-500">
+                                {totalCount} Slots
+                              </p>
+                            ) : (
+                              <p className="text-[11px] text-gray-500">
+                                No Slots Available
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
               <button
                 type="button"
@@ -331,19 +338,19 @@ export default function BookingContact({ provider }) {
                     provider.timeSlots[selectedDays],
                     morningTime[0],
                     morningTime[1],
-                    selectedDays
+                    selectedDate
                   );
                   const afternoonSlots = filteredSlots(
                     provider.timeSlots[selectedDays],
                     afternoonTime[0],
                     afternoonTime[1],
-                    selectedDays
+                    selectedDate
                   );
                   const eveningSlots = filteredSlots(
                     provider.timeSlots[selectedDays],
                     eveningTime[0],
                     eveningTime[1],
-                    selectedDays
+                    selectedDate
                   );
                   if (
                     morningSlots.length === 0 &&
@@ -386,7 +393,7 @@ export default function BookingContact({ provider }) {
                                 type="button"
                                 className={`py-2 text-xs rounded-md text-primary-60  duration-100
                       ${
-                        formData.scheduledTime === slot
+                        formData.scheduledTime.slot === slot
                           ? "border bg-primary-70 text-white border-purple-200"
                           : "border-2 border-primary-50  hover:bg-primary-50"
                       }`}
@@ -413,7 +420,7 @@ export default function BookingContact({ provider }) {
                                 type="button"
                                 className={`py-2 text-xs rounded-md text-primary-60  duration-100
                       ${
-                        formData.scheduledTime === slot
+                        formData.scheduledTime.slot === slot
                           ? "border bg-primary-70 text-white border-purple-200"
                           : "border-2 border-primary-50  hover:bg-primary-50"
                       }`}
@@ -440,7 +447,7 @@ export default function BookingContact({ provider }) {
                                 type="button"
                                 className={`py-2 text-xs rounded-md text-primary-60  duration-100
                       ${
-                        formData.scheduledTime === slot
+                        formData.scheduledTime.slot === slot
                           ? "border bg-primary-70 text-white border-purple-200"
                           : "border-2 border-primary-50  hover:bg-primary-50"
                       }`}
@@ -458,6 +465,28 @@ export default function BookingContact({ provider }) {
                 })()}
               </div>
             )}
+            <div className="flex flex-row justify-center gap-1 items-center mt-4">
+              <button
+                onClick={(e) => handleToggle(e, "you")}
+                className={`p-2 w-20 rounded-lg font-bold hover:text-slate-700 transition duration-300 ease-in-out  ${
+                  nameOption === "you"
+                    ? "p-3 bg-emerald-400 text-slate-700"
+                    : "bg-slate-300 text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                You
+              </button>
+              <button
+                onClick={(e) => handleToggle(e, "someone else")}
+                className={`p-2 w-30 rounded-lg font-bold transition duration-300 ease-in-out ${
+                  nameOption === "someone else"
+                    ? "p-3 bg-emerald-400 text-slate-700"
+                    : "bg-slate-300 text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                Someone Else
+              </button>
+            </div>
             <div className="px-4">
               {nameOption === "you" && (
                 <>
@@ -554,7 +583,7 @@ export default function BookingContact({ provider }) {
                   required
                   placeholder="Session Type"
                   touchUi={false}
-                  className="w-full border-2 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
+                  className="w-full border-2 p-0.5 rounded-lg bg-white focus:border-amber-700  hover:border-amber-500"
                   onChange={(selectedOptions) => {
                     setFormData((prevState) => ({
                       ...prevState,

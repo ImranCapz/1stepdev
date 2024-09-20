@@ -122,7 +122,7 @@ export default function ProviderBooking() {
                       {bookingDetails.patientDetails.username}
                     </Table.Cell>
                     <Table.Cell>{bookingDetails.service.join(", ")}</Table.Cell>
-                    <Table.Cell>{bookingDetails.scheduledTime}</Table.Cell>
+                    <Table.Cell>{bookingDetails.scheduledTime.slot}</Table.Cell>
                     <Table.Cell>{bookingDetails.sessionType}</Table.Cell>
                     <Table.Cell>{bookingDetails.note}</Table.Cell>
                     <Table.Cell>
