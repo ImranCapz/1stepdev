@@ -892,14 +892,14 @@ export default function Provider() {
                             <p className="font-bold text-xl text-gray ">
                               Get in touch with {provider.fullName}
                             </p>
-                            <Button
-                              onClick={() => {
-                                setOpenModal(true);
-                              }}
-                              className="w-full rounded-lg uppercase btn-color"
-                            >
-                              Book A Appointment
-                            </Button>
+                            {provider.timeSlots.length > 0 && (
+                              <Button
+                                onClick={() => setContact(true)}
+                                className="w-full btn-color rounded-lg uppercase hover:opacity-95"
+                              >
+                                Book A Appointment
+                              </Button>
+                            )}
                             <Button
                               variant="outlined"
                               onClick={() => {
@@ -937,12 +937,14 @@ export default function Provider() {
                           provider.userRef !== currentUser._id &&
                           !contact && (
                             <div className="flex flex-col mt-2 gap-4">
-                              <Button
-                                onClick={() => setContact(true)}
-                                className="w-full btn-color rounded-lg uppercase hover:opacity-95"
-                              >
-                                Contact FOR BOOKING
-                              </Button>
+                              {provider.timeSlots.length > 0 && (
+                                <Button
+                                  onClick={() => setContact(true)}
+                                  className="w-full btn-color rounded-lg uppercase hover:opacity-95"
+                                >
+                                  Contact FOR BOOKING
+                                </Button>
+                              )}
                               <Button
                                 onClick={handleFavorite}
                                 variant="outlined"
