@@ -30,7 +30,7 @@ export default function BookingContact({ provider }) {
   });
 
   const scrollRef = useRef(null);
-  console.log(formData);
+  // console.log(formData);
 
   useEffect(() => {
     const fetchbooking = async () => {
@@ -156,8 +156,8 @@ export default function BookingContact({ provider }) {
     return `${String(hours24).padStart(2, 0)}:${minutes.slice(0, 2)}`;
   };
 
-  const filteredSlots = (slots, start, end, selectDate) => {
-    if (!slots) return [];
+  const getfilteredSlots = (slots, start, end, selectDate) => {
+    if (!slots) return { filterdSlots: [], availableCount: 0 };
     const start24 = convertTo24Hour(start);
     const end24 = convertTo24Hour(end);
     const now = new Date();
@@ -166,39 +166,59 @@ export default function BookingContact({ provider }) {
       .toString()
       .padStart(2, 0)}`;
 
-    return slots.filter((slot) => {
+    let availableCount = 0;
+
+    const filteredSlots = slots.filter((slot) => {
       const slot24 = convertTo24Hour(slot);
       const slotDate = new Date(selectDate);
+
+      //booked slots
       const currentDay = new Date();
+      const bookedSlots = `${selectDate}-${slot}`;
+      const isBooked = bookedSlots in provider.bookedSlots;
+
       if (slotDate.toLocaleDateString() === currentDay.toLocaleDateString()) {
-        return slot24 >= start24 && slot24 <= end24 && slot24 > currentTime;
+        const isAvailable =
+          slot24 >= start24 &&
+          slot24 <= end24 &&
+          slot24 > currentTime &&
+          !isBooked;
+        if (isAvailable) availableCount++;
+        return slot24 >= start24 && slot24 <= end24;
       }
+      const isAvailable = slot24 >= start24 && slot24 <= end24 && !isBooked;
+      if (isAvailable) availableCount++;
       return slot24 >= start24 && slot24 <= end24;
     });
+    return { filteredSlots, availableCount };
   };
 
   //count slots for day
   const countSlotsForDay = (dayName, formattedDate) => {
-    const morningSlots = filteredSlots(
+    const morningSlots = getfilteredSlots(
       provider.timeSlots[dayName],
       morningTime[0],
       morningTime[1],
       formattedDate
     );
-    const afternoonSlots = filteredSlots(
+    const afternoonSlots = getfilteredSlots(
       provider.timeSlots[dayName],
       afternoonTime[0],
       afternoonTime[1],
       formattedDate
     );
-    const eveningSlots = filteredSlots(
+    const eveningSlots = getfilteredSlots(
       provider.timeSlots[dayName],
       eveningTime[0],
       eveningTime[1],
       formattedDate
     );
 
-    return morningSlots.length + afternoonSlots.length + eveningSlots.length;
+    return (
+      morningSlots.availableCount +
+      afternoonSlots.availableCount +
+      eveningSlots.availableCount
+    );
   };
 
   const todayName = formattedDate(new Date());
@@ -241,6 +261,12 @@ export default function BookingContact({ provider }) {
     }
   };
 
+  const isBooked = (formattedDate, slot) => {
+    if (!provider.bookedSlots) return false;
+    const bookingSlot = `${formattedDate}-${slot}`;
+    console.log(bookingSlot);
+    return bookingSlot in provider.bookedSlots;
+  };
   return (
     <>
       {booking && (
@@ -249,7 +275,7 @@ export default function BookingContact({ provider }) {
             <div className="relative">
               <button
                 type="button"
-                className="absolute left-0 top-1/3 ml-2 text-purple-500 text-xl"
+                className="absolute left-0 top-1/3 ml-1 text-purple-500 text-xl"
                 onClick={scrollLeft}
               >
                 <FaAngleLeft />
@@ -325,7 +351,7 @@ export default function BookingContact({ provider }) {
               <button
                 type="button"
                 onClick={scrollRight}
-                className="absolute right-0 top-1/3 mr-2 text-purple-500 text-xl"
+                className="absolute right-0 top-1/3 mr-1 text-purple-500 text-xl"
               >
                 <FaAngleRight />
               </button>
@@ -334,28 +360,28 @@ export default function BookingContact({ provider }) {
             {selectedDays && (
               <div className="px-4 h-48 overflow-auto">
                 {(() => {
-                  const morningSlots = filteredSlots(
+                  const morningSlots = getfilteredSlots(
                     provider.timeSlots[selectedDays],
                     morningTime[0],
                     morningTime[1],
                     selectedDate
                   );
-                  const afternoonSlots = filteredSlots(
+                  const afternoonSlots = getfilteredSlots(
                     provider.timeSlots[selectedDays],
                     afternoonTime[0],
                     afternoonTime[1],
                     selectedDate
                   );
-                  const eveningSlots = filteredSlots(
+                  const eveningSlots = getfilteredSlots(
                     provider.timeSlots[selectedDays],
                     eveningTime[0],
                     eveningTime[1],
                     selectedDate
                   );
                   if (
-                    morningSlots.length === 0 &&
-                    afternoonSlots.length === 0 &&
-                    eveningSlots.length === 0
+                    morningSlots.availableCount === 0 &&
+                    afternoonSlots.availableCount === 0 &&
+                    eveningSlots.availableCount === 0
                   ) {
                     return (
                       <>
@@ -379,82 +405,91 @@ export default function BookingContact({ provider }) {
                   }
                   return (
                     <>
-                      {morningSlots.length > 0 && (
+                      {morningSlots.filteredSlots.length > 0 && (
                         <div>
                           <h1 className="mt-2 text-gray text-sm font-medium mb-2">
                             Morning Slots{" "}
                             <span className="text-slate-500 text-xs">
-                              ({morningSlots.length} slots)
+                              ({morningSlots.availableCount} slots)
                             </span>
                           </h1>
                           <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
-                            {morningSlots.map((slot, index) => (
+                            {morningSlots.filteredSlots.map((slot, index) => (
                               <button
                                 type="button"
                                 className={`py-2 text-xs rounded-md text-primary-60  duration-100
                       ${
                         formData.scheduledTime.slot === slot
                           ? "border bg-primary-70 text-white border-purple-200"
+                          : isBooked(selectedDate, slot)
+                          ? "border-2 bg-primary-80 text-white"
                           : "border-2 border-primary-50  hover:bg-primary-50"
                       }`}
                                 key={index}
                                 onClick={() => handleSlotClick(slot)}
+                                disabled={isBooked(selectedDate, slot)}
                               >
-                                {slot}
+                                {isBooked(selectedDate, slot) ? "Booked" : slot}
                               </button>
                             ))}
                           </div>
                         </div>
                       )}
-                      {afternoonSlots.length > 0 && (
+                      {afternoonSlots.filteredSlots.length > 0 && (
                         <div>
                           <h1 className="mt-2 text-gray text-sm font-medium mb-2">
                             Afternoon Slots{" "}
                             <span className="text-slate-500 text-xs">
-                              ({afternoonSlots.length} slots)
+                              ({afternoonSlots.availableCount} slots)
                             </span>
                           </h1>
                           <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
-                            {afternoonSlots.map((slot, index) => (
+                            {afternoonSlots.filteredSlots.map((slot, index) => (
                               <button
                                 type="button"
                                 className={`py-2 text-xs rounded-md text-primary-60  duration-100
                       ${
                         formData.scheduledTime.slot === slot
                           ? "border bg-primary-70 text-white border-purple-200"
+                          : isBooked(selectedDate, slot)
+                          ? "border-2 bg-primary-80 text-white"
                           : "border-2 border-primary-50  hover:bg-primary-50"
                       }`}
                                 key={index}
                                 onClick={() => handleSlotClick(slot)}
+                                disabled={isBooked(selectedDate, slot)}
                               >
-                                {slot}
+                                {isBooked(selectedDate, slot) ? "Booked" : slot}
                               </button>
                             ))}
                           </div>
                         </div>
                       )}
-                      {eveningSlots.length > 0 && (
+                      {eveningSlots.filteredSlots.length > 0 && (
                         <div>
                           <h1 className="mt-2 text-gray text-sm font-medium mb-2">
                             Evening Slots{" "}
                             <span className="text-slate-500 text-xs">
-                              ({eveningSlots.length} slots)
+                              ({eveningSlots.availableCount} slots)
                             </span>
                           </h1>
                           <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
-                            {eveningSlots.map((slot, index) => (
+                            {eveningSlots.filteredSlots.map((slot, index) => (
                               <button
                                 type="button"
                                 className={`py-2 text-xs rounded-md text-primary-60  duration-100
                       ${
                         formData.scheduledTime.slot === slot
                           ? "border bg-primary-70 text-white border-purple-200"
+                          : isBooked(selectedDate, slot)
+                          ? "border-2 bg-primary-80 text-white"
                           : "border-2 border-primary-50  hover:bg-primary-50"
                       }`}
                                 key={index}
                                 onClick={() => handleSlotClick(slot)}
+                                disabled={isBooked(selectedDate, slot)}
                               >
-                                {slot}
+                                {isBooked(selectedDate, slot) ? "Booked" : slot}
                               </button>
                             ))}
                           </div>
@@ -630,5 +665,6 @@ BookingContact.propTypes = {
     fullName: PropTypes.string.isRequired,
     timeSlots: PropTypes.object.isRequired,
     therapytype: PropTypes.arrayOf(PropTypes.string).isRequired,
+    bookedSlots: PropTypes.object,
   }).isRequired,
 };

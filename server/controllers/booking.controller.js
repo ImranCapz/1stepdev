@@ -6,7 +6,11 @@ import mongoose from "mongoose";
 import nodemailer from "nodemailer";
 
 export const booking = async (req, res, next) => {
-  const { patient, provider } = req.body;
+  const {
+    patient,
+    provider,
+    scheduledTime: { date, slot },
+  } = req.body;
   try {
     const patientExist = await User.findById(patient);
     const providerExist = await Provider.findById(provider);
@@ -15,6 +19,13 @@ export const booking = async (req, res, next) => {
     }
     const newBooking = await Booking.create(req.body);
     res.status(201).json(newBooking);
+
+    const bookingSlot = `${date}-${slot}`;
+    if (providerExist.bookedSlots.has(bookingSlot)) {
+      return res.status(400).json({ message: "Slot already booked" });
+    }
+    providerExist.bookedSlots.set(bookingSlot, "booked");
+    await providerExist.save();
   } catch (error) {
     next(error);
   }
@@ -121,7 +132,8 @@ let transporter = nodemailer.createTransport({
 });
 
 export const bookingemail = async (req, res, next) => {
-  const { email, subject, providerName, providerProfile, service, name,time } = req.body;
+  const { email, subject, providerName, providerProfile, service, name, time } =
+    req.body;
 
   try {
     let info = await transporter.sendMail({

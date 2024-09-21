@@ -5,7 +5,7 @@ import Room from "./models/room.model.js";
 const socketSetup = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: ["http://localhost:5173", "https://www.1step.co.in"],
       methods: ["GET", "POST"],
       credentials: true,
     },

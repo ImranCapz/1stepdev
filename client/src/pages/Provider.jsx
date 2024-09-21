@@ -317,6 +317,12 @@ export default function Provider() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const hasAvailableTimeSlots = (timeSlots) => {
+    return (
+      timeSlots && Object.values(timeSlots).some((slots) => slots.length > 0)
+    );
+  };
   return (
     <div className="w-full min-h-screen mx-auto flex lg:flex-row flex-col-reverse bg-providerItem">
       {loading ? (
@@ -892,9 +898,11 @@ export default function Provider() {
                             <p className="font-bold text-xl text-gray ">
                               Get in touch with {provider.fullName}
                             </p>
-                            {provider.timeSlots.length > 0 && (
+                            {hasAvailableTimeSlots(provider.timeSlots) && (
                               <Button
-                                onClick={() => setContact(true)}
+                                onClick={() => {
+                                  setOpenModal(true);
+                                }}
                                 className="w-full btn-color rounded-lg uppercase hover:opacity-95"
                               >
                                 Book A Appointment
@@ -937,12 +945,12 @@ export default function Provider() {
                           provider.userRef !== currentUser._id &&
                           !contact && (
                             <div className="flex flex-col mt-2 gap-4">
-                              {provider.timeSlots.length > 0 && (
+                              {hasAvailableTimeSlots(provider.timeSlots) && (
                                 <Button
                                   onClick={() => setContact(true)}
                                   className="w-full btn-color rounded-lg uppercase hover:opacity-95"
                                 >
-                                  Contact FOR BOOKING
+                                  Booking A Slot
                                 </Button>
                               )}
                               <Button
