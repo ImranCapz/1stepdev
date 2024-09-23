@@ -14,46 +14,17 @@ import { BeatLoader } from "react-spinners";
 import SearchBar from "../SearchBar";
 
 export default function UserBooking() {
-  const [booking, setBooking] = useState([]);
-  const { currentUser } = useSelector((state) => state.user);
+  const { bookings } = useSelector((state) => state.booking);
+  const { isUserBookingFetched } = useSelector((state) => state.booking);
+  console.log("isUserBookingFetched:", isUserBookingFetched);
   const { loading } = useSelector((state) => state.booking);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const fetchBooking = async () => {
-      const url = `/server/booking/getuserbookings/${currentUser._id}`;
-      console.log("Fetching bookings from URL:", url);
-      try {
-        dispatch(getBookingsStart());
-        const response = await fetch(url);
-        console.log("Response status:", response.status);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        dispatch(getBookingSuccess(data));
-        console.log("Booking data:", data);
-        const sortedBookings = data
-          .map((obj) => ({ ...obj }))
-          .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-        setBooking(sortedBookings);
-      } catch (error) {
-        dispatch(getBookingFailure(error));
-        console.error(
-          "An error occurred while fetching booking details:",
-          error
-        );
-      }
-    };
-
-    fetchBooking();
-  }, [currentUser._id, dispatch]);
 
   return (
     <>
       <div
         className={`table-auto md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 max-h-screen ${
-          booking && booking.length > 0
+          bookings && bookings.length > 0
             ? "overflow-x-scroll md:overflow-x-auto"
             : ""
         }`}
@@ -69,7 +40,7 @@ export default function UserBooking() {
           >
             <BeatLoader color="#10ebd8" loading={loading} size={15} />
           </div>
-        ) : booking && booking.length > 0 ? (
+        ) : bookings && bookings.length > 0 ? (
           <>
             <h1 className="px-2 text-2xl text-gray font-bold mb-4">
               Your Bookings :
@@ -86,18 +57,18 @@ export default function UserBooking() {
                 <Table.HeadCell>Process</Table.HeadCell>
                 {/* <Table.HeadCell>Edit</Table.HeadCell> */}
               </Table.Head>
-              {booking.map((bookingDetails) => (
+              {bookings.map((bookingDetails) => (
                 <Table.Body className="divide-y" key={bookingDetails._id}>
                   <Table.Row
                     className={`text-gray-600 rounded-lg ${
                       bookingDetails.status === "pending" &&
-                      "border-l-4 border-amber-300"
+                      "border-l-4 border-amber-300 bg-amber-100"
                     } ${
                       bookingDetails.status === "approved" &&
-                      "border-l-4 border-emerald-400"
+                      "border-l-4 border-emerald-400 bg-emerald-100"
                     }  ${
                       bookingDetails.status === "rejected" &&
-                      "border-l-4 border-red-500"
+                      "border-l-4 border-red-500 bg-red-100"
                     }`}
                   >
                     <Table.Cell>

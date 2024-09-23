@@ -71,13 +71,15 @@ export default function SubmenuProfile() {
     navigate(`?tag=${title}`);
     if (title === "Bookings") {
       setIsBookingsLinkClicked(false);
-      const approvedBookings = bookings.filter(
-        (booking) => booking.status === "approved"
-      );
-      if (approvedBookings.length > 0) {
-        const latestBooking = approvedBookings[approvedBookings.length - 1];
-        dispatch(setLastSeenBookingId(latestBooking._id));
-        dispatch(setHasApprovedBooking(false));
+      if (bookings && bookings.length > 0) {
+        const approvedBookings = bookings.filter(
+          (booking) => booking.status === "approved"
+        );
+        if (approvedBookings.length > 0) {
+          const latestBooking = approvedBookings[approvedBookings.length - 1];
+          dispatch(setLastSeenBookingId(latestBooking._id));
+          dispatch(setHasApprovedBooking(false));
+        }
       }
     }
   };
@@ -86,7 +88,7 @@ export default function SubmenuProfile() {
     <div className="flex flex-col transition-all duration-500 ">
       <div className="flex flex-row">
         {submenuNav.map((item, idx) => (
-          <nav key={idx} className="">
+          <nav key={idx}>
             <div
               className={`border-b-2 hover:text-amber-500 hover:bg-amber-100 duration-150 ${
                 activeComponent === item.title ? "border-amber-500 " : ""

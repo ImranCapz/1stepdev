@@ -2,10 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   bookings: [],
+  providerBooking: [],
   loading: false,
   error: null,
   hasApprovedBooking: false,
   lastSeenBookingId: null,
+  isUserBookingFetched: false,
+  isProviderBookingFetched: false,
 };
 
 export const approveBooking = createAsyncThunk(
@@ -49,8 +52,22 @@ const bookingSlice = createSlice({
       state.bookings = action.payload;
       state.loading = false;
       state.error = null;
+      state.isUserBookingFetched = true;
     },
     getBookingFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.isUserBookingFetched = true;
+    },
+    getProviderBookingStart: (state) => {
+      state.loading = true;
+    },
+    getProviderBookingSuccess: (state, action) => {
+      state.providerBooking = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    getProviderBookingFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
@@ -64,6 +81,7 @@ const bookingSlice = createSlice({
       state.bookings = null;
       state.loading = false;
       state.error = null;
+      state.isUserBookingFetched = false;
     },
   },
   extraReducers: (builder) => {
@@ -93,6 +111,9 @@ export const {
   getBookingsStart,
   getBookingSuccess,
   getBookingFailure,
+  getProviderBookingStart,
+  getProviderBookingSuccess,
+  getProviderBookingFailure,
   bookingOut,
   setHasApprovedBooking,
   setLastSeenBookingId,

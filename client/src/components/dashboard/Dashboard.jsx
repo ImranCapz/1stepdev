@@ -19,16 +19,19 @@ export default function Dashboard() {
   const [tab, setTab] = useState("Dashboard");
   const { currentUser } = useSelector((state) => state.user);
   const { currentProvider } = useSelector((state) => state.provider);
+  const { bookings } = useSelector((state) => state.booking);
+  const { isUserBookingFetched } = useSelector((state) => state.booking);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchBooking = async () => {
+      if (isUserBookingFetched) return;
       const url = `/server/booking/getuserbookings/${currentUser._id}`;
       try {
         dispatch(getBookingsStart());
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          console.log("Response status:", response.status);
         }
         const data = await response.json();
         const sortedData = data.sort(
@@ -36,16 +39,16 @@ export default function Dashboard() {
         );
         dispatch(getBookingSuccess(sortedData));
       } catch (error) {
-        dispatch(getBookingFailure(error));
         console.error(
           "An error occurred while fetching booking details:",
           error
         );
+        dispatch(getBookingFailure(error));
       }
     };
 
     fetchBooking();
-  }, [currentUser._id, dispatch]);
+  }, [currentUser._id, dispatch, isUserBookingFetched]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);

@@ -38,17 +38,9 @@ import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { IoIosSend } from "react-icons/io";
 
-function convert12Hrs(time) {
-  const [hours, minutes] = time.split(":");
-  const hrsin12hrs = (hours % 12 || 12).toString().padStart(2, "0");
-  const period = hours >= 12 ? "PM" : "AM";
-  return `${hrsin12hrs}:${minutes}${period}`;
-}
-
 export default function Provider() {
   SwiperCore.use([Navigation]);
   const { currentUser } = useSelector((state) => state.user);
-  const { id } = useSelector((state) => state.provider);
   const [provider, setprovider] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -81,6 +73,12 @@ export default function Provider() {
     return () => newSocket.close();
   }, [currentUser]);
 
+  //url searchTerm
+  const [searchTerm, setSearchTerm] = useState("urlsearchTerm");
+  const searchQuery = new URLSearchParams(location.search);
+  const urlsearchTerm = searchQuery.get("service");
+  const id = searchQuery.get("id");
+
   const handleSendMessage = () => {
     if (currentUser === null) return;
     if (socket) {
@@ -100,11 +98,6 @@ export default function Provider() {
       navigate("/dashboard?tab=messages");
     }
   };
-
-  //url searchTerm
-  const [searchTerm, setSearchTerm] = useState("urlsearchTerm");
-  const searchQuery = new URLSearchParams(location.search);
-  const urlsearchTerm = searchQuery.get("service");
 
   useEffect(() => {
     setSearchTerm(urlsearchTerm);

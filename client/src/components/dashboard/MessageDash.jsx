@@ -135,31 +135,6 @@ export default function MessageDash() {
     }
   }, [selectedProvider, socket, currentUser._id]);
 
-  useEffect(() => {
-    const fetchProvidermsg = async () => {
-      setLoading(true);
-      topLoadingBarRef.current.continuousStart();
-      try {
-        const res = await fetch(
-          `/server/message/getprovider/${currentUser._id}`
-        );
-        const data = await res.json();
-        if (data.success === false) {
-          setLoading(false);
-          setProviderLoading(false);
-          return;
-        }
-        setProviderDetails(data);
-        topLoadingBarRef.current.complete(50);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-      }
-    };
-    fetchProvidermsg();
-  }, [currentUser._id]);
-
   const handlekeydown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -271,6 +246,31 @@ export default function MessageDash() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const fetchProvidermsg = async () => {
+      setLoading(true);
+      topLoadingBarRef.current.continuousStart();
+      try {
+        const res = await fetch(
+          `/server/message/getprovider/${currentUser._id}`
+        );
+        const data = await res.json();
+        if (data.success === false) {
+          setLoading(false);
+          setProviderLoading(false);
+          return;
+        }
+        setProviderDetails(data);
+        topLoadingBarRef.current.complete(50);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    };
+    fetchProvidermsg();
+  }, [currentUser._id]);
 
   //fetch last message for each provider
   useEffect(() => {

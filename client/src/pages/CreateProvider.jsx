@@ -409,7 +409,7 @@ export default function CreateProvider() {
   };
 
   return (
-    <div className="md:p-10 p-5 w-full mx-auto flex-col items-center bg-sky-100">
+    <div className="md:p-10 p-5 w-full mx-auto flex-col items-center bg-sky-100 mb-10">
       {loading ? (
         <>
           <div

@@ -456,6 +456,13 @@ const Header = ({ showSubMenu }) => {
                         >
                           Profile
                         </Link>
+                        <Link
+                          to="/"
+                          onClick={handleSignout}
+                          className="block px-4 py-2 text-gray-200"
+                        >
+                          Sign Out
+                        </Link>
                       </li>
                     </div>
                   </div>

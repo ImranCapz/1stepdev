@@ -4,6 +4,7 @@ const initialState = {
   currentProvider: null,
   loading: false,
   error: null,
+  isProviderFetched: true,
 };
 
 export const providerSlice = createSlice({
@@ -18,8 +19,10 @@ export const providerSlice = createSlice({
     },
     providerData: (state, action) => {
       if (action.payload) {
+        state.isProviderFetched = true;
         state.currentProvider = action.payload;
       } else {
+        state.isProviderFetched = false;
         state.currentProvider = null;
       }
       state.loading = false;
@@ -27,6 +30,7 @@ export const providerSlice = createSlice({
     },
     providerOut: (state) => {
       state.currentProvider = null;
+      state.isProviderFetched = true;
       state.loading = false;
       state.error = false;
     },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaRegSmileBeam } from "react-icons/fa";
 import { suggestions } from "../suggestions";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,8 +35,6 @@ export default function CreateMenuParent() {
     },
   });
   
-
-  console.log(parent);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
   const [successScreen, setSuccessScreen] = useState(false);
@@ -263,7 +261,7 @@ export default function CreateMenuParent() {
         ></div>
       </div>
       <div className="container flex flex-col mx-auto mb-16 md:mb-0">
-        <h1 className="text-lg md:text-2xl m-4 text-left font-bold text-gray">
+        <h1 className="text-2xl m-4 text-left font-bold text-gray">
           Fill the form for Parent Profile :
         </h1>
         <div className="flex flex-col md:flex-row md:gap-10 rounded-lg justify-center items-center">

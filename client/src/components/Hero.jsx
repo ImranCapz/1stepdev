@@ -20,6 +20,8 @@ import HowItWorks from "../pages/HowItWorks";
 const Hero = () => {
   const { searchTerm } = useParams();
   const { currentUser } = useSelector((state) => state.user);
+  const { isProviderFetched } = useSelector((state) => state.provider);
+  const { currentProvider } = useSelector((state) => state.provider);
   const [defaultsearchTerm, setDefaultSearchTerm] = useState(searchTerm);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ const Hero = () => {
 
   useEffect(() => {
     const fetchProviders = async () => {
-      if (!currentUser) return;
+      if (!currentUser || !isProviderFetched || currentProvider) return;
       try {
         const res = await fetch(
           `/server/provider/fetchprovider/${currentUser._id}`
@@ -46,18 +48,20 @@ const Hero = () => {
         if (data.success === false) {
           return;
         }
+        console.log(data.fetchprovider);
         dispatch(providerData(data.fetchprovider));
       } catch (error) {
         console.log(error);
       }
     };
     fetchProviders();
-  }, [currentUser, dispatch]);
+  }, [currentUser, dispatch, isProviderFetched, currentProvider]);
 
   const startSearching = () => {
     window.scrollTo(0, 0);
     navigate("/Diagnostic%20Evaluation");
   };
+
   // const integrations = [
   //   {
   //     title: "",

@@ -184,7 +184,7 @@ export default function BookingContact({ provider }) {
           slot24 > currentTime &&
           !isBooked;
         if (isAvailable) availableCount++;
-        return slot24 >= start24 && slot24 <= end24;
+        return slot24 >= start24 && slot24 <= end24 && slot24 > currentTime;
       }
       const isAvailable = slot24 >= start24 && slot24 <= end24 && !isBooked;
       if (isAvailable) availableCount++;

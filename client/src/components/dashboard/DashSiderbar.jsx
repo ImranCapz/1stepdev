@@ -73,6 +73,7 @@ export default function DashSidebar() {
       name: "Sign Out",
       icon: HiArrowSmRight,
       link: "/",
+      onClick: handleSignout,
     },
   ];
 
@@ -136,7 +137,7 @@ export default function DashSidebar() {
         <div className="flex flex-row items-center justify-around w-full">
           {bottomNav.map((item, index) => (
             <div key={index}>
-              <Link to={item.link}>
+              <Link to={item.link} onClick={item.onClick ? item.onClick : null}>
                 <div
                   className={`text-2xl ${
                     active === item.name
