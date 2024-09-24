@@ -446,7 +446,8 @@ export default function Search() {
                   <div className="flex items-center gap-1 px-2 rounded-lg">
                     <input
                       type="text"
-                      name="searchInput"
+                      id="what"
+                      name="what"
                       value={searchTerm}
                       placeholder="Service or Provider"
                       onChange={handleInputChange}
@@ -494,6 +495,7 @@ export default function Search() {
                   Where
                 </label>
                 <PlacesAutocomplete
+                  id="where"
                   value={address.city || ""}
                   onChange={(value) => setAddress({ city: value })}
                   onSelect={handleSelect}

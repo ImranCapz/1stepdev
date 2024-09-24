@@ -633,9 +633,9 @@ export default function CreateMenuProvider() {
                 {getGoodToKnowText(step)}
               </p>
 
-              <p className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
+              <span className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
                 {renderRules(step)}
-              </p>
+              </span>
             </div>
           </div>
           <form onSubmit={submitfn} className="w-full md:w-[500px]">

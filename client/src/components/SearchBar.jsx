@@ -118,7 +118,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
       >
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
           <label
-            htmlFor="what"
+            htmlFor="searchInput"
             className="font-sans mb-1.5 md:mb-0 py-1 px-2 block text-base text-gray-700 font-bold mt-8"
           >
             What
@@ -127,6 +127,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
             <div className="flex items-center gap-1 px-2 rounded-lg">
               <input
                 type="text"
+                id="searchInput"
                 name="searchInput"
                 value={searchTerm}
                 placeholder="Service or Provider"

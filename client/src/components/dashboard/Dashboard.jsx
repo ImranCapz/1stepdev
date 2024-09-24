@@ -19,7 +19,6 @@ export default function Dashboard() {
   const [tab, setTab] = useState("Dashboard");
   const { currentUser } = useSelector((state) => state.user);
   const { currentProvider } = useSelector((state) => state.provider);
-  const { bookings } = useSelector((state) => state.booking);
   const { isUserBookingFetched } = useSelector((state) => state.booking);
   const dispatch = useDispatch();
 

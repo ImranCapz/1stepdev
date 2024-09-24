@@ -8,41 +8,57 @@ import { useDispatch } from "react-redux";
 import {
   approveBooking,
   rejectBooking,
+  getProviderBookingStart,
+  getProviderBookingSuccess,
+  getProviderBookingFailure,
 } from "../../redux/booking/bookingSlice";
 import toast from "react-hot-toast";
 
 export default function ProviderBooking() {
-  const [appointment, setAppointment] = useState([]);
-  const [provider, setProvider] = useState({});
+  const { providerBooking, loading } = useSelector((state) => state.booking);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
-
-  const fetchBooking = useCallback(async (providerId) => {
-    const res = await fetch(`/server/booking/getbookings/${providerId}`);
-    const bookingData = await res.json();
-    if (bookingData.success === false) {
-      return;
-    }
-    const sortedBookings = bookingData.sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
-    setAppointment(sortedBookings);
-  }, []);
-
+  const { currentProvider } = useSelector((state) => state.provider);
+  console.log(providerBooking);
   useEffect(() => {
-    const fetchProvider = async () => {
-      const res = await fetch(`/server/user/providers/${currentUser._id}`);
-      const data = await res.json();
-      if (data.success === false) {
+    const fetchProviderBooking = async () => {
+      if (!currentProvider) {
         return;
       }
-      setProvider(data);
-      if (data[0]) {
-        fetchBooking(data[0]._id);
+      try {
+        dispatch(getProviderBookingStart());
+        const res = await fetch(
+          `/server/booking/getbookings/${currentProvider._id}`
+        );
+        const data = await res.json();
+        if (data.success === false) {
+          return;
+        }
+        console.log(data);
+        const sortedData = data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        console.log(sortedData);
+        dispatch(getProviderBookingSuccess(sortedData));
+      } catch (error) {
+        console.log(error);
+        dispatch(getProviderBookingFailure());
       }
     };
-    fetchProvider();
-  }, [currentUser._id, fetchBooking]);
+    fetchProviderBooking();
+  }, [currentProvider, dispatch]);
+
+  // const fetchBooking = useCallback(async (providerId) => {
+  //   const res = await fetch(`/server/booking/getbookings/${providerId}`);
+  //   const bookingData = await res.json();
+  //   if (bookingData.success === false) {
+  //     return;
+  //   }
+  //   const sortedBookings = bookingData.sort(
+  //     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  //   );
+  //   setAppointment(sortedBookings);
+  // }, []);
 
   const handleApprove = async (bookingId) => {
     dispatch(approveBooking(bookingId)).then(async () => {
@@ -67,7 +83,8 @@ export default function ProviderBooking() {
           service: booking.service.join(", "),
           name: currentUser.username,
           providerProfile: provider[0].profilePicture,
-          time: booking.scheduledTime,
+          slot: booking.scheduledTime.slot,
+          date: booking.scheduledTime.date,
         }),
       });
       const data = await res.json();
@@ -96,10 +113,10 @@ export default function ProviderBooking() {
     <>
       <div
         className={`table-auto md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 ${
-          appointment ? "overflow-x-scroll" : ""
+          providerBooking ? "overflow-x-scroll" : ""
         }`}
       >
-        {appointment && appointment.length > 0 ? (
+        {providerBooking && providerBooking.length > 0 ? (
           <>
             <h1 className="text-2xl text-gray font-bold mb-5">
               Your Appointments :
@@ -115,7 +132,7 @@ export default function ProviderBooking() {
                 <Table.HeadCell>Action</Table.HeadCell>
                 {/* <Table.HeadCell>Edit</Table.HeadCell> */}
               </Table.Head>
-              {appointment.map((bookingDetails) => (
+              {providerBooking.map((bookingDetails) => (
                 <Table.Body className="divide-y" key={bookingDetails._id}>
                   <Table.Row className="bg-white text-gray-600">
                     <Table.Cell>

@@ -4,7 +4,7 @@ import { HiArrowSmRight } from "react-icons/hi";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { RiDashboardFill } from "react-icons/ri";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { bookingOut } from "../../redux/booking/bookingSlice";
 import { signOut } from "../../redux/user/userSlice";
 import { providerOut } from "../../redux/provider/providerSlice";
@@ -18,13 +18,13 @@ export default function DashSidebar() {
   const [tab, setTab] = useState("");
   const [active, setActive] = useState("dashboard");
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
     if (tabFromUrl) {
       setTab(tabFromUrl);
+      setActive(tabFromUrl);
     }
   }, [location.search]);
 
@@ -50,22 +50,22 @@ export default function DashSidebar() {
 
   const bottomNav = [
     {
-      name: "Dashboard",
+      name: "dashboard",
       icon: RiDashboardFill,
       link: "/dashboard?tab=dashboard",
     },
     {
-      name: "Providers",
+      name: "providers",
       icon: MdSupervisorAccount,
       link: "/dashboard?tab=providers",
     },
     {
-      name: "Messages",
+      name: "messages",
       icon: IoIosChatboxes,
       link: "/dashboard?tab=messages",
     },
     {
-      name: "Profile",
+      name: "profile",
       icon: MdManageAccounts,
       link: "/dashboard?tab=profile",
     },
@@ -141,14 +141,14 @@ export default function DashSidebar() {
                 <div
                   className={`text-2xl ${
                     active === item.name
-                      ? "provideritem-name -translate-y-2 transition-all duration-500"
+                      ? "provideritem-name -translate-y-1 transition-all duration-500"
                       : "text-gray-500"
                   }`}
                   onClick={() => setActive(item.name)}
                 >
                   <div className="flex flex-col items-center">
                     <p>{item.icon()}</p>
-                    <p className="text-xs">{item.name}</p>
+                    <p className="text-xs capitalize">{item.name}</p>
                   </div>
                 </div>
               </Link>

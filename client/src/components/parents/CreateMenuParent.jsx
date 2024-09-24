@@ -10,7 +10,6 @@ import {
 import toast from "react-hot-toast";
 import Input from "react-phone-number-input/input";
 
-
 export default function CreateMenuParent() {
   const { currentUser } = useSelector((state) => state.user);
   const [parentPhone, setParentPhone] = useState("");
@@ -34,7 +33,7 @@ export default function CreateMenuParent() {
       phoneNumber: parentPhone,
     },
   });
-  
+
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
   const [successScreen, setSuccessScreen] = useState(false);
@@ -273,10 +272,9 @@ export default function CreateMenuParent() {
               <p className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
                 {getGoodToKnowText(step)}
               </p>
-              {/* <p className='menu-headTextColor mt-2 text-lg justify-between'>{getGoodToKnowRules(step)}</p> */}
-              <p className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
+              <span className="menu-subTextColor mt-2 text-xs md:text-lg justify-between">
                 {renderRules(step)}
-              </p>
+              </span>
             </div>
           </div>
           <form onSubmit={submitfn} className="w-full md:w-[500px]">

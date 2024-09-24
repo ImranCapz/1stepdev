@@ -1,15 +1,8 @@
 import { Table } from "flowbite-react";
-import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { FcOk } from "react-icons/fc";
 import { FcCancel } from "react-icons/fc";
-import { useDispatch } from "react-redux";
-import {
-  getBookingsStart,
-  getBookingSuccess,
-  getBookingFailure,
-} from "../../redux/booking/bookingSlice";
 import { BeatLoader } from "react-spinners";
 import SearchBar from "../SearchBar";
 
@@ -18,7 +11,6 @@ export default function UserBooking() {
   const { isUserBookingFetched } = useSelector((state) => state.booking);
   console.log("isUserBookingFetched:", isUserBookingFetched);
   const { loading } = useSelector((state) => state.booking);
-  const dispatch = useDispatch();
 
   return (
     <>

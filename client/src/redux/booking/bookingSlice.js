@@ -66,10 +66,12 @@ const bookingSlice = createSlice({
       state.providerBooking = action.payload;
       state.loading = false;
       state.error = null;
+      state.isProviderBookingFetched = true;
     },
     getProviderBookingFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+      state.isProviderBookingFetched = true;
     },
     setHasApprovedBooking: (state, action) => {
       state.hasApprovedBooking = action.payload;
@@ -82,6 +84,7 @@ const bookingSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.isUserBookingFetched = false;
+      state.isProviderBookingFetched = false;
     },
   },
   extraReducers: (builder) => {

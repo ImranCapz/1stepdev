@@ -132,8 +132,16 @@ let transporter = nodemailer.createTransport({
 });
 
 export const bookingemail = async (req, res, next) => {
-  const { email, subject, providerName, providerProfile, service, name, time } =
-    req.body;
+  const {
+    email,
+    subject,
+    providerName,
+    providerProfile,
+    service,
+    name,
+    slot,
+    date,
+  } = req.body;
 
   try {
     let info = await transporter.sendMail({
@@ -152,6 +160,7 @@ export const bookingemail = async (req, res, next) => {
       <h1 style="color: #333; font-size: 28px;">${providerName}</h1>
       <h1 style="color: #333; font-size: 18px; text-align:center;">APPOINTMENT APPROVED</h1>
       <p style="color: #333; font-size: 18px;">Service: ${service}</p>
+      <p style="color: #333; font-size: 18px;">Booked Time: ${date} ${slot}</p>
       <p style="font-size: 18px;">Please arrive 10 minutes early to your appointment.</p>
       <p style="font-size: 18px;">Thank you for choosing our services.</p>
       </div>
