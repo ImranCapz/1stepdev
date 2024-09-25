@@ -115,7 +115,7 @@ export default function Overview() {
               </Link>
               <div className="p-4 w-[280px] flex flex-col items-center">
                 <img
-                  src={currentUser.profilePicture}
+                  src={currentUser.profilePicture || 'https://i.ibb.co/tKQH4zp/defaultprofile.jpg'}
                   alt="profile"
                   className="w-28 h-28 object-cover rounded-full"
                 />

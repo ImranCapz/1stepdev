@@ -284,6 +284,7 @@ export default function ProviderMessageDash() {
   //last message fetch
   useEffect(() => {
     const fetchLastMessage = async () => {
+      if (userDetails.length === 0) return;
       try {
         setUserLoading(true);
         const res = await fetch(
@@ -747,10 +748,10 @@ export default function ProviderMessageDash() {
               <div className="flex flex-col w-full max-h-screen mx-auto">
                 <div className="h-52vh md:h-72vh bg-provmsgbg bg-cover bg-center flex flex-col justify-center items-center text-white">
                   <div>
-                    <h1 className="flex flex-col items-center text-4xl font-bold  text-gray-700">
+                    <h1 className="flex flex-col items-center text-xl md:text-4xl font-bold  text-gray-700">
                       No messages yet
                     </h1>
-                    <h1 className="flex flex-col items-center text-2xl font-semibold mt-6 text-zinc-600">
+                    <h1 className="flex flex-col items-center md:text-2xl font-semibold md:mt-6 mt-2 text-zinc-600">
                       You don&apos;t have any messages from client yet.
                     </h1>
                   </div>

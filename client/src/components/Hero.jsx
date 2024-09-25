@@ -16,6 +16,7 @@ import { RiMusic2Fill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { providerData } from "../redux/provider/providerSlice";
 import HowItWorks from "../pages/HowItWorks";
+import ProviderIntro from "./provider/ProviderIntro";
 
 const Hero = () => {
   const { searchTerm } = useParams();
@@ -359,6 +360,7 @@ const Hero = () => {
           </Modal.Body>
         </Modal>
       </div>
+      <ProviderIntro />
     </section>
   );
 };

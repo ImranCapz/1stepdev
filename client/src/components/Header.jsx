@@ -417,7 +417,7 @@ const Header = ({ showSubMenu }) => {
                   <div className="md:hidden flex flex-col fixed bottom-0 left-0 right-0 bg-gray-700 py-4 px-">
                     <div className="flex flex-row gap-2 items-center px-2">
                       <img
-                        src={currentUser.profilePicture}
+                        src={currentUser.profilePicture || 'https://i.ibb.co/tKQH4zp/defaultprofile.jpg'}
                         alt="user profile"
                         className="w-8 h-8 rounded-full object-cover"
                       />
