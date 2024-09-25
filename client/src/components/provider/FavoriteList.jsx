@@ -9,7 +9,6 @@ export default function FavoriteList() {
   const { currentUser } = useSelector((state) => state.user);
   const { favorites } = useSelector((state) => state.favorite);
   const dispatch = useDispatch();
-  console.log("favorite", favorites);
 
   useEffect(() => {
     const fetchFavoriteList = async () => {
@@ -22,8 +21,8 @@ export default function FavoriteList() {
   }, [currentUser, dispatch]);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="h-52vh md:h-72vh bg-listbg bg-cover bg-center flex flex-col justify-center items-center text-white">
+    <div className="flex flex-col">
+      <div className="h-32 md:h-72vh bg-listbg bg-cover bg-center flex flex-col justify-center items-center text-white">
         <div className="text-center">
           <h1 className="md:text-2xl text-xl font-semibold text-zinc-600">
             Lists

@@ -223,7 +223,7 @@ const Hero = () => {
       <div className="flex flex-rows mx-auto md:p-10 chatbgimage">
         <HowItWorks />
       </div>
-      <div className="w-full flex flex-col px-4 py-9 mx-auto justify-center bg-home">
+      {/* <div className="w-full flex flex-col px-4 py-9 mx-auto justify-center bg-home">
         <h2 className="text-3xl font-extrabold text-center text-main">
           Latest Articles
         </h2>
@@ -269,7 +269,7 @@ const Hero = () => {
             </p>
           </Card>
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col px-4 py-9 mx-auto justify-center items-center">
         <h2 className="text-2xl font-extrabold text-center text-main">
           Join 1Step for free{" "}
@@ -360,7 +360,9 @@ const Hero = () => {
           </Modal.Body>
         </Modal>
       </div>
-      <ProviderIntro />
+      <div>
+        <ProviderIntro />
+      </div>
     </section>
   );
 };

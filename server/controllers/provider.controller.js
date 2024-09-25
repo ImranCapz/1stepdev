@@ -243,6 +243,7 @@ export const verifyOtpProvider = async (req, res, next) => {
         {
           $set: {
             verified: true,
+            status: 1,
           },
         }
       );

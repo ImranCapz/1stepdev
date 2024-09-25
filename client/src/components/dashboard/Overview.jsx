@@ -4,24 +4,24 @@ import { Button, Modal, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { CiEdit } from "react-icons/ci";
 import { FcCancel, FcOk } from "react-icons/fc";
-import { MdOutlineAccessTime } from "react-icons/md";
+import { MdOutlineAccessTime, MdVerified } from "react-icons/md";
 import { IoMdAlert } from "react-icons/io";
 import OtpInput from "react-otp-input";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import SearchBar from "../SearchBar";
 import { FcApproval } from "react-icons/fc";
-
 import { Stepper, Step } from "@material-tailwind/react";
 import { MdVerifiedUser } from "react-icons/md";
-import { MdOutlineVerified, MdOutlineSettings } from "react-icons/md";
+import { MdOutlineSettings } from "react-icons/md";
+import { VscLightbulbSparkle } from "react-icons/vsc";
+import { FaLightbulb } from "react-icons/fa";
+import { HiMiniUserGroup } from "react-icons/hi2";
 
 export default function Overview() {
   const { currentUser } = useSelector((state) => state.user);
   const { currentProvider } = useSelector((state) => state.provider);
-  const [step, setStep] = useState(0);
   const [otpOpen, setOtpOpen] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
   const [otp, setOtp] = useState(0);
   const { bookings } = useSelector((state) => state.booking);
 
@@ -81,9 +81,14 @@ export default function Overview() {
   }
   const steps = [
     {
+      label: "New",
+      description: "Details about your account.",
+      icon: FaLightbulb,
+    },
+    {
       label: "Claim Profile",
       description: "Details about your account.",
-      icon: MdOutlineVerified,
+      icon: MdVerified,
     },
     {
       label: "Experience & Skills",
@@ -93,14 +98,15 @@ export default function Overview() {
     {
       label: "Skilled Provider",
       description: "Complete your setup.",
-      icon: MdOutlineSettings,
+      icon: HiMiniUserGroup,
     },
     {
       label: "1Step Pro",
       description: "Complete your setup.",
-      icon: MdOutlineSettings,
+      icon: VscLightbulbSparkle,
     },
   ];
+
   return (
     <div className="w-full flex bg-slate-100 justify-center items-center mx-auto mb-16 md:mb-0">
       <div className="p-4 flex flex-col lg:flex-row gap-2 w-full">
@@ -115,7 +121,10 @@ export default function Overview() {
               </Link>
               <div className="p-4 w-[280px] flex flex-col items-center">
                 <img
-                  src={currentUser.profilePicture || 'https://i.ibb.co/tKQH4zp/defaultprofile.jpg'}
+                  src={
+                    currentUser.profilePicture ||
+                    "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                  }
                   alt="profile"
                   className="w-28 h-28 object-cover rounded-full"
                 />
@@ -144,39 +153,115 @@ export default function Overview() {
                 </Link>
                 <div className="w-full mt-2">
                   <div className="w-full flex items-center md:px-24 py-4 p-6 mb-20">
-                    <Stepper activeStep={activeStep}>
+                    <Stepper activeStep={Number(currentProvider.status)}>
                       {steps.map((step, index) => (
-                        <Step key={index} className="h-5 w-5 bg-slate-300">
+                        <Step key={index} className="h-8 w-8 bg-blue-200">
+                          <p className="text-[15px] mt-2 ml-2">{step.icon()}</p>
                           <div
-                            className={`flex text-slate-500 items-center justify-center mt-8 md:text-base text-xs`}
+                            className={`flex text-gray items-center justify-center mt-8 md:text-base text-[10px]`}
                           >
-                            {step.label}
+                            {step.label === "Claim Profile" ? (
+                              <>
+                                {currentProvider.status === 0 ? (
+                                  <p>Claim Profile</p>
+                                ) : (
+                                  <p className="text-green-600">
+                                    Profile Claimed
+                                  </p>
+                                )}
+                              </>
+                            ) : step.label === "Experience & Skills" ? (
+                              <>
+                                {currentProvider.status === 1 ? (
+                                  <p className="text-gray-600">
+                                    Experience & Skills
+                                  </p>
+                                ) : (
+                                  <p className="text-gray-400">
+                                    Experience & Skills
+                                  </p>
+                                )}
+                              </>
+                            ) : step.label === "Skilled Provider" ? (
+                              <>
+                                {currentProvider.status === 2 ? (
+                                  <p>Skilled Provider</p>
+                                ) : (
+                                  <p className="text-gray-400">
+                                    Skilled Provider
+                                  </p>
+                                )}
+                              </>
+                            ) : step.label === "1Step Pro" ? (
+                              <>
+                                {currentProvider.status === 3 ? (
+                                  <p>1Step Pro</p>
+                                ) : (
+                                  <p className="text-gray-400">1Step Pro</p>
+                                )}
+                              </>
+                            ) : (
+                              <p>
+                                {step.label === "New" ? (
+                                  <p className="">New</p>
+                                ) : (
+                                  <></>
+                                )}
+                              </p>
+                            )}
                           </div>
                         </Step>
                       ))}
                     </Stepper>
                   </div>
                   <div className="border-t p-4">
-                    {step === 0 && currentProvider.verified === false && (
+                    {currentProvider.status === 0 &&
+                      currentProvider.verified === false && (
+                        <div>
+                          <div>
+                            <h2 className="flex flex-row items-center gap-2 text-xl font-semibold text-slate-800">
+                              Benefit of claiming profile
+                              <FcApproval className="size-6" />
+                            </h2>
+                            <ul className="list-disc list-inside mt-2 text-gray-800 mb-4">
+                              <li>Get verified badge on your profile.</li>
+                              <li>Get more visibility and attract more.</li>
+                            </ul>
+                          </div>
+                          <div className="flex justify-center border border-slate-200 p-4 rounded-lg bg-sky-100">
+                            <button
+                              className="flex flex-row space-x-2 items-center"
+                              onClick={handleVerifyProfile}
+                            >
+                              <IoMdAlert className="text-amber-500" />
+                              <p className="flex flex-row items-center underline text-gray font-semibold">
+                                Claim Your Profile Now
+                              </p>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    {currentProvider.status === 1 && (
                       <div>
                         <div>
-                          <h2 className="flex flex-row items-center gap-2 text-xl font-semibold text-slate-800">
-                            Benefit of claiming profile{" "}
-                            <FcApproval className="size-6" />
+                          <h2 className="flex flex-row items-center gap-1 text-xl font-semibold text-slate-800">
+                            Experienced Provider
+                            <MdVerifiedUser className="size-5" />
                           </h2>
                           <ul className="list-disc list-inside mt-2 text-gray-800 mb-4">
-                            <li>Get verified badge on your profile.</li>
-                            <li>Get more visibility and attract more.</li>
+                            <li>With this status, you gain visibility x2</li>
+                            <li>Expert care, backed by years of experience.</li>
+                            <li>
+                              Your well-being is our top priority, shaped by
+                              years of experience.
+                            </li>
                           </ul>
                         </div>
                         <div className="flex justify-center border border-slate-200 p-4 rounded-lg bg-sky-100">
-                          <button
-                            className="flex flex-row space-x-2 items-center"
-                            onClick={handleVerifyProfile}
-                          >
+                          <button className="flex flex-row space-x-2 items-center">
                             <IoMdAlert className="text-amber-500" />
                             <p className="flex flex-row items-center underline text-gray font-semibold">
-                              Claim Your Profile Now
+                              Verify your Experience
                             </p>
                           </button>
                         </div>

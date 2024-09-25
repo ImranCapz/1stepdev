@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const providerSchema = new mongoose.Schema(
   {
     fullName: {
@@ -83,6 +82,10 @@ const providerSchema = new mongoose.Schema(
     verified: {
       type: Boolean,
       default: false,
+    },
+    status: {
+      type: Number,
+      default: 0,
     },
     timeSlots: {
       Monday: {

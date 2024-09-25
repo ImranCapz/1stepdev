@@ -24,7 +24,7 @@ function ProviderIntro() {
     <div>
       <div className="overflow-x-hidden">
         <div className="flex flex-col">
-          <section className="bg-purple-100 flex flex-col justify-center items-center w-full">
+          <section className="p-4 bg-purple-100 flex flex-col justify-center items-center w-full">
             <div className="container mx-auto flex flex-col md:flex-col lg:flex-row bg-transparent max-w-screen-2xl">
               <div className="flex-1 p-5">
                 <h1 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl  font-bold text-purple-900 text-left">
