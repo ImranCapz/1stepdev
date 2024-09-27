@@ -20,6 +20,7 @@ import Input from "react-phone-number-input/input";
 import { IoMdAlert } from "react-icons/io";
 import { suggestions } from "../components/suggestions";
 import validator from "validator";
+import TimeSlots from "../components/timslots/TimeSlots";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -56,6 +57,15 @@ export default function CreateProvider() {
     regularPrice: "",
     description: "",
     profilePicture: "",
+    timeSlots: {
+      Monday: [],
+      Tuesday: [],
+      Wednesday: [],
+      Thursday: [],
+      Friday: [],
+      Saturday: [],
+      Sunday: [],
+    },
   });
   const [Errors, setErrors] = useState({
     phone: false,
@@ -785,7 +795,11 @@ export default function CreateProvider() {
                   </div>
                 </div>
               </div>
+
               <div className="flex flex-col flex-1 gap-3 md:w-[300px]">
+                <div className="">
+                  <TimeSlots data={formData} setData={setFormData} />
+                </div>
                 <p className="font-semibold text-main">
                   Explain About your therapy section*
                   <span className="text-sm">

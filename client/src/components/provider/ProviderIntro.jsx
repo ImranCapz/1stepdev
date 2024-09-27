@@ -16,119 +16,140 @@ import pic from "../../assets/providerintro/1.jpg";
 import pic1 from "../../assets/providerintro/2.jpg";
 import pic2 from "../../assets/providerintro/3.jpg";
 import pic3 from "../../assets/providerintro/4.jpeg";
-
+import profileImage from "../../pages/providerscreen/createprovider.png";
+import { Button } from "flowbite-react";
 import img1 from "../../assets/providerintro/abc.jpeg";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import OAuth from "../../components/OAuth";
 
 function ProviderIntro() {
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+  const { currentProvider } = useSelector((state) => state.provider);
   return (
     <div>
-      <div className="overflow-x-hidden">
-        <div className="flex flex-col">
-          <section className="p-4 bg-purple-100 flex flex-col justify-center items-center w-full">
-            <div className="container mx-auto flex flex-col md:flex-col lg:flex-row bg-transparent max-w-screen-2xl">
-              <div className="flex-1 p-5">
-                <h1 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl  font-bold text-purple-900 text-left">
-                  Start Your Therapy Practice with Just a Few Clicks
-                </h1>
+      {!currentProvider && (
+        <div className="overflow-x-hidden">
+          <div className="flex flex-col">
+            <section className="p-4 bg-purple-100 flex flex-col justify-center items-center w-full">
+              <div className="container mx-auto flex flex-col md:flex-col lg:flex-row bg-transparent max-w-screen-2xl">
+                <div className="flex-1 p-5">
+                  <h1 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl  font-bold text-purple-900 text-left">
+                    Start Your Therapy Practice with Just a Few Clicks
+                  </h1>
 
-                <p className="text-gray-500 font-semibold my-4 text-left text-base sm:text-sm md:text-lg lg:text-xl">
-                  Join OneStep, India’s leading platform for online therapy and
-                  counseling!
-                </p>
+                  <p className="text-gray-500 font-semibold my-4 text-left text-base sm:text-sm md:text-lg lg:text-xl">
+                    Join OneStep, India’s leading platform for online therapy
+                    and counseling!
+                  </p>
 
-                <p className="text-gray-700 mt-4 text-left text-base sm:text-sm md:text-lg lg:text-xl">
-                  Your search for "online therapist jobs" ends with OneStep!
-                </p>
+                  <p className="text-gray-700 mt-4 text-left text-base sm:text-sm md:text-lg lg:text-xl">
+                    Your search for "online therapist jobs" ends with OneStep!
+                  </p>
 
-                <p className="text-gray-700 mt-4 text-left text-base sm:text-xl md:text-lg lg:text-xl">
-                  Whether you’re a new therapist looking to build your practice
-                  or an experienced professional seeking more clients, OneStep
-                  provides a seamless way to start offering therapy services
-                  online.
-                </p>
+                  <p className="text-gray-700 mt-4 text-left text-base sm:text-xl md:text-lg lg:text-xl">
+                    Whether you’re a new therapist looking to build your
+                    practice or an experienced professional seeking more
+                    clients, OneStep provides a seamless way to start offering
+                    therapy services online.
+                  </p>
 
-                <ul className=" text-gray-700 mt-6 space-y-2 text-left text-base md:text-lg lg:text-xl">
-                  <li className="flex space-x-2 text-purple-900">
-                    <FaCalendarAlt className="hidden md:block mt-1" />
-                    <span>
-                      <strong>Flexible Schedule:</strong> Set your own hours and
-                      work from the comfort of your home.
-                    </span>
-                  </li>
-                  <li className="flex space-x-2 text-purple-900">
-                    <FaDesktop className="hidden md:block mt-1" />
-                    <span>
-                      <strong>Provide Therapy Sessions in Your Area:</strong>{" "}
-                      Specializing in Various Fields
-                    </span>
-                  </li>
-                  <li className="flex space-x-2 text-purple-900">
-                    <FaMoneyBill className="hidden md:block mt-1" />
-                    <span>
-                      <strong>Competitive Rates:</strong> ₹500 per hour or More
-                    </span>
-                  </li>
-                </ul>
+                  <ul className=" text-gray-700 mt-6 space-y-2 text-left text-base md:text-lg lg:text-xl">
+                    <li className="flex space-x-2 text-purple-900">
+                      <FaCalendarAlt className="hidden md:block mt-1" />
+                      <span>
+                        <strong>Flexible Schedule:</strong> Set your own hours
+                        and work from the comfort of your home.
+                      </span>
+                    </li>
+                    <li className="flex space-x-2 text-purple-900">
+                      <FaDesktop className="hidden md:block mt-1" />
+                      <span>
+                        <strong>Provide Therapy Sessions in Your Area:</strong>{" "}
+                        Specializing in Various Fields
+                      </span>
+                    </li>
+                    <li className="flex space-x-2 text-purple-900">
+                      <FaMoneyBill className="hidden md:block mt-1" />
+                      <span>
+                        <strong>Competitive Rates:</strong> ₹500 per hour or
+                        More
+                      </span>
+                    </li>
+                  </ul>
 
-                <p className="text-gray-700 mt-4 text-left text-base sm:text-sm md:text-lg lg:text-xl">
-                  Provide specialized therapy services through OneStep,
-                  including art therapy, music therapy, occupational therapy,
-                  and more. Reach clients both locally and globally through our
-                  platform.
-                </p>
-                <p className="text-gray-700 mt-4 text-left text-base sm:text-sm md:text-lg lg:text-xl">
-                  Sign up using the OneStep Login - No commission charged - No
-                  Registration Fee
-                </p>
+                  <p className="text-gray-700 mt-4 text-left text-base sm:text-sm md:text-lg lg:text-xl">
+                    Provide specialized therapy services through OneStep,
+                    including art therapy, music therapy, occupational therapy,
+                    and more. Reach clients both locally and globally through
+                    our platform.
+                  </p>
+                  <p className="text-gray-700 mt-4 text-left text-base sm:text-sm md:text-lg lg:text-xl">
+                    Sign up using the OneStep Login - No commission charged - No
+                    Registration Fee
+                  </p>
+                </div>
+                <div className="flex-1 items-center justify-center md:bg-transparent bg-white p-8 w-full my-auto">
+                  <h2 className="text-2xl font-semibold mb-6 text-center text-gray">
+                    {currentUser
+                      ? "Create your profile for your therapy practice"
+                      : " Create your profile"}
+                  </h2>
+                  {currentUser ? (
+                    <div className="flex flex-col items-center justify-center">
+                      <img
+                        src={profileImage}
+                        alt="profile"
+                        className="flex items-center h-32 w-34 object-cover rounded-full bg-gray-400 p-1"
+                      />
+                      <Button
+                        to={"/dashboard?tab=providers"}
+                        className=" rounded-lg mt-4 text-xl"
+                        onClick={() => navigate("/dashboard?tab=providers")}
+                      >
+                        Create Profile
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="w-full flex flex-col items-center justify-center">
+                      <form className="w-[560px] space-y-4 bg-white md:p-10 md:rounded-lg md:shadow-2xl">
+                        <div className="w-full flex text-center  btn-color p-2 rounded-lg">
+                          <Link to={"/signup"} className="w-full ">
+                            Sign-up via email
+                          </Link>
+                        </div>
+
+                        <div className="text-center text-gray-500">or</div>
+                        <div className="">
+                          <OAuth redirect="/dashboard?tab=providers" />
+                        </div>
+
+                        <div className="text-center mt-4 text-gray-500">
+                          <p href="#" className="">
+                            Do you already have an account?{" "}
+                            <Link to={"/signin"} className="text-slate-900">
+                              Sign in
+                            </Link>
+                          </p>
+                        </div>
+                      </form>{" "}
+                      <p className="text-center text-gray-500 mt-4">
+                        By signing up, you agree to our{" "}
+                        <a href="#" className="text-blue-500">
+                          terms
+                        </a>
+                        .
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
+            </section>
 
-              <div className="flex-1 md:bg-transparent bg-white p-8 w-full my-auto">
-                <h2 className="text-2xl font-semibold mb-6 text-center">
-                  Create your profile
-                </h2>
-
-                <form className="space-y-4 bg-white md:p-10 md:rounded-lg md:shadow-2xl">
-                  <input
-                    type="email"
-                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-400"
-                    placeholder="Email"
-                  />
-                  <button className="w-full bg-purple-700 text-white p-3 rounded-lg">
-                    Sign-up via email
-                  </button>
-
-                  <div className="text-center text-gray-500">or</div>
-
-                  <button className="w-full flex items-center justify-center border border-gray-300 p-3 rounded-lg">
-                    <FaGoogle />
-                    <p className="ml-2">Sign up with Google</p>
-                  </button>
-
-                  <button className="w-full flex items-center justify-center border border-gray-300 p-3 rounded-lg">
-                    <FaApple></FaApple>
-                    <p className="ml-2"> Sign up via Apple</p>
-                  </button>
-
-                  <div className="text-center mt-4">
-                    <a href="#" className="text-blue-500">
-                      Do you already have an account? Connection
-                    </a>
-                  </div>
-                </form>
-
-                <p className="text-center text-gray-500 mt-4">
-                  By signing up, you agree to our{" "}
-                  <a href="#" className="text-blue-500">
-                    terms
-                  </a>
-                  .
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section className="bg-color py-12 relative z-20 mt-5 p-5">
-            <div className="container mx-auto">
+            <section className="bg-color relative z-20 mt-5 p-5">
+              {/* <div className="container mx-auto">
               <h1 className="text-2xl mb-5 font-bold text-purple-900 text-center md:text-3xl lg:text-4xl">
                 Join the OneStep!
               </h1>
@@ -137,7 +158,7 @@ function ProviderIntro() {
                   <img
                     src={img}
                     alt="Tutor example"
-                    className="lg:w-auto lg:h-96 md:w-64 md:h-64 hidden md:block"
+                    className="lg:w-auto lg:h-52 md:w-64 md:h-64 hidden md:block"
                   />
                 </div>
 
@@ -148,15 +169,7 @@ function ProviderIntro() {
                   <p className="text-gray-600 text-base mb-4 text-center md:text-lg md:text-right lg:text-right lg:text-xl">
                     By signing up with OneStep, you join a caring community of
                     certified therapists and mental health professionals
-                    dedicated to supporting you on your journey. Our team
-                    provides personalized therapy and guidance, offering a safe
-                    space to share, grow, and heal. More than just a platform
-                    for online therapy, OneStep is a supportive family with a
-                    mission to help each individual achieve emotional well-being
-                    and mental clarity. At OneStep, we're not just offering
-                    therapy sessions, we're empowering you to take that crucial
-                    step toward a better, healthier life. Experience therapy
-                    made easy with OneStep!
+                    dedicated to supporting you on your journey.
                   </p>
                 </div>
               </div>
@@ -171,13 +184,7 @@ function ProviderIntro() {
                       At OneStep, humans are at the core of every interaction.
                       Each day, we foster compassion, empathy, and growth to
                       create the perfect connection between therapists and
-                      clients. Our platform enables individuals to find the
-                      right professional who truly understands their unique
-                      needs. The new era of online therapy is here—empowering
-                      you to take control of your mental well-being and find
-                      support that fits you. At OneStep, we are more than just a
-                      service; we are a community that makes the process of
-                      seeking therapy more personal, more human.
+                      clients.
                     </p>
                   </div>
 
@@ -185,102 +192,83 @@ function ProviderIntro() {
                     <img
                       src={img1}
                       alt="Tutor example"
-                      className=" lg:w-auto lg:h-96 md:w-64 md:h-64 hidden md:block rounded-full"
+                      className=" lg:w-auto lg:h-52 md:w-64 md:h-64 hidden md:block rounded-full"
                     />
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </div> */}
+            </section>
+            <section className=" flex flex-col justify-center items-center w-full">
+              <div className="container mx-auto">
+                <h1 className="text-2xl mb-5 font-bold text-purple-900 text-center md:text-3xl lg:text-4xl">
+                  How Can I Become a Therapist on OneStep?
+                </h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 md:px-52 gap-4">
+                  <div className="flex flex-col justify-center">
+                    <h2 className="text-2xl font-bold text-purple-900 mb-4 text-center md:text-left">
+                      Create Your Therapist Profile
+                    </h2>
 
-          <section className=" flex flex-col justify-center items-center w-full p-5 mt-5">
-            <div className="container mx-auto">
-              <h1 className="text-2xl mb-5 font-bold text-purple-900 text-center md:text-3xl lg:text-4xl">
-                How Can I Become a Therapist on OneStep?
-              </h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="flex flex-col justify-center">
-                  <h2 className="text-2xl font-bold text-purple-900 mb-4 text-center md:text-left lg:text-3xl">
-                    Create Your Therapist Profile
-                  </h2>
+                    <p className="text-gray-600 text-base mb-4 lg:text-xl text-center md:text-lg">
+                      Build a profile that highlights your specializations,
+                      experience, and the unique care you offer
+                    </p>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <img
+                      src={pic2}
+                      alt="Tutor example"
+                      className=" lg:w-auto lg:h-52 w-44 h-44 md:w-60 md:h-60"
+                    />
+                  </div>
+                  <div className="flex flex-col justify-center items-center order-2 md:order-none">
+                    <img
+                      src={pic1}
+                      alt="Tutor example"
+                      className="md:w-56 md:h-56 lg:w-auto lg:h-52 w-44 h-44"
+                    />
+                  </div>
+                  <div className="flex flex-col justify-center order-1 md:order-none">
+                    <h2 className="text-2xl font-bold text-purple-900 mb-4 text-center md:text-right">
+                      Set Your Therapy Conditions
+                    </h2>
+                    <p className="text-gray-600 lg:text-xl mb-4 text-left md:text-lg md:text-right">
+                      You have complete control over your schedule, session
+                      fees, and therapeutic approach. Update Your Therapy
+                      Conditions
+                    </p>
+                  </div>
 
-                  <p className="text-gray-600  text-base mb-4 lg:text-xl text-left md:text-lg">
-                    At OneStep, it's free to create your professional therapist
-                    profile. Start connecting with clients and offer your
-                    expertise to those seeking help. Build a profile that
-                    highlights your specializations, experience, and the unique
-                    care you offer.
-                  </p>
-                </div>
-                <div className="flex  justify-center items-center">
-                  <img
-                    src={pic2}
-                    alt="Tutor example"
-                    className=" lg:w-auto lg:h-96 w-44 h-44 md:w-60 md:h-60"
-                  />
-                </div>
-
-                <div className="flex flex-col justify-center items-center order-2 md:order-none">
-                  <img
-                    src={pic1}
-                    alt="Tutor example"
-                    className="md:w-56 md:h-56 lg:w-auto lg:h-96 w-44 h-44"
-                  />
-                </div>
-                <div className="flex flex-col justify-center order-1 md:order-none">
-                  <h2 className="text-2xl font-bold text-purple-900 mb-4 text-center md:text-right">
-                    Set Your Therapy Conditions
-                  </h2>
-                  <p className="text-gray-600  lg:text-xl mb-4 text-left md:text-lg md:text-right">
-                    You have complete control over your schedule, session fees,
-                    and therapeutic approach. Offer therapy from the comfort of
-                    your home or through online sessions. Empower your clients
-                    while maintaining flexibility in how you provide care.
-                  </p>
-                </div>
-
-                <div className="flex flex-col justify-center order-3 md:order-none">
-                  <h2 className="text-2xl font-bold text-purple-900 mb-4 text-center md:text-left">
-                    Start Helping Clients
-                  </h2>
-                  <p className="text-gray-600  lg:text-xl mb-4 text-left md:text-lg">
-                    Once your profile is live, begin offering therapy sessions
-                    and making a difference. We're here to support you every
-                    step of the way.
-                  </p>
-                </div>
-                <div className="flex justify-center items-center order-4 md:order-none">
-                  <img
-                    src={pic}
-                    alt="Tutor example"
-                    className="md:w-56 md:h-56 lg:w-auto lg:h-96 w-44 h-44"
-                  />
+                  <div className="flex flex-col justify-center order-3 md:order-none">
+                    <h2 className="text-2xl font-bold text-purple-900 mb-4 text-center md:text-left">
+                      Start Helping Clients
+                    </h2>
+                    <p className="text-gray-600  lg:text-xl mb-4 text-left md:text-lg">
+                      Once your profile is live, begin offering therapy sessions
+                      and making a difference
+                    </p>
+                  </div>
+                  <div className="flex justify-center items-center order-4 md:order-none">
+                    <img
+                      src={pic}
+                      alt="Tutor example"
+                      className="md:w-56 md:h-56 lg:w-auto lg:h-52 w-44 h-44"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          <section className="bg-blue-50 flex flex-col justify-center items-center w-full p-5 mt-5">
+            {/* <section className="bg-blue-50 flex flex-col justify-center items-center w-full p-5 mt-5">
             <div className="container">
               <h1 className="text-2xl mb-5 font-bold text-purple-900 text-center md:text-3xl">
                 We are here to support you!
               </h1>
               <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8">
                 <div className="flex flex-col justify-center md:p-10 p-0">
-                  <p className="text-gray-600  lg:text-xl mb-4 text-left md:text-lg">
-                    At Onestep, we understand that trust is key when offering
-                    therapy services, whether online or in person. That's why we
-                    are committed to ensuring that your safety, privacy, and
-                    professionalism are prioritized.
-                  </p>
-                  <p className="text-gray-600 text-base mb-4 lg:text-xl text-left md:text-lg">
-                    As a therapist with Onestep, you have the freedom to
-                    structure your practice your way while we assist with all
-                    the backend logistics. Our dedicated provider support team
-                    is always available to assist you with any questions or
-                    issues. You can count on us to guide you through the
-                    onboarding process and provide continuous support.
-                  </p>
+                  <p className="text-gray-600  lg:text-xl mb-4 text-left md:text-lg"></p>
+                  <p className="text-gray-600 text-base mb-4 lg:text-xl text-left md:text-lg"></p>
                 </div>
                 <div className="flex flex-col my-auto text-left text-base md:text-lg lg:text-xl text-gray-600 font-semibold">
                   <div className="flex items-start">
@@ -310,9 +298,8 @@ function ProviderIntro() {
                 </div>
               </div>
             </div>
-          </section>
-
-          <section className=" flex flex-col justify-center items-center w-full p-5 mt-5">
+          </section> */}
+            {/* <section className=" flex flex-col justify-center items-center w-full p-5 mt-5">
             <div className="container">
               <h1 className="text-2xl mb-5 font-bold text-purple-900 text-center md:text-3xl">
                 Freedom to Schedule!
@@ -378,9 +365,9 @@ function ProviderIntro() {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
 
-          <section className="flex flex-col justify-center items-center w-full p-5 mt-5">
+            {/* <section className="flex flex-col justify-center items-center w-full p-5 mt-5">
             <div className="container">
               <div className="grid grid-cols-1 md:grid-cols-2 mt-16 gap-5">
                 <div>
@@ -418,9 +405,9 @@ function ProviderIntro() {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
 
-          <section className="flex flex-col justify-center items-center w-full p-5 mt-5">
+            {/* <section className="flex flex-col justify-center items-center w-full p-5 mt-5">
             <div className="container ">
               <h1 className="text-2xl mt-10 font-bold text-purple-900 md:text-3xl text-center lg:text-4xl">
                 Giving private sessions, how does it work?
@@ -572,9 +559,10 @@ function ProviderIntro() {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

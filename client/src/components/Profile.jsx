@@ -312,15 +312,15 @@ export default function Profile() {
               >
                 <Link to={`/provider/${provider._id}`}>
                   <img
-                    src={provider.imageUrls[0]}
+                    src={provider.profilePicture}
                     alt="provider cover"
-                    className="h-16 w-16 object-contain"
+                    className="h-16 w-16 object-contain rounded-full"
                   />
                 </Link>
                 <Link
                   onClick={() => dispatch(selectProvider(provider._id))}
                   className="flex-1 font-semibold hover:underline truncate"
-                  to={`/provider/${provider._id}`}
+                  to={`/provider/?id=${provider._id}`}
                 >
                   <p>{provider.fullName}</p>
                 </Link>

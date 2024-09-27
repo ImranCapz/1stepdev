@@ -275,7 +275,6 @@ export default function MessageDash() {
   //fetch last message for each provider
   useEffect(() => {
     const fetchLastMessage = async () => {
-      if(providerDetails.length === 0) return;
       try {
         setLoading(true);
         setProviderLoading(true);

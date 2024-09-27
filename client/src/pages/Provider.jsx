@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
@@ -296,20 +296,20 @@ export default function Provider() {
     }
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 200) {
-        setTopNavbar(true);
-      } else {
-        setTopNavbar(false);
-      }
-    };
+  const handleScroll = useCallback(() => {
+    if (window.scrollY > 100) {
+      setTopNavbar(true);
+    } else {
+      setTopNavbar(false);
+    }
+  }, []);
 
+  useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [handleScroll]);
 
   const hasAvailableTimeSlots = (timeSlots) => {
     return (

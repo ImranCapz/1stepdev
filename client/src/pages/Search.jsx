@@ -765,7 +765,7 @@ export default function Search() {
                   </div>
                 ) : null
               ) : (
-                <div className="p-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-4 md:gap-8 sm:p-3">
+                <div className="p-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-4 2xl:gap-8 sm:p-3">
                   {providers && providers.length > 0 ? (
                     providers.map((provider) => {
                       return (

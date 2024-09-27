@@ -23,18 +23,15 @@ export const toggleFavorite = createAsyncThunk(
   "favorite/toggleFavorite",
   async ({ userId, providerId }) => {
     try {
-      const res = await fetch(
-        `/server/favorite/favorites/${userId}?providerId=${providerId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            providerId: providerId,
-          }),
-        }
-      );
+      const res = await fetch(`/server/favorite/favorites/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          providerId: providerId,
+        }),
+      });
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || "Failed to update favorite status");
@@ -42,6 +39,7 @@ export const toggleFavorite = createAsyncThunk(
       return data;
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 );

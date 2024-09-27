@@ -284,7 +284,7 @@ export default function ProviderMessageDash() {
   //last message fetch
   useEffect(() => {
     const fetchLastMessage = async () => {
-      if (userDetails.length === 0) return;
+      
       try {
         setUserLoading(true);
         const res = await fetch(

@@ -185,9 +185,9 @@ export default function Overview() {
                             ) : step.label === "Skilled Provider" ? (
                               <>
                                 {currentProvider.status === 2 ? (
-                                  <p>Skilled Provider</p>
+                                  <p className="text-gray-600">Skilled Provider</p>
                                 ) : (
-                                  <p className="text-gray-400">
+                                  <p className="text-gray-600">
                                     Skilled Provider
                                   </p>
                                 )}
@@ -195,9 +195,9 @@ export default function Overview() {
                             ) : step.label === "1Step Pro" ? (
                               <>
                                 {currentProvider.status === 3 ? (
-                                  <p>1Step Pro</p>
+                                  <p className="text-gray-600">1Step Pro</p>
                                 ) : (
-                                  <p className="text-gray-400">1Step Pro</p>
+                                  <p className="text-gray-600">1Step Pro</p>
                                 )}
                               </>
                             ) : (
