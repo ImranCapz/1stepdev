@@ -36,7 +36,6 @@ export default function Profile() {
     profilePicture: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
   const TopLoadingBarRef = useRef(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -44,7 +43,6 @@ export default function Profile() {
   const [userProvider, setUserProvider] = useState([]);
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [isModified, setIsModified] = useState(false);
-  const [saveButton, SetSaveButton] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -310,7 +308,9 @@ export default function Profile() {
                 key={provider._id}
                 className=" rounded-lg p-3 flex gap-4 justify-between items-center"
               >
-                <Link to={`/provider/${provider._id}`}>
+                <Link
+                  to={`/provider/${provider.fullName}?id=${provider._id}&service=${provider.name[0]}`}
+                >
                   <img
                     src={provider.profilePicture}
                     alt="provider cover"
@@ -320,7 +320,7 @@ export default function Profile() {
                 <Link
                   onClick={() => dispatch(selectProvider(provider._id))}
                   className="flex-1 font-semibold hover:underline truncate"
-                  to={`/provider/?id=${provider._id}`}
+                  to={`/provider/${provider.fullName}?id=${provider._id}&service=${provider.name[0]}`}
                 >
                   <p>{provider.fullName}</p>
                 </Link>

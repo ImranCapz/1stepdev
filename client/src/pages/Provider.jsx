@@ -47,10 +47,7 @@ export default function Provider() {
   const [contact, setContact] = useState(false);
   const [message, setMessage] = useState(false);
   const [review, setReview] = useState(0);
-  const [openModal, setOpenModal] = useState(false);
-  const [isListOpen, setIsListOpen] = useState(false);
-  const [isShare, setIsShare] = useState(false);
-  const [shareClicked, setShareClicked] = useState(false);
+
   const [isFavorite, setIsFavorite] = useState(false);
   const [description, setDescription] = useState(false);
   const [otpOpen, setOtpOpen] = useState(false);
@@ -132,10 +129,17 @@ export default function Provider() {
   );
   const url = `/review/${ProviderName}-${ProviderAddress}`;
 
+  //modal
+  const [openModal, setOpenModal] = useState(false);
+  const [isListOpen, setIsListOpen] = useState(false);
+  const [isShare, setIsShare] = useState(false);
+  const [messageModal, setMessageModal] = useState(false);
+  const [shareClicked, setShareClicked] = useState(false);
   function onCloseModal() {
     setIsListOpen(false);
     setOpenModal(false);
     setIsShare(false);
+    setMessageModal(false);
     setOtpOpen(false);
   }
 
@@ -410,54 +414,95 @@ export default function Provider() {
               </SwiperSlide>
             ))}
           </Swiper> */}
-              <div
-                className={`${
-                  topNavbar
-                    ? "opacity-100 visible py-3 md:hidden sticky top-16 z-40 transition-opacity duration-300 ease-in-out"
-                    : "opacity-0 invisible h-0 md:hidden transition-opacity duration-200"
-                }`}
-              >
-                <div className="p-4 flex flex-row bg-slate-200 justify-around">
-                  <div className="flex flex-row items-center gap-2">
-                    <img
-                      src={provider.profilePicture}
-                      alt="provider profile"
-                      className="w-10 h-10 object-cover rounded-full"
-                    />
-                    <p className="text-gray text-lg font-semibold">
-                      {provider.fullName.length > 10
-                        ? `${provider.fullName.slice(0, 10)}${"..."}`
-                        : `${provider.fullName}`}
-                    </p>
-                  </div>
-                  <div className="p-1 flex flex-row items-center gap-2">
-                    <div>
-                      <Button
-                        onClick={handleFavorite}
-                        variant="outlined"
-                        className="flex flex-row border-gray-400 text-gray-600 py-1 px-1 gap-1 items-center rounded-full"
-                      >
-                        {isFavorite ? <FcLike /> : <FaRegHeart />}
-                      </Button>
+
+              {currentUser._id === provider.userRef ? null : (
+                <>
+                  <Modal show={messageModal} onClose={onCloseModal} popup>
+                    <Modal.Header>
+                      <p className="text-xs p-2">
+                        Send a Message to,{" "}
+                        <span className="text-base">{provider.fullName}</span>
+                      </p>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <Textarea
+                        rows={9}
+                        className="text-gray-700 border-gray-400"
+                        onChange={(e) => setSendMessage(e.target.value)}
+                        value={sendMessage}
+                      />
+                      <div className="flex flex-row gap-2 mt-4">
+                        <Button
+                          onClick={() => setMessage(false)}
+                          variant="outlined"
+                          className="w-full"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleSendMessage}
+                          className="w-full btn-color"
+                        >
+                          Message
+                        </Button>
+                      </div>
+                    </Modal.Body>
+                  </Modal>
+                  <div
+                    className={`${
+                      topNavbar
+                        ? "opacity-100 visible py-3 md:hidden sticky top-16 z-40 transition-opacity duration-300 ease-in-out"
+                        : "opacity-0 invisible h-0 md:hidden transition-opacity duration-200"
+                    }`}
+                  >
+                    <div className="p-4 flex flex-row bg-slate-200 justify-around">
+                      <div className="flex flex-row items-center gap-2">
+                        <img
+                          src={provider.profilePicture}
+                          alt="provider profile"
+                          className="w-10 h-10 object-cover rounded-full"
+                        />
+                        <p className="text-gray text-lg font-semibold">
+                          {provider.fullName.length > 10
+                            ? `${provider.fullName.slice(0, 10)}${"..."}`
+                            : `${provider.fullName}`}
+                        </p>
+                      </div>
+                      <div className="p-1 flex flex-row items-center gap-2">
+                        <div>
+                          <Button
+                            onClick={handleFavorite}
+                            variant="outlined"
+                            className="flex flex-row border-gray-400 text-gray-600 py-1 px-1 gap-1 items-center rounded-full"
+                          >
+                            {isFavorite ? <FcLike /> : <FaRegHeart />}
+                          </Button>
+                        </div>
+                        <div className="icon-bg rounded-full p-1">
+                          <IoIosSend
+                            className="icon-color w-4 h-4 rounded-full"
+                            onClick={() => setMessageModal(true)}
+                          />
+                        </div>
+                        {provider.timeSlots.length > 0 && (
+                          <Button
+                            onClick={() => {
+                              if (currentUser) {
+                                setContact(true);
+                              } else {
+                                setOpenModal(true);
+                              }
+                            }}
+                            className="p-2 w-full rounded-lg uppercase card-btn"
+                          >
+                            Book Now
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                    <div className="icon-bg rounded-full p-1">
-                      <IoIosSend className="icon-color w-4 h-4 rounded-full" />
-                    </div>
-                    <Button
-                      onClick={() => {
-                        if (currentUser) {
-                          setContact(true);
-                        } else {
-                          setOpenModal(true);
-                        }
-                      }}
-                      className="p-2 w-full rounded-lg uppercase card-btn"
-                    >
-                      Book Now
-                    </Button>
                   </div>
-                </div>
-              </div>
+                </>
+              )}
               <div className="lg:flex-row flex-col flex md:w-5/6 2xl:w-4/6 mx-auto mt-4">
                 <div className="flex flex-col w-full p-2 md:p-10 gap-4 overflow-auto">
                   <div className="flex lg:flex-row sm:items-center flex-col items-center gap-2">

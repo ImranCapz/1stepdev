@@ -22,6 +22,7 @@ import { suggestions } from "../components/suggestions";
 import validator from "validator";
 import { Modal } from "flowbite-react";
 import TimeSlots from "../components/timslots/TimeSlots";
+import Switch from "react-switch";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -37,6 +38,7 @@ export default function CreateProvider() {
   const fileRef = useRef(null);
   const dispatch = useDispatch();
   const [value, setValue] = useState("");
+  const [switchValue, setSwitchValue] = useState(false);
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -423,11 +425,7 @@ export default function CreateProvider() {
     <>
       <Modal>
         <Modal.Header></Modal.Header>
-        <Modal.Body>
-          <div className="">
-            <TimeSlots data={formData} setData={setFormData} />
-          </div>
-        </Modal.Body>
+        <Modal.Body></Modal.Body>
       </Modal>
       <div className="md:p-10 p-5 w-full mx-auto flex-col items-center bg-sky-100 mb-10">
         {loading ? (
@@ -812,6 +810,21 @@ export default function CreateProvider() {
                 </div>
 
                 <div className="flex flex-col flex-1 gap-3 md:w-[300px]">
+                  <label className="flex flex-row items-center gap-4 font-semibold text-main md:text-base text-sm">
+                    TimeSlots for Bookings
+                    <Switch
+                      onChange={setSwitchValue}
+                      checked={switchValue}
+                      height={18}
+                      width={40}
+                    />
+                  </label>
+                  {switchValue && (
+                    <div className=" overflow-x-auto md:h-[400px]">
+                      <TimeSlots data={formData} setData={setFormData} />
+                    </div>
+                  )}
+
                   <p className="font-semibold text-main">
                     Explain About your therapy section*
                     <span className="text-sm">

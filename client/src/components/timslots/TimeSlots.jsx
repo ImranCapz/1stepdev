@@ -269,7 +269,7 @@ function TimeSlots({ data, setData }) {
         </div>
         <Modal.Footer>
           {" "}
-          <h1 className="text-gray text-xs">
+          <h1 className="text-gray">
             <Kbd style={{ backgroundColor: "#e5e7c7" }}>Note :</Kbd> Select
             multiple days if the session time remains the same.
           </h1>
@@ -281,9 +281,9 @@ function TimeSlots({ data, setData }) {
             Pick your TimeSlot
           </h1>
           <div className="flex flex-row gap-2 items-center">
-            <h1 className="text-sm text-gray">Session Gap</h1>
+            <h1 className="text-xs text-gray">Session Gap</h1>
             <select
-              className="text-xs rounded-m w-24 border-2 focus:border-purple-400 outline outline-none focus:ring-0"
+              className="text-xs rounded-m md:w-24 border-2 focus:border-purple-400 outline outline-none focus:ring-0"
               onChange={handleSessionChange}
               value={session}
             >
@@ -293,12 +293,12 @@ function TimeSlots({ data, setData }) {
             </select>
           </div>
         </div>
-        <div className="flex justify-center mt-4 overflow-auto ">
+        <div className="flex md:justify-center mt-4 overflow-auto overflow-x-auto">
           {daysOfWeek.map((day) => (
             <div key={day} className="flex flex-col items-center gap-2">
               <button
                 type="button"
-                className={`px-3 py-2 border-primary-60 font-semibold  ${
+                className={`px-3 py-2 border-primary-60 font-semibold text-xs md:text-base ${
                   selectedDays === day
                     ? "text-primary-60 bg-primary-50 transition-all duration-300"
                     : "bg-slate-200 text-gray"
@@ -309,12 +309,11 @@ function TimeSlots({ data, setData }) {
               </button>
               <div className="flex flex-col text-center items-center">
                 <p
-                  className="text-xs text-gray-900"
-                  style={{ fontSize: "11px" }}
+                  className="text-[11px] md:text-[14px] text-gray-900"
                 >
                   {data.timeSlots[day].length}
                 </p>
-                <p style={{ fontSize: "11px" }}>Slots</p>
+                <p className="text-[9px]  md:text-[14px]">Slots</p>
               </div>
             </div>
           ))}

@@ -131,6 +131,9 @@ export default function Overview() {
                 <h1 className="text-gray text-base font-semibold mt-2">
                   {currentUser.username}
                 </h1>
+                {currentProvider.verified === true && (
+                  <p className="text-sm text-green-600">Profile Verified</p>
+                )}
               </div>
             </div>
           </div>
@@ -185,7 +188,9 @@ export default function Overview() {
                             ) : step.label === "Skilled Provider" ? (
                               <>
                                 {currentProvider.status === 2 ? (
-                                  <p className="text-gray-600">Skilled Provider</p>
+                                  <p className="text-gray-600">
+                                    Skilled Provider
+                                  </p>
                                 ) : (
                                   <p className="text-gray-600">
                                     Skilled Provider

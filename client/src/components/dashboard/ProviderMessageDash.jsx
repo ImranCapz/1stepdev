@@ -730,7 +730,7 @@ export default function ProviderMessageDash() {
                   ) : (
                     <div className="flex flex-col mx-auto items-center justify-center h-full">
                       <img
-                        src={currentUser.profilePicture}
+                        src={currentUser.profilePicture  || 'https://i.ibb.co/tKQH4zp/defaultprofile.jpg'}
                         alt="user logo"
                         className="size-20 object-cover rounded-full border-4 border-purple-300"
                       />
