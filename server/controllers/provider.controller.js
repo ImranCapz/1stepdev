@@ -256,3 +256,32 @@ export const verifyOtpProvider = async (req, res, next) => {
     next(error);
   }
 };
+
+export const modifiedTimeslot = async (req, res, next) => {
+  const id = req.params.id;
+  const timeSlots = req.body.timeSlots;
+  try {
+    const provider = Provider.findById(id);
+    if (!provider) {
+      return next(errorHandler(404, "Provider not found"));
+    }
+    const updateProvider = await Provider.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          timeSlots: timeSlots,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({
+      status: true,
+      message: "TimeSlots updated successfully ",
+      provider: updateProvider,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

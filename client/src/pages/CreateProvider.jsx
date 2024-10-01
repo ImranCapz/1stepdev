@@ -23,6 +23,10 @@ import validator from "validator";
 import { Modal } from "flowbite-react";
 import TimeSlots from "../components/timslots/TimeSlots";
 import Switch from "react-switch";
+import Drawer from "react-modern-drawer";
+import "react-modern-drawer/dist/index.css";
+import { IoCloseSharp } from "react-icons/io5";
+import { set } from "mongoose";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -39,6 +43,11 @@ export default function CreateProvider() {
   const dispatch = useDispatch();
   const [value, setValue] = useState("");
   const [switchValue, setSwitchValue] = useState(false);
+  const [modifiedSlots, setModifiedSlots] = useState({});
+  const [timeSlotSaved, setTimeSlotSaved] = useState(false);
+
+  //Drawer
+  const [isTimeSlotDrawer, setTimeSlotDrawer] = useState(false);
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -70,7 +79,6 @@ export default function CreateProvider() {
       Sunday: [],
     },
   });
-  console.log(formData);
   const [Errors, setErrors] = useState({
     phone: false,
     email: false,
@@ -418,6 +426,56 @@ export default function CreateProvider() {
       toast.success("Provider updated successfully");
     } catch (error) {
       setError(error.message);
+    }
+  };
+
+  const handleTimeSlots = async (e) => {
+    e.preventDefault();
+    if (Object.keys(modifiedSlots).length === 0) {
+      return toast.error("Please select atleast one time slot");
+    }
+    if (!currentProvider) {
+      return toast.error("Provider not found, Signout and login again");
+    }
+    try {
+      const res = await fetch(
+        `/server/provider/timeslots/${currentProvider._id}`,
+        {
+          method: "POST",
+          headers: {
+            "content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            timeSlots: modifiedSlots,
+          }),
+        }
+      );
+      const data = await res.json();
+      console.log(data);
+      if (data.status) {
+        dispatch(providerData(data.provider));
+        toast.success("Time slots updated successfully");
+        setModifiedSlots({});
+        setTimeSlotSaved(false);
+      } else {
+        toast.error("Time slots update failed");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCloseDrawer = () => {
+    if (Object.keys(modifiedSlots).length > 0) {
+      const confirmClose = window.confirm(
+        "You have unsaved timeslots. Are you sure you want to close?"
+      );
+      if (confirmClose) {
+       setSwitchValue(false);
+        setModifiedSlots({});
+      }
+    } else {
+      setSwitchValue(false);
     }
   };
 
@@ -809,6 +867,55 @@ export default function CreateProvider() {
                   </div>
                 </div>
 
+                <Drawer
+                  open={switchValue}
+                  onClose={handleCloseDrawer}
+                  direction="right"
+                  size={window.innerWidth > 768 ? "40%" : "95%"}
+                  lockBackgroundScroll={true}
+                  zindex={40}
+                  className="overflow-y-auto md:overflow-hidden"
+                >
+                  <div>
+                    <div className="flex px-4 flex-row items-center justify-between">
+                      <h1 className="p-2 text-xl font-semibold text-main">
+                        Choose Timeslot for booking
+                      </h1>
+                      <button type="button" onClick={handleCloseDrawer}>
+                        <IoCloseSharp className="size-6 text-gray-600" />
+                      </button>
+                    </div>
+                    <div className="overflow-y-auto md:h-[494px] 2xl:h-[800px]">
+                      <TimeSlots
+                        data={formData}
+                        setData={setFormData}
+                        setModifiedSlot={setModifiedSlots}
+                        timeSlotSaved={setTimeSlotSaved}
+                      />
+                    </div>
+                    <div className="flex justify-end mr-4 mt-5 mb-5 gap-4">
+                      <button
+                        type="button"
+                        className={`px-6 p-1 text-base rounded-md ${
+                          timeSlotSaved
+                            ? "btn-color"
+                            : "bg-primary-60 text-white"
+                        }`}
+                        onClick={handleTimeSlots}
+                        disabled={!timeSlotSaved}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className="px-4 p-1 text-base rounded-md bg-gray-300 text-gray-600"
+                        onClick={handleCloseDrawer}
+                      >
+                        cancel
+                      </button>
+                    </div>
+                  </div>
+                </Drawer>
                 <div className="flex flex-col flex-1 gap-3 md:w-[300px]">
                   <label className="flex flex-row items-center gap-4 font-semibold text-main md:text-base text-sm">
                     TimeSlots for Bookings
@@ -819,12 +926,7 @@ export default function CreateProvider() {
                       width={40}
                     />
                   </label>
-                  {switchValue && (
-                    <div className=" overflow-x-auto md:h-[400px]">
-                      <TimeSlots data={formData} setData={setFormData} />
-                    </div>
-                  )}
-
+                  {switchValue && <></>}
                   <p className="font-semibold text-main">
                     Explain About your therapy section*
                     <span className="text-sm">
@@ -929,49 +1031,6 @@ export default function CreateProvider() {
                         Please enter a 10-digit number.
                       </p>
                     )}
-                    {/* <p className="font-semibold text-main">Availability:</p>
-                  <div className="flex md:flex-row flex-col gap-4">
-                    <p className="font-semibold text-main">Morning:</p>
-                    <div className="flex gap-2">
-                      <input
-                        type="time"
-                        id="morningStart"
-                        className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                        required
-                        value={formData.availability.morningStart}
-                        onChange={handleChange}
-                      />
-                      <input
-                        type="time"
-                        id="morningEnd"
-                        className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                        required
-                        value={formData.availability.morningEnd}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex md:flex-row flex-col gap-4 pl-1">
-                    <p className="font-semibold text-main">Evening:</p>
-                    <div className="flex gap-2">
-                      <input
-                        type="time"
-                        id="eveningStart"
-                        className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                        required
-                        value={formData.availability.eveningStart}
-                        onChange={handleChange}
-                      />
-                      <input
-                        type="time"
-                        id="eveningEnd"
-                        className="border-2 p-2 rounded-lg input focus:outline-none focus:ring-0 border-slate-300"
-                        required
-                        value={formData.availability.eveningEnd}
-                        onChange={handleChange}
-                      />
-                    </div> */}
-                    {/* </div> */}
                   </div>
 
                   <p className="font-semibold text-main">

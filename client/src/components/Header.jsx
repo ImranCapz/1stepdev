@@ -231,7 +231,7 @@ const Header = ({ showSubMenu }) => {
 
   return (
     <header
-      className={`text-base lg:text-sm sticky top-0 z-50 bg-white ${
+      className={`text-base lg:text-sm sticky top-0 z-40 bg-white ${
         isDrawer ? "blur-drawer" : ""
       }`}
     >

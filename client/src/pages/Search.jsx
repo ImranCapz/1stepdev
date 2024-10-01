@@ -577,8 +577,8 @@ export default function Search() {
             </div>
           </form>
         </div>
-        <hr className="border-gray-300 flex md:hidden" />
-        <div className="space-y-3 p-">
+        <hr className="border-gray-300 flex md:hidden"/>
+        <div className="space-y-3 ">
           <div className="sm:flex-col lg:flex-row lg:w-1/2"> </div>
           <div>
             <div className="md:py-2 pl-2 md:pl-0 flex items-center">
@@ -615,7 +615,7 @@ export default function Search() {
               </div>
             </>
           )}
-          <div className="md:px-3 2xl:px-40 2xl:mx-auto">
+          <div className="2xl:px-40 2xl:mx-auto">
             <div>
               {providerloading ? (
                 providers.length > 0 ? (

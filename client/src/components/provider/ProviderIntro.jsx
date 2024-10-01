@@ -1,49 +1,29 @@
-import {
-  FaCalendarAlt,
-  FaDesktop,
-  FaMoneyBill,
-  FaGoogle,
-  FaApple,
-} from "react-icons/fa";
 import pic1 from "../../assets/providerintro/1.png";
 import pic2 from "../../assets/providerintro/2.png";
 import pic3 from "../../assets/providerintro/3.png";
 import profileImage from "../../pages/providerscreen/createprovider.png";
 import { Button } from "flowbite-react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import OAuth from "../../components/OAuth";
-import img1 from "../../assets/providerintro/abc.jpeg";
-import {
-  FcApproval,
-  FcCurrencyExchange,
-  FcSalesPerformance,
-  FcGlobe,
-} from "react-icons/fc";
-import img from "../../assets/providerintro/preview (1).jpg";
-import { HiOutlineArrowRight, HiShoppingCart } from "react-icons/hi";
+import { HiOutlineArrowRight} from "react-icons/hi";
 
 function ProviderIntro() {
   const navigate = useNavigate();
-  const { currentUser } = useSelector((state) => state.user);
-  const { currentProvider } = useSelector((state) => state.provider);
   return (
     <div>
       <div className="overflow-x-hidden">
         <div className="flex flex-col">
           <section className="flex flex-col bg-purple-100 justify-center items-center w-full">
             <div className="container mx-auto mt-10 mb-10 ">
-              <h1 className="text-2xl mb-5 font-bold text-purple-900 text-center md:text-3xl lg:text-4xl">
+              <h1 className="text-2xl mb-5 mt-5 font-bold text-purple-900 text-center md:text-3xl 2xl:text-4xl">
                 How Can I Become a Therapist on OneStep?
               </h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 md:px-52 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 md:px-64 gap-4">
                 <div className="flex flex-col justify-center">
-                  <h2 className="text-2xl font-bold text-purple-900 mb-4 text-center md:text-left">
+                  <h2 className="text-xl font-semibold text-main mb-4 text-center md:text-left">
                     Create Your Therapist Profile
                   </h2>
 
-                  <p className="text-gray-600 text-base mb-4 lg:text-xl text-center md:text-lg">
+                  <p className="text-gray-600 2xl:text-xl mb-4 text-left md:text-base">
                     Build a profile that highlights your specializations,
                     experience, and the unique care you offer
                   </p>
@@ -63,20 +43,20 @@ function ProviderIntro() {
                   />
                 </div>
                 <div className="flex flex-col justify-center order-1 md:order-none">
-                  <h2 className="text-2xl font-bold text-purple-900 mb-4 text-center md:text-right">
+                  <h2 className="text-xl font-semibold text-main mb-4 text-center md:text-left">
                     Set Your Therapy Conditions
                   </h2>
-                  <p className="text-gray-600 lg:text-xl mb-4 text-left md:text-lg md:text-right">
+                  <p className="text-gray-600 2xl:text-xl mb-4 text-left md:text-base">
                     You have complete control over your schedule, session fees,
                     and therapeutic approach. Update Your Therapy Conditions
                   </p>
                 </div>
 
                 <div className="flex flex-col justify-center order-3 md:order-none">
-                  <h2 className="text-2xl font-bold text-purple-900 mb-4 text-center md:text-left">
+                  <h2 className="text-xl font-semibold text-main mb-4 text-center md:text-left">
                     Start Helping Clients
                   </h2>
-                  <p className="text-gray-600  lg:text-xl mb-4 text-left md:text-lg">
+                  <p className="text-gray-600 2xl:text-xl mb-4 text-left md:text-base">
                     Once your profile is live, begin offering therapy sessions
                     and making a difference
                   </p>

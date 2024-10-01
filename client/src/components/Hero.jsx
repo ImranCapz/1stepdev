@@ -5,14 +5,10 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import imagehome from "../assets/homeimage.png";
 import { Card, Modal } from "flowbite-react";
-import { SlSpeech } from "react-icons/sl";
-import { LuStethoscope } from "react-icons/lu";
-import { FaHandHoldingMedical } from "react-icons/fa";
 import ListModel from "./modal/ListModel";
 import heartIcon from "../assets/listLike.png";
 import freescanner from "../assets/freescanner.png";
 import search from "../assets/search.png";
-import { RiMusic2Fill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { providerData } from "../redux/provider/providerSlice";
 import HowItWorks from "../pages/HowItWorks";
@@ -271,7 +267,7 @@ const Hero = () => {
         </div>
       </div> */}
       <div className="flex flex-col px-4 py-9 mx-auto justify-center items-center">
-        <h2 className="text-2xl font-extrabold text-center text-main">
+        <h2 className="text-2xl font-semibold text-center text-main">
           Join 1Step for free{" "}
         </h2>
         {/* <h3 className="md:w-1/2 text-center text-main mt-2">

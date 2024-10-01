@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-function TimeSlots({ data, setData }) {
+function TimeSlots({ data, setData, setModifiedSlot, timeSlotSaved }) {
   const [selectedDays, setSelectedDays] = useState("Monday");
   const [multiSelectedDays, setMultiSelectedDays] = useState([]);
   const [startTime, setStartTime] = useState("");
@@ -21,7 +21,7 @@ function TimeSlots({ data, setData }) {
       for (let minute = 0; minute < 60; minute += session) {
         const period = hours < 12 ? "AM" : "PM";
         const hour12 = hours % 12 === 0 ? 12 : hours % 12;
-       const time = `${String(hour12).padStart(2, "0")}:${String(
+        const time = `${String(hour12).padStart(2, "0")}:${String(
           minute
         ).padStart(2, "0")} ${period}`;
         if (hours < 12) {
@@ -74,6 +74,11 @@ function TimeSlots({ data, setData }) {
       ...data,
       timeSlots: { ...data.timeSlots, [day]: updateTimeSlot },
     });
+    setModifiedSlot((prevState) => ({
+      ...prevState,
+      [day]: updateTimeSlot,
+    }));
+    timeSlotSaved(true);
   };
 
   //timevalidation
@@ -159,10 +164,14 @@ function TimeSlots({ data, setData }) {
       toast.error("Please select atleast one day");
       return;
     }
-    const allSlots = [...morningSlots, ...afternoonSlots, ...eveningSlots];
+    const allSlots = [
+      ...morningSlots,
+      ...afternoonSlots,
+      ...eveningSlots,
+      ...nightSlots,
+    ];
     const filteredSlots = FilterTimeSlot(allSlots, startTime, endTime);
     const filteredSlots2 = FilterTimeSlot(allSlots, startTime2, endTime2);
-
     setData((prevData) => {
       const updatedTimeSlots = { ...prevData.timeSlots };
       multiSelectedDays.forEach((day) => {
@@ -182,99 +191,105 @@ function TimeSlots({ data, setData }) {
   }
 
   return (
-    <>
-      <Modal
-        size={"md"}
-        show={openTimeRangeModal}
-        onClose={() => setOpenTimeRangeModal(false)}
-      >
-        <Modal.Header>Choose for {multiSelectedDays.join(", ")},</Modal.Header>
-        <div className="p-4">
-          <div className="flex flex-row items-center justify-center">
-            {daysOfWeek.map((day) => (
+    <div className="relative z-50">
+      <div className="">
+        <Modal
+          size={"md"}
+          show={openTimeRangeModal}
+          onClose={() => setOpenTimeRangeModal(false)}
+          zindex={90}
+        >
+          <Modal.Header>
+            Choose for {multiSelectedDays.join(", ")},
+          </Modal.Header>
+          <div className="p-4 z-50">
+            <div className="flex flex-row items-center justify-center">
+              {daysOfWeek.map((day) => (
+                <button
+                  type="button"
+                  key={day}
+                  className={`px-2 py-2 border-primary-60 font-semibold ${
+                    multiSelectedDays.includes(day)
+                      ? "text-primary-60 bg-primary-50 transition-all duration-300"
+                      : "bg-slate-200 text-gray"
+                  }`}
+                  onClick={() => handleAllDayClick(day)}
+                >
+                  {day.slice(0, 3)}
+                </button>
+              ))}
+            </div>
+            <div className="p-4 flex gap-2 items-center mt-2 justify-center">
+              <h1 className="text-base">Session 1 *</h1>
+              <div className="flex flex-col">
+                <label style={{ fontSize: "11px" }}>Start Time</label>
+                <input
+                  type="time"
+                  id="startTime"
+                  className="rounded-lg text-xs mt-1"
+                  value={startTime}
+                  onChange={handleStartTimeChange}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label style={{ fontSize: "11px" }}>End Time</label>
+                <input
+                  type="time"
+                  id="endTime"
+                  className="rounded-lg text-xs mt-1"
+                  value={endTime}
+                  onChange={handleEndTimeChange}
+                />
+              </div>
+            </div>
+            <div className="p- flex gap-2 items-center justify-center">
+              <h1 className="text-base">Session 2 &nbsp;</h1>
+              <div className="flex flex-col">
+                <label style={{ fontSize: "11px" }}>Start Time</label>
+                <input
+                  type="time"
+                  id="startTime2"
+                  className="rounded-lg text-xs mt-1"
+                  value={startTime2}
+                  onChange={handleStartTimeChange2}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label style={{ fontSize: "11px" }}>End Time</label>
+                <input
+                  type="time"
+                  id="endTime2"
+                  className="rounded-lg text-xs mt-1"
+                  value={endTime2}
+                  onChange={handleEndTimeChange2}
+                />
+              </div>
+            </div>
+            <div className="mb-6 mt-6 flex items-center justify-center gap-4">
               <button
-                type="button"
-                key={day}
-                className={`px-2 py-2 border-primary-60 font-semibold  ${
-                  multiSelectedDays.includes(day)
-                    ? "text-primary-60 bg-primary-50 transition-all duration-300"
-                    : "bg-slate-200 text-gray"
-                }`}
-                onClick={() => handleAllDayClick(day)}
+                onClick={() => setOpenTimeRangeModal(false)}
+                className="px-6 py-1 bg-slate-200 rounded-md font-medium text-slate-700 hover:bg-slate-300 duration-300"
               >
-                {day.slice(0, 3)}
+                Cancel
               </button>
-            ))}
-          </div>
-          <div className="p-4 flex gap-2 items-center mt-2 justify-center">
-            <h1 className="text-base">Session 1 *</h1>
-            <div className="flex flex-col">
-              <label style={{ fontSize: "11px" }}>Start Time</label>
-              <input
-                type="time"
-                id="startTime"
-                className="rounded-lg text-xs mt-1"
-                value={startTime}
-                onChange={handleStartTimeChange}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label style={{ fontSize: "11px" }}>End Time</label>
-              <input
-                type="time"
-                id="endTime"
-                className="rounded-lg text-xs mt-1"
-                value={endTime}
-                onChange={handleEndTimeChange}
-              />
+              <button
+                onClick={handleTimeApply}
+                className="px-7 py-1 card-btn rounded-md "
+              >
+                Apply
+              </button>
             </div>
           </div>
-          <div className="p- flex gap-2 items-center justify-center">
-            <h1 className="text-base">Session 2 &nbsp;</h1>
-            <div className="flex flex-col">
-              <label style={{ fontSize: "11px" }}>Start Time</label>
-              <input
-                type="time"
-                id="startTime2"
-                className="rounded-lg text-xs mt-1"
-                value={startTime2}
-                onChange={handleStartTimeChange2}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label style={{ fontSize: "11px" }}>End Time</label>
-              <input
-                type="time"
-                id="endTime2"
-                className="rounded-lg text-xs mt-1"
-                value={endTime2}
-                onChange={handleEndTimeChange2}
-              />
-            </div>
-          </div>
-          <div className="mb-6 mt-6 flex items-center justify-center gap-4">
-            <button
-              onClick={() => setOpenTimeRangeModal(false)}
-              className="px-6 py-1 bg-slate-200 rounded-md font-medium text-slate-700 hover:bg-slate-300 duration-300"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleTimeApply}
-              className="px-7 py-1 card-btn rounded-md "
-            >
-              Apply
-            </button>
-          </div>
-        </div>
-        <Modal.Footer>
-          {" "}
-          <h1 className="text-gray">
-            <Kbd style={{ backgroundColor: "#e5e7c7" }}>Note :</Kbd> Select
-            multiple days if the session time remains the same.
-          </h1>
-        </Modal.Footer>
-      </Modal>
+          <Modal.Footer>
+            {" "}
+            <h1 className="text-gray">
+              <Kbd style={{ backgroundColor: "#e5e7c7" }}>Note :</Kbd> Select
+              multiple days if the session time remains the same.
+            </h1>
+          </Modal.Footer>
+        </Modal>
+      </div>
+
       <div className="p-3 md:p-6 bg-purple-50 rounded-lg">
         <div className="flex justify-between items-center">
           <h1 className="text-gray md:text-xl text-sm font-bold">
@@ -298,7 +313,7 @@ function TimeSlots({ data, setData }) {
             <div key={day} className="flex flex-col items-center gap-2">
               <button
                 type="button"
-                className={`px-3 py-2 border-primary-60 font-semibold text-xs md:text-base ${
+                className={`px-3 py-2 border-primary-60 font-semibold text-sm md:text-base ${
                   selectedDays === day
                     ? "text-primary-60 bg-primary-50 transition-all duration-300"
                     : "bg-slate-200 text-gray"
@@ -308,9 +323,7 @@ function TimeSlots({ data, setData }) {
                 {day.slice(0, 3)}
               </button>
               <div className="flex flex-col text-center items-center">
-                <p
-                  className="text-[11px] md:text-[14px] text-gray-900"
-                >
+                <p className="text-[11px] md:text-[14px] text-gray-900">
                   {data.timeSlots[day].length}
                 </p>
                 <p className="text-[9px]  md:text-[14px]">Slots</p>
@@ -400,7 +413,7 @@ function TimeSlots({ data, setData }) {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -409,6 +422,8 @@ export default TimeSlots;
 TimeSlots.propTypes = {
   daysOfWeek: PropTypes.array,
   session: PropTypes.number,
+  setModifiedSlot: PropTypes.func,
+  timeSlotSaved: PropTypes.func,
   selectedDays: PropTypes.string,
   setSelectedDays: PropTypes.func,
   data: PropTypes.object,
