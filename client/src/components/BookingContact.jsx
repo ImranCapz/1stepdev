@@ -52,6 +52,20 @@ export default function BookingContact({ provider }) {
   }, [provider.userRef, currentUser.email, currentUser.username]);
 
   const handleSubmit = async (e) => {
+    if (!formData.scheduledTime.slot) {
+      toast.error("Please select a slot");
+      return;
+    }
+    if (
+      !formData.service ||
+      formData.patientName === "" ||
+      formData.email === "" ||
+      formData.note === "" ||
+      formData.sessionType === ""
+    ) {
+      toast.error("Please fill all the fields");
+      return;
+    }
     e.preventDefault();
     try {
       const res = await fetch("/server/booking/bookings", {
@@ -175,7 +189,8 @@ export default function BookingContact({ provider }) {
       //booked slots
       const currentDay = new Date();
       const bookedSlots = `${selectDate}-${slot}`;
-      const isBooked = bookedSlots in provider.bookedSlots;
+      const isBooked =
+        provider.bookedSlots && bookedSlots in provider.bookedSlots;
 
       if (slotDate.toLocaleDateString() === currentDay.toLocaleDateString()) {
         const isAvailable =

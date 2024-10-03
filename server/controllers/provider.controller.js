@@ -1,5 +1,5 @@
 import Provider from "../models/provider.model.js";
-import Booking from "../models/booking.model.js";
+import { Booking } from "../models/booking.model.js";
 import { errorHandler } from "../utils/error.js";
 import nodemailer from "nodemailer";
 
@@ -261,15 +261,21 @@ export const modifiedTimeslot = async (req, res, next) => {
   const id = req.params.id;
   const timeSlots = req.body.timeSlots;
   try {
-    const provider = Provider.findById(id);
+    const provider = await Provider.findById(id);
     if (!provider) {
       return next(errorHandler(404, "Provider not found"));
     }
+
+    const mergedTimeSlots = {
+      ...provider.timeSlots,
+      ...timeSlots,
+    };
+
     const updateProvider = await Provider.findByIdAndUpdate(
       id,
       {
         $set: {
-          timeSlots: timeSlots,
+          timeSlots: mergedTimeSlots,
         },
       },
       {

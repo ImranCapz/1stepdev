@@ -2,6 +2,7 @@ import { Kbd, Modal } from "flowbite-react";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useMemo } from "react";
 
 function TimeSlots({ data, setData, setModifiedSlot, timeSlotSaved }) {
   const [selectedDays, setSelectedDays] = useState("Monday");
@@ -12,34 +13,32 @@ function TimeSlots({ data, setData, setModifiedSlot, timeSlotSaved }) {
   const [endTime2, setEndTime2] = useState("");
   const [session, setSession] = useState(30);
 
-  const generateTimeSlots = () => {
-    const morningSlots = [];
-    const afternoonSlots = [];
-    const eveningSlots = [];
-    const nightSlots = [];
-    for (let hours = 7; hours < 24; hours++) {
-      for (let minute = 0; minute < 60; minute += session) {
-        const period = hours < 12 ? "AM" : "PM";
-        const hour12 = hours % 12 === 0 ? 12 : hours % 12;
-        const time = `${String(hour12).padStart(2, "0")}:${String(
-          minute
-        ).padStart(2, "0")} ${period}`;
-        if (hours < 12) {
-          morningSlots.push(time);
-        } else if (hours < 16) {
-          afternoonSlots.push(time);
-        } else if (hours < 20) {
-          eveningSlots.push(time);
-        } else {
-          nightSlots.push(time);
+  const { morningSlots, afternoonSlots, eveningSlots, nightSlots } =
+    useMemo(() => {
+      const morningSlots = [];
+      const afternoonSlots = [];
+      const eveningSlots = [];
+      const nightSlots = [];
+      for (let hours = 7; hours < 24; hours++) {
+        for (let minute = 0; minute < 60; minute += session) {
+          const period = hours < 12 ? "AM" : "PM";
+          const hour12 = hours % 12 === 0 ? 12 : hours % 12;
+          const time = `${String(hour12).padStart(2, "0")}:${String(
+            minute
+          ).padStart(2, "0")} ${period}`;
+          if (hours < 12) {
+            morningSlots.push(time);
+          } else if (hours < 16) {
+            afternoonSlots.push(time);
+          } else if (hours < 20) {
+            eveningSlots.push(time);
+          } else {
+            nightSlots.push(time);
+          }
         }
       }
-    }
-    return { morningSlots, afternoonSlots, eveningSlots, nightSlots };
-  };
-
-  const { morningSlots, afternoonSlots, eveningSlots, nightSlots } =
-    generateTimeSlots();
+      return { morningSlots, afternoonSlots, eveningSlots, nightSlots };
+    }, [session]);
 
   const daysOfWeek = [
     "Monday",
@@ -175,11 +174,27 @@ function TimeSlots({ data, setData, setModifiedSlot, timeSlotSaved }) {
     setData((prevData) => {
       const updatedTimeSlots = { ...prevData.timeSlots };
       multiSelectedDays.forEach((day) => {
-        updatedTimeSlots[day] = [...filteredSlots, ...filteredSlots2];
+        updatedTimeSlots[day] = [
+          ...(updatedTimeSlots[day] || []),
+          ...filteredSlots,
+          ...filteredSlots2,
+        ];
       });
       return { ...prevData, timeSlots: updatedTimeSlots };
     });
+    setModifiedSlot((prevState) => {
+      const updatedTimeSlots = { ...prevState };
+      multiSelectedDays.forEach((day) => {
+        updatedTimeSlots[day] = [
+          ...(updatedTimeSlots[day] || []),
+          ...filteredSlots,
+          ...filteredSlots2,
+        ];
+      });
+      return { ...prevState, ...updatedTimeSlots };
+    });
     setOpenTimeRangeModal(false);
+    timeSlotSaved(true);
   };
 
   //modal for time range
@@ -191,13 +206,13 @@ function TimeSlots({ data, setData, setModifiedSlot, timeSlotSaved }) {
   }
 
   return (
-    <div className="relative z-50">
-      <div className="">
+    <div>
+      <div className="relative z-50">
         <Modal
           size={"md"}
           show={openTimeRangeModal}
           onClose={() => setOpenTimeRangeModal(false)}
-          zindex={90}
+          zindex={40}
         >
           <Modal.Header>
             Choose for {multiSelectedDays.join(", ")},
@@ -350,7 +365,9 @@ function TimeSlots({ data, setData, setModifiedSlot, timeSlotSaved }) {
                   type="button"
                   onClick={() => handleTimeSlotToggle(selectedDays, time)}
                   className={`py-2 text-xs rounded-md border border-slate-200 hover:border-primary-50 hover:text-primary-60 duration-200 ${
-                    data.timeSlots[selectedDays].includes(time)
+                    data.timeSlots[selectedDays].includes(time) ||
+                    (setModifiedSlot[selectedDays] &&
+                      setModifiedSlot[selectedDays].includes(time))
                       ? "bg-primary-50 text-primary-60 border border-purple-200"
                       : "bg-slate-100 border border-slate-300"
                   }`}

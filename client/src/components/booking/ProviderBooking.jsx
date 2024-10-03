@@ -61,40 +61,42 @@ export default function ProviderBooking() {
   // }, []);
 
   const handleApprove = async (bookingId) => {
+    console.log(bookingId);
     dispatch(approveBooking(bookingId)).then(async () => {
       toast.success("Appointment Approved", {
         position: "bottom-left",
       });
-      if (provider[0]) {
-        fetchBooking(provider[0]._id);
-      }
+      // if (!currentProvider) {
+      //   return;
+      // }
+      // const booking = providerBooking.find(
+      //   (booking) => booking._id === bookingId
+      // );
 
-      const booking = appointment.find((booking) => booking._id === bookingId);
-
-      const res = await fetch("/server/booking/emailbookingAccept", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: booking.patientDetails.email,
-          subject: "1Step Appointment Approved",
-          providerName: provider[0].fullName,
-          service: booking.service.join(", "),
-          name: currentUser.username,
-          providerProfile: provider[0].profilePicture,
-          slot: booking.scheduledTime.slot,
-          date: booking.scheduledTime.date,
-        }),
-      });
-      const data = await res.json();
-      if (data.success === false) {
-        console.log("Email not sent");
-        return;
-      }
-      if (data.success === true) {
-        console.log("Email sent");
-      }
+      // const res = await fetch("/server/booking/emailbookingAccept", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     email: booking.patientDetails.email,
+      //     subject: "1Step Appointment Approved",
+      //     providerName: currentProvider.fullName,
+      //     service: booking.service.join(", "),
+      //     name: currentUser.username,
+      //     providerProfile: currentProvider.profilePicture,
+      //     slot: booking.scheduledTime.slot,
+      //     date: booking.scheduledTime.date,
+      //   }),
+      // });
+      // const data = await res.json();
+      // if (data.success === false) {
+      //   console.log("Email not sent");
+      //   return;
+      // }
+      // if (data.success === true) {
+      //   console.log("Email sent");
+      // }
     });
   };
 
@@ -103,9 +105,6 @@ export default function ProviderBooking() {
       toast.error("Appointment Rejected", {
         position: "bottom-left",
       });
-      if (provider[0]) {
-        fetchBooking(provider[0]._id);
-      }
     });
   };
 

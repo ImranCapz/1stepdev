@@ -24,7 +24,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchBooking = async () => {
-      if (isUserBookingFetched) return;
       const url = `/server/booking/getuserbookings/${currentUser._id}`;
       try {
         dispatch(getBookingsStart());
@@ -47,7 +46,7 @@ export default function Dashboard() {
     };
 
     fetchBooking();
-  }, [currentUser._id, dispatch, isUserBookingFetched]);
+  }, [currentUser._id, dispatch]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);

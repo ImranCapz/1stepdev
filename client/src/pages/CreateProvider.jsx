@@ -26,7 +26,6 @@ import Switch from "react-switch";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 import { IoCloseSharp } from "react-icons/io5";
-import { set } from "mongoose";
 
 export default function CreateProvider() {
   const { currentUser } = useSelector((state) => state.user);
@@ -46,8 +45,6 @@ export default function CreateProvider() {
   const [modifiedSlots, setModifiedSlots] = useState({});
   const [timeSlotSaved, setTimeSlotSaved] = useState(false);
 
-  //Drawer
-  const [isTimeSlotDrawer, setTimeSlotDrawer] = useState(false);
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -79,6 +76,10 @@ export default function CreateProvider() {
       Sunday: [],
     },
   });
+  console.log("modifiedSlots", modifiedSlots);
+
+  // console.log("Formdata", formData);
+
   const [Errors, setErrors] = useState({
     phone: false,
     email: false,
@@ -466,13 +467,19 @@ export default function CreateProvider() {
   };
 
   const handleCloseDrawer = () => {
+    const originalFormTimeSlots = currentProvider.timeSlots;
     if (Object.keys(modifiedSlots).length > 0) {
       const confirmClose = window.confirm(
         "You have unsaved timeslots. Are you sure you want to close?"
       );
       if (confirmClose) {
-       setSwitchValue(false);
+        setSwitchValue(false);
         setModifiedSlots({});
+        setTimeSlotSaved(false);
+        setFormData({
+          ...formData,
+          timeSlots: originalFormTimeSlots,
+        });
       }
     } else {
       setSwitchValue(false);
@@ -481,10 +488,6 @@ export default function CreateProvider() {
 
   return (
     <>
-      <Modal>
-        <Modal.Header></Modal.Header>
-        <Modal.Body></Modal.Body>
-      </Modal>
       <div className="md:p-10 p-5 w-full mx-auto flex-col items-center bg-sky-100 mb-10">
         {loading ? (
           <>
@@ -871,12 +874,12 @@ export default function CreateProvider() {
                   open={switchValue}
                   onClose={handleCloseDrawer}
                   direction="right"
-                  size={window.innerWidth > 768 ? "40%" : "95%"}
+                  size={window.innerWidth > 768 ? "45%" : "95%"}
                   lockBackgroundScroll={true}
-                  zindex={40}
-                  className="overflow-y-auto md:overflow-hidden"
+                  zIndex={40}
+                  className="overflow-y-auto custom-drawer"
                 >
-                  <div>
+                  <div className="flex flex-col h-full">
                     <div className="flex px-4 flex-row items-center justify-between">
                       <h1 className="p-2 text-xl font-semibold text-main">
                         Choose Timeslot for booking
@@ -885,7 +888,7 @@ export default function CreateProvider() {
                         <IoCloseSharp className="size-6 text-gray-600" />
                       </button>
                     </div>
-                    <div className="overflow-y-auto md:h-[494px] 2xl:h-[800px]">
+                    <div className="flex-1 overflow-y-auto mb-14">
                       <TimeSlots
                         data={formData}
                         setData={setFormData}
@@ -893,7 +896,7 @@ export default function CreateProvider() {
                         timeSlotSaved={setTimeSlotSaved}
                       />
                     </div>
-                    <div className="flex justify-end mr-4 mt-5 mb-5 gap-4">
+                    <div className="p-4 flex fixed bottom-0 left-0 right-0 bg-slate-200 justify-end gap-4">
                       <button
                         type="button"
                         className={`px-6 p-1 text-base rounded-md ${
@@ -911,7 +914,7 @@ export default function CreateProvider() {
                         className="px-4 p-1 text-base rounded-md bg-gray-300 text-gray-600"
                         onClick={handleCloseDrawer}
                       >
-                        cancel
+                        Cancel
                       </button>
                     </div>
                   </div>

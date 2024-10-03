@@ -415,7 +415,7 @@ export default function Provider() {
             ))}
           </Swiper> */}
 
-              {currentUser._id === provider.userRef ? null : (
+              {currentUser && currentUser._id === provider.userRef ? null : (
                 <>
                   <Modal show={messageModal} onClose={onCloseModal} popup>
                     <Modal.Header>

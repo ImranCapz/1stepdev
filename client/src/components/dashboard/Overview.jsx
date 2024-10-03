@@ -131,7 +131,7 @@ export default function Overview() {
                 <h1 className="text-gray text-base font-semibold mt-2">
                   {currentUser.username}
                 </h1>
-                {currentProvider.verified === true && (
+                {currentProvider && currentProvider.verified === true && (
                   <p className="text-sm text-green-600">Profile Verified</p>
                 )}
               </div>

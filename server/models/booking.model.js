@@ -51,6 +51,32 @@ const bookingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const bookedSlotSchema = new mongoose.Schema({
+  provider: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Provider",
+    required: true,
+  },
+  bookedSlots: {
+    date: {
+      type: Date,
+      required: true,
+    },
+    slot: {
+      type: String,
+      required: true,
+    },
+    expireAt: {
+      type: Date,
+      required: true,
+    },
+  },
+});
+
+bookedSlotSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+
+const BookedSlots = mongoose.model("bookedSlots", bookedSlotSchema);
+
 const Booking = mongoose.model("Booking", bookingSchema);
 
-export default Booking;
+export { Booking, BookedSlots };

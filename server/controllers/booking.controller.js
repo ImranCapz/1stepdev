@@ -1,4 +1,5 @@
-import Booking from "../models/booking.model.js";
+import { Booking } from "../models/booking.model.js";
+import { BookedSlots } from "../models/booking.model.js";
 import { errorHandler } from "../utils/error.js";
 import User from "../models/user.model.js";
 import Provider from "../models/provider.model.js";
@@ -17,15 +18,26 @@ export const booking = async (req, res, next) => {
     if (!patientExist || !providerExist) {
       return next(errorHandler(404, "Patient or provider not found"));
     }
+
+    const existBookedSlots = await BookedSlots.findOne({
+      provider: provider,
+      bookedSlots: { $elemMatch: { date: date, slot: slot } },
+    });
+    if (existBookedSlots) {
+      return res.status(400).json({ message: "Slot already booked" });
+    }
     const newBooking = await Booking.create(req.body);
     res.status(201).json(newBooking);
 
-    const bookingSlot = `${date}-${slot}`;
-    if (providerExist.bookedSlots.has(bookingSlot)) {
-      return res.status(400).json({ message: "Slot already booked" });
-    }
-    providerExist.bookedSlots.set(bookingSlot, "booked");
-    await providerExist.save();
+    //expire slot after 24 hours
+    const bookingDate = new Date(date);
+    const expireDate = new Date(bookingDate);
+    expireDate.setDate(bookingDate.getDate() + 1);
+
+    await BookedSlots.create({
+      provider,
+      bookedSlots: { date, slot, expireAt: expireDate },
+    });
   } catch (error) {
     next(error);
   }
