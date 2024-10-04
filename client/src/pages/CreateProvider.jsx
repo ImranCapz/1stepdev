@@ -20,7 +20,6 @@ import Input from "react-phone-number-input/input";
 import { IoMdAlert } from "react-icons/io";
 import { suggestions } from "../components/suggestions";
 import validator from "validator";
-import { Modal } from "flowbite-react";
 import TimeSlots from "../components/timslots/TimeSlots";
 import Switch from "react-switch";
 import Drawer from "react-modern-drawer";
@@ -566,7 +565,7 @@ export default function CreateProvider() {
             <div className="bg-white lg:w-[1300px] mx-auto items-center rounded-xl">
               <form
                 onSubmit={currentProvider ? handleUpdate : handleSubmit}
-                className="flex flex-col sm:flex-row gap-10 mt-6 md:p-20 p-6 rounded-lg mx-auto"
+                className="flex flex-col sm:flex-row md:gap-10 gap-4 mt-6 md:p-20 p-6 rounded-lg mx-auto"
               >
                 <div className="flex flex-col gap-3 flex-1">
                   <label className="font-semibold text-main">

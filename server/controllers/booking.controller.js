@@ -13,6 +13,7 @@ export const booking = async (req, res, next) => {
     scheduledTime: { date, slot },
   } = req.body;
   try {
+    console.log(req.body);
     const patientExist = await User.findById(patient);
     const providerExist = await Provider.findById(provider);
     if (!patientExist || !providerExist) {
@@ -36,7 +37,7 @@ export const booking = async (req, res, next) => {
 
     await BookedSlots.create({
       provider,
-      bookedSlots: { date, slot, expireAt: expireDate },
+      bookedSlots: { date:date, slot: slot, expireAt: expireDate },
     });
   } catch (error) {
     next(error);
@@ -111,7 +112,7 @@ export const approveBooking = async (req, res, next) => {
     if (!bookingApprove) {
       return next(errorHandler(404, "Booking not found"));
     }
-    res.status(200).json(bookingApprove);
+    res.status(200).json({bookingApprove: bookingApprove, success: true});
   } catch (error) {
     next(error);
   }
@@ -129,7 +130,7 @@ export const rejectBooking = async (req, res, next) => {
     if (!bookingReject) {
       return next(errorHandler(404, "Booking not found"));
     }
-    res.status(200).json(bookingReject);
+    res.status(200).json({bookingReject: bookingReject, success: true});
   } catch (error) {
     next(error);
   }

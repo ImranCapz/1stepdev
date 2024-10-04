@@ -17,7 +17,6 @@ export const approveBooking = createAsyncThunk(
     const res = await fetch(`/server/booking/approve/${bookingId}`, {
       method: "POST",
     });
-    console.log(bookingId);
     const data = await res.json();
     if (data.success) {
       return bookingId;
@@ -82,6 +81,7 @@ const bookingSlice = createSlice({
     },
     bookingOut: (state) => {
       state.bookings = null;
+      state.providerBooking = null;
       state.loading = false;
       state.error = null;
       state.isUserBookingFetched = false;
@@ -91,7 +91,6 @@ const bookingSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(approveBooking.fulfilled, (state, action) => {
       state.providerBooking = state.providerBooking.map((booking) => {
-        console.log(booking._id, action.payload);
         if (booking._id === action.payload) {
           return { ...booking, status: "approved" };
         }

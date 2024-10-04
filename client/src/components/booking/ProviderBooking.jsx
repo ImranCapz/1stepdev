@@ -15,11 +15,11 @@ import {
 import toast from "react-hot-toast";
 
 export default function ProviderBooking() {
-  const { providerBooking, loading } = useSelector((state) => state.booking);
+  const { providerBooking } = useSelector((state) => state.booking);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { currentProvider } = useSelector((state) => state.provider);
-  console.log(providerBooking);
+
   useEffect(() => {
     const fetchProviderBooking = async () => {
       if (!currentProvider) {
@@ -61,14 +61,15 @@ export default function ProviderBooking() {
   // }, []);
 
   const handleApprove = async (bookingId) => {
+    if (!currentProvider) {
+        return;
+      }
     console.log(bookingId);
     dispatch(approveBooking(bookingId)).then(async () => {
       toast.success("Appointment Approved", {
         position: "bottom-left",
       });
-      // if (!currentProvider) {
-      //   return;
-      // }
+      // 
       // const booking = providerBooking.find(
       //   (booking) => booking._id === bookingId
       // );
@@ -167,10 +168,7 @@ export default function ProviderBooking() {
                     <Table.Cell className="flex flex-row gap-2">
                       {bookingDetails.status === "approved" ? (
                         <>
-                          <Button
-                            className="bg-emerald-600"
-                            disabled={bookingDetails.status === "approved"}
-                          >
+                          <Button className="bg-emerald-600" disabled>
                             Accepted
                           </Button>
                           <Button
@@ -191,29 +189,24 @@ export default function ProviderBooking() {
                           <Button
                             className="bg-red-500"
                             onClick={() => handleReject(bookingDetails._id)}
-                            disabled={bookingDetails.status === "rejected"}
                           >
                             Reject
                           </Button>
                         </>
-                      ) : bookingDetails.status === "rejected" ? (
-                        <>
-                          <Button
-                            className="bg-emerald-600"
-                            onClick={() => handleApprove(bookingDetails._id)}
-                          >
-                            Accepted
-                          </Button>
-                          <Button
-                            className="bg-red-500"
-                            onClick={() => handleReject(bookingDetails._id)}
-                            disabled={bookingDetails.status === "rejected"}
-                          >
-                            Rejected
-                          </Button>
-                        </>
                       ) : (
-                        ""
+                        bookingDetails.status === "rejected" && (
+                          <>
+                            <Button
+                              className="bg-emerald-600"
+                              onClick={() => handleApprove(bookingDetails._id)}
+                            >
+                              Accept Again
+                            </Button>
+                            <Button className="bg-red-500" disabled>
+                              Rejected
+                            </Button>
+                          </>
+                        )
                       )}
                     </Table.Cell>
                     {/* <Table.Cell>  

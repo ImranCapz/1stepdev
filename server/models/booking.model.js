@@ -59,7 +59,7 @@ const bookedSlotSchema = new mongoose.Schema({
   },
   bookedSlots: {
     date: {
-      type: Date,
+      type: String,
       required: true,
     },
     slot: {

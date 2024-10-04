@@ -2,6 +2,7 @@ import Provider from "../models/provider.model.js";
 import { Booking } from "../models/booking.model.js";
 import { errorHandler } from "../utils/error.js";
 import nodemailer from "nodemailer";
+import { BookedSlots } from "../models/booking.model.js";
 
 export const createProvider = async (req, res, next) => {
   try {
@@ -55,7 +56,19 @@ export const getProvider = async (req, res, next) => {
     if (!listing) {
       return next(errorHandler(404, "Provider not found"));
     }
-    res.status(200).json(listing);
+    const bookedSlotsProvider = await BookedSlots.find({
+      provider: req.params.id,
+    });
+    if (!bookedSlotsProvider.length) {
+      return res.status(200).json(listing);
+    }
+
+    const response = {
+      ...listing.toObject(),
+      bookedSlot: bookedSlotsProvider,
+    };
+
+    res.status(200).json(response);
   } catch (error) {
     next(error);
   }

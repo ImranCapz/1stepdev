@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Button } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
@@ -30,7 +30,17 @@ export default function BookingContact({ provider }) {
   });
 
   const scrollRef = useRef(null);
-  // console.log(formData);
+  console.log(formData);
+  
+  const formattedDate = (date) => {
+    const options = {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    };
+    return date.toLocaleString("en-IN", options);
+  };
 
   useEffect(() => {
     const fetchbooking = async () => {
@@ -38,7 +48,6 @@ export default function BookingContact({ provider }) {
         const res = await fetch(`/server/user/${provider.userRef}`);
         const data = await res.json();
         setBooking(data);
-        // console.log(data);
         setFormData((preState) => ({
           ...preState,
           email: currentUser.email,
@@ -100,7 +109,7 @@ export default function BookingContact({ provider }) {
       ...prevState,
       scheduledTime: {
         slot: slot,
-        date: selectedDate,
+        date: formattedDate(selectedDate),
       },
     }));
   };
@@ -122,16 +131,6 @@ export default function BookingContact({ provider }) {
 
   const getDayName = (date) => {
     return date.toLocaleString("en-US", { weekday: "long" });
-  };
-
-  const formattedDate = (date) => {
-    const options = {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    };
-    return date.toLocaleString("en-IN", options);
   };
 
   useEffect(() => {
@@ -277,11 +276,34 @@ export default function BookingContact({ provider }) {
   };
 
   const isBooked = (formattedDate, slot) => {
-    if (!provider.bookedSlots) return false;
-    const bookingSlot = `${formattedDate}-${slot}`;
-    console.log(bookingSlot);
-    return bookingSlot in provider.bookedSlots;
+    if (!provider.bookedSlot || !Array.isArray(provider.bookedSlot))
+      return false;
+
+    const isSlotBooked = provider.bookedSlot.some((bookedSlot) => {
+      const { date, slot: bookedSlotTime } = bookedSlot.bookedSlots;
+      if (date === formattedDate && bookedSlotTime === slot) {
+        console.log(`Slot booked for date: ${formattedDate} and slot: ${slot}`);
+        return true;
+      }
+      return false;
+    });
+
+    return isSlotBooked;
   };
+
+  const memoizedIsBooked = useMemo(() => {
+    const cache = {};
+    return (formattedDate, slot) => {
+      const key = `${formattedDate}-${slot}`;
+      if (cache[key] !== undefined) {
+        return cache[key];
+      }
+      const result = isBooked(formattedDate, slot);
+      cache[key] = result;
+      return result;
+    };
+  }, [provider.bookedSlot]);
+
   return (
     <>
       {booking && (
@@ -442,9 +464,11 @@ export default function BookingContact({ provider }) {
                       }`}
                                 key={index}
                                 onClick={() => handleSlotClick(slot)}
-                                disabled={isBooked(selectedDate, slot)}
+                                disabled={memoizedIsBooked(selectedDate, slot)}
                               >
-                                {isBooked(selectedDate, slot) ? "Booked" : slot}
+                                {memoizedIsBooked(selectedDate, slot)
+                                  ? "Booked"
+                                  : slot}
                               </button>
                             ))}
                           </div>
@@ -472,9 +496,11 @@ export default function BookingContact({ provider }) {
                       }`}
                                 key={index}
                                 onClick={() => handleSlotClick(slot)}
-                                disabled={isBooked(selectedDate, slot)}
+                                disabled={memoizedIsBooked(selectedDate, slot)}
                               >
-                                {isBooked(selectedDate, slot) ? "Booked" : slot}
+                                {memoizedIsBooked(selectedDate, slot)
+                                  ? "Booked"
+                                  : slot}
                               </button>
                             ))}
                           </div>
@@ -502,9 +528,11 @@ export default function BookingContact({ provider }) {
                       }`}
                                 key={index}
                                 onClick={() => handleSlotClick(slot)}
-                                disabled={isBooked(selectedDate, slot)}
+                                disabled={memoizedIsBooked(selectedDate, slot)}
                               >
-                                {isBooked(selectedDate, slot) ? "Booked" : slot}
+                                {memoizedIsBooked(selectedDate, slot)
+                                  ? "Booked"
+                                  : slot}
                               </button>
                             ))}
                           </div>
@@ -680,6 +708,6 @@ BookingContact.propTypes = {
     fullName: PropTypes.string.isRequired,
     timeSlots: PropTypes.object.isRequired,
     therapytype: PropTypes.arrayOf(PropTypes.string).isRequired,
-    bookedSlots: PropTypes.object,
+    bookedSlot: PropTypes.array,
   }).isRequired,
 };
