@@ -9,7 +9,7 @@ import { FaAngleLeft } from "react-icons/fa";
 import { FaAngleRight } from "react-icons/fa";
 import noslot from "../assets/noslot.png";
 
-export default function BookingContact({ provider }) {
+export default function BookingContact({ provider, setMessageModal }) {
   const [booking, setBooking] = useState();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
@@ -31,7 +31,7 @@ export default function BookingContact({ provider }) {
 
   const scrollRef = useRef(null);
   console.log(formData);
-  
+
   const formattedDate = (date) => {
     const options = {
       weekday: "short",
@@ -158,6 +158,13 @@ export default function BookingContact({ provider }) {
   const handleDayClick = (dayName, formattedDate) => {
     setSelectedDays(dayName);
     setSeletedDate(formattedDate);
+    setFormData((prevState) => ({
+      ...prevState,
+      scheduledTime: {
+        slot: "",
+        date: selectedDate,
+      },
+    }));
   };
 
   const convertTo24Hour = (time) => {
@@ -393,7 +400,6 @@ export default function BookingContact({ provider }) {
                 <FaAngleRight />
               </button>
             </div>
-
             {selectedDays && (
               <div className="px-4 h-48 overflow-auto">
                 {(() => {
@@ -433,6 +439,7 @@ export default function BookingContact({ provider }) {
                           <button
                             type="button"
                             className="card-btn mt-2 p-2.5 rounded-md font-semibold"
+                            onClick={setMessageModal}
                           >
                             Message Now for Quick Response
                           </button>
@@ -710,4 +717,5 @@ BookingContact.propTypes = {
     therapytype: PropTypes.arrayOf(PropTypes.string).isRequired,
     bookedSlot: PropTypes.array,
   }).isRequired,
+  setMessageModal: PropTypes.func.isRequired,
 };

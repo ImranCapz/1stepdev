@@ -1011,7 +1011,12 @@ export default function Provider() {
                             </div>
                           )}
                       </div>
-                      {contact && <BookingContact provider={provider} />}
+                      {contact && (
+                        <BookingContact
+                          provider={provider}
+                          setMessageModal={() => setMessage(true)}
+                        />
+                      )}
                     </div>
                   )}
                   <div className="md:w-[440px] 2xl:w-[480px] border-2 bg-purple-100 rounded-lg">
