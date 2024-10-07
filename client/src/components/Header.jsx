@@ -169,7 +169,7 @@ const Header = ({ showSubMenu }) => {
         </p>
       ),
     },
-    { title: "About Us", path: "/" },
+    { title: "About Us", path: "/about-us" },
   ];
 
   useEffect(() => {

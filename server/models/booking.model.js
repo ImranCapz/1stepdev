@@ -54,7 +54,7 @@ const bookingSchema = new mongoose.Schema(
 const bookedSlotSchema = new mongoose.Schema({
   provider: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Provider",
+    ref: "provider",
     required: true,
   },
   bookedSlots: {
@@ -73,9 +73,12 @@ const bookedSlotSchema = new mongoose.Schema({
   },
 });
 
-bookedSlotSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+bookedSlotSchema.index(
+  { "bookedSlots.expireAt": 1 },
+  { expireAfterSeconds: 0 }
+);
 
-const BookedSlots = mongoose.model("bookedSlots", bookedSlotSchema);
+const BookedSlots = mongoose.model("BookedSlots", bookedSlotSchema);
 
 const Booking = mongoose.model("Booking", bookingSchema);
 

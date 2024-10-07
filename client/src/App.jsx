@@ -25,6 +25,7 @@ const Provider = lazy(() => import("./pages/Provider"));
 const Search = lazy(() => import("./pages/Search"));
 const AdminDashboard = lazy(() => import("./components/admin/AdminDashboard"));
 const DashUsers = lazy(() => import("./components/admin/DashUsers"));
+const AboutUs = lazy(() => import("./pages/AboutUs"));
 const CreateProfile = lazy(() =>
   import("./pages/providerscreen/CreateProfile")
 );
@@ -61,6 +62,7 @@ function App() {
           <Route path="/*" element={<Hero />} />
           <Route path="/freescreeners" element={<Features />} />
           <Route path="/question" element={<Question />} />
+          <Route path="/about-us" element={<AboutUs />} />
           <Route element={<LoginPrivateRoute />}>
             <Route path="/signin" element={<Signin />} />
             <Route path="/signup" element={<Signup />} />

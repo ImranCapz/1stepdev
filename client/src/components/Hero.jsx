@@ -127,8 +127,8 @@ const Hero = () => {
     <section>
       <div className="max-w-screen-2xl mx-auto px-4 py-9 gap-12 text-gray-600 md:px-8 xl:flex">
         <div className="space-y-5 max-w-2xl mx-auto text-center xl:text-left">
-          <div className="flex flex-wrap items-center justify-center gap-6 xl:justify-start">
-            {/* {features.map((item, idx) => (
+          {/* <div className="flex flex-wrap items-center justify-center gap-6 xl:justify-start">
+            {features.map((item, idx) => (
               <div
                 key={idx}
                 className="flex items-center gap-x-2 text-gray-500 text-sm"
@@ -136,8 +136,8 @@ const Hero = () => {
                 {item.icon}
                 {item.name}
               </div>
-            ))} */}
-          </div>
+            ))}
+          </div> */}
           <h1 className="text-4xl text-main font-extrabold mx-px md:text-5xl">
             Your first step for all{" "}
             <Typewriter
@@ -173,7 +173,6 @@ const Hero = () => {
               </svg>
             </Link>
           </div>
-          <br></br>
           <SearchBar defaultSearchTerm={defaultsearchTerm} />
         </div>
         <div className="flex-1 max-w-xl mx-auto mt-14 xl:mt-0">

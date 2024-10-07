@@ -419,7 +419,7 @@ export default function Provider() {
                 <>
                   <Modal show={messageModal} onClose={onCloseModal} popup>
                     <Modal.Header>
-                      <p className="text-xs p-2">
+                      <p className="text-sm p-2">
                         Send a Message to,{" "}
                         <span className="text-base">{provider.fullName}</span>
                       </p>
@@ -433,7 +433,7 @@ export default function Provider() {
                       />
                       <div className="flex flex-row gap-2 mt-4">
                         <Button
-                          onClick={() => setMessage(false)}
+                          onClick={() => setMessageModal(false)}
                           variant="outlined"
                           className="w-full"
                         >

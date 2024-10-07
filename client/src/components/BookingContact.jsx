@@ -61,7 +61,8 @@ export default function BookingContact({ provider, setMessageModal }) {
   }, [provider.userRef, currentUser.email, currentUser.username]);
 
   const handleSubmit = async (e) => {
-    if (!formData.scheduledTime.slot) {
+    e.preventDefault();
+    if (formData.scheduledTime.slot === "") {
       toast.error("Please select a slot");
       return;
     }
@@ -117,16 +118,6 @@ export default function BookingContact({ provider, setMessageModal }) {
   const handleToggle = (e, option) => {
     e.preventDefault();
     setNameOption(option);
-  };
-
-  const getCurrentDateTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hour = String(now.getHours()).padStart(2, "0");
-    const minute = String(now.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hour}:${minute}`;
   };
 
   const getDayName = (date) => {
@@ -194,10 +185,8 @@ export default function BookingContact({ provider, setMessageModal }) {
 
       //booked slots
       const currentDay = new Date();
-      const bookedSlots = `${selectDate}-${slot}`;
-      const isBooked =
-        provider.bookedSlots && bookedSlots in provider.bookedSlots;
 
+      const isBooked = memoizedIsBooked(selectDate, slot);
       if (slotDate.toLocaleDateString() === currentDay.toLocaleDateString()) {
         const isAvailable =
           slot24 >= start24 &&
