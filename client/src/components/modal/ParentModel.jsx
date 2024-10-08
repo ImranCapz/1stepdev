@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import OAuth from "../OAuth";
-import { Button } from "flowbite-react";
 import logo from "../../assets/logo.svg";
 import parentIcon from "../../assets/parentmodel.jpg";
 import PropTypes from "prop-types";

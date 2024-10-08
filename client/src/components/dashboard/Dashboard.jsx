@@ -22,6 +22,8 @@ export default function Dashboard() {
   const { isUserBookingFetched } = useSelector((state) => state.booking);
   const dispatch = useDispatch();
 
+  document.title = "Dashboard | 1Step";
+
   useEffect(() => {
     const fetchBooking = async () => {
       const url = `/server/booking/getuserbookings/${currentUser._id}`;

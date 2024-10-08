@@ -19,13 +19,15 @@ import {
   updateUserStart,
 } from "../redux/user/userSlice";
 import { selectProvider } from "../redux/provider/providerSlice";
-
+import { Modal } from "flowbite-react";
+import { Button } from "@material-tailwind/react";
 //icons
 import { FaEye } from "react-icons/fa";
 import { IoIosEyeOff } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa";
 import { FiMail } from "react-icons/fi";
 import { PiLockSimpleBold } from "react-icons/pi";
+import { set } from "mongoose";
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -34,14 +36,18 @@ export default function Profile() {
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({
     profilePicture: "",
-    password: "",
   });
   const TopLoadingBarRef = useRef(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    password: "",
+    newPassword: "",
+  });
+  console.log(passwordData);
   const [showProviderError, setShowProviderError] = useState(false);
   const [userProvider, setUserProvider] = useState([]);
-  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const { currentUser, loading } = useSelector((state) => state.user);
   const [isModified, setIsModified] = useState(false);
 
   const dispatch = useDispatch();
@@ -152,12 +158,90 @@ export default function Profile() {
     }
   };
 
+  const [error, setError] = useState(false);
+
+  const handlePasswordReset = async () => {
+    try {
+      const res = await fetch(`/server/user/resetpassword/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passwordData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        setError(true);
+        toast.error(data.message);
+        return;
+      }
+      toast.success(data.message);
+      setError(false);
+    } catch (err) {
+      setError(true);
+      console.log(err);
+    }
+  };
+
+  const handlePasswordChanges = (e) => {
+    setPasswordData({ ...passwordData, [e.target.id]: e.target.value });
+  };
+
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const [isChangePassword, setIsChangePassword] = useState(false);
+  const onCloseModal = () => {
+    setIsChangePassword(false);
+  };
+
   return (
     <div className="bg-slate-100 p-3 mx-auto">
+      <Modal onClose={onCloseModal} show={isChangePassword} popup size="md">
+        <Modal.Header>Reset Password</Modal.Header>
+        <Modal.Body>
+          <div className="flex flex-col">
+            <label>Enter old Password :</label>
+            <div className="relative mb-4">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                onChange={handlePasswordChanges}
+                className={`w-full text-gray-800 bg-state-100 rounded-lg ring-0 ring-inset py-2 border-1 focus:ring-2 bg-slate-100 mt-2 hover:border-purple-400 ${
+                  error ? "border-red-500" : "border-purple-300"
+                }`}
+              />
+              {error && <p className="text-red-500">password not matched!</p>}
+              <div className="absolute right-0 top-1/4 mr-4">
+                <button type="button" onClick={handlePasswordVisibility}>
+                  {showPassword ? (
+                    <FaEye className="text-slate-700" />
+                  ) : (
+                    <IoIosEyeOff className="text-slate-600" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <label>Enter New Password :</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              id="newPassword"
+              onChange={handlePasswordChanges}
+              className="text-gray-800 bg-state-100 rounded-lg ring-0 ring-inset py-2 border-1 focus:ring-2 bg-slate-100 mt-2 mb-4 border-purple-300 hover:border-purple-400"
+            />
+          </div>
+          <div className="flex flex-row gap-2 mt-4">
+            <Button variant="outlined" className="w-full">
+              Cancel
+            </Button>
+            <Button onClick={handlePasswordReset} className="w-full btn-color">
+              CONFIRM
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
       <TopLoadingBar ref={TopLoadingBarRef} color="#ff9900" height={3} />
       <h1 className="flex flex-col p-2 mb-4 font-bold text-2xl text-gray">
         Account Settings :{" "}
@@ -232,7 +316,7 @@ export default function Profile() {
                   maxLength={20}
                   required
                   placeholder="username"
-                  className=" text-xl pl-3 w-52 text-gray-800 bg-state-100 p-3 rounded-lg ring-0 ring-inset py-1.5 border-0 focus:ring-2 bg-slate-100"
+                  className="text-xl pl-3 w-52 text-gray-800 bg-state-100 p-3 rounded-lg ring-0 ring-inset py-1.5 border-0 focus:ring-2 bg-slate-100"
                   onChange={handleChange}
                 />
               </div>
@@ -260,6 +344,7 @@ export default function Profile() {
                   type={showPassword ? "text" : "password"}
                   id="password"
                   placeholder="password"
+                  disabled={true}
                   className="flex-grow w-52 text-xl pl-3 text-gray-700 bg-state-100 p-3 rounded-lg ring-0 ring-inset ring-gray-300 py-1.5 border-0 focus:ring-2 bg-slate-100"
                   onChange={handleChange}
                 />
@@ -275,10 +360,15 @@ export default function Profile() {
                   </button>
                 </div>
               )}
-
-              <h1 className="text-slate-500 font-semibold">
-                <b>Note</b>: Enter new password to reset old password.
-              </h1>
+              <div className="flex">
+                <button
+                  type="button"
+                  onClick={() => setIsChangePassword(true)}
+                  className="font-semibold text-sm items-left justify-left text-sky-600 hover:text-sky-400 duration-300 cursor-pointer"
+                >
+                  Change Password
+                </button>
+              </div>
               <button
                 disabled={!isModified}
                 className=" bg-blue-600 text-xl font-semibold text-white mt-6 p-3 rounded-lg hover:opacity-95 transition-all disabled:opacity-80"

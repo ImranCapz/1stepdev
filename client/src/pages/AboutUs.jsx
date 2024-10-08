@@ -123,8 +123,8 @@ function AboutUs() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-center bg-primary-90">
-        <h1 className="flex justify-center text-center mt-16 text-xl md:text-4xl font-semibold font-sans text-gray mb-4 ">
+      <div className="p-14 px-10 flex flex-col items-center bg-primary-90">
+        <h1 className="flex justify-center text-center text-xl md:text-4xl font-semibold font-sans text-gray mb-4 ">
           Frequently Asked Questions
         </h1>
         <h2 className="text-center text-gray-700 mb-4 md:mb-8 md:mt-4">
@@ -150,23 +150,18 @@ function AboutUs() {
               </Accordion.Content>
             </Accordion.Panel>
             <Accordion.Panel>
-              <Accordion.Title>where onestep is available?</Accordion.Title>
+              <Accordion.Title>where OneStep is available?</Accordion.Title>
               <Accordion.Content>
                 <p className="mb-2 text-gray-500 dark:text-gray-400">
-                  Flowbite is first conceptualized and designed using the Figma
-                  software so everything you see in the library has a design
-                  equivalent in our Figma file.
-                </p>
-                <p className="text-gray-500 dark:text-gray-400">
-                  Check out the
-                  <a
-                    href="https://flowbite.com/figma/"
-                    className="text-cyan-600 hover:underline dark:text-cyan-500"
-                  >
-                    Figma design system
-                  </a>
-                  based on the utility classes from Tailwind CSS and components
-                  from Flowbite.
+                  OneStep is available across various regions, making it easy
+                  for users to connect with service providers in their local
+                  area. Our platform continues to expand, allowing users to find
+                  professionals in a growing number of cities and communities.
+                  Whether you’re in a major metropolitan area or a smaller town,
+                  OneStep strives to provide access to trusted providers near
+                  you. Check our website to see if we are available in your
+                  location and explore the services offered by top-rated
+                  professionals in your area.
                 </p>
               </Accordion.Content>
             </Accordion.Panel>
@@ -176,39 +171,19 @@ function AboutUs() {
               </Accordion.Title>
               <Accordion.Content>
                 <p className="mb-2 text-gray-500 dark:text-gray-400">
-                  The main difference is that the core components from Flowbite
-                  are open source under the MIT license, whereas Tailwind UI is
-                  a paid product. Another difference is that Flowbite relies on
-                  smaller and standalone components, whereas Tailwind UI offers
-                  sections of pages.
+                  At OneStep, we offer a wide range of services tailored to meet
+                  your needs. From therapy and wellness services to educational
+                  and developmental support, our platform connects you with
+                  experienced professionals across various fields. Whether youre
+                  looking for mental health support, child development
+                  assistance, or specialized care.
                 </p>
                 <p className="mb-2 text-gray-500 dark:text-gray-400">
-                  However, we actually recommend using both Flowbite, Flowbite
-                  Pro, and even Tailwind UI as there is no technical reason
-                  stopping you from using the best of two worlds.
+                  OneStep makes it easy to find the right provider. Our goal is
+                  to offer personalized solutions that enhance your well-being
+                  and help you navigate life’s challenges. Explore our offerings
+                  to discover how we can assist you.
                 </p>
-                <p className="mb-2 text-gray-500 dark:text-gray-400">
-                  Learn more about these technologies:
-                </p>
-                <ul className="list-disc pl-5 text-gray-500 dark:text-gray-400">
-                  <li>
-                    <a
-                      href="https://flowbite.com/pro/"
-                      className="text-cyan-600 hover:underline dark:text-cyan-500"
-                    >
-                      Flowbite Pro
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="https://tailwindui.com/"
-                      rel="nofollow"
-                      className="text-cyan-600 hover:underline dark:text-cyan-500"
-                    >
-                      Tailwind UI
-                    </a>
-                  </li>
-                </ul>
               </Accordion.Content>
             </Accordion.Panel>
           </Accordion>

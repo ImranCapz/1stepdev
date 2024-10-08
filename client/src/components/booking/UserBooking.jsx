@@ -54,13 +54,13 @@ export default function UserBooking() {
                   <Table.Row
                     className={`text-gray-600 rounded-lg ${
                       bookingDetails.status === "pending" &&
-                      "border-l-4 border-amber-300 bg-amber-100"
+                      "border-l-4 border-amber-300 bg-amber-50 hover:bg-amber-100"
                     } ${
                       bookingDetails.status === "approved" &&
-                      "border-l-4 border-emerald-400 bg-emerald-100"
+                      "border-l-4 border-emerald-400 bg-emerald-50 hover:bg-emerald-100"
                     }  ${
                       bookingDetails.status === "rejected" &&
-                      "border-l-4 border-red-500 bg-red-100"
+                      "border-l-4 border-red-500 bg-red-50 hover:bg-red-100"
                     }`}
                   >
                     <Table.Cell>

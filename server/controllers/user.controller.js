@@ -128,3 +128,35 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const resetPassword = async (req, res, next) => {
+  const { password, newPassword } = req.body;
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return next(errorHandler(404, "User not found"));
+    }
+    if (!bcryptjs.compareSync(password, user.password)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Old Password not matched" });
+    }
+    if (bcryptjs.compareSync(password, user.password)) {
+      const updateUser = await User.findByIdAndUpdate(id, {
+        $set: {
+          password: bcryptjs.hashSync(newPassword, 10),
+        },
+      });
+      if (!updateUser) { 
+        return res
+          .status(400)
+          .json({ success: false, message: "Password not updated" });
+      }
+      res.status(200).json({ success: true, message: "Password Changed" });
+    }
+  } catch (error) {
+    console.log("Error:", error); 
+    next(error);
+  }
+};
