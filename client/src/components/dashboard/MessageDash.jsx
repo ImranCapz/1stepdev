@@ -354,7 +354,7 @@ export default function MessageDash() {
           />
           {providerDetails.length > 0 ? (
             <>
-              <div className="flex flex-grow h-screen max-h-[435px] 2xl:max-h-[745px]">
+              <div className="flex flex-grow h-screen md:max-h-[435px] 2xl:max-h-[745px]">
                 <div className="w-1/4 flex flex-col items-center pt-2 pr-2 gap-2">
                   {providerDetails.length > 0 ? (
                     <>
@@ -587,7 +587,7 @@ export default function MessageDash() {
                         <div className="flex flex-col flex-grow h-screen">
                           <div
                             ref={messageContainerRef}
-                            className=" overflow-y-scroll h-[320px] md:h-[290px] 2xl:h-[600px]"
+                            className="overflow-y-scroll h-[390px] md:h-[290px] 2xl:h-[600px]"
                           >
                             {limitedMessages.map((message) => (
                               <div key={message._id} className={`m-2`}>
@@ -601,7 +601,7 @@ export default function MessageDash() {
                                 >
                                   {message.sender !== currentUser._id && (
                                     <img
-                                      src={selectedProvider.profilePicture}
+                                      src={selectedProvider.profilePicture || "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"}
                                       alt="provider logo"
                                       className="size-9 rounded-full mr-2 object-cover"
                                     />
@@ -632,7 +632,7 @@ export default function MessageDash() {
                                   </div>
                                   {message.sender === currentUser._id && (
                                     <img
-                                      src={currentUser.profilePicture}
+                                      src={currentUser.profilePicture || "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"}
                                       alt="user logo"
                                       className="size-9 rounded-full ml-2 object-cover"
                                     />
@@ -768,7 +768,10 @@ export default function MessageDash() {
                   ) : (
                     <div className="flex flex-col mx-auto items-center justify-center h-full">
                       <img
-                        src={currentUser.profilePicture  || 'https://i.ibb.co/tKQH4zp/defaultprofile.jpg'}
+                        src={
+                          currentUser.profilePicture ||
+                          "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                        }
                         alt="user logo"
                         className="size-20 object-cover rounded-full border-4 border-purple-300"
                       />

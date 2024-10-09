@@ -129,6 +129,7 @@ export const resetPassword = async (req, res, next) => {
     const generateOtp = Math.floor(Math.random() * 1000000);
 
     otpStorage[email] = generateOtp;
+    console.log("otpStorage", otpStorage);
 
     const html = `<b>Your 1Step Reset Password Otp is : <i>${generateOtp}</i></b>`;
     const subject = "New OTP Generated";

@@ -148,7 +148,15 @@ export const resetPassword = async (req, res, next) => {
           password: bcryptjs.hashSync(newPassword, 10),
         },
       });
-      if (!updateUser) { 
+      if (bcryptjs.compareSync(user.password, newPassword)) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: "Old Password and New Password should not be same",
+          });
+      }
+      if (!updateUser) {
         return res
           .status(400)
           .json({ success: false, message: "Password not updated" });
@@ -156,7 +164,7 @@ export const resetPassword = async (req, res, next) => {
       res.status(200).json({ success: true, message: "Password Changed" });
     }
   } catch (error) {
-    console.log("Error:", error); 
+    console.log("Error:", error);
     next(error);
   }
 };

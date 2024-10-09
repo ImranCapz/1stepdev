@@ -68,7 +68,7 @@ function AboutUs() {
           </h1>
         </Carousel>
       </div>
-      <div className="flex flex-col mx-auto 2xl:px-40">
+      <div className="flex flex-col mx-auto 2xl:px-40 max-w-screen-2xl">
         <h1 className="flex justify-center text-center mt-16 text-xl md:text-4xl font-semibold font-sans text-gray">
           Our Commitment to Families and Providers
         </h1>
@@ -123,70 +123,72 @@ function AboutUs() {
           </div>
         </div>
       </div>
-      <div className="p-14 px-10 flex flex-col items-center bg-primary-90">
-        <h1 className="flex justify-center text-center text-xl md:text-4xl font-semibold font-sans text-gray mb-4 ">
-          Frequently Asked Questions
-        </h1>
-        <h2 className="text-center text-gray-700 mb-4 md:mb-8 md:mt-4">
-          Feel free to reach out to us at info@onestep.co.in if you have any
-          other questions.
-        </h2>
-        <div className="p-2 w-full md:px-40">
-          <Accordion collapseAll>
-            <Accordion.Panel>
-              <Accordion.Title>What is OneStep?</Accordion.Title>
-              <Accordion.Content>
-                <p className="mb-2 text-gray-500 dark:text-gray-400">
-                  OneStep is a comprehensive platform designed to connect
-                  individuals with qualified service providers in their local
-                  area. Our mission is to simplify the process of finding and
-                  booking professional services tailored to your needs. Whether
-                  you’re seeking a therapist, doctor, or any other expert,
-                  OneStep ensures a seamless experience from browsing provider
-                  profiles to scheduling appointments. We prioritize quality,
-                  trust, and accessibility, empowering users to make informed
-                  decisions about their service needs.
-                </p>
-              </Accordion.Content>
-            </Accordion.Panel>
-            <Accordion.Panel>
-              <Accordion.Title>where OneStep is available?</Accordion.Title>
-              <Accordion.Content>
-                <p className="mb-2 text-gray-500 dark:text-gray-400">
-                  OneStep is available across various regions, making it easy
-                  for users to connect with service providers in their local
-                  area. Our platform continues to expand, allowing users to find
-                  professionals in a growing number of cities and communities.
-                  Whether you’re in a major metropolitan area or a smaller town,
-                  OneStep strives to provide access to trusted providers near
-                  you. Check our website to see if we are available in your
-                  location and explore the services offered by top-rated
-                  professionals in your area.
-                </p>
-              </Accordion.Content>
-            </Accordion.Panel>
-            <Accordion.Panel>
-              <Accordion.Title>
-                What are the Services we offers?
-              </Accordion.Title>
-              <Accordion.Content>
-                <p className="mb-2 text-gray-500 dark:text-gray-400">
-                  At OneStep, we offer a wide range of services tailored to meet
-                  your needs. From therapy and wellness services to educational
-                  and developmental support, our platform connects you with
-                  experienced professionals across various fields. Whether youre
-                  looking for mental health support, child development
-                  assistance, or specialized care.
-                </p>
-                <p className="mb-2 text-gray-500 dark:text-gray-400">
-                  OneStep makes it easy to find the right provider. Our goal is
-                  to offer personalized solutions that enhance your well-being
-                  and help you navigate life’s challenges. Explore our offerings
-                  to discover how we can assist you.
-                </p>
-              </Accordion.Content>
-            </Accordion.Panel>
-          </Accordion>
+      <div className="bg-primary-90 p-14 px-10">
+        <div className="flex flex-col max-w-screen-2xl mx-auto justify-center">
+          <h1 className="flex justify-center text-center text-xl md:text-4xl font-semibold font-sans text-gray mb-4 ">
+            Frequently Asked Questions
+          </h1>
+          <h2 className="text-center text-gray-700 mb-4 md:mb-8 md:mt-4">
+            Feel free to reach out to us at info@onestep.co.in if you have any
+            other questions.
+          </h2>
+          <div className="p-2 w-full md:px-40">
+            <Accordion collapseAll>
+              <Accordion.Panel>
+                <Accordion.Title>What is OneStep?</Accordion.Title>
+                <Accordion.Content>
+                  <p className="mb-2 text-gray-500 dark:text-gray-400">
+                    OneStep is a comprehensive platform designed to connect
+                    individuals with qualified service providers in their local
+                    area. Our mission is to simplify the process of finding and
+                    booking professional services tailored to your needs.
+                    Whether you’re seeking a therapist, doctor, or any other
+                    expert, OneStep ensures a seamless experience from browsing
+                    provider profiles to scheduling appointments. We prioritize
+                    quality, trust, and accessibility, empowering users to make
+                    informed decisions about their service needs.
+                  </p>
+                </Accordion.Content>
+              </Accordion.Panel>
+              <Accordion.Panel>
+                <Accordion.Title>where OneStep is available?</Accordion.Title>
+                <Accordion.Content>
+                  <p className="mb-2 text-gray-500 dark:text-gray-400">
+                    OneStep is available across various regions, making it easy
+                    for users to connect with service providers in their local
+                    area. Our platform continues to expand, allowing users to
+                    find professionals in a growing number of cities and
+                    communities. Whether you’re in a major metropolitan area or
+                    a smaller town, OneStep strives to provide access to trusted
+                    providers near you. Check our website to see if we are
+                    available in your location and explore the services offered
+                    by top-rated professionals in your area.
+                  </p>
+                </Accordion.Content>
+              </Accordion.Panel>
+              <Accordion.Panel>
+                <Accordion.Title>
+                  What are the Services we offers?
+                </Accordion.Title>
+                <Accordion.Content>
+                  <p className="mb-2 text-gray-500 dark:text-gray-400">
+                    At OneStep, we offer a wide range of services tailored to
+                    meet your needs. From therapy and wellness services to
+                    educational and developmental support, our platform connects
+                    you with experienced professionals across various fields.
+                    Whether youre looking for mental health support, child
+                    development assistance, or specialized care.
+                  </p>
+                  <p className="mb-2 text-gray-500 dark:text-gray-400">
+                    OneStep makes it easy to find the right provider. Our goal
+                    is to offer personalized solutions that enhance your
+                    well-being and help you navigate life’s challenges. Explore
+                    our offerings to discover how we can assist you.
+                  </p>
+                </Accordion.Content>
+              </Accordion.Panel>
+            </Accordion>
+          </div>
         </div>
       </div>
     </>

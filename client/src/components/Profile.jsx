@@ -27,7 +27,6 @@ import { IoIosEyeOff } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa";
 import { FiMail } from "react-icons/fi";
 import { PiLockSimpleBold } from "react-icons/pi";
-import { set } from "mongoose";
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -159,6 +158,7 @@ export default function Profile() {
   };
 
   const [error, setError] = useState(false);
+  const [showerror, setShowError] = useState("");
 
   const handlePasswordReset = async () => {
     try {
@@ -172,10 +172,12 @@ export default function Profile() {
       const data = await res.json();
       if (data.success === false) {
         setError(true);
+        setShowError(data.message);
         toast.error(data.message);
         return;
       }
       toast.success(data.message);
+      setShowError(data.message);
       setError(false);
     } catch (err) {
       setError(true);
@@ -212,8 +214,8 @@ export default function Profile() {
                   error ? "border-red-500" : "border-purple-300"
                 }`}
               />
-              {error && <p className="text-red-500">password not matched!</p>}
-              <div className="absolute right-0 top-1/4 mr-4">
+
+              <div className="absolute right-0 top-1/3 mr-4">
                 <button type="button" onClick={handlePasswordVisibility}>
                   {showPassword ? (
                     <FaEye className="text-slate-700" />
@@ -223,7 +225,6 @@ export default function Profile() {
                 </button>
               </div>
             </div>
-
             <label>Enter New Password :</label>
             <input
               type={showPassword ? "text" : "password"}
@@ -232,6 +233,7 @@ export default function Profile() {
               className="text-gray-800 bg-state-100 rounded-lg ring-0 ring-inset py-2 border-1 focus:ring-2 bg-slate-100 mt-2 mb-4 border-purple-300 hover:border-purple-400"
             />
           </div>
+          {showerror && <p className="text-red-500 text-sm">{showerror}</p>}
           <div className="flex flex-row gap-2 mt-4">
             <Button variant="outlined" className="w-full">
               Cancel

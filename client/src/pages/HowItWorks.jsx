@@ -4,7 +4,7 @@ import img2 from "../assets/howitsworks/online.png";
 
 function HowItWorks() {
   return (
-    <div className="flex flex-col mx-auto 2xl:px-40">
+    <div className="flex flex-col mx-auto 2xl:px-40 max-w-screen-2xl">
       <h1 className="flex justify-center text-center mt-6 text-xl md:text-4xl font-semibold font-sans text-gray">
         Steps to Start Your Therapy Journey
       </h1>

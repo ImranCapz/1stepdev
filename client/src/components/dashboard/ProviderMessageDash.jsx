@@ -284,7 +284,6 @@ export default function ProviderMessageDash() {
   //last message fetch
   useEffect(() => {
     const fetchLastMessage = async () => {
-      
       try {
         setUserLoading(true);
         const res = await fetch(
@@ -418,7 +417,10 @@ export default function ProviderMessageDash() {
                               >
                                 <div className="relative">
                                   <img
-                                    src={user.profilePicture}
+                                    src={
+                                      user.profilePicture ||
+                                      "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                                    }
                                     alt="provider logo"
                                     className="w-9 h-9 2xl:size-20 md:w-12 md:h-12 rounded-full object-cover"
                                   />
@@ -610,7 +612,10 @@ export default function ProviderMessageDash() {
                                 >
                                   {message.sender !== currentUser._id && (
                                     <img
-                                      src={selectedUser.profilePicture}
+                                      src={
+                                        selectedUser.profilePicture ||
+                                        "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                                      }
                                       alt="user logo"
                                       className="size-8 rounded-full mr-2 object-cover"
                                     />
@@ -730,7 +735,10 @@ export default function ProviderMessageDash() {
                   ) : (
                     <div className="flex flex-col mx-auto items-center justify-center h-full">
                       <img
-                        src={currentUser.profilePicture  || 'https://i.ibb.co/tKQH4zp/defaultprofile.jpg'}
+                        src={
+                          currentUser.profilePicture ||
+                          "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                        }
                         alt="user logo"
                         className="size-20 object-cover rounded-full border-4 border-purple-300"
                       />

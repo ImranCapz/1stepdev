@@ -9,6 +9,7 @@ import {
   getBookingsStart,
   getBookingSuccess,
   getBookingFailure,
+  setTotalUserBooksCount,
 } from "../../redux/booking/bookingSlice";
 import { useDispatch } from "react-redux";
 import MessageDash from "./MessageDash";
@@ -34,10 +35,11 @@ export default function Dashboard() {
           console.log("Response status:", response.status);
         }
         const data = await response.json();
-        const sortedData = data.sort(
+        const sortedData = data.userBookings.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         dispatch(getBookingSuccess(sortedData));
+        dispatch(setTotalUserBooksCount(data.countBookings));
       } catch (error) {
         console.error(
           "An error occurred while fetching booking details:",

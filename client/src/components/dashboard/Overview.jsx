@@ -13,7 +13,6 @@ import SearchBar from "../SearchBar";
 import { FcApproval } from "react-icons/fc";
 import { Stepper, Step } from "@material-tailwind/react";
 import { MdVerifiedUser } from "react-icons/md";
-import { MdOutlineSettings } from "react-icons/md";
 import { VscLightbulbSparkle } from "react-icons/vsc";
 import { FaLightbulb } from "react-icons/fa";
 import { HiMiniUserGroup } from "react-icons/hi2";
@@ -66,7 +65,6 @@ export default function Overview() {
         return;
       }
       if (data.success === true) {
-        // setprovider((prev) => ({ ...prev, verified: true }));
         toast.success("Profile Verified");
         setOtpOpen(false);
       }

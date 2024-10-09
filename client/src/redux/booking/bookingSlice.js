@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   bookings: [],
+  totalUserBooksCount: 0,
   providerBooking: [],
   loading: false,
   error: null,
@@ -73,6 +74,9 @@ const bookingSlice = createSlice({
       state.error = action.payload;
       state.isProviderBookingFetched = true;
     },
+    setTotalUserBooksCount: (state, action) => {
+      state.totalUserBooksCount = action.payload;
+    },
     setHasApprovedBooking: (state, action) => {
       state.hasApprovedBooking = action.payload;
     },
@@ -116,6 +120,7 @@ export const {
   getProviderBookingSuccess,
   getProviderBookingFailure,
   bookingOut,
+  setTotalUserBooksCount,
   setHasApprovedBooking,
   setLastSeenBookingId,
 } = bookingSlice.actions;

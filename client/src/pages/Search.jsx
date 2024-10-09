@@ -1,4 +1,3 @@
-import CreateSelect from "react-select/creatable";
 import PropTypes from "prop-types";
 import PlacesAutocomplete, {
   geocodeByAddress,
@@ -200,20 +199,19 @@ export default function Search() {
       title: "School-Based Service",
       path: `/search?searchTerm=School-Based+Service&address=${address.city}`,
     },
-    {
-      title: "more",
-      submenu: [
-        {
-          title: "Art As Therapy",
-          path: `/search?searchTerm=Art+As+Therapy&address=${address.city}`,
-        },
-        {
-          title: "Music Therapy",
-          path: `/search?searchTerm=Music+Therapy&address=${address.city}`,
-        },
-      ],
-    },
-
+    // {
+    //   title: "more",
+    //   submenu: [
+    //     {
+    //       title: "Art As Therapy",
+    //       path: `/search?searchTerm=Art+As+Therapy&address=${address.city}`,
+    //     },
+    //     {
+    //       title: "Music Therapy",
+    //       path: `/search?searchTerm=Music+Therapy&address=${address.city}`,
+    //     },
+    //   ],
+    // },
     { title: "|" },
     { title: "Learn:" },
     { title: "Early Concerns: Start Here", path: "/early-concerns" },
@@ -577,7 +575,7 @@ export default function Search() {
             </div>
           </form>
         </div>
-        <hr className="border-gray-300 flex md:hidden"/>
+        <hr className="border-gray-300 flex md:hidden" />
         <div className="space-y-3 ">
           <div className="sm:flex-col lg:flex-row lg:w-1/2"> </div>
           <div>

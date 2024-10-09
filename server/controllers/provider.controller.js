@@ -94,12 +94,6 @@ export const getProviders = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 9;
     const startIndex = parseInt(req.query.startIndex) || 0;
 
-    let offer = req.query.offer;
-
-    if (offer === "undefined" || offer === "false") {
-      offer = { $in: [false, true] };
-    }
-
     const searchTerm = req.query.searchTerm || "";
 
     const address = req.query.address || "";

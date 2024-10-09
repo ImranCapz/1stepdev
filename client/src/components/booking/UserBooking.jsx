@@ -5,17 +5,21 @@ import { FcOk } from "react-icons/fc";
 import { FcCancel } from "react-icons/fc";
 import { BeatLoader } from "react-spinners";
 import SearchBar from "../SearchBar";
+import { useState } from "react";
+import { Pagination } from "flowbite-react";
 
 export default function UserBooking() {
   const { bookings } = useSelector((state) => state.booking);
-  const { isUserBookingFetched } = useSelector((state) => state.booking);
-  console.log("isUserBookingFetched:", isUserBookingFetched);
+  const { totalUserBooksCount } = useSelector((state) => state.booking);
+  const [showMore, setShowMore] = useState(false);
   const { loading } = useSelector((state) => state.booking);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   return (
     <>
       <div
-        className={`table-auto md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 max-h-screen ${
+        className={`flex-1 table-auto md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 ${
           bookings && bookings.length > 0
             ? "overflow-x-scroll md:overflow-x-auto"
             : ""
@@ -37,7 +41,10 @@ export default function UserBooking() {
             <h1 className="px-2 text-2xl text-gray font-bold mb-4">
               Your Bookings :
             </h1>
-            <Table hoverable className="shadow-md w-full">
+            <Table
+              hoverable
+              className="shadow-md w-full max-h-full overflow-y-auto"
+            >
               <Table.Head>
                 <Table.HeadCell>Provider Name</Table.HeadCell>
                 <Table.HeadCell>Services</Table.HeadCell>
@@ -108,6 +115,11 @@ export default function UserBooking() {
                 </Table.Body>
               ))}
             </Table>
+            <Pagination
+              totalPages={Math.ceil(totalUserBooksCount / itemsPerPage)}
+              currentPage={currentPage}
+              onPageChange={onPageChange}
+            />
           </>
         ) : (
           <div>
