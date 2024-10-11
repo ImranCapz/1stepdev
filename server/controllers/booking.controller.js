@@ -45,6 +45,8 @@ export const booking = async (req, res, next) => {
 };
 
 export const getBookingProvider = async (req, res, next) => {
+  const limit = parseInt(req.query.limit) || 8;
+  const startIndex = parseInt(req.query.startIndex) || 0;
   try {
     const bookingDetails = await Booking.aggregate([
       {
@@ -61,8 +63,20 @@ export const getBookingProvider = async (req, res, next) => {
       {
         $unwind: "$patientDetails",
       },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $skip: startIndex,
+      },
+      {
+        $limit: limit,
+      },
     ]);
-    res.status(200).json(bookingDetails);
+    const providerCount = await Booking.countDocuments({
+      provider: new mongoose.Types.ObjectId(req.params.id),
+    });
+    res.status(200).json({ bookingDetails, providerCount });
   } catch (error) {
     console.error(error);
     res
@@ -109,7 +123,6 @@ export const getUserBooking = async (req, res, next) => {
     }
     res.status(200).json({ userBookings, countBookings });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

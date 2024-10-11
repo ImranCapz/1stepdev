@@ -53,12 +53,6 @@ export default function Search() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // const whatoptions = suggestions.map((suggestion) => ({
-  //   value: suggestion.value,
-  //   label: suggestion.value,
-  //   isDisabled: suggestion.isDisabled,
-  // }));
-
   const handleSelect = async (value) => {
     try {
       const results = await geocodeByAddress(value);

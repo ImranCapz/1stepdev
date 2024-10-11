@@ -43,7 +43,6 @@ export default function Profile() {
     password: "",
     newPassword: "",
   });
-  console.log(passwordData);
   const [showProviderError, setShowProviderError] = useState(false);
   const [userProvider, setUserProvider] = useState([]);
   const { currentUser, loading } = useSelector((state) => state.user);
@@ -235,7 +234,11 @@ export default function Profile() {
           </div>
           {showerror && <p className="text-red-500 text-sm">{showerror}</p>}
           <div className="flex flex-row gap-2 mt-4">
-            <Button variant="outlined" className="w-full">
+            <Button
+              variant="outlined"
+              className="w-full"
+              onClick={() => setIsChangePassword(false)}
+            >
               Cancel
             </Button>
             <Button onClick={handlePasswordReset} className="w-full btn-color">

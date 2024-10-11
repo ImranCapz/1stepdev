@@ -20,7 +20,6 @@ export default function Dashboard() {
   const [tab, setTab] = useState("Dashboard");
   const { currentUser } = useSelector((state) => state.user);
   const { currentProvider } = useSelector((state) => state.provider);
-  const { isUserBookingFetched } = useSelector((state) => state.booking);
   const dispatch = useDispatch();
 
   document.title = "Dashboard | 1Step";
@@ -31,20 +30,16 @@ export default function Dashboard() {
       try {
         dispatch(getBookingsStart());
         const response = await fetch(url);
-        if (!response.ok) {
-          console.log("Response status:", response.status);
-        }
         const data = await response.json();
+        if (data.statusCode === 500) {
+          return;
+        }
         const sortedData = data.userBookings.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         dispatch(getBookingSuccess(sortedData));
         dispatch(setTotalUserBooksCount(data.countBookings));
       } catch (error) {
-        console.error(
-          "An error occurred while fetching booking details:",
-          error
-        );
         dispatch(getBookingFailure(error));
       }
     };

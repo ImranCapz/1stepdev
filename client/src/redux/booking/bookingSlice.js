@@ -4,6 +4,7 @@ const initialState = {
   bookings: [],
   totalUserBooksCount: 0,
   providerBooking: [],
+  totalProviderBooksCount: 0,
   loading: false,
   error: null,
   hasApprovedBooking: false,
@@ -77,6 +78,9 @@ const bookingSlice = createSlice({
     setTotalUserBooksCount: (state, action) => {
       state.totalUserBooksCount = action.payload;
     },
+    setTotalProviderBooksCount: (state, action) => {
+      state.totalProviderBooksCount = action.payload;
+    },
     setHasApprovedBooking: (state, action) => {
       state.hasApprovedBooking = action.payload;
     },
@@ -121,6 +125,7 @@ export const {
   getProviderBookingFailure,
   bookingOut,
   setTotalUserBooksCount,
+  setTotalProviderBooksCount,
   setHasApprovedBooking,
   setLastSeenBookingId,
 } = bookingSlice.actions;
