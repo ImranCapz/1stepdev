@@ -215,7 +215,7 @@ export default function ParentForm() {
           </div>
           <form
             onSubmit={handleSubmit}
-            className="p-4 flex flex-col sm:flex-row md:gap-4 gap-4 md:w-[1200px] mx-auto justify-center"
+            className="p-4 flex flex-col sm:flex-row md:gap-4 gap-4 md:w-[1200px] mx-auto justify-center mb-16 md:mb-0"
           >
             <div className="flex flex-col flex-1 gap-2">
               <label
@@ -255,7 +255,10 @@ export default function ParentForm() {
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </select>
-              <label className="text-sm font-semibold text-main">
+              <label
+                htmlFor="bloodGroup"
+                className="text-sm font-semibold text-main"
+              >
                 BloodGroup*
               </label>
               <input
@@ -268,7 +271,7 @@ export default function ParentForm() {
                 value={formData.parentDetails?.bloodGroup}
               />
               <label
-                htmlFor="gender"
+                htmlFor="emergencyContact"
                 className="text-sm font-semibold text-main"
               >
                 <p className="flex flex-row items-center">
@@ -279,6 +282,7 @@ export default function ParentForm() {
                 </p>
               </label>
               <Input
+                id="emergencyContact"
                 placeholder="Emergency Contact"
                 className={`border-2 p-2 input rounded-lg focus:outline-none focus:ring-0 ${
                   !phoneValid ? "error" : ""
@@ -304,7 +308,7 @@ export default function ParentForm() {
                 </p>
               )}
               <label
-                htmlFor="gender"
+                htmlFor="address"
                 className="text-sm font-semibold text-main"
               >
                 Address : (city, state, pincode)
@@ -318,11 +322,12 @@ export default function ParentForm() {
                 required
                 onChange={handleChange}
                 value={formData.parentDetails?.address}
+                autoComplete="off"
               />
             </div>
             <div className="flex flex-col flex-1 gap-2 w-full">
               <label
-                name="fullName"
+                htmlFor="fullName"
                 className="text-sm font-semibold text-main"
               >
                 Enter your Full Name :
@@ -338,10 +343,7 @@ export default function ParentForm() {
                 onChange={handleChange}
                 value={formData.parentDetails?.fullName}
               />
-              <label
-                name="fullName"
-                className="text-sm font-semibold text-main"
-              >
+              <label htmlFor="dob" className="text-sm font-semibold text-main">
                 Enter your DOB :
               </label>
               <input
@@ -353,7 +355,10 @@ export default function ParentForm() {
                 onChange={handleChange}
                 value={formData.parentDetails?.dob}
               />
-              <label className="text-sm font-semibold text-main">
+              <label
+                htmlFor="height"
+                className="text-sm font-semibold text-main"
+              >
                 Height Cm*
               </label>
               <input
@@ -365,7 +370,10 @@ export default function ParentForm() {
                 onChange={handleChange}
                 value={formData.parentDetails?.height}
               />
-              <label className="text-sm font-semibold text-main">
+              <label
+                htmlFor="medicalHistory"
+                className="text-sm font-semibold text-main"
+              >
                 Medical History*
               </label>
               <input
@@ -379,7 +387,7 @@ export default function ParentForm() {
               />
 
               <label
-                htmlFor="gender"
+                htmlFor="insurance"
                 className="text-sm font-semibold text-main"
               >
                 Insurance :
@@ -395,14 +403,11 @@ export default function ParentForm() {
               />
             </div>
             <div className="flex flex-col flex-1 gap-2 w-full">
-              <label
-                name="fullName"
-                className="text-sm font-semibold text-main"
-              >
+              <p className="text-sm font-semibold text-main">
                 What therapy your looking for?
-              </label>
+              </p>
               <Select
-                id="name"
+                id="lookingFor" //
                 key={formData.parentDetails?.lookingFor}
                 options={suggestions}
                 isMulti
@@ -439,7 +444,10 @@ export default function ParentForm() {
                   }),
                 }}
               />
-              <label className="text-sm font-semibold text-main">
+              <label
+                htmlFor="childName"
+                className="text-sm font-semibold text-main"
+              >
                 Child Name*
               </label>
               <input
@@ -451,7 +459,10 @@ export default function ParentForm() {
                 onChange={handleChange}
                 value={formData.parentDetails?.childName}
               />
-              <label className="text-sm font-semibold text-main">
+              <label
+                htmlFor="weight"
+                className="text-sm font-semibold text-main"
+              >
                 Weight Kg*
               </label>
               <input
@@ -463,7 +474,10 @@ export default function ParentForm() {
                 onChange={handleChange}
                 value={formData.parentDetails?.weight}
               />
-              <label className="text-sm font-semibold text-main">
+              <label
+                htmlFor="allergies"
+                className="text-sm font-semibold text-main"
+              >
                 Allergies :
               </label>
               <input
@@ -475,7 +489,10 @@ export default function ParentForm() {
                 onChange={handleChange}
                 value={formData.parentDetails?.allergies}
               />
-              <label className="text-sm font-semibold text-main">
+              <label
+                htmlFor="phoneNumber"
+                className="text-sm font-semibold text-main"
+              >
                 <p className="flex flex-row items-center">
                   {!phoneValid && (
                     <IoMdAlert className="text-red-700 text-sm" />
@@ -484,6 +501,7 @@ export default function ParentForm() {
                 </p>
               </label>
               <Input
+                id="phoneNumber"
                 placeholder="Enter phone number"
                 className={`border-2 p-2 input rounded-lg focus:outline-none focus:ring-0 ${
                   !phoneValid ? "error" : ""

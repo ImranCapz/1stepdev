@@ -568,9 +568,7 @@ export default function CreateProvider() {
                 className="flex flex-col sm:flex-row md:gap-10 gap-4 mt-6 md:p-20 p-6 rounded-lg mx-auto"
               >
                 <div className="flex flex-col gap-3 flex-1">
-                  <label className="font-semibold text-main">
-                    Select service*
-                  </label>
+                  <p className="font-semibold text-main">Select service*</p>
                   <Select
                     id="name"
                     key={formData.name}
@@ -606,7 +604,9 @@ export default function CreateProvider() {
                       }),
                     }}
                   />
-                  <label className="font-semibold text-main">Full Name*</label>
+                  <label htmlFor="fullName" className="font-semibold text-main">
+                    Full Name*
+                  </label>
                   <input
                     type="text"
                     placeholder="Full Name"
@@ -616,7 +616,7 @@ export default function CreateProvider() {
                     onChange={handleChange}
                     value={formData.fullName}
                   />
-                  <label className="font-semibold text-main">
+                  <label htmlFor="email" className="font-semibold text-main">
                     <p className="flex flex-row items-center">
                       {Errors.email && (
                         <IoMdAlert className="text-red-700 text-sm" />
@@ -639,7 +639,10 @@ export default function CreateProvider() {
                       Please enter a valid email address.
                     </p>
                   )}
-                  <label className="font-semibold text-main">
+                  <label
+                    htmlFor="qualification"
+                    className="font-semibold text-main"
+                  >
                     Qualification*
                   </label>
                   <input
@@ -651,7 +654,12 @@ export default function CreateProvider() {
                     onChange={handleChange}
                     value={formData.qualification}
                   />
-                  <label className="font-semibold text-main">Address*</label>
+                  <label
+                    htmlFor="addressLine1"
+                    className="font-semibold text-main"
+                  >
+                    Address*
+                  </label>
                   <input
                     placeholder="Address"
                     className="border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
@@ -660,7 +668,9 @@ export default function CreateProvider() {
                     onChange={handleChange}
                     value={formData.address.addressLine1}
                   />
-                  <label className="font-semibold text-main">Street</label>
+                  <label htmlFor="street" className="font-semibold text-main">
+                    Street
+                  </label>
                   <input
                     placeholder="Street"
                     className="w-full border-2 p-2 rounded-lg border-slate-300 input focus:outline-none focus:ring-0 "
@@ -670,9 +680,7 @@ export default function CreateProvider() {
                   />
                   <div className="flex flex-row gap-2 items-center">
                     <div className="w-full flex flex-col gap-2">
-                      <label className="font-semibold text-main">
-                        Country*
-                      </label>
+                      <p className="font-semibold text-main">Country*</p>
                       <Select
                         id="country"
                         placeholder="Country"
@@ -718,7 +726,7 @@ export default function CreateProvider() {
                       />
                     </div>
                     <div className="w-full flex flex-col gap-2">
-                      <label className="font-semibold text-main">State*</label>
+                      <p className="font-semibold text-main">State*</p>
                       <Select
                         id="state"
                         key={`state-${formData.address.state}`}
@@ -762,7 +770,9 @@ export default function CreateProvider() {
                   </div>
                   <div className="flex flex-row gap-2">
                     <div className="w-full flex flex-col gap-2">
-                      <label className="font-semibold text-main">City*</label>
+                      <p htmlFor="city" className="font-semibold text-main">
+                        City*
+                      </p>
                       <Select
                         id="city"
                         key={formData.address.city}
@@ -803,7 +813,10 @@ export default function CreateProvider() {
                       />
                     </div>
                     <div className="w-full flex flex-col gap-2">
-                      <label className="font-semibold text-main">
+                      <label
+                        htmlFor="pincode"
+                        className="font-semibold text-main"
+                      >
                         Pincode*
                       </label>
                       <input
@@ -819,7 +832,10 @@ export default function CreateProvider() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <div className="flex items-center gap-2">
-                      <label className="font-semibold text-main md:text-base text-sm">
+                      <label
+                        htmlFor="regularPrice"
+                        className="font-semibold text-main md:text-base text-sm"
+                      >
                         Fee per Appoinment*
                       </label>
                       <input
@@ -843,7 +859,10 @@ export default function CreateProvider() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <label className="font-semibold text-main md:text-base text-sm">
+                      <label
+                        htmlFor="experience"
+                        className="font-semibold text-main md:text-base text-sm"
+                      >
                         Years of Experience* &nbsp;
                       </label>
                       <input
@@ -919,7 +938,7 @@ export default function CreateProvider() {
                   </div>
                 </Drawer>
                 <div className="flex flex-col flex-1 gap-3 md:w-[300px]">
-                  <label className="flex flex-row items-center gap-4 font-semibold text-main md:text-base text-sm">
+                  <p className="flex flex-row items-center gap-4 font-semibold text-main md:text-base text-sm">
                     TimeSlots for Bookings
                     <Switch
                       onChange={setSwitchValue}
@@ -927,7 +946,7 @@ export default function CreateProvider() {
                       height={18}
                       width={40}
                     />
-                  </label>
+                  </p>
                   {switchValue && <></>}
                   <p className="font-semibold text-main">
                     Explain About your therapy section*
@@ -952,9 +971,9 @@ export default function CreateProvider() {
                       Please write a 60-word description in the field.
                     </p>
                   )}
-                  <label className="font-semibold text-main">
+                  <p htmlFor="therapytype" className="font-semibold text-main">
                     Select your therapy type*
-                  </label>
+                  </p>
                   <Select
                     key={formData.therapytype}
                     id="therapytype"
@@ -991,7 +1010,9 @@ export default function CreateProvider() {
                       }),
                     }}
                   />
-                  <label className="font-semibold text-main">Licensing*</label>
+                  <label htmlFor="license" className="font-semibold text-main">
+                    Licensing*
+                  </label>
                   <input
                     type="text"
                     placeholder="(License number, issuing authority)"
@@ -1002,7 +1023,7 @@ export default function CreateProvider() {
                     value={formData.license}
                   />
                   <div className="flex flex-col gap-2">
-                    <label className="font-semibold text-main">
+                    <label htmlFor="phone" className="font-semibold text-main">
                       <p className="flex flex-row items-center">
                         {Errors.phone && (
                           <IoMdAlert className="text-red-700 text-sm" />

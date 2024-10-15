@@ -6,7 +6,7 @@ import ProviderMessageDash from "./ProviderMessageDash";
 import { useSelector } from "react-redux";
 
 export default function SubmenuProvider() {
-  const [activeComponent, setActiveComponent] = useState("Providers");
+  const [activeComponent, setActiveComponent] = useState("");
   const { currentProvider } = useSelector((state) => state.provider);
   const location = useLocation();
 
@@ -25,9 +25,13 @@ export default function SubmenuProvider() {
       const validTag = submenuNav.find((item) => item.title === tagFromUrl);
       if (validTag) {
         setActiveComponent(tagFromUrl);
+      } else {
+        setActiveComponent("Providers");
       }
+    } else {
+      setActiveComponent("Providers");
     }
-  }, [location.search, submenuNav]);
+  }, [location.search, submenuNav, currentProvider]);
 
   return (
     <div className="flex flex-col transition-all duration-500">

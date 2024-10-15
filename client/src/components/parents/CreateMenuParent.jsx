@@ -280,11 +280,15 @@ export default function CreateMenuParent() {
           <form onSubmit={submitfn} className="w-full md:w-[500px]">
             {step === 0 && (
               <div className="flex flex-col p-6 rounded-lg">
-                <label className="p-1 menu-headTextColor font-bold mb-2">
+                <label
+                  htmlFor="fullName"
+                  className="p-1 menu-headTextColor font-bold mb-2"
+                >
                   Parent Name :
                 </label>
                 <input
                   type="text"
+                  id="fullName"
                   className="input border-2 p-2 rounded-lg focus:outline-none focus:ring-0"
                   placeholder="full name"
                   onChange={func1}
@@ -331,10 +335,14 @@ export default function CreateMenuParent() {
                 <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Child Information
                 </p>
-                <label className="mb-2 menu-headTextColor font-bold">
+                <label
+                  htmlFor="childName"
+                  className="mb-2 menu-headTextColor font-bold"
+                >
                   Child Name
                 </label>
                 <input
+                  id="childName"
                   type="text"
                   className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter child fullname"
@@ -350,10 +358,14 @@ export default function CreateMenuParent() {
                   </p>
                 )}
 
-                <label className="menu-headTextColor font-bold mt-5">
+                <label
+                  htmlFor="dob"
+                  className="menu-headTextColor font-bold mt-5"
+                >
                   Date of Birth
                 </label>
                 <input
+                  id="dob"
                   type="date"
                   placeholder="select date"
                   className="w-full p-3 rounded-lg border-gray-300 mt-5 input border-2 focus:outline-none focus:ring-0"
@@ -413,10 +425,14 @@ export default function CreateMenuParent() {
                 <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Physical Information
                 </p>
-                <label className="mb-5 menu-headTextColor font-bold">
+                <label
+                  htmlFor="height"
+                  className="mb-5 menu-headTextColor font-bold"
+                >
                   Height
                 </label>
                 <input
+                  id="height"
                   type="number"
                   className="w-full p-3 rounded-lg border-gray-300 mt-5 mb-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter height in cm"
@@ -425,11 +441,15 @@ export default function CreateMenuParent() {
                   name="parentDetails.height"
                   required
                 ></input>
-                <label className="mt-5 menu-headTextColor font-bold">
+                <label
+                  htmlFor="weight"
+                  className="mt-5 menu-headTextColor font-bold"
+                >
                   Weight
                 </label>
                 <input
                   type="number"
+                  id="weight"
                   className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter weight in kg"
                   onChange={func1}
@@ -437,11 +457,15 @@ export default function CreateMenuParent() {
                   name="parentDetails.weight"
                   required
                 ></input>
-                <label className="mb-5 menu-headTextColor font-bold">
+                <label
+                  htmlFor="bloodGroup"
+                  className="mb-5 menu-headTextColor font-bold"
+                >
                   Blood Group
                 </label>
                 <input
                   type="text"
+                  id="bloodGroup"
                   className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter blood group (e.g., A+, B-, O+)"
                   onChange={func1}
@@ -472,10 +496,14 @@ export default function CreateMenuParent() {
                 <p className="text-2xl font-bold menu-headTextColor mb-10">
                   Medical Information
                 </p>
-                <label className="mt-5 menu-headTextColor font-bold">
+                <label
+                  htmlFor="medicalHistory"
+                  className="mt-5 menu-headTextColor font-bold"
+                >
                   Medical History
                 </label>
                 <input
+                  id="medicalHistory"
                   type="textarea"
                   className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter Medical History"
@@ -485,10 +513,14 @@ export default function CreateMenuParent() {
                   required
                   maxLength={30}
                 ></input>
-                <label className="mt-5 menu-headTextColor font-bold">
+                <label
+                  htmlFor="allergies"
+                  className="mt-5 menu-headTextColor font-bold"
+                >
                   Allergies
                 </label>
                 <input
+                  id="allergies"
                   type="textarea"
                   className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter any allergies"
@@ -498,10 +530,14 @@ export default function CreateMenuParent() {
                   maxLength={30}
                   required
                 ></input>
-                <label className="mt-5 menu-headTextColor font-bold">
+                <label
+                  htmlFor="emergencyContact"
+                  className="mt-5 menu-headTextColor font-bold"
+                >
                   Emergency Contact
                 </label>
                 <Input
+                  id="emergencyContact"
                   placeholder="Enter emergency contact number"
                   className={`border-2 p-2 mt-2 mb-4 input rounded-lg focus:outline-none focus:ring-0 w-full`}
                   value={parent.parentDetails.emergencyContact}
@@ -524,10 +560,14 @@ export default function CreateMenuParent() {
                     {errors.emergencyContact}
                   </p>
                 )}
-                <label className="mb-5 menu-headTextColor font-bold">
+                <label
+                  htmlFor="insurance"
+                  className="mb-5 menu-headTextColor font-bold"
+                >
                   Insurance
                 </label>
                 <input
+                  id="insurance"
                   type="text"
                   className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                   placeholder="Enter insurance details"
@@ -559,10 +599,14 @@ export default function CreateMenuParent() {
                   <p className="text-2xl font-bold menu-headTextColor mb-10">
                     Contact Information
                   </p>
-                  <label className="mb-5 menu-headTextColor font-bold">
+                  <label
+                    htmlFor="address"
+                    className="mb-5 menu-headTextColor font-bold"
+                  >
                     Address
                   </label>
                   <input
+                    id="address"
                     type="textarea"
                     className="w-full p-3 rounded-lg border-gray-300 mb-5 mt-5 input border-2 focus:outline-none focus:ring-0"
                     placeholder="Enter your full address"
@@ -571,10 +615,14 @@ export default function CreateMenuParent() {
                     name="parentDetails.address"
                     required
                   ></input>
-                  <label className="mb-5 menu-headTextColor font-bold">
+                  <label
+                    htmlFor="phoneNumber"
+                    className="mb-5 menu-headTextColor font-bold"
+                  >
                     Phone Number
                   </label>
                   <Input
+                    id="phoneNumber"
                     placeholder="Enter phone number"
                     className={`border-2 p-2 mt-2 mb-4 input rounded-lg focus:outline-none focus:ring-0 w-full`}
                     value={parent.parentDetails.phoneNumber}

@@ -203,9 +203,10 @@ export default function Profile() {
         <Modal.Header>Reset Password</Modal.Header>
         <Modal.Body>
           <div className="flex flex-col">
-            <label>Enter old Password :</label>
+            <label htmlFor="password">Enter old Password :</label>
             <div className="relative mb-4">
               <input
+                autoComplete="off"
                 type={showPassword ? "text" : "password"}
                 id="password"
                 onChange={handlePasswordChanges}
@@ -224,8 +225,9 @@ export default function Profile() {
                 </button>
               </div>
             </div>
-            <label>Enter New Password :</label>
+            <label htmlFor="newPassword">Enter New Password :</label>
             <input
+              autoComplete="off"
               type={showPassword ? "text" : "password"}
               id="newPassword"
               onChange={handlePasswordChanges}
@@ -315,6 +317,7 @@ export default function Profile() {
               <div className="flex items-center mt-2 w-50 h-14 rounded-lg ring-0 ring-inset border-0 focus:ring-2 bg-slate-100">
                 <FaRegUser className="ml-3 text-xl text-gray-400" />
                 <input
+                  autoComplete="off"
                   defaultValue={currentUser.username}
                   type="text"
                   id="username"
@@ -331,6 +334,7 @@ export default function Profile() {
               <div className="flex items-center mt-2 h-14 rounded-lg ring-0 ring-inset border-0 focus:ring-2 bg-slate-100">
                 <FiMail className="ml-3 text-xls w-5 h-5 text-gray-400" />
                 <input
+                  autoComplete="off"
                   defaultValue={currentUser.email}
                   type="email"
                   id="email"

@@ -10,6 +10,7 @@ export default function FavoriteList() {
   const { favorites } = useSelector((state) => state.favorite);
   const dispatch = useDispatch();
 
+  document.title = "Favorite | 1Step"
   useEffect(() => {
     const fetchFavoriteList = async () => {
       if (!currentUser) {
