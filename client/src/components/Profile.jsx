@@ -350,12 +350,11 @@ export default function Profile() {
               <div className="relative flex items-center mt-2 w-50 h-14 rounded-lg ring-0 ring-inset border-0 focus:ring-2 bg-slate-100">
                 <PiLockSimpleBold className="ml-3 text-xl text-gray-400" />
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type="text"
                   id="password"
                   placeholder="password"
                   disabled={true}
                   className="flex-grow w-52 text-xl pl-3 text-gray-700 bg-state-100 p-3 rounded-lg ring-0 ring-inset ring-gray-300 py-1.5 border-0 focus:ring-2 bg-slate-100"
-                  onChange={handleChange}
                 />
               </div>
               {formData.password && (
@@ -373,7 +372,7 @@ export default function Profile() {
                 <button
                   type="button"
                   onClick={() => setIsChangePassword(true)}
-                  className="font-semibold text-sm items-left justify-left text-sky-600 hover:text-sky-400 duration-300 cursor-pointer"
+                  className="font-semibold text-sm justify-left text-sky-600 hover:text-sky-400 duration-300 cursor-pointer"
                 >
                   Change Password
                 </button>

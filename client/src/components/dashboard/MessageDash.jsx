@@ -24,6 +24,7 @@ import { GoDotFill } from "react-icons/go";
 
 //loader
 import ContentLoader from "react-content-loader";
+import { MoonLoader } from "react-spinners";
 
 export default function MessageDash() {
   const { currentUser } = useSelector((state) => state.user);
@@ -34,6 +35,9 @@ export default function MessageDash() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState([]);
   const [limitedMessages, setLimitedMessages] = useState([]);
+  const [loader, setLoader] = useState({
+    provMessageLoad: false,
+  });
 
   //loader
   const [loading, setLoading] = useState(true);
@@ -194,6 +198,10 @@ export default function MessageDash() {
   };
 
   const handleProviderClick = async (provider) => {
+    setLoader((prevState) => ({
+      ...prevState,
+      provMessageLoad: true,
+    }));
     setSelectedProvider(provider);
     setInfo(false);
     const roomID = `${currentUser._id}_${provider._id}`;
@@ -205,6 +213,10 @@ export default function MessageDash() {
       }
       setMessages(data);
       setLimitedMessages(data.slice(-10));
+      setLoader((prevState) => ({
+        ...prevState,
+        provMessageLoad: false,
+      }));
       const unreadMessages = data.filter(
         (msg) => !msg.read && msg.sender !== currentUser._id
       );
@@ -403,7 +415,7 @@ export default function MessageDash() {
                           ))}
                         </>
                       ) : (
-                        <>
+                        <div className="overflow-auto overflow-y-auto scrollbar-thin">
                           {providerDetails.map((provider) => {
                             const isSelected =
                               selectedProvider &&
@@ -536,7 +548,7 @@ export default function MessageDash() {
                               </div>
                             );
                           })}
-                        </>
+                        </div>
                       )}
                     </>
                   ) : (
@@ -589,76 +601,95 @@ export default function MessageDash() {
                             ref={messageContainerRef}
                             className="overflow-y-scroll h-[390px] md:h-[290px] 2xl:h-[600px]"
                           >
-                            {limitedMessages.map((message) => (
-                              <div key={message._id} className={`m-2`}>
-                                <div
-                                  className={`flex items-center ${
-                                    String(message.sender) ===
-                                    String(currentUser._id)
-                                      ? "justify-end"
-                                      : ""
-                                  }`}
-                                >
-                                  {message.sender !== currentUser._id && (
-                                    <img
-                                      src={
-                                        selectedProvider.profilePicture ||
-                                        "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
-                                      }
-                                      alt="provider logo"
-                                      className="size-9 rounded-full mr-2 object-cover"
-                                    />
-                                  )}
-                                  <div
-                                    className={`p-2 text-xs md:text-base ${
-                                      message.sender === currentUser._id
-                                        ? "chat-sender rounded-l-xl rounded-tr-xl"
-                                        : "bg-gray-300 rounded-r-xl rounded-tl-xl"
-                                    } ${
-                                      message.message.length > 30
-                                        ? "w-2/3"
-                                        : "w-max"
-                                    }`}
-                                  >
-                                    {message.message}
-                                    <span
-                                      className="ml-2"
-                                      style={{ fontSize: "10px" }}
-                                    >
-                                      {new Date(
-                                        message.createdAt
-                                      ).toLocaleTimeString([], {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                      })}
-                                    </span>
-                                  </div>
-                                  {message.sender === currentUser._id && (
-                                    <img
-                                      src={
-                                        currentUser.profilePicture ||
-                                        "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
-                                      }
-                                      alt="user logo"
-                                      className="size-9 rounded-full ml-2 object-cover"
-                                    />
-                                  )}
-                                </div>
-                                <div
-                                  className={`${
-                                    message.sender === currentUser._id
-                                      ? "mr-10 text-right"
-                                      : "ml-10 text-left"
-                                  }`}
-                                  style={{ fontSize: "12px" }}
-                                >
-                                  <ReactTimeAgo
-                                    locale="en-US"
-                                    date={new Date(message.createdAt)}
-                                  />
-                                </div>
+                            {loader.provMessageLoad ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  height: "70vh",
+                                }}
+                              >
+                                <MoonLoader
+                                  color="#10ebd8"
+                                  loading={loading}
+                                  size={50}
+                                />
                               </div>
-                            ))}
+                            ) : (
+                              <>
+                                {limitedMessages.map((message) => (
+                                  <div key={message._id} className={`m-2`}>
+                                    <div
+                                      className={`flex items-center ${
+                                        String(message.sender) ===
+                                        String(currentUser._id)
+                                          ? "justify-end"
+                                          : ""
+                                      }`}
+                                    >
+                                      {message.sender !== currentUser._id && (
+                                        <img
+                                          src={
+                                            selectedProvider.profilePicture ||
+                                            "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                                          }
+                                          alt="provider logo"
+                                          className="size-9 rounded-full mr-2 object-cover"
+                                        />
+                                      )}
+                                      <div
+                                        className={`p-2 text-xs md:text-base ${
+                                          message.sender === currentUser._id
+                                            ? "chat-sender rounded-l-xl rounded-tr-xl"
+                                            : "bg-gray-300 rounded-r-xl rounded-tl-xl"
+                                        } ${
+                                          message.message.length > 30
+                                            ? "w-2/3"
+                                            : "w-max"
+                                        }`}
+                                      >
+                                        {message.message}
+                                        <span
+                                          className="ml-2"
+                                          style={{ fontSize: "10px" }}
+                                        >
+                                          {new Date(
+                                            message.createdAt
+                                          ).toLocaleTimeString([], {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })}
+                                        </span>
+                                      </div>
+                                      {message.sender === currentUser._id && (
+                                        <img
+                                          src={
+                                            currentUser.profilePicture ||
+                                            "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                                          }
+                                          alt="user logo"
+                                          className="size-9 rounded-full ml-2 object-cover"
+                                        />
+                                      )}
+                                    </div>
+                                    <div
+                                      className={`${
+                                        message.sender === currentUser._id
+                                          ? "mr-10 text-right"
+                                          : "ml-10 text-left"
+                                      }`}
+                                      style={{ fontSize: "12px" }}
+                                    >
+                                      <ReactTimeAgo
+                                        locale="en-US"
+                                        date={new Date(message.createdAt)}
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
+                              </>
+                            )}
                           </div>
                           <div className="flex gap-2">
                             <input
