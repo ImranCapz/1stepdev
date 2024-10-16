@@ -44,7 +44,7 @@ export default function MessageDash() {
   const dispatch = useDispatch();
 
   //socket
-  const SOCKET_SERVER_URL = "http://localhost:3000";
+  const SOCKET_SERVER_URL = import.meta.env.VITE_SOCKET_IO_URL;
   const [socket, setSocket] = useState(null);
   const [send, setSend] = useState("");
 
@@ -601,7 +601,10 @@ export default function MessageDash() {
                                 >
                                   {message.sender !== currentUser._id && (
                                     <img
-                                      src={selectedProvider.profilePicture || "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"}
+                                      src={
+                                        selectedProvider.profilePicture ||
+                                        "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                                      }
                                       alt="provider logo"
                                       className="size-9 rounded-full mr-2 object-cover"
                                     />
@@ -632,7 +635,10 @@ export default function MessageDash() {
                                   </div>
                                   {message.sender === currentUser._id && (
                                     <img
-                                      src={currentUser.profilePicture || "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"}
+                                      src={
+                                        currentUser.profilePicture ||
+                                        "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                                      }
                                       alt="user logo"
                                       className="size-9 rounded-full ml-2 object-cover"
                                     />

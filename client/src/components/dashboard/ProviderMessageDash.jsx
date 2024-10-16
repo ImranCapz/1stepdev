@@ -49,7 +49,7 @@ export default function ProviderMessageDash() {
   const dispatch = useDispatch();
 
   // socket.io
-  const SOCKET_SERVER_URL = "http://localhost:3000";
+  const SOCKET_SERVER_URL = import.meta.env.VITE_SOCKET_IO_URL;
   const [socket, setSocket] = useState(null);
   const [send, setSend] = useState("");
 

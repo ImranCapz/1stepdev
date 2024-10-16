@@ -59,7 +59,7 @@ export default function Provider() {
   const dispatch = useDispatch();
 
   //socket
-  const SOCKET_SERVER_URL = "http://localhost:3000";
+  const SOCKET_SERVER_URL = import.meta.env.VITE_SOCKET_IO_URL;
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
