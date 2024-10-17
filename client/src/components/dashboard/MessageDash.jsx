@@ -415,7 +415,7 @@ export default function MessageDash() {
                           ))}
                         </>
                       ) : (
-                        <div className="overflow-auto overflow-y-auto scrollbar-thin">
+                        <div className="w-full overflow-auto overflow-y-auto scrollbar-thin">
                           {providerDetails.map((provider) => {
                             const isSelected =
                               selectedProvider &&
@@ -602,20 +602,22 @@ export default function MessageDash() {
                             className="overflow-y-scroll h-[390px] md:h-[290px] 2xl:h-[600px]"
                           >
                             {loader.provMessageLoad ? (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  height: "70vh",
-                                }}
-                              >
-                                <MoonLoader
-                                  color="#10ebd8"
-                                  loading={loading}
-                                  size={50}
-                                />
-                              </div>
+                              <>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    height: "40vh",
+                                  }}
+                                >
+                                  <MoonLoader
+                                    color="#4D0064"
+                                    loading={loader.provMessageLoad}
+                                    size={30}
+                                  />
+                                </div>
+                              </>
                             ) : (
                               <>
                                 {limitedMessages.map((message) => (

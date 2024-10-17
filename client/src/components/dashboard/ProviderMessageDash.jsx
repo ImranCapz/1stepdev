@@ -412,7 +412,7 @@ export default function ProviderMessageDash() {
                           ))}
                         </>
                       ) : (
-                        <div className="overflow-auto overflow-y-auto scrollbar-thin">
+                        <div className="w-full overflow-auto overflow-y-auto scrollbar-thin">
                           {userDetails.map((user) => {
                             const isSelected =
                               selectedUser && selectedUser._id === user._id;
@@ -622,9 +622,9 @@ export default function ProviderMessageDash() {
                                 }}
                               >
                                 <MoonLoader
-                                  color="#10ebd8"
-                                  loading={loading}
-                                  size={50}
+                                  color="#4D0064"
+                                  loading={loader.provMessageLoad}
+                                  size={30}
                                 />
                               </div>
                             ) : (

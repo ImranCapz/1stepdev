@@ -552,7 +552,7 @@ export default function Search() {
           </div> */}
               <button
                 type="submit"
-                className={`p-3 h-12 w-12 font-medium text-indigo-950 active:shadow-none rounded-lg shadow md:inline transition-all duration-300 ease-in-out mt-4 mb-4 focus:outline-none focus:border-transparent focus:ring-0 flex items-center justify-center ${
+                className={`p-3 h-12 w-12 font-medium rounded-lg  mt-4 mb-4 flex items-center justify-center ${
                   loading ? "bg-primary-50" : "btn-color"
                 }`}
               >

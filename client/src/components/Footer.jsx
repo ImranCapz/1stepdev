@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 
-
 export default function Footer() {
   return (
     <div className="flex items-end w-full bg-white">
@@ -142,78 +141,81 @@ export default function Footer() {
           <div className="flex flex-wrap flex-grow mt-10 -mb-10 text-center md:pl-20 md:mt-0 md:text-left">
             <div className="w-full px-4 lg:w-1/4 md:w-1/2">
               <h2 className="mb-3 text-sm font-medium tracking-widest text-gray-100 uppercase title-font">
-               FOR PARENTS
+                FOR PARENTS
               </h2>
               <nav className="mb-10 list-none">
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
                     Find Care
-                  </a>
-                </li>
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  Read Expert Guides
-                  </a>
-                </li>
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  Review
-                  </a>
-                </li>
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  Lists
-                  </a>
-                </li>
+                  </li>
+                </ul>
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    Read Expert Guides
+                  </li>
+                </ul>
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    Review
+                  </li>
+                </ul>
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    Lists
+                  </li>
+                </ul>
               </nav>
             </div>
             <div className="w-full px-4 lg:w-1/4 md:w-1/2">
               <h2 className="mb-3 text-sm font-medium tracking-widest text-gray-100 uppercase title-font">
-              FOR PROVIDERS
+                FOR PROVIDERS
               </h2>
               <nav className="mb-10 list-none">
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    Claim Profile
+                  </li>
+                </ul>
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    Create a New Profile
+                  </li>
+                </ul>
                 <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  Claim Profile
-                  </a>
-                </li>
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  Create a New Profile
-                  </a>
-                </li>
-                <li className="mt-3">
-                  <Link to={'/for-providers'} className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  For Providers Page
+                  <Link
+                    to={"/for-providers"}
+                    className="text-gray-300 cursor-pointer hover:text-gray-100"
+                  >
+                    For Providers Page
                   </Link>
                 </li>
               </nav>
             </div>
             <div className="w-full px-4 lg:w-1/4 md:w-1/2">
               <h2 className="mb-3 text-sm font-medium tracking-widest text-gray-100 uppercase title-font">
-              COMPANY
+                COMPANY
               </h2>
               <nav className="mb-10 list-none">
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  About Us
-                  </a>
-                </li>
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  FAQs
-                  </a>
-                </li>
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  Privacy Policy
-                  </a>
-                </li>
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  Terms of Service
-                  </a>
-                </li>
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    About Us
+                  </li>
+                </ul>
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    FAQs
+                  </li>
+                </ul>
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    Privacy Policy
+                  </li>
+                </ul>
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    Terms of Service
+                  </li>
+                </ul>
               </nav>
             </div>
             <div className="w-full px-4 lg:w-1/4 md:w-1/2">
@@ -221,11 +223,11 @@ export default function Footer() {
                 Contact
               </h2>
               <nav className="mb-10 list-none">
-                <li className="mt-3">
-                  <a className="text-gray-300 cursor-pointer hover:text-gray-100">
-                  info@onestep.co.in
-                  </a>
-                </li>
+                <ul className="mt-3">
+                  <li className="text-gray-300 cursor-pointer hover:text-gray-100">
+                    info@onestep.co.in
+                  </li>
+                </ul>
               </nav>
             </div>
           </div>
@@ -233,7 +235,7 @@ export default function Footer() {
         <div className="bg-down">
           <div className="container px-5 py-4 mx-auto">
             <p className="text-sm text-gray-300 capitalize text-center">
-            © 2024 1Step Health. All Rights Reserved.{" "}
+              © 2024 1Step Health. All Rights Reserved.{" "}
             </p>
           </div>
         </div>

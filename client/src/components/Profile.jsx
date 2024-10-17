@@ -215,7 +215,7 @@ export default function Profile() {
                 }`}
               />
 
-              <div className="absolute right-0 top-1/3 mr-4">
+              <div className="absolute right-0 top-1/3 mt-0.5 mr-4">
                 <button type="button" onClick={handlePasswordVisibility}>
                   {showPassword ? (
                     <FaEye className="text-slate-700" />

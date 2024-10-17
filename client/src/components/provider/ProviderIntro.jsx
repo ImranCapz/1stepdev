@@ -4,7 +4,7 @@ import pic3 from "../../assets/providerintro/3.png";
 import profileImage from "../../pages/providerscreen/createprovider.png";
 import { Button } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
-import { HiOutlineArrowRight} from "react-icons/hi";
+import { HiOutlineArrowRight } from "react-icons/hi";
 
 function ProviderIntro() {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ function ProviderIntro() {
                     Create Your Therapist Profile
                   </h2>
 
-                  <p className="text-gray-600 2xl:text-xl mb-4 text-left md:text-base">
+                  <p className="text-gray-600 2xl:text-xl mb-4 md:text-left text-center md:text-base">
                     Build a profile that highlights your specializations,
                     experience, and the unique care you offer
                   </p>
@@ -46,7 +46,7 @@ function ProviderIntro() {
                   <h2 className="text-xl font-semibold text-main mb-4 text-center md:text-left">
                     Set Your Therapy Conditions
                   </h2>
-                  <p className="text-gray-600 2xl:text-xl mb-4 text-left md:text-base">
+                  <p className="text-gray-600 2xl:text-xl mb-4 md:text-left text-center md:text-base">
                     You have complete control over your schedule, session fees,
                     and therapeutic approach. Update Your Therapy Conditions
                   </p>
@@ -56,7 +56,7 @@ function ProviderIntro() {
                   <h2 className="text-xl font-semibold text-main mb-4 text-center md:text-left">
                     Start Helping Clients
                   </h2>
-                  <p className="text-gray-600 2xl:text-xl mb-4 text-left md:text-base">
+                  <p className="text-gray-600 2xl:text-xl mb-4 md:text-left text-center md:text-base">
                     Once your profile is live, begin offering therapy sessions
                     and making a difference
                   </p>

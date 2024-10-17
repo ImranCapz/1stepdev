@@ -168,12 +168,12 @@ export const SearchBar = ({ defaultSearchTerm }) => {
           </div>
         </div>
         <div className="transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-amber-500 mb-8 z-10">
-          <label
+          <p
             htmlFor="address"
             className="block py-1 px-2 md:mb-0.5 text-base font-bold text-gray-700 mt-8"
           >
             Where
-          </label>
+          </p>
           <CreateSelect
             type="address"
             id="address"
@@ -245,7 +245,7 @@ export const SearchBar = ({ defaultSearchTerm }) => {
         <button
           type="submit"
           data-ripple-light="true"
-          className="py-4 px-5 font-medium btn-color transition ease-in-out duration-300 disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs  rounded-lg shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none mt-4 mb-4 mr-4"
+          className="py-4 px-5 btn-color font-medium  text-xs rounded-lg mt-4 mb-4 mr-4"
         >
           <FaSearch />
         </button>
