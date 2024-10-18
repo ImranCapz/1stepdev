@@ -72,11 +72,26 @@ export default function MessageDash() {
   useEffect(() => {
     if (!socket) return;
     const handleMessage = ({ sender, message, provider }) => {
+      const newMessage = { sender, message, provider, createdAt: new Date() };
       if (provider !== id) {
-        toast.success("New message received");
+        toast.success(`New message received `);
+        setProviderDetails((prevDetails) => {
+          return prevDetails.map((p) => {
+            if (p._id === provider) {
+              return {
+                ...p,
+                lastMessage: newMessage,
+                unreadCount: p.unreadCount + 1,
+                messages: p.messages
+                  ? [...p.messages, newMessage]
+                  : [newMessage],
+              };
+            }
+            return p;
+          });
+        });
         return;
       }
-      const newMessage = { sender, message, provider, createdAt: new Date() };
       setNewMessage((newmessage) => [...newmessage, newMessage]);
       setLimitedMessages((newmessage) => [...newmessage, newMessage]);
       setProviderDetails((prevDetails) => {
@@ -84,6 +99,7 @@ export default function MessageDash() {
           if (providers._id === id) {
             return {
               ...providers,
+              unreadCount: providers.unreadCount + 1,
               lastMessage: newMessage,
             };
           }
@@ -244,6 +260,7 @@ export default function MessageDash() {
           ) {
             return {
               ...providers,
+              unreadCount: 0,
               lastMessage: {
                 ...providers.lastMessage,
                 read: true,
@@ -335,6 +352,8 @@ export default function MessageDash() {
     fetchLastMessage();
   }, [currentUser._id]);
 
+  console.log(providerDetails);
+
   return (
     <div className="full-height flex flex-col">
       <TopLoadingBar
@@ -371,7 +390,7 @@ export default function MessageDash() {
                   {providerDetails.length > 0 ? (
                     <>
                       {providerLoading && !loading ? (
-                        <>
+                        <div className="overflow-y-auto no-scrollbar">
                           {providerDetails.map((provider) => (
                             <ContentLoader
                               height={80}
@@ -381,7 +400,7 @@ export default function MessageDash() {
                               viewBox="0 0 250 60"
                               backgroundColor="#f5f5f5"
                               foregroundColor="#D1BEE0"
-                              className="2xl:w-[900px] 2xl:h-[110px]"
+                              className="2xl:w-[900px] 2xl:h-[110px] "
                             >
                               <circle
                                 cx="127"
@@ -413,7 +432,7 @@ export default function MessageDash() {
                               />
                             </ContentLoader>
                           ))}
-                        </>
+                        </div>
                       ) : (
                         <div className="w-full overflow-auto overflow-y-auto scrollbar-thin">
                           {providerDetails.map((provider) => {
@@ -438,13 +457,13 @@ export default function MessageDash() {
                                     className="w-10 h-10 2xl:size-20 md:w-12 md:h-12 rounded-full object-cover"
                                   />
                                   {onlineAllUsers[provider._id] ? (
-                                    <GoDotFill className="absolute top-0 right-0 text-green-400 transition-all ease-in duration-150" />
+                                    <GoDotFill className="absolute top-0 2xl:w-5 2xl:h-5 right-0 text-green-400 transition-all ease-in duration-150" />
                                   ) : (
-                                    <GoDotFill className="absolute top-0 right-0 text-red-400 transition-all ease-in duration-150" />
+                                    <GoDotFill className="absolute top-0 2xl:w-5 2xl:h-5 right-0 text-red-400 transition-all ease-in duration-150" />
                                   )}
                                 </div>
                                 <div className="flex-grow hidden md:block">
-                                  <p className="font-semibold items-center justify-center">
+                                  <p className="font-semibold items-center justify-center capitalize">
                                     {provider.fullName.slice(0, 15)}
                                   </p>
                                   <div className="flex flex-row gap-1">

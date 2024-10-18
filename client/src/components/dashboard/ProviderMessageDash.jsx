@@ -81,10 +81,6 @@ export default function ProviderMessageDash() {
   useEffect(() => {
     if (!socket) return;
     const handleMessage = ({ sender, message, provider, userid }) => {
-      if (user !== userid) {
-        toast.success(`new message from ${sender}`);
-        return;
-      }
       const newMessage = {
         sender,
         message,
@@ -92,6 +88,25 @@ export default function ProviderMessageDash() {
         userid,
         createdAt: new Date(),
       };
+      if (user !== userid) {
+        toast.success(`new message from ${userid}`);
+        setUserDetails((prevDetails) => {
+          return prevDetails.map((p) => {
+            if (p._id === userid) {
+              return {
+                ...p,
+                lastMessage: newMessage,
+                unreadCount: p.unreadCount + 1,
+                messages: p.messages
+                  ? [...p.messages, newMessage]
+                  : [newMessage],
+              };
+            }
+            return p;
+          });
+        });
+        return;
+      }
       setNewMessage((newmessage) => [...newmessage, newMessage]);
       setLimitedMessages((newmessage) => [...newmessage, newMessage]);
       setUserDetails((prevDetails) => {
@@ -99,6 +114,7 @@ export default function ProviderMessageDash() {
           if (users._id === user) {
             return {
               ...users,
+              unreadCount: users.unreadCount + 1,
               lastMessage: newMessage,
             };
           }
@@ -114,6 +130,7 @@ export default function ProviderMessageDash() {
   const handleSendMessage = () => {
     if (send === "") {
       toast.error("Message cannot be empty");
+      return;
     }
     if (socket) {
       socket.emit("joinRoom", {
@@ -125,6 +142,7 @@ export default function ProviderMessageDash() {
       socket.emit("sendMessage", {
         roomId: `${selectedUser._id}_${providerId}`,
         message: send,
+        provider
         sender: currentUser._id,
         provider: providerId,
         userid: selectedUser._id,
@@ -278,6 +296,7 @@ export default function ProviderMessageDash() {
           ) {
             return {
               ...users,
+              unreadCount: 0,
               lastMessage: {
                 ...users.lastMessage,
                 read: true,
@@ -338,6 +357,8 @@ export default function ProviderMessageDash() {
     fetchLastMessage();
   }, [currentUser._id]);
 
+  console.log(userDetails);
+
   return (
     <div className="flex flex-col">
       <TopLoadingBar
@@ -368,7 +389,7 @@ export default function ProviderMessageDash() {
                   {userDetails.length > 0 ? (
                     <>
                       {userloading ? (
-                        <>
+                        <div className="overflow-y-auto no-scrollbar">
                           {userDetails.map((user) => (
                             <ContentLoader
                               height={80}
@@ -410,7 +431,7 @@ export default function ProviderMessageDash() {
                               />
                             </ContentLoader>
                           ))}
-                        </>
+                        </div>
                       ) : (
                         <div className="w-full overflow-auto overflow-y-auto scrollbar-thin">
                           {userDetails.map((user) => {
@@ -437,9 +458,9 @@ export default function ProviderMessageDash() {
                                     className="w-9 h-9 2xl:size-20 md:w-12 md:h-12 rounded-full object-cover"
                                   />
                                   {onlineAllUsers[user._id] ? (
-                                    <GoDotFill className="absolute text-green-400 top-0 right-0 transition-all ease-in duration-150" />
+                                    <GoDotFill className="absolute 2xl:w-5 2xl:h-5 text-green-400 top-0 right-0 transition-all ease-in duration-150" />
                                   ) : (
-                                    <GoDotFill className="absolute text-red-400 top-0 right-0  transition-all ease-in duration-150" />
+                                    <GoDotFill className="absolute 2xl:w-5 2xl:h-5 text-red-400 top-0 right-0 transition-all ease-in duration-150" />
                                   )}
                                 </div>
                                 <div className="flex-grow hidden md:block">
@@ -690,7 +711,7 @@ export default function ProviderMessageDash() {
 
                                       {message.sender === currentUser._id && (
                                         <img
-                                          src={currentUser.profilePicture}
+                                          src={currentProvider.profilePicture}
                                           alt="user logo"
                                           className="size-9 rounded-full ml-2 object-cover"
                                         />
@@ -767,14 +788,15 @@ export default function ProviderMessageDash() {
                     <div className="flex flex-col mx-auto items-center justify-center h-full">
                       <img
                         src={
-                          currentUser.profilePicture ||
+                          currentProvider.profilePicture ||
                           "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
                         }
                         alt="user logo"
                         className="size-20 object-cover rounded-full border-4 border-purple-300"
                       />
                       <h1 className="text-2xl font-bold text-gray">
-                        Hi,<span className="animate-wave">👋🏻</span>Welcome!
+                        Hi,{currentProvider.fullName}
+                        <span className="animate-wave">👋🏻</span>Welcome!
                       </h1>
                       <h2 className="text-gray">Select a people for chat.</h2>
                     </div>

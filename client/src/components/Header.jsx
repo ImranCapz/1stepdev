@@ -231,6 +231,7 @@ const Header = ({ showSubMenu }) => {
 
   return (
     <header
+      role="navbar"
       className={`text-base lg:text-sm sticky top-0 z-40 bg-white ${
         isDrawer ? "blur-drawer" : ""
       }`}
@@ -417,7 +418,10 @@ const Header = ({ showSubMenu }) => {
                   <div className="md:hidden flex flex-col fixed bottom-0 left-0 right-0 bg-gray-700 py-4 px-">
                     <div className="flex flex-row gap-2 items-center px-2">
                       <img
-                        src={currentUser.profilePicture || 'https://i.ibb.co/tKQH4zp/defaultprofile.jpg'}
+                        src={
+                          currentUser.profilePicture ||
+                          "https://i.ibb.co/tKQH4zp/defaultprofile.jpg"
+                        }
                         alt="user profile"
                         className="w-8 h-8 rounded-full object-cover"
                       />
@@ -528,7 +532,7 @@ const Header = ({ showSubMenu }) => {
                       {item.title}
                     </span>
                     {isMoreVisible && (
-                      <ul className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg max-h-60 z-20">
+                      <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg max-h-60 z-20">
                         {item.submenu.map((submenu, subIdx) => (
                           <li
                             key={subIdx}
@@ -546,7 +550,7 @@ const Header = ({ showSubMenu }) => {
                             </p>
                           </li>
                         ))}
-                      </ul>
+                      </div>
                     )}
                   </li>
                 );
